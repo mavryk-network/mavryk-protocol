@@ -82,13 +82,13 @@ end
 
 module Destination_alias : sig
   val destination_parameter :
-    unit -> (Destination.t, #Client_context.wallet) Tezos_clic.parameter
+    unit -> (Destination.t, #Client_context.wallet) Mavryk_clic.parameter
 
   val destination_param :
     ?name:string ->
     ?desc:string ->
-    ('a, (#Client_context.wallet as 'wallet)) Tezos_clic.params ->
-    (Destination.t -> 'a, 'wallet) Tezos_clic.params
+    ('a, (#Client_context.wallet as 'wallet)) Mavryk_clic.params ->
+    (Destination.t -> 'a, 'wallet) Mavryk_clic.params
 end
 
 (** [list_contracts cctxt] returns the concatenation of [contracts] and [accounts]

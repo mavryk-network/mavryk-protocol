@@ -6,4 +6,4 @@
 (*****************************************************************************)
 
 (** Repair commands offered by the rollup node. *)
-val commands : Client_context.full Tezos_clic.command list
+val commands : Client_context.full Mavryk_clic.command list

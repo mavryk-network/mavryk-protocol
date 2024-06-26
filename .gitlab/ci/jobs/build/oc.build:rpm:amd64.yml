@@ -25,7 +25,7 @@ oc.build:rpm:amd64:
   - DISTRO=$(echo "$DISTRIBUTION" | cut -d':' -f1)
   - RELEASE=$(echo "$DISTRIBUTION" | cut -d':' -f2)
   - mkdir -p packages/$DISTRO/$RELEASE
-  - mv octez-*.* packages/$DISTRO/$RELEASE/
+  - mv mavkit-*.* packages/$DISTRO/$RELEASE/
   variables:
     TARGET: rpm
     OCTEZ_PKGMAINTAINER: nomadic-labs

@@ -818,7 +818,7 @@ module Scripts = struct
       | Signature_t -> return (T_signature, [], [])
       | String_t -> return (T_string, [], [])
       | Bytes_t -> return (T_bytes, [], [])
-      | Mutez_t -> return (T_mutez, [], [])
+      | Mutez_t -> return (T_mumav, [], [])
       | Bool_t -> return (T_bool, [], [])
       | Key_hash_t -> return (T_key_hash, [], [])
       | Key_t -> return (T_key, [], [])
@@ -1226,7 +1226,7 @@ module Scripts = struct
   }
 
   (* 4_000_000 ṁ *)
-  let default_balance = Tez.of_mutez_exn 4_000_000_000_000L
+  let default_balance = Tez.of_mumav_exn 4_000_000_000_000L
 
   let register () =
     let open Lwt_result_syntax in
@@ -4167,7 +4167,7 @@ module Delegates = struct
     let delegated_balance =
       RPC_service.get_service
         ~description:
-          "Returns the sum (in mutez) of all balances of all the contracts \
+          "Returns the sum (in mumav) of all balances of all the contracts \
            that delegate to a given delegate. This excludes the delegate's own \
            balance, its frozen deposits and its frozen bonds."
         ~query:RPC_query.empty

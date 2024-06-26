@@ -179,7 +179,7 @@ val inject_and_capture1_stderr :
   rex:rex ->
   ?force:bool ->
   ?protocol:Protocol.t ->
-  ?signature:Tezos_crypto.Signature.t ->
+  ?signature:Mavryk_crypto.Signature.t ->
   t ->
   Client.t ->
   string Lwt.t

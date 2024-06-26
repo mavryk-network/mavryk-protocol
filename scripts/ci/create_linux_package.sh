@@ -22,7 +22,7 @@ cat << DOC > meta.json
 DOC
 
 # NOTE: The package generator script relies on the binaries having the `tezos-` prefix instead of
-# `octez-*` which is currently in place.
+# `mavkit-*` which is currently in place.
 # This is a temporary fix until the upstream version supports the renamed `octez` binaries.
 cd binaries
 # shellcheck disable=SC2001

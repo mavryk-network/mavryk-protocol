@@ -30,7 +30,7 @@
 type error +=
   | (* `Permanent *)
       Forbidden_tz4_delegate of Bls.Public_key_hash.t
-        (** Delegates cannot be tz4 accounts (i.e. BLS public key hashes). This
+        (** Delegates cannot be mv4 accounts (i.e. BLS public key hashes). This
             error is returned when we try to register such a delegate.  *)
 
 (** [check_not_tz4 pkh] checks that [pkh] is not a BLS address. *)

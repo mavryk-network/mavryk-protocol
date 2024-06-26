@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_benchmark
+open Mavryk_benchmark
 open Benchmarks_proto
 
 let ns = Namespace.make Registration.ns "carbonated_map"
@@ -210,7 +210,7 @@ module Make (CS : COMPARABLE_SAMPLER) = struct
        [intercept + (log2 size * compare_cost) + (log2 size * traversal_overhead)]
      *)
     let find_model name =
-      let open Tezos_benchmark in
+      let open Mavryk_benchmark in
       let traversal_overhead = ns "traversal_overhead" in
       let intercept = fv_intercept in
       let module M = struct

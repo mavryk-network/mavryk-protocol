@@ -11,7 +11,7 @@
    goal of this pipeline to update the [latest] Docker tag of the
    Octez Docker distribution. *)
 
-open Tezos_ci
+open Mavryk_ci
 open Common
 
 let job_docker_promote_to_latest ~ci_docker_hub : tezos_job =

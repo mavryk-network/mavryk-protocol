@@ -58,20 +58,20 @@ let test_execution_correspondance ~version skip count () =
         else
           Lwt.map fst
           @@ Wasm.compute_step_many
-               ~wasm_entrypoint:Tezos_scoru_wasm.Constants.wasm_entrypoint
+               ~wasm_entrypoint:Mavryk_scoru_wasm.Constants.wasm_entrypoint
                ~max_steps:skip
                tree_with_dummy_input
       in
       let rec explore tree' n =
         let*! tree_ref, _ =
           Wasm.compute_step_many
-            ~wasm_entrypoint:Tezos_scoru_wasm.Constants.wasm_entrypoint
+            ~wasm_entrypoint:Mavryk_scoru_wasm.Constants.wasm_entrypoint
             ~max_steps:n
             tree
         in
         let*! tree' =
           Wasm.compute_step
-            ~wasm_entrypoint:Tezos_scoru_wasm.Constants.wasm_entrypoint
+            ~wasm_entrypoint:Mavryk_scoru_wasm.Constants.wasm_entrypoint
             tree'
         in
         assert (

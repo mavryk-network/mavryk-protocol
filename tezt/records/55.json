@@ -1439,7 +1439,7 @@
   },
   {
     "file": "src/lib_context/test/test_context.ml",
-    "title": "tezos-context: context (disk:fold)",
+    "title": "mavryk-context: context (disk:fold)",
     "tags": [
       "alcotezt",
       "quick"

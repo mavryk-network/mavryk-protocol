@@ -18,7 +18,7 @@ oc.build:static-x86_64-linux-binaries:
   artifacts:
     expire_in: 90 days
     paths:
-    - octez-binaries/$ARCH/*
+    - mavkit-binaries/$ARCH/*
 
 oc.build:static-arm64-linux-binaries:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
@@ -37,7 +37,7 @@ oc.build:static-arm64-linux-binaries:
   artifacts:
     expire_in: 90 days
     paths:
-    - octez-binaries/$ARCH/*
+    - mavkit-binaries/$ARCH/*
 
 oc.docker:amd64:
   image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
@@ -107,7 +107,7 @@ oc.build:dpkg:amd64:
   - DISTRO=$(echo "$DISTRIBUTION" | cut -d':' -f1)
   - RELEASE=$(echo "$DISTRIBUTION" | cut -d':' -f2)
   - mkdir -p packages/$DISTRO/$RELEASE
-  - mv octez-*.* packages/$DISTRO/$RELEASE/
+  - mv mavkit-*.* packages/$DISTRO/$RELEASE/
   variables:
     TARGET: dpkg
     OCTEZ_PKGMAINTAINER: nomadic-labs
@@ -150,7 +150,7 @@ oc.build:rpm:amd64:
   - DISTRO=$(echo "$DISTRIBUTION" | cut -d':' -f1)
   - RELEASE=$(echo "$DISTRIBUTION" | cut -d':' -f2)
   - mkdir -p packages/$DISTRO/$RELEASE
-  - mv octez-*.* packages/$DISTRO/$RELEASE/
+  - mv mavkit-*.* packages/$DISTRO/$RELEASE/
   variables:
     TARGET: rpm
     OCTEZ_PKGMAINTAINER: nomadic-labs

@@ -109,7 +109,7 @@ for control_file in "$myhome"/*control.in; do
   #
   initdScripts "${common}/${pg}.initd.in" "${init_name}" "${staging_dir}"
   if [ "$pg" = "baker" ]; then
-    initdScripts "${common}/vdf.initd.in" octez-vdf "${staging_dir}"
+    initdScripts "${common}/vdf.initd.in" mavkit-vdf "${staging_dir}"
   fi
 
   # Configuration files

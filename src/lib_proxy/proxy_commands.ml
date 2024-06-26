@@ -30,7 +30,7 @@ let group : Mavryk_clic.group =
   }
 
 let list_proxy_command_handler _
-    (cctxt : #Tezos_client_base.Client_context.full) =
+    (cctxt : #Mavryk_client_base.Client_context.full) =
   let open Lwt_result_syntax in
   let*! () =
     List.iter_s (fun (module Proxy : Registration.Proxy_sig) ->

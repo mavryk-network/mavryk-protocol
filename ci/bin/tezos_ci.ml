@@ -546,7 +546,7 @@ let append_variables ?(allow_overwrite = false) new_variables
             | Some old_value ->
                 if not allow_overwrite then
                   failwith
-                    "[Tezos_ci.append_variables] attempted to overwrite the \
+                    "[Mavryk_ci.append_variables] attempted to overwrite the \
                      variable '%s' (old value: '%s', new value: '%s')"
                     name
                     old_value

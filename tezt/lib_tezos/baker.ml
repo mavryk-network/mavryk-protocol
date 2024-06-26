@@ -98,7 +98,7 @@ let create_from_uris ?runner ~protocol
     ?(path = Uses.path (Protocol.baker protocol)) ?name ?color ?event_pipe
     ?(delegates = []) ?votefile ?(liquidity_baking_toggle_vote = Some Pass)
     ?(force_apply = false) ?(remote_mode = false) ?operations_pool
-    ?dal_node_rpc_endpoint ?minimal_nanotez_per_gas_unit
+    ?dal_node_rpc_endpoint ?minimal_nanomav_per_gas_unit
     ?(state_recorder = false) ~base_dir ~node_data_dir ~node_rpc_endpoint () =
   let baker =
     create
@@ -240,7 +240,7 @@ let wait_for_ready baker =
 let init ?runner ~protocol ?(path = Uses.path (Protocol.baker protocol)) ?name
     ?color ?event_pipe ?event_sections_levels ?(delegates = []) ?votefile
     ?liquidity_baking_toggle_vote ?force_apply ?remote_mode ?operations_pool
-    ?dal_node ?minimal_nanotez_per_gas_unit ?state_recorder node client =
+    ?dal_node ?minimal_nanomav_per_gas_unit ?state_recorder node client =
   let* () = Node.wait_for_ready node in
   let baker =
     create

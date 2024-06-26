@@ -248,7 +248,7 @@ mod tests {
     use mavryk_data_encoding::enc::BinWriter;
     use mavryk_data_encoding::nom::NomReader;
 
-    // taken from the output of octez-dac-client GET certificate
+    // taken from the output of mavkit-dac-client GET certificate
     // Committee member 0 - public key hash: tz4Ate2Fj1QpVXBGLXioe57s3a1RUtavMS5P
     // Committee member 0 - public key: BLpk1tsVzqCokL6dZEiCQgEvwqQp4btiHYm3A1HoEUxKUwq5jCNZMJQ7bU71QE969KioUWCKtK9F
     // Committee member 1 - public key hash: tz4PA6aEFXbaSZXSmdTi933GQZPodn6VX8Q3

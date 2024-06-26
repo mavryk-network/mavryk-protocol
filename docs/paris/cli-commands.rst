@@ -8,7 +8,7 @@ using shell commands such as (:ref:`indicating the appropriate protocol <octez_c
 
 ::
 
-   octez-client -protocol <protocol_hash> man -verbosity 3
+   mavkit-client -protocol <protocol_hash> man -verbosity 3
 
 The rest of this page documents the protocol-dependent tools.
 The protocol-independent tools are documented :doc:`here <../shell/cli-commands>`.
@@ -20,7 +20,7 @@ Client manual
 =============
 
 .. raw:: html
-         :file: octez-client.html
+         :file: mavkit-client.html
 
 
 .. _baker_manual_paris:
@@ -29,7 +29,7 @@ Baker manual
 ============
 
 .. raw:: html
-         :file: octez-baker.html
+         :file: mavkit-baker.html
 
 
 .. _accuser_manual_paris:
@@ -38,10 +38,10 @@ Accuser manual
 ==============
 
 .. raw:: html
-         :file: octez-accuser.html
+         :file: mavkit-accuser.html
 
 Smart rollup node manual
 ========================
 
 .. raw:: html
-        :file: octez-smart-rollup-node.html
+        :file: mavkit-smart-rollup-node.html

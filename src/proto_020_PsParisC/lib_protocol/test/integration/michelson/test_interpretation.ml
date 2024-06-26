@@ -108,7 +108,7 @@ let test_multiplication_close_to_overflow_passes () =
   let*! result =
     Contract_helpers.run_script
       ctx
-      "{parameter unit;storage unit;code {DROP; PUSH mutez \
+      "{parameter unit;storage unit;code {DROP; PUSH mumav \
        2944023901536524477; PUSH nat 2; MUL; DROP; UNIT; NIL operation; PAIR}}"
       ~storage:"Unit"
       ~parameter:"Unit"

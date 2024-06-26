@@ -525,7 +525,7 @@ let handle_request :
   | External_validation.Reconfigure_event_logging config ->
       let*! () = Events.(emit reconfigure_event_logging_request ()) in
       let*! res =
-        Tezos_base_unix.Internal_event_unix.Configuration.reapply config
+        Mavryk_base_unix.Internal_event_unix.Configuration.reapply config
       in
       continue res cache cached_result
 

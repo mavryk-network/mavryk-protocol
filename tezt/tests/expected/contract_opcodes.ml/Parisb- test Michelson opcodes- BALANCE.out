@@ -1,5 +1,5 @@
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/balance.tz on storage 0 and input Unit --balance 0 --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/balance.tz on storage 0 and input Unit --balance 0 --trace-stack
 storage
   0
 emitted operations
@@ -20,7 +20,7 @@ trace
     [ (Pair {} 0) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/balance.tz on storage 0 and input Unit --balance 0.000001 --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/balance.tz on storage 0 and input Unit --balance 0.000001 --trace-stack
 storage
   1
 emitted operations
@@ -41,7 +41,7 @@ trace
     [ (Pair {} 1) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/balance.tz on storage 0 and input Unit --balance 0.5 --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/balance.tz on storage 0 and input Unit --balance 0.5 --trace-stack
 storage
   500000
 emitted operations
@@ -62,7 +62,7 @@ trace
     [ (Pair {} 500000) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/balance.tz on storage 0 and input Unit --balance 1 --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/balance.tz on storage 0 and input Unit --balance 1 --trace-stack
 storage
   1000000
 emitted operations
@@ -83,7 +83,7 @@ trace
     [ (Pair {} 1000000) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/balance.tz on storage 0 and input Unit --balance 5 --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/balance.tz on storage 0 and input Unit --balance 5 --trace-stack
 storage
   5000000
 emitted operations
@@ -104,7 +104,7 @@ trace
     [ (Pair {} 5000000) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/balance.tz on storage 0 and input Unit --balance 1000 --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/balance.tz on storage 0 and input Unit --balance 1000 --trace-stack
 storage
   1000000000
 emitted operations
@@ -125,7 +125,7 @@ trace
     [ (Pair {} 1000000000) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/balance.tz on storage 0 and input Unit --balance 8000000 --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/balance.tz on storage 0 and input Unit --balance 8000000 --trace-stack
 storage
   8000000000000
 emitted operations

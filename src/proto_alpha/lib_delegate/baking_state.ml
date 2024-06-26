@@ -559,7 +559,7 @@ type global_state = {
   (* the delegates on behalf of which the baker is running *)
   delegates : consensus_key list;
   cache : cache;
-  dal_node_rpc_ctxt : Tezos_rpc.Context.generic option;
+  dal_node_rpc_ctxt : Mavryk_rpc.Context.generic option;
 }
 
 type state = {
@@ -725,7 +725,7 @@ let forge_event_encoding =
          (req "delegate" consensus_key_and_delegate_encoding)
          (req
             "operations"
-            (list (list (dynamic_size Tezos_base.Operation.encoding))))
+            (list (list (dynamic_size Mavryk_base.Operation.encoding))))
          (req "baking_votes" Per_block_votes.per_block_votes_encoding))
   in
   union

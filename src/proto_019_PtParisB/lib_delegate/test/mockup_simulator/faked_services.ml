@@ -5,10 +5,10 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_shell_services
-module Directory = Tezos_rpc.Directory
-module Chain_services = Tezos_shell_services.Chain_services
-module Block_services = Tezos_shell_services.Block_services
+open Mavryk_shell_services
+module Directory = Mavryk_rpc.Directory
+module Chain_services = Mavryk_shell_services.Chain_services
+module Block_services = Mavryk_shell_services.Block_services
 module Block_services_alpha = Protocol_client_context.Alpha_block_services
 
 module type Mocked_services_hooks = sig
@@ -19,12 +19,12 @@ module type Mocked_services_hooks = sig
   val monitor_validated_blocks :
     unit ->
     (Chain_id.t * Block_hash.t * Block_header.t * Operation.t list list)
-    Tezos_rpc.Answer.stream
+    Mavryk_rpc.Answer.stream
 
   (** The baker relies on this stream to be notified of new
      heads. *)
   val monitor_heads :
-    unit -> (Block_hash.t * Block_header.t) Tezos_rpc.Answer.stream
+    unit -> (Block_hash.t * Block_header.t) Mavryk_rpc.Answer.stream
 
   (** Returns current and next protocol for a block. *)
   val protocols :
@@ -49,7 +49,7 @@ module type Mocked_services_hooks = sig
     Mockup.M.Block_services.operation list list tzresult Lwt.t
 
   (** [inject_block_callback] is called when an RPC is performed on
-     [Tezos_shell_services.Injection_services.S.block], after checking that
+     [Mavryk_shell_services.Injection_services.S.block], after checking that
      the block header can be deserialized. *)
   val inject_block :
     Block_hash.t ->
@@ -80,7 +80,7 @@ module type Mocked_services_hooks = sig
     (Block_services.version
     * ((Operation_hash.t * Mockup.M.Protocol.operation) * error trace option)
       list)
-    Tezos_rpc.Answer.stream
+    Mavryk_rpc.Answer.stream
 
   (** Lists block hashes from the chain, up to the last checkpoint, sorted
      with decreasing fitness. Without arguments it returns the head of the
@@ -102,7 +102,7 @@ module type Mocked_services_hooks = sig
       rpc_context constructed from the context at the requested block. *)
   val rpc_context_callback :
     Block_services.block ->
-    Tezos_protocol_environment.rpc_context tzresult Lwt.t
+    Mavryk_protocol_environment.rpc_context tzresult Lwt.t
 
   (** Return raw protocol data as a block. *)
   val raw_protocol_data : Block_services.block -> Bytes.t tzresult Lwt.t
@@ -127,7 +127,7 @@ module type Mocked_services_hooks = sig
       simulated node is already bootstrapped, returns the current head
       immediately. *)
   val monitor_bootstrapped :
-    unit -> (Block_hash.t * Time.Protocol.t) Tezos_rpc.Answer.stream
+    unit -> (Block_hash.t * Time.Protocol.t) Mavryk_rpc.Answer.stream
 end
 
 type hooks = (module Mocked_services_hooks)
@@ -138,36 +138,36 @@ module Make (Hooks : Mocked_services_hooks) = struct
       Directory.empty
       Monitor_services.S.validated_blocks
       (fun _next_protocol _ ->
-        Tezos_rpc.Answer.return_stream (Hooks.monitor_validated_blocks ()))
+        Mavryk_rpc.Answer.return_stream (Hooks.monitor_validated_blocks ()))
 
   let monitor_heads =
     Directory.gen_register1
       Directory.empty
       Monitor_services.S.heads
       (fun _chain _next_protocol () ->
-        Tezos_rpc.Answer.return_stream (Hooks.monitor_heads ()))
+        Mavryk_rpc.Answer.return_stream (Hooks.monitor_heads ()))
 
   let monitor_bootstrapped =
     Directory.gen_register0
       Directory.empty
       Monitor_services.S.bootstrapped
       (fun () () ->
-        Tezos_rpc.Answer.return_stream (Hooks.monitor_bootstrapped ()))
+        Mavryk_rpc.Answer.return_stream (Hooks.monitor_bootstrapped ()))
 
   let protocols =
     let path =
-      let open Tezos_rpc.Path in
+      let open Mavryk_rpc.Path in
       prefix Block_services.chain_path Block_services.path
     in
     let service =
-      Tezos_rpc.Service.prefix path Block_services.Empty.S.protocols
+      Mavryk_rpc.Service.prefix path Block_services.Empty.S.protocols
     in
     Directory.register Directory.empty service (fun (_, block) () () ->
         Hooks.protocols block)
 
   let raw_header =
     Directory.prefix
-      (Tezos_rpc.Path.prefix Chain_services.path Block_services.path)
+      (Mavryk_rpc.Path.prefix Chain_services.path Block_services.path)
     @@ Directory.register
          Directory.empty
          Mockup.M.Block_services.S.raw_header
@@ -175,7 +175,7 @@ module Make (Hooks : Mocked_services_hooks) = struct
 
   let header =
     Directory.prefix
-      (Tezos_rpc.Path.prefix Chain_services.path Block_services.path)
+      (Mavryk_rpc.Path.prefix Chain_services.path Block_services.path)
     @@ Directory.register
          Directory.empty
          Mockup.M.Block_services.S.header
@@ -183,7 +183,7 @@ module Make (Hooks : Mocked_services_hooks) = struct
 
   let resulting_context_hash =
     Directory.prefix
-      (Tezos_rpc.Path.prefix Chain_services.path Block_services.path)
+      (Mavryk_rpc.Path.prefix Chain_services.path Block_services.path)
     @@ Directory.register
          Directory.empty
          Mockup.M.Block_services.S.resulting_context_hash
@@ -191,7 +191,7 @@ module Make (Hooks : Mocked_services_hooks) = struct
 
   let operations =
     Directory.prefix
-      (Tezos_rpc.Path.prefix Chain_services.path Block_services.path)
+      (Mavryk_rpc.Path.prefix Chain_services.path Block_services.path)
     @@ Directory.register
          Directory.empty
          Mockup.M.Block_services.S.Operations.operations
@@ -203,7 +203,7 @@ module Make (Hooks : Mocked_services_hooks) = struct
   let hash =
     let open Lwt_result_syntax in
     Directory.prefix
-      (Tezos_rpc.Path.prefix Chain_services.path Block_services.path)
+      (Mavryk_rpc.Path.prefix Chain_services.path Block_services.path)
     @@ Directory.register
          Directory.empty
          Block_services.Empty.S.hash
@@ -214,7 +214,7 @@ module Make (Hooks : Mocked_services_hooks) = struct
   let shell_header =
     let open Lwt_result_syntax in
     Directory.prefix
-      (Tezos_rpc.Path.prefix Chain_services.path Block_services.path)
+      (Mavryk_rpc.Path.prefix Chain_services.path Block_services.path)
     @@ Directory.register
          Directory.empty
          Mockup.M.Block_services.S.Header.shell_header
@@ -279,7 +279,7 @@ module Make (Hooks : Mocked_services_hooks) = struct
       @@ Block_services.mempool_path Block_services.chain_path)
       (fun ((), _chain) params () ->
         let* mempool = Hooks.pending_operations () in
-        Tezos_rpc.Answer.return (params#version, mempool))
+        Mavryk_rpc.Answer.return (params#version, mempool))
 
   let monitor_operations =
     Directory.gen_register
@@ -295,7 +295,7 @@ module Make (Hooks : Mocked_services_hooks) = struct
             ~branch_refused:flags#branch_refused
             ~refused:flags#refused
         in
-        Tezos_rpc.Answer.return_stream stream)
+        Mavryk_rpc.Answer.return_stream stream)
 
   let list_blocks =
     Directory.prefix
@@ -311,7 +311,7 @@ module Make (Hooks : Mocked_services_hooks) = struct
 
   let live_blocks =
     Directory.prefix
-      (Tezos_rpc.Path.prefix Chain_services.path Block_services.path)
+      (Mavryk_rpc.Path.prefix Chain_services.path Block_services.path)
     @@ Directory.register
          Directory.empty
          Block_services.Empty.S.live_blocks
@@ -319,7 +319,7 @@ module Make (Hooks : Mocked_services_hooks) = struct
 
   let raw_protocol_data =
     Directory.prefix
-      (Tezos_rpc.Path.prefix Chain_services.path Block_services.path)
+      (Mavryk_rpc.Path.prefix Chain_services.path Block_services.path)
     @@ Directory.register
          Directory.empty
          Block_services.Empty.S.Header.raw_protocol_data
@@ -367,7 +367,7 @@ module Make (Hooks : Mocked_services_hooks) = struct
               Mockup.M.directory))
     in
     let base = Directory.merge (shell_directory chain_id) proto_directory in
-    Tezos_rpc.Directory.register_describe_directory_service
+    Mavryk_rpc.Directory.register_describe_directory_service
       base
-      Tezos_rpc.Service.description_service
+      Mavryk_rpc.Service.description_service
 end

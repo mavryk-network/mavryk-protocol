@@ -94,10 +94,10 @@ let show_address fmt Script_typed_ir.{destination; entrypoint} =
 
 let dont_show _fmt _ = ()
 
-let size = {Tezos_benchmark.Base_samplers.min = 4; max = 32}
+let size = {Mavryk_benchmark.Base_samplers.min = 4; max = 32}
 
 module Crypto_samplers =
-Tezos_benchmark.Crypto_samplers.Make_finite_key_pool (struct
+Mavryk_benchmark.Crypto_samplers.Make_finite_key_pool (struct
   let size = 10
 
   let algo = `Default
@@ -253,7 +253,7 @@ let check_value_size () =
        =======
     *)
     @ (let show fmt t = Format.fprintf fmt "%s" (Tez.to_string t) in
-       exs nsample show Mutez_t ": mutez")
+       exs nsample show Mutez_t ": mumav")
     (*
        Key_hash_t
        ==========

@@ -13,7 +13,7 @@
   mavkit-libs.crypto
   mavkit-libs.micheline
   mavkit-shell-libs.client-base
-  mavkit-libs.tezos-workers
+  mavkit-libs.mavryk-workers
   mavkit-shell-libs.shell
   mavkit-crawler
   mavkit-shell-libs.signer-backends)

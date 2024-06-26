@@ -73,7 +73,7 @@ let () =
     ~tags:[Tag.ci_disabled]
     ~uses:
       [
-        Constant.octez_node;
+        Constant.mavkit_node;
         Constant.octez_client;
         Constant.octez_dal_node;
         Constant.octez_dac_node;

@@ -68,6 +68,12 @@ let proto_name : Mavryk_scoru_wasm.Pvm_input_kind.protocol -> string = function
 let tests =
   List.map
     (fun (from_version, to_version, protocol) ->
+      (* This pattern match is introduced in order to not typecheck if
+         a new version is added.
+         If you end up here because of this, please add a protocol migration
+         test for you new version. *)
+      (match from_version with
+      | Mavryk_scoru_wasm.Wasm_pvm_state.V0 | V1 | V2 | V3 | V4 -> ()) ;
       tztest
         (sf
            "protocol migration message handling by the WASM PVM (%s)"

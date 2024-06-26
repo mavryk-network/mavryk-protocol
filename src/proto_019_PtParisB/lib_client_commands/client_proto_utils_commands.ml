@@ -25,10 +25,10 @@
 
 open Client_proto_utils
 
-let group = {Tezos_clic.name = "utilities"; title = "Utility Commands"}
+let group = {Mavryk_clic.name = "utilities"; title = "Utility Commands"}
 
 let unsigned_block_header_param =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   param
     ~name:"unsigned block header"
     ~desc:"A hex or JSON encoded unsigned block header"
@@ -52,7 +52,7 @@ let unsigned_block_header_param =
                  with _ -> cctxt#error "%s" error)))
 
 let commands () =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let string_param ~name ~desc =
     param ~name ~desc Client_proto_args.string_parameter
   in

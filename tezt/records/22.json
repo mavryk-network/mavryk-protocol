@@ -1413,7 +1413,7 @@
   },
   {
     "file": "src/lib_context/test/test_context.ml",
-    "title": "tezos-context: context (disk:trees)",
+    "title": "mavryk-context: context (disk:trees)",
     "tags": [
       "alcotezt",
       "quick"

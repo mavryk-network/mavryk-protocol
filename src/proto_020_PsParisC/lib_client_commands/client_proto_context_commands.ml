@@ -36,7 +36,7 @@ open Client_proto_args
 let get_timelock_filename path prefix enc obj =
   let add_path r n = r ^ "/" ^ n in
   let bin = Data_encoding.Binary.to_bytes_exn enc obj in
-  let hex = Tezos_crypto.Blake2B.(hash_bytes [bin] |> to_hex) |> Hex.show in
+  let hex = Mavryk_crypto.Blake2B.(hash_bytes [bin] |> to_hex) |> Hex.show in
   let name = prefix ^ "_" ^ hex in
   add_path path name
 
@@ -62,10 +62,10 @@ let save_zk_rollup ~force (cctxt : #Client_context.full) alias_name rollup =
   return_unit
 
 let encrypted_switch =
-  Tezos_clic.switch ~long:"encrypted" ~doc:"encrypt the key on-disk" ()
+  Mavryk_clic.switch ~long:"encrypted" ~doc:"encrypt the key on-disk" ()
 
 let normalize_types_switch =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"normalize-types"
     ~doc:
       "Whether types should be normalized (annotations removed, combs \
@@ -99,20 +99,20 @@ let report_michelson_errors ?(no_print_source = false) ~msg
   | Ok data -> return_some data
 
 let block_hash_param =
-  Tezos_clic.parameter (fun (cctxt : #Client_context.full) s ->
+  Mavryk_clic.parameter (fun (cctxt : #Client_context.full) s ->
       try Lwt_result_syntax.return (Block_hash.of_b58check_exn s)
       with _ -> cctxt#error "Parameter '%s' is an invalid block hash" s)
 
 let group =
   {
-    Tezos_clic.name = "context";
+    Mavryk_clic.name = "context";
     title = "Block contextual commands (see option -block)";
   }
 
-let alphanet = {Tezos_clic.name = "alphanet"; title = "Alphanet only commands"}
+let alphanet = {Mavryk_clic.name = "alphanet"; title = "Alphanet only commands"}
 
 let binary_description =
-  {Tezos_clic.name = "description"; title = "Binary Description"}
+  {Mavryk_clic.name = "description"; title = "Binary Description"}
 
 let tez_of_string_exn (cctxt : #Client_context.full) index field s =
   let open Lwt_result_syntax in
@@ -131,7 +131,7 @@ let tez_of_opt_string_exn (cctxt : #Client_context.full) index field s =
 let check_smart_contract = Managed_contract.check_smart_contract
 
 let commands_ro () =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   [
     command
       ~group
@@ -355,9 +355,9 @@ let commands_ro () =
          contract (deprecated)."
       no_options
       (prefixes ["get"; "big"; "map"; "value"; "for"]
-      @@ Tezos_clic.param ~name:"key" ~desc:"the key to look for" data_parameter
+      @@ Mavryk_clic.param ~name:"key" ~desc:"the key to look for" data_parameter
       @@ prefixes ["of"; "type"]
-      @@ Tezos_clic.param ~name:"type" ~desc:"type of the key" data_parameter
+      @@ Mavryk_clic.param ~name:"type" ~desc:"type of the key" data_parameter
       @@ prefix "in"
       @@ Originated_contract_alias.destination_param
            ~name:"src"
@@ -385,13 +385,13 @@ let commands_ro () =
       ~desc:"Get a value in a big map."
       (args1 (unparsing_mode_arg ~default:"Readable"))
       (prefixes ["get"; "element"]
-      @@ Tezos_clic.param
+      @@ Mavryk_clic.param
            ~name:"key"
            ~desc:"the key to look for"
-           (Tezos_clic.parameter (fun _ s ->
+           (Mavryk_clic.parameter (fun _ s ->
                 Lwt_result_syntax.return (Script_expr_hash.of_b58check_exn s)))
       @@ prefixes ["of"; "big"; "map"]
-      @@ Tezos_clic.param
+      @@ Mavryk_clic.param
            ~name:"big_map"
            ~desc:"identifier of the big_map"
            int_parameter
@@ -467,7 +467,7 @@ let commands_ro () =
       ~desc:"Get the type of an entrypoint of a contract."
       (args1 normalize_types_switch)
       (prefixes ["get"; "contract"; "entrypoint"; "type"; "of"]
-      @@ Tezos_clic.param
+      @@ Mavryk_clic.param
            ~name:"entrypoint"
            ~desc:"the entrypoint to describe"
            entrypoint_parameter
@@ -586,12 +586,12 @@ let commands_ro () =
            ~name:"ticketer"
            ~desc:"Ticketer contract of the ticket."
       @@ prefixes ["and"; "type"]
-      @@ Tezos_clic.param
+      @@ Mavryk_clic.param
            ~name:"ticket content type"
            ~desc:"Type of the content of the ticket."
            data_parameter
       @@ prefixes ["and"; "content"]
-      @@ Tezos_clic.param
+      @@ Mavryk_clic.param
            ~name:"ticket content"
            ~desc:"Content of the ticket."
            data_parameter
@@ -751,7 +751,7 @@ let commands_ro () =
                             Protocol_hash.pp
                             p
                             Tez.pp
-                            (Tez.of_mutez_exn w)
+                            (Tez.of_mumav_exn w)
                             Operation_result.tez_sym
                             (if
                              List.mem ~equal:Protocol_hash.equal p known_protos
@@ -778,21 +778,21 @@ let commands_ro () =
                    Current participation %.2f%%, necessary quorum %.2f%%@,\
                    Current in favor %a %s, needed supermajority %a %s@]"
                   Tez.pp
-                  (Tez.of_mutez_exn ballots_info.ballots.yay)
+                  (Tez.of_mumav_exn ballots_info.ballots.yay)
                   Operation_result.tez_sym
                   Tez.pp
-                  (Tez.of_mutez_exn ballots_info.ballots.nay)
+                  (Tez.of_mumav_exn ballots_info.ballots.nay)
                   Operation_result.tez_sym
                   Tez.pp
-                  (Tez.of_mutez_exn ballots_info.ballots.pass)
+                  (Tez.of_mumav_exn ballots_info.ballots.pass)
                   Operation_result.tez_sym
                   (Int32.to_float ballots_info.participation /. 100.)
                   (Int32.to_float ballots_info.current_quorum /. 100.)
                   Tez.pp
-                  (Tez.of_mutez_exn ballots_info.ballots.yay)
+                  (Tez.of_mumav_exn ballots_info.ballots.yay)
                   Operation_result.tez_sym
                   Tez.pp
-                  (Tez.of_mutez_exn ballots_info.supermajority)
+                  (Tez.of_mumav_exn ballots_info.supermajority)
                   Operation_result.tez_sym
               in
               return_unit
@@ -880,7 +880,7 @@ let commands_ro () =
    read-write (or RW for short) the commands that are removed.
 
    There are some exceptions to this rule however, for example the command
-   "octez-client wait for <op> to be included" is classified as RW despite having
+   "mavkit-client wait for <op> to be included" is classified as RW despite having
    no effect on the context because it has no use case once all RW commands are
    removed.
 
@@ -890,27 +890,27 @@ let commands_ro () =
 (* ----------------------------------------------------------------------------*)
 
 let dry_run_switch =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"dry-run"
     ~short:'D'
     ~doc:"don't inject the operation, just display it"
     ()
 
 let verbose_signing_switch =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"verbose-signing"
     ~doc:"display extra information before signing the operation"
     ()
 
 let simulate_switch =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"simulation"
     ~doc:
       "Simulate the execution of the command, without needing any signatures."
     ()
 
 let force_switch =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"force"
     ~doc:
       "Inject the operation even if the simulation results in a failure. This \
@@ -1067,7 +1067,7 @@ let prepare_batch_operation cctxt ?arg ?fee ?gas_limit ?storage_limit
   return (Annotated_manager_operation.Annotated_manager_operation operation)
 
 let commands_network network () =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   match network with
   | Some `Testnet | None ->
       [
@@ -1110,7 +1110,7 @@ let commands_network network () =
           @@ Public_key_hash.alias_param @@ prefixes ["with"]
           @@ param
                ~name:"code"
-               (Tezos_clic.parameter (fun (cctxt : #Client_context.full) code ->
+               (Mavryk_clic.parameter (fun (cctxt : #Client_context.full) code ->
                     match
                       Blinded_public_key_hash.activation_code_of_hex code
                     with
@@ -1135,8 +1135,8 @@ let commands_network network () =
 
 let commands_rw () =
   let open Client_proto_programs in
-  let open Tezos_micheline in
-  let open Tezos_clic in
+  let open Mavryk_micheline in
+  let open Mavryk_clic in
   [
     command
       ~group
@@ -2952,19 +2952,19 @@ let commands_rw () =
            ~name:"recipient contract"
            ~desc:"Contract receiving the tickets."
       @@ prefixes ["with"; "entrypoint"]
-      @@ Tezos_clic.param
+      @@ Mavryk_clic.param
            ~name:"entrypoint"
            ~desc:
              "Entrypoint to use on the receiving contract or implicit account. \
               Needs to be \"default\" for implicit account destinations."
            entrypoint_parameter
       @@ prefixes ["and"; "contents"]
-      @@ Tezos_clic.param
+      @@ Mavryk_clic.param
            ~name:"tickets content"
            ~desc:"Content of the tickets."
            Client_proto_args.string_parameter
       @@ prefixes ["and"; "type"]
-      @@ Tezos_clic.param
+      @@ Mavryk_clic.param
            ~name:"tickets type"
            ~desc:"Type of the tickets."
            Client_proto_args.string_parameter
@@ -3592,7 +3592,7 @@ let commands_rw () =
       @@ stop)
       (fun locked (time : int) (timelock_path : string) cctxt ->
         let open Lwt_result_syntax in
-        let open Tezos_crypto.Timelock in
+        let open Mavryk_crypto.Timelock in
         let* locked_value =
           match locked with
           | None -> return_none
@@ -3632,7 +3632,7 @@ let commands_rw () =
       @@ stop)
       (fun () (time : int) (payload : bytes) (timelock_path : string) cctxt ->
         let open Lwt_result_syntax in
-        let open Tezos_crypto.Timelock in
+        let open Mavryk_crypto.Timelock in
         let chest, chest_key =
           create_chest_and_chest_key
             ~precompute_path:(Some timelock_path)
@@ -3670,7 +3670,7 @@ let commands_rw () =
       @@ stop)
       (fun () (time : int) (chest_path : string) (timelock_path : string) cctxt ->
         let open Lwt_result_syntax in
-        let open Tezos_crypto.Timelock in
+        let open Mavryk_crypto.Timelock in
         let* chest = read_encoding chest_path chest_encoding in
         let chest_key = create_chest_key chest ~time in
         let chest_key_name =
@@ -3697,7 +3697,7 @@ let commands_rw () =
       @@ stop)
       (fun () (time : int) (chest_path : string) (chest_key_path : string) cctxt ->
         let open Lwt_result_syntax in
-        let open Tezos_crypto.Timelock in
+        let open Mavryk_crypto.Timelock in
         let* chest = read_encoding chest_path chest_encoding in
         let* chest_key = read_encoding chest_key_path chest_key_encoding in
         let result = open_chest chest chest_key ~time in

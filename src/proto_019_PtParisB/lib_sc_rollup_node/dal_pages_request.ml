@@ -111,7 +111,7 @@ let storage_invariant_broken published_level index =
     published_level
 
 let slot_id_is_valid
-    (dal_constants : Octez_smart_rollup.Rollup_constants.dal_constants)
+    (dal_constants : Mavkit_smart_rollup.Rollup_constants.dal_constants)
     ~dal_activation_level ~origination_level ~inbox_level slot_id
     ~dal_attested_slots_validity_lag =
   let open Alpha_context in
@@ -134,7 +134,7 @@ let slot_id_is_valid
   | _ -> false
 
 let page_id_is_valid
-    (dal_constants : Octez_smart_rollup.Rollup_constants.dal_constants)
+    (dal_constants : Mavkit_smart_rollup.Rollup_constants.dal_constants)
     ~dal_activation_level ~origination_level ~inbox_level
     Dal.Page.{slot_id; page_index} ~dal_attested_slots_validity_lag =
   Result.is_ok
@@ -151,7 +151,7 @@ let page_id_is_valid
        ~dal_attested_slots_validity_lag
 
 let slot_pages
-    (dal_constants : Octez_smart_rollup.Rollup_constants.dal_constants)
+    (dal_constants : Mavkit_smart_rollup.Rollup_constants.dal_constants)
     ~dal_activation_level ~inbox_level node_ctxt slot_id
     ~dal_attested_slots_validity_lag =
   let open Lwt_result_syntax in
@@ -176,7 +176,7 @@ let slot_pages
         ~published_level
         node_ctxt
     in
-    let index = Sc_rollup_proto_types.Dal.Slot_index.to_octez index in
+    let index = Sc_rollup_proto_types.Dal.Slot_index.to_mavkit index in
     let* processed =
       Node_context.find_slot_status node_ctxt ~confirmed_in_block_hash index
     in
@@ -190,7 +190,7 @@ let slot_pages
     | None -> storage_invariant_broken published_level index
 
 let page_content
-    (dal_constants : Octez_smart_rollup.Rollup_constants.dal_constants)
+    (dal_constants : Mavkit_smart_rollup.Rollup_constants.dal_constants)
     ~dal_activation_level ~inbox_level node_ctxt page_id
     ~dal_attested_slots_validity_lag =
   let open Lwt_result_syntax in
@@ -216,7 +216,7 @@ let page_content
         ~published_level
         node_ctxt
     in
-    let index = Sc_rollup_proto_types.Dal.Slot_index.to_octez index in
+    let index = Sc_rollup_proto_types.Dal.Slot_index.to_mavkit index in
     let* processed =
       Node_context.find_slot_status node_ctxt ~confirmed_in_block_hash index
     in

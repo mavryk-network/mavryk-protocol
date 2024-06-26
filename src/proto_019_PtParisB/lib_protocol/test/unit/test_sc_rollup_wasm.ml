@@ -33,14 +33,14 @@
 *)
 
 open Protocol
-open Tezos_micheline.Micheline
+open Mavryk_micheline.Micheline
 open Michelson_v1_primitives
-open Tezos_webassembly_interpreter
-module Context = Tezos_context_memory.Context_binary
+open Mavryk_webassembly_interpreter
+module Context = Mavryk_context_memory.Context_binary
 open Wasm_utils
 
 module Proof_encoding =
-  Tezos_context_merkle_proof_encoding.Merkle_proof_encoding
+  Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding
 
 module Wasm_context = struct
   module Tree = struct
@@ -99,13 +99,13 @@ let test_metadata_size () =
   in
   assert (
     Bytes.length bytes
-    = Tezos_scoru_wasm.Host_funcs.Internal_for_tests.metadata_size) ;
+    = Mavryk_scoru_wasm.Host_funcs.Internal_for_tests.metadata_size) ;
   Lwt_result_syntax.return_unit
 
 let test_l1_input_kind () =
   let open Lwt_result_wrap_syntax in
   let open Sc_rollup_inbox_message_repr in
-  let open Tezos_scoru_wasm in
+  let open Mavryk_scoru_wasm in
   let check_msg msg expected =
     let*?@ msg = serialize msg in
     let msg = unsafe_to_string msg |> Pvm_input_kind.from_raw_input in
@@ -246,12 +246,12 @@ let test_output () =
   let*! final_tree = eval_until_input_requested tree in
   let*! output = Wasm.Internal_for_tests.get_output_buffer final_tree in
   let* last_outbox_level =
-    match output.Tezos_webassembly_interpreter.Output_buffer.last_level with
+    match output.Mavryk_webassembly_interpreter.Output_buffer.last_level with
     | Some level -> return level
     | None -> failwith "The PVM output buffer does not contain any outbox."
   in
   let*! last_outbox =
-    Tezos_webassembly_interpreter.Output_buffer.Internal_for_tests.get_outbox
+    Mavryk_webassembly_interpreter.Output_buffer.Internal_for_tests.get_outbox
       output
       last_outbox_level
   in
@@ -267,7 +267,7 @@ let test_output () =
   let message_index = Z.pred end_of_level_message_index in
 
   let*! bytes_output_message =
-    Tezos_webassembly_interpreter.Output_buffer.(
+    Mavryk_webassembly_interpreter.Output_buffer.(
       get_message output {outbox_level = last_outbox_level; message_index})
   in
   assert (string_input_message = Bytes.to_string bytes_output_message) ;
@@ -292,7 +292,7 @@ let test_output () =
 
 let test_reveal_compat_metadata () =
   let open Alpha_context.Sc_rollup in
-  let open Tezos_scoru_wasm.Wasm_pvm_state in
+  let open Mavryk_scoru_wasm.Wasm_pvm_state in
   let (Reveal_raw metadata_scoru_wasm) = reveal_metadata in
   let metadata_protocol =
     Data_encoding.Binary.to_string_exn reveal_encoding Reveal_metadata
@@ -301,7 +301,7 @@ let test_reveal_compat_metadata () =
 
 let test_reveal_compat_raw_data () =
   let open Alpha_context.Sc_rollup in
-  let open Tezos_scoru_wasm.Wasm_pvm_state in
+  let open Mavryk_scoru_wasm.Wasm_pvm_state in
   let hash = Wasm_2_0_0PVM.well_known_reveal_hash in
   let hash_string =
     Data_encoding.Binary.to_string_exn Sc_rollup_reveal_hash.encoding hash
@@ -335,13 +335,13 @@ let test_protocol_names () =
       (Internal protocol_migration_internal_message)
   in
   let kind =
-    Tezos_scoru_wasm.Pvm_input_kind.from_raw_input
+    Mavryk_scoru_wasm.Pvm_input_kind.from_raw_input
       protocol_migration_message_str
   in
   assert (kind = Internal (Protocol_migration ParisB)) ;
   assert (
     protocol_migration_internal_message
-    = Protocol_migration Tezos_scoru_wasm.Constants.parisb_name) ;
+    = Protocol_migration Mavryk_scoru_wasm.Constants.parisb_name) ;
   Lwt_result_syntax.return_unit
 
 let test_reveal_host_function_can_request_dal_pages () =

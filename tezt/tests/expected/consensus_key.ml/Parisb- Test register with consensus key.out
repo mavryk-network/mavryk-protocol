@@ -1,8 +1,8 @@
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]'
 { "balance": "0", "counter": "1" }
 
-./octez-client --wait none register key dummy_account_0 as delegate with consensus key dummy_account_1
+./mavkit-client --wait none register key dummy_account_0 as delegate with consensus key dummy_account_1
 Node is bootstrapped.
 Estimated gas: 172.756 units (will add 0 for safety)
 Estimated storage: no bytes added
@@ -14,7 +14,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -60,7 +60,7 @@ This sequence of operations was run:
       Consumed gas: 100
 
 
-./octez-client rpc get '/chains/main/blocks/head/context/delegates/[PUBLIC_KEY_HASH]'
+./mavkit-client rpc get '/chains/main/blocks/head/context/delegates/[PUBLIC_KEY_HASH]'
 { "full_balance": "999999999385", "current_frozen_deposits": "0",
   "frozen_deposits": "0", "staking_balance": "999999999385",
   "delegated_contracts": [ "[PUBLIC_KEY_HASH]" ],
@@ -76,10 +76,10 @@ This sequence of operations was run:
   "pending_consensus_keys":
     [ { "cycle": 2, "pkh": "[PUBLIC_KEY_HASH]" } ] }
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]'
 { "balance": "0", "counter": "4" }
 
-./octez-client rpc get '/chains/main/blocks/head/context/delegates/[PUBLIC_KEY_HASH]'
+./mavkit-client rpc get '/chains/main/blocks/head/context/delegates/[PUBLIC_KEY_HASH]'
 { "full_balance": "999999999385", "current_frozen_deposits": "49999999970",
   "frozen_deposits": "0", "staking_balance": "999999999385",
   "delegated_contracts": [ "[PUBLIC_KEY_HASH]" ],

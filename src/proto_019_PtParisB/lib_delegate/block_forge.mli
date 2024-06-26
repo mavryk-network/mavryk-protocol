@@ -28,7 +28,7 @@ open Alpha_context
 
 type unsigned_block = {
   unsigned_block_header : Block_header.t;
-  operations : Tezos_base.Operation.t list list;
+  operations : Mavryk_base.Operation.t list list;
 }
 
 (** The simulation kind specifies whether the baker should first filter (and

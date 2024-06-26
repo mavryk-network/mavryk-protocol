@@ -144,7 +144,7 @@ let test_stuck_in_init_kernel ~version () =
   let*! tree = Wasm.Internal_for_tests.set_max_nb_ticks new_max_nb_ticks tree in
   let*! tree =
     Wasm.compute_step
-      ~wasm_entrypoint:Tezos_scoru_wasm.Constants.wasm_entrypoint
+      ~wasm_entrypoint:Mavryk_scoru_wasm.Constants.wasm_entrypoint
       tree
   in
 

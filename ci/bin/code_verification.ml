@@ -32,7 +32,7 @@
 open Gitlab_ci
 open Gitlab_ci.Types
 open Gitlab_ci.Util
-open Tezos_ci
+open Mavryk_ci
 open Common
 
 (* Encodes the conditional [before_merging] pipeline and its
@@ -546,10 +546,10 @@ let jobs pipeline_type =
     |> job_external_split
   in
   let build_arm_rules = make_rules ~label:"ci--arm64" ~manual:true () in
-  let job_build_arm64_release : Tezos_ci.tezos_job =
+  let job_build_arm64_release : Mavryk_ci.tezos_job =
     job_build_arm64_release ~rules:build_arm_rules () |> job_external_split
   in
-  let job_build_arm64_exp_dev_extra : Tezos_ci.tezos_job =
+  let job_build_arm64_exp_dev_extra : Mavryk_ci.tezos_job =
     job_build_arm64_exp_dev_extra ~rules:build_arm_rules ()
     |> job_external_split
   in
@@ -1165,7 +1165,7 @@ let jobs pipeline_type =
            already manual, and what's more, puts the pipeline in a
            confusing "pending state" with a yellow "pause" icon on the
            [manual] stage. *)
-        let job_docker_amd64_test_manual : Tezos_ci.tezos_job =
+        let job_docker_amd64_test_manual : Mavryk_ci.tezos_job =
           job_docker_build
             ~__POS__
             ~external_:true
@@ -1173,7 +1173,7 @@ let jobs pipeline_type =
             ~dependencies:(Dependent [])
             Test_manual
         in
-        let job_docker_arm64_test_manual : Tezos_ci.tezos_job =
+        let job_docker_arm64_test_manual : Mavryk_ci.tezos_job =
           job_docker_build
             ~__POS__
             ~external_:true
@@ -1186,7 +1186,7 @@ let jobs pipeline_type =
             ~__POS__
             ~name:"oc.build:dpkg:amd64"
             ~target:Dpkg
-            ~arch:Tezos_ci.Amd64
+            ~arch:Mavryk_ci.Amd64
             ~rules:[job_rule ~when_:Manual ()]
             ~dependencies:(Dependent [])
             ~stage:Stages.manual
@@ -1198,7 +1198,7 @@ let jobs pipeline_type =
             ~__POS__
             ~name:"oc.build:rpm:amd64"
             ~target:Rpm
-            ~arch:Tezos_ci.Amd64
+            ~arch:Mavryk_ci.Amd64
             ~rules:[job_rule ~when_:Manual ()]
             ~dependencies:(Dependent [])
             ~stage:Stages.manual

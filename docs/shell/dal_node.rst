@@ -1,7 +1,7 @@
 The DAL node
 ============
 
-A DAL node is an executable (called ``octez-dal-node``) whose main roles are to publish, store, and exchange data for the :doc:`DAL layer <./dal_overview>`. Interacting with a DAL node is done through the command-line interface (CLI) and through RPCs. In what follows, we describe the main components and features of a DAL node, and then present some operational aspects on configuring and running a DAL node.
+A DAL node is an executable (called ``mavkit-dal-node``) whose main roles are to publish, store, and exchange data for the :doc:`DAL layer <./dal_overview>`. Interacting with a DAL node is done through the command-line interface (CLI) and through RPCs. In what follows, we describe the main components and features of a DAL node, and then present some operational aspects on configuring and running a DAL node.
 
 Concepts and features
 ---------------------
@@ -9,7 +9,7 @@ Concepts and features
 DAL P2P network
 ^^^^^^^^^^^^^^^
 
-The ``octez-dal-node`` executable runs a node in the DAL’s P2P network. Recall that :ref:`the DAL's P2P protocol <dal_p2p>` is based on a gossip algorithm for distributing shards, running on top of a networking layer using the same p2p library as L1 nodes.
+The ``mavkit-dal-node`` executable runs a node in the DAL’s P2P network. Recall that :ref:`the DAL's P2P protocol <dal_p2p>` is based on a gossip algorithm for distributing shards, running on top of a networking layer using the same p2p library as L1 nodes.
 
 Actors with various roles may need to run the DAL node, for instance bootstrap DAL node operators, slot producers, bakers.
 
@@ -66,9 +66,9 @@ The command ``init config`` creates a new configuration file in the specified da
 
 The command ``run`` runs the DAL node. The CLI arguments take precedence over the configuration file arguments, except for the list of bootstrap peers and of profiles, which are considered in addition to the ones from the configuration file. The configuration file is however not overridden with the new values of the node’s parameters. However, at the end of the execution, the node’s profiles, which may have been given as arguments or set via RPCs, are written to the configuration file.
 
-Both commands have the same arguments, which can be seen by executing, e.g., ``octez-dal-node config init --help``:
+Both commands have the same arguments, which can be seen by executing, e.g., ``mavkit-dal-node config init --help``:
 
-.. literalinclude:: ../api/octez-dal-node-config-init.txt
+.. literalinclude:: ../api/mavkit-dal-node-config-init.txt
     :start-at: OPTIONS
     :end-before: COMMON OPTIONS
 
@@ -112,7 +112,7 @@ The life cycle of slots and shards is described by the following steps:
 #. The slot producer selects a slot index for its slot, and posts the commitment to L1, via the ``publish_commitment`` operation.
    This can be done via RPCs for injecting an operation into L1, or using the Octez client, via the following command::
 
-     octez-client publish dal commitment <commitment> from <pkh> for slot <slot_index> with proof <proof>
+     mavkit-client publish dal commitment <commitment> from <pkh> for slot <slot_index> with proof <proof>
 
 #. Once the operation is included in a final block (that is, there are at least two blocks on top of the one including the operation), and the slot is considered published (see :doc:`./dal_overview`), all DAL nodes exchange the slot’s shards they have in their store on the P2P network, depending on their profile (see :ref:`dal_p2p`), and they store previously unknown shards.
 #. Attesters check, for all published slots, the availability of the shards they are assigned by interrogating their DAL node, via the RPC ``GET /profiles/<pkh>/attested_levels/<level>/attestable_slots``, where level is the level at which the slot was published plus ``attestation_lag``, and ``pkh`` is the attester’s public key hash. (See also :doc:`dal_bakers`)

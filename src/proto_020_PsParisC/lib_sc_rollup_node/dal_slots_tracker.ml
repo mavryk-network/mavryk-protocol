@@ -164,7 +164,7 @@ let download_and_save_slots constants (node_context : _ Node_context.t)
       in
       let*! () =
         Dal_slots_tracker_event.slot_has_been_confirmed
-          (Sc_rollup_proto_types.Dal.Slot_index.of_octez
+          (Sc_rollup_proto_types.Dal.Slot_index.of_mavkit
              ~number_of_slots:constants.dal.number_of_slots
              s_slot)
           published_block_hash

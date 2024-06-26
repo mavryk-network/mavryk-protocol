@@ -7,7 +7,7 @@
 (*****************************************************************************)
 
 open Protocol.Alpha_context
-open Tezos_rpc
+open Mavryk_rpc
 
 type 'rpc service =
   ('meth, 'prefix, 'params, 'query, 'input, 'output) Service.service

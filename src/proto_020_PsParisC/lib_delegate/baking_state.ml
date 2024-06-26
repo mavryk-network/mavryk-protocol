@@ -190,7 +190,7 @@ let round_of_shell_header shell_header =
   let open Result_syntax in
   let* fitness =
     Environment.wrap_tzresult
-    @@ Fitness.from_raw shell_header.Tezos_base.Block_header.fitness
+    @@ Fitness.from_raw shell_header.Mavryk_base.Block_header.fitness
   in
   return (Fitness.round fitness)
 
@@ -278,7 +278,7 @@ type prepared_block = {
   signed_block_header : block_header;
   round : Round.t;
   delegate : consensus_key_and_delegate;
-  operations : Tezos_base.Operation.t list list;
+  operations : Mavryk_base.Operation.t list list;
   baking_votes : Per_block_votes_repr.per_block_votes;
 }
 
@@ -561,7 +561,7 @@ type global_state = {
   (* the delegates on behalf of which the baker is running *)
   delegates : consensus_key list;
   cache : cache;
-  dal_node_rpc_ctxt : Tezos_rpc.Context.generic option;
+  dal_node_rpc_ctxt : Mavryk_rpc.Context.generic option;
 }
 
 type state = {
@@ -727,7 +727,7 @@ let forge_event_encoding =
          (req "delegate" consensus_key_and_delegate_encoding)
          (req
             "operations"
-            (list (list (dynamic_size Tezos_base.Operation.encoding))))
+            (list (list (dynamic_size Mavryk_base.Operation.encoding))))
          (req "baking_votes" Per_block_votes.per_block_votes_encoding))
   in
   union

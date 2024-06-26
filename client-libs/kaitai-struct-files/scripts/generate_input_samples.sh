@@ -42,7 +42,7 @@ if [ -z "${CI:-}" ]; then
 fi
 
 # Make an alias to the executable.
-alias octez-codec='_build/default/client-libs/bin_codec_kaitai/codec.exe'
+alias mavkit-codec='_build/default/client-libs/bin_codec_kaitai/codec.exe'
 
 store_inputs() {
   index=0
@@ -83,16 +83,16 @@ store_invalid_empty_input() {
 
 # test uint8 should be in 0-255 range.
 valid_inputs="$(
-  octez-codec encode ground.uint8 from 0
-  octez-codec encode ground.uint8 from 1
-  octez-codec encode ground.uint8 from 255
+  mavkit-codec encode ground.uint8 from 0
+  mavkit-codec encode ground.uint8 from 1
+  mavkit-codec encode ground.uint8 from 255
 )"
 
 # TODO: https://gitlab.com/tezos/tezos/-/issues/6730
 #       `.ksy` files for ground int encodings should throw an error when too many
 #        bytes are provided for the input.
 invalid_inputs="$(
-  # octez-codec encode ground.uint16 from 256;
+  # mavkit-codec encode ground.uint16 from 256;
 )"
 
 # Generating valid input samples inside `INPUT_DIR/valid/ground__uint8/`.
@@ -105,17 +105,17 @@ store_invalid_inputs "ground__uint8" "$invalid_inputs"
 
 # test uint16 should be in 0-65535 range.
 valid_inputs="$(
-  octez-codec encode ground.uint16 from 0
-  octez-codec encode ground.uint16 from 1
-  octez-codec encode ground.uint16 from 256
-  octez-codec encode ground.uint16 from 65535
+  mavkit-codec encode ground.uint16 from 0
+  mavkit-codec encode ground.uint16 from 1
+  mavkit-codec encode ground.uint16 from 256
+  mavkit-codec encode ground.uint16 from 65535
 )"
 
 # TODO: https://gitlab.com/tezos/tezos/-/issues/6730
 #       `.ksy` files for ground int encodings should throw an error when too many
 #        bytes are provided for the input.
 invalid_inputs="$(
-  # octez-codec encode ground.uint16 from 65536;
+  # mavkit-codec encode ground.uint16 from 65536;
 )"
 
 # Generating valid input samples inside `INPUT_DIR/valid/ground__uint16/`.
@@ -128,21 +128,21 @@ store_invalid_inputs "ground__uint16" "$invalid_inputs"
 
 # test int8 should be in -128 to 127 range.
 valid_inputs="$(
-  octez-codec encode ground.int8 from -128
-  octez-codec encode ground.int8 from -14
-  octez-codec encode ground.int8 from -1
-  octez-codec encode ground.int8 from 0
-  octez-codec encode ground.int8 from 1
-  octez-codec encode ground.int8 from 14
-  octez-codec encode ground.int8 from 127
+  mavkit-codec encode ground.int8 from -128
+  mavkit-codec encode ground.int8 from -14
+  mavkit-codec encode ground.int8 from -1
+  mavkit-codec encode ground.int8 from 0
+  mavkit-codec encode ground.int8 from 1
+  mavkit-codec encode ground.int8 from 14
+  mavkit-codec encode ground.int8 from 127
 )"
 
 # TODO: https://gitlab.com/tezos/tezos/-/issues/6730
 #       `.ksy` files for ground int encodings should throw an error when too many
 #        bytes are provided for the input.
 invalid_inputs="$(
-  # octez-codec encode ground.int16 from 128;
-  # octez-codec encode ground.int16 from -129;
+  # mavkit-codec encode ground.int16 from 128;
+  # mavkit-codec encode ground.int16 from -129;
 )"
 
 # Generating valid input samples inside `INPUT_DIR/valid/ground__int8/`.
@@ -164,20 +164,20 @@ INT64_MAX=9223372036854775807
 
 # Test int16 should be in -32768 to 32767 range.
 valid_inputs="$(
-  octez-codec encode ground.int16 from $INT16_MIN
-  octez-codec encode ground.int16 from -128
-  octez-codec encode ground.int16 from -1
-  octez-codec encode ground.int16 from 0
-  octez-codec encode ground.int16 from 1
-  octez-codec encode ground.int16 from $INT16_MAX
+  mavkit-codec encode ground.int16 from $INT16_MIN
+  mavkit-codec encode ground.int16 from -128
+  mavkit-codec encode ground.int16 from -1
+  mavkit-codec encode ground.int16 from 0
+  mavkit-codec encode ground.int16 from 1
+  mavkit-codec encode ground.int16 from $INT16_MAX
 )"
 
 # TODO: https://gitlab.com/tezos/tezos/-/issues/6730
 #       `.ksy` files for ground int encodings should throw an error when too many
 #        bytes are provided for the input.
 invalid_inputs="$(
-  # octez-codec encode ground.int32 from $((INT16_MAX+1));
-  # octez-codec encode ground.int32 from $((INT16_MIN-1))
+  # mavkit-codec encode ground.int32 from $((INT16_MAX+1));
+  # mavkit-codec encode ground.int32 from $((INT16_MIN-1))
 )"
 
 # Generating valid input samples inside `INPUT_DIR/valid/ground__int16/`.
@@ -190,21 +190,21 @@ store_invalid_inputs "ground__int16" "$invalid_inputs"
 
 # test int32 should be in INT32_MIN to INT32_MAX range.
 valid_inputs="$(
-  octez-codec encode ground.int32 from $INT32_MIN
-  octez-codec encode ground.int32 from $INT16_MIN
-  octez-codec encode ground.int32 from -1
-  octez-codec encode ground.int32 from 0
-  octez-codec encode ground.int32 from 1
-  octez-codec encode ground.int32 from $INT16_MAX
-  octez-codec encode ground.int32 from $INT32_MAX
+  mavkit-codec encode ground.int32 from $INT32_MIN
+  mavkit-codec encode ground.int32 from $INT16_MIN
+  mavkit-codec encode ground.int32 from -1
+  mavkit-codec encode ground.int32 from 0
+  mavkit-codec encode ground.int32 from 1
+  mavkit-codec encode ground.int32 from $INT16_MAX
+  mavkit-codec encode ground.int32 from $INT32_MAX
 )"
 
 # TODO: https://gitlab.com/tezos/tezos/-/issues/6730
 #       `.ksy` files for ground int encodings should throw an error when too many
 #        bytes are provided for the input.
 invalid_inputs="$(
-  # octez-codec encode ground.int64 from  \"$((INT32_MAX+1))\";
-  # octez-codec encode ground.int64 from \"$((INT32_MIN-1))\";
+  # mavkit-codec encode ground.int64 from  \"$((INT32_MAX+1))\";
+  # mavkit-codec encode ground.int64 from \"$((INT32_MIN-1))\";
 )"
 
 # Generating valid input samples inside `INPUT_DIR/valid/ground__int32/`.
@@ -217,13 +217,13 @@ store_invalid_inputs "ground__int32" "$invalid_inputs"
 
 # test int31 should be in INT31_MIN to INT31_MAX range.
 valid_inputs="$(
-  octez-codec encode ground.int31 from $INT31_MIN
-  octez-codec encode ground.int31 from $INT16_MIN
-  octez-codec encode ground.int31 from -1
-  octez-codec encode ground.int31 from 0
-  octez-codec encode ground.int31 from 1
-  octez-codec encode ground.int31 from $INT16_MAX
-  octez-codec encode ground.int31 from $INT31_MAX
+  mavkit-codec encode ground.int31 from $INT31_MIN
+  mavkit-codec encode ground.int31 from $INT16_MIN
+  mavkit-codec encode ground.int31 from -1
+  mavkit-codec encode ground.int31 from 0
+  mavkit-codec encode ground.int31 from 1
+  mavkit-codec encode ground.int31 from $INT16_MAX
+  mavkit-codec encode ground.int31 from $INT31_MAX
 )"
 
 # TODO: https://gitlab.com/tezos/tezos/-/issues/6730
@@ -231,11 +231,11 @@ valid_inputs="$(
 #        bytes are provided for the input.
 invalid_inputs="$(
   # Test that guard of int31 works.
-  octez-codec encode ground.int32 from $INT32_MAX
-  octez-codec encode ground.int32 from $INT32_MIN
+  mavkit-codec encode ground.int32 from $INT32_MAX
+  mavkit-codec encode ground.int32 from $INT32_MIN
   # Parsing 64 bit number should fail.
-  # octez-codec encode ground.int64 from \"$INT32_MAX\";
-  # octez-codec encode ground.int64 from \"$INT32_MIN\";
+  # mavkit-codec encode ground.int64 from \"$INT32_MAX\";
+  # mavkit-codec encode ground.int64 from \"$INT32_MIN\";
 )"
 
 # Generating valid input samples inside `INPUT_DIR/valid/ground__int31/`.
@@ -248,13 +248,13 @@ store_invalid_inputs "ground__int31" "$invalid_inputs"
 
 # test int64 should be in INT64_MIN to INT64_MAX range.
 valid_inputs="$(
-  octez-codec encode ground.int64 from \"$INT64_MIN\"
-  octez-codec encode ground.int64 from \"$INT32_MIN\"
-  octez-codec encode ground.int64 from \"-1\"
-  octez-codec encode ground.int64 from \"0\"
-  octez-codec encode ground.int64 from \"1\"
-  octez-codec encode ground.int64 from \"$INT16_MAX\"
-  octez-codec encode ground.int64 from \"$INT64_MAX\"
+  mavkit-codec encode ground.int64 from \"$INT64_MIN\"
+  mavkit-codec encode ground.int64 from \"$INT32_MIN\"
+  mavkit-codec encode ground.int64 from \"-1\"
+  mavkit-codec encode ground.int64 from \"0\"
+  mavkit-codec encode ground.int64 from \"1\"
+  mavkit-codec encode ground.int64 from \"$INT16_MAX\"
+  mavkit-codec encode ground.int64 from \"$INT64_MAX\"
 )"
 
 # TODO: https://gitlab.com/tezos/tezos/-/issues/6730
@@ -262,7 +262,7 @@ valid_inputs="$(
 #        bytes are provided for the input.
 invalid_inputs="$(
   # Int64 should not decode 12 bytes:
-  # octez-codec encode ground.bytes from "\"0000000000000000\""
+  # mavkit-codec encode ground.bytes from "\"0000000000000000\""
 )"
 
 # Generating valid input samples inside `INPUT_DIR/valid/ground__int31/`.
@@ -274,20 +274,20 @@ store_invalid_inputs "ground__int64" "$invalid_inputs"
 # GENERATING INPUT SAMPLES FOR 'ground.float':
 
 valid_inputs="$(
-  octez-codec encode ground.float from 1
-  octez-codec encode ground.float from 130984703219.09842
-  octez-codec encode ground.float from 9007199254740993
-  octez-codec encode ground.float from 0
-  octez-codec encode ground.float from -23.3
+  mavkit-codec encode ground.float from 1
+  mavkit-codec encode ground.float from 130984703219.09842
+  mavkit-codec encode ground.float from 9007199254740993
+  mavkit-codec encode ground.float from 0
+  mavkit-codec encode ground.float from -23.3
 )"
 
 # TODO: https://gitlab.com/tezos/tezos/-/issues/6730
 #       `.ksy` files for ground encodings should throw an error when too many
 #        bytes are provided for the input.
 invalid_inputs="$(
-  # Running 'octez-codec decode ground.float from 000000080000000000000000'
+  # Running 'mavkit-codec decode ground.float from 000000080000000000000000'
   # should fail. Float should decode at max 8 bytes.
-  # octez-codec encode ground.bytes from \"0000000000000000\"
+  # mavkit-codec encode ground.bytes from \"0000000000000000\"
 )"
 
 # Generating valid input samples inside `INPUT_DIR/valid/ground__float/`.
@@ -305,9 +305,9 @@ store_valid_empty_input "ground__empty"
 #       `.ksy` files for ground encodings should throw an error when too many
 #        bytes are provided for the input.
 invalid_inputs="$(
-  # Running 'octez-codec decode ground.empty from 000000080000000000000000'
+  # Running 'mavkit-codec decode ground.empty from 000000080000000000000000'
   # should fail. Empty expects 0 bytes.
-  # octez-codec encode ground.bytes from \"0000000000000000\"
+  # mavkit-codec encode ground.bytes from \"0000000000000000\"
 )"
 
 # Generating invalid input samples inside `INPUT_DIR/invalid/ground_empty/`.
@@ -322,9 +322,9 @@ store_valid_empty_input "ground__null"
 #       `.ksy` files for ground encodings should throw an error when too many
 #        bytes are provided for the input.
 invalid_inputs="$(
-  # Running 'octez-codec decode ground.null from 000000080000000000000000'
+  # Running 'mavkit-codec decode ground.null from 000000080000000000000000'
   # should fail. Null expects 0 bytes.
-  # octez-codec encode ground.bytes from \"0000000000000000\"
+  # mavkit-codec encode ground.bytes from \"0000000000000000\"
 )"
 
 # Generating invalid input samples inside `INPUT_DIR/invalid/ground_null/`.
@@ -339,9 +339,9 @@ store_valid_empty_input "ground__unit"
 #       `.ksy` files for ground encodings should throw an error when too many
 #        bytes are provided for the input.
 invalid_inputs="$(
-  # Running 'octez-codec decode ground.unit from 000000080000000000000000'
+  # Running 'mavkit-codec decode ground.unit from 000000080000000000000000'
   # should fail. Unit expects 0 bytes.
-  # octez-codec encode ground.bytes from \"0000000000000000\"
+  # mavkit-codec encode ground.bytes from \"0000000000000000\"
 )"
 
 # Generating invalid input samples inside `INPUT_DIR/invalid/ground_unit/`.
@@ -350,8 +350,8 @@ store_invalid_inputs "ground__unit" "$invalid_inputs"
 # GENERATING INPUT SAMPLES FOR 'ground.bytes':
 
 valid_inputs="$(
-  octez-codec encode ground.bytes from \"f1010101\"
-  octez-codec encode ground.bytes from \"f101010190283147283149732098147098321742319847132098473219847123084723104987321098471324\"
+  mavkit-codec encode ground.bytes from \"f1010101\"
+  mavkit-codec encode ground.bytes from \"f101010190283147283149732098147098321742319847132098473219847123084723104987321098471324\"
 )"
 
 # Generating valid input samples inside `INPUT_DIR/valid/ground__bytes/`.
@@ -363,9 +363,9 @@ store_invalid_empty_input "ground__bytes" "$valid_inputs"
 # GENERATING INPUT SAMPLES FOR 'ground.string':
 
 valid_inputs="$(
-  octez-codec encode ground.string from \"f1010101\"
-  octez-codec encode ground.string from \"f101010190283147283149732098147098321742319847132098473219847123084723104987321098471324\"
-  octez-codec encode ground.string from "\"This is a test\""
+  mavkit-codec encode ground.string from \"f1010101\"
+  mavkit-codec encode ground.string from \"f101010190283147283149732098147098321742319847132098473219847123084723104987321098471324\"
+  mavkit-codec encode ground.string from "\"This is a test\""
 )"
 
 # Generating valid input samples inside `INPUT_DIR/valid/ground__string/`.
@@ -377,18 +377,18 @@ store_invalid_empty_input "ground__string" "$valid_inputs"
 # GENERATING INPUT SAMPLES FOR 'ground.N':
 
 valid_inputs="$(
-  octez-codec encode ground.N from "\"0\""
-  octez-codec encode ground.N from "\"1\""
-  octez-codec encode ground.N from "\"8321740983217598321750983217509832175098321750983217509832175098321750329875098321750239873210\""
+  mavkit-codec encode ground.N from "\"0\""
+  mavkit-codec encode ground.N from "\"1\""
+  mavkit-codec encode ground.N from "\"8321740983217598321750983217509832175098321750983217509832175098321750329875098321750239873210\""
 )"
 
 invalid_inputs="$(
-  # Running 'octez-codec decode ground.N from 000000080000000000000000'
+  # Running 'mavkit-codec decode ground.N from 000000080000000000000000'
   # should fail.
   # TODO: https://gitlab.com/tezos/tezos/-/issues/6730
   #        ground.N parses invalid input. Likely the problem is as with other
   #        ground encodings in this issue (?).
-  # octez-codec encode ground.bytes from "\"0000000000000000\""
+  # mavkit-codec encode ground.bytes from "\"0000000000000000\""
 )"
 
 # Generating valid input samples inside `INPUT_DIR/valid/ground__n/`.
@@ -400,20 +400,20 @@ store_invalid_inputs "ground__n" "$invalid_inputs"
 # GENERATING INPUT SAMPLES FOR 'ground.Z':
 
 valid_inputs="$(
-  octez-codec encode ground.Z from "\"0\""
-  octez-codec encode ground.Z from "\"1\""
-  octez-codec encode ground.Z from "\"-1\""
-  octez-codec encode ground.Z from "\"8321740983217598321750983217509832175098321750983217509832175098321750329875098321750239873210\""
-  octez-codec encode ground.Z from "\"-927459832175983217598321750983217509832175321\""
+  mavkit-codec encode ground.Z from "\"0\""
+  mavkit-codec encode ground.Z from "\"1\""
+  mavkit-codec encode ground.Z from "\"-1\""
+  mavkit-codec encode ground.Z from "\"8321740983217598321750983217509832175098321750983217509832175098321750329875098321750239873210\""
+  mavkit-codec encode ground.Z from "\"-927459832175983217598321750983217509832175321\""
 )"
 
 invalid_inputs="$(
-  # Running 'octez-codec decode ground.Z from 000000080000000000000000'
+  # Running 'mavkit-codec decode ground.Z from 000000080000000000000000'
   # should fail.
   # TODO: https://gitlab.com/tezos/tezos/-/issues/6730
   #        ground.Z parses invalid input. Likely the problem is as with other
   #        ground encodings in this issue (?).
-  # octez-codec encode ground.bytes from "\"0000000000000000\""
+  # mavkit-codec encode ground.bytes from "\"0000000000000000\""
 )"
 
 # Generating valid input samples inside `INPUT_DIR/valid/ground__z/`.
@@ -426,11 +426,11 @@ store_invalid_inputs "ground__z" "$invalid_inputs"
 
 valid_inputs="$(
   # "00" is false
-  octez-codec encode ground.uint8 from 0
+  mavkit-codec encode ground.uint8 from 0
   # "0a" is true
-  octez-codec encode ground.uint8 from 10
+  mavkit-codec encode ground.uint8 from 10
   # "ff" is true
-  octez-codec encode ground.uint8 from 255
+  mavkit-codec encode ground.uint8 from 255
 )"
 
 invalid_inputs="$(
@@ -438,8 +438,8 @@ invalid_inputs="$(
   # TODO: https://gitlab.com/tezos/tezos/-/issues/6730
   #       `.ksy` files for ground encodings should throw an error when too many
   #        bytes are provided for the input.
-  # octez-codec encode ground.int16 from -23421
-  # octez-codec encode ground.bytes from "\"0000000000000000\""
+  # mavkit-codec encode ground.int16 from -23421
+  # mavkit-codec encode ground.bytes from "\"0000000000000000\""
 )"
 
 # Generating valid input samples inside `INPUT_DIR/valid/ground__bool/`.

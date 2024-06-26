@@ -6,32 +6,32 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.test-helpers
-  octez-libs.micheline
-  octez-protocol-020-PsParisC-libs.client
-  tezos-protocol-020-PsParisC.protocol
-  octez-libs.base-test-helpers
-  octez-protocol-020-PsParisC-libs.bakings.mockup-simulator
-  octez-protocol-020-PsParisC-libs.baking
-  tezos-protocol-020-PsParisC.parameters
-  octez-libs.crypto
-  octez-libs.event-logging-test-helpers
+  mavkit-libs.base
+  mavkit-libs.test-helpers
+  mavkit-libs.micheline
+  mavkit-protocol-020-PsParisC-libs.client
+  mavryk-protocol-020-PsParisC.protocol
+  mavkit-libs.base-test-helpers
+  mavkit-protocol-020-PsParisC-libs.bakings.mockup-simulator
+  mavkit-protocol-020-PsParisC-libs.baking
+  mavryk-protocol-020-PsParisC.parameters
+  mavkit-libs.crypto
+  mavkit-libs.event-logging-test-helpers
   uri)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_test_helpers
-  -open Tezos_micheline
-  -open Tezos_client_020_PsParisC
-  -open Tezos_protocol_020_PsParisC
-  -open Tezos_base_test_helpers
-  -open Tezos_020_PsParisC_mockup_simulator
-  -open Tezos_baking_020_PsParisC
-  -open Tezos_event_logging_test_helpers)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_test_helpers
+  -open Mavryk_micheline
+  -open Mavryk_client_020_PsParisC
+  -open Mavryk_protocol_020_PsParisC
+  -open Mavryk_base_test_helpers
+  -open Mavryk_020_PsParisC_mockup_simulator
+  -open Mavryk_baking_020_PsParisC
+  -open Mavryk_event_logging_test_helpers)
  (modules test_scenario))
 
 (executable
@@ -47,7 +47,7 @@
 
 (rule
  (alias runtest)
- (package octez-protocol-020-PsParisC-libs)
+ (package mavkit-protocol-020-PsParisC-libs)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

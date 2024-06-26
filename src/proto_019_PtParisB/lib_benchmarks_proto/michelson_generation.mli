@@ -26,7 +26,7 @@
 (** {2 Wrappers around some Michelson generators and related helpers} *)
 
 (** [generator_config] specifies some parameters to the
-    {!Tezos_benchmark_alpha.Michelson_mcmc_samplers} Michelson code and data generators. *)
+    {!Mavryk_benchmark_alpha.Michelson_mcmc_samplers} Michelson code and data generators. *)
 type generator_config = {
   target_size : Base_samplers.range;
       (** The target size of the terms, in number of nodes, is sampled uniformly
@@ -47,15 +47,15 @@ val generator_config_encoding : generator_config Data_encoding.t
 (** Samplers *)
 
 (** [make_data_sampler] constructs a Michelson data sampler based on the
-    infrastructure available in {!Tezos_benchmark_alpha.Michelson_mcmc_samplers}. *)
+    infrastructure available in {!Mavryk_benchmark_alpha.Michelson_mcmc_samplers}. *)
 val make_data_sampler :
   Random.State.t -> generator_config -> Michelson_mcmc_samplers.michelson_data
 
 (** [make_code_sampler] constructs a Michelson code sampler based on the
-    infrastructure available in {!Tezos_benchmark_alpha.Michelson_mcmc_samplers}. *)
+    infrastructure available in {!Mavryk_benchmark_alpha.Michelson_mcmc_samplers}. *)
 val make_code_sampler :
   Random.State.t -> generator_config -> Michelson_mcmc_samplers.michelson_code
 
 (** [Samplers] is an instance of the direct-style (non-MCMC based) samplers
-    implemented in {!Tezos_benchmark_alpha.Michelson_samplers}. *)
+    implemented in {!Mavryk_benchmark_alpha.Michelson_samplers}. *)
 module Samplers : Michelson_samplers.S

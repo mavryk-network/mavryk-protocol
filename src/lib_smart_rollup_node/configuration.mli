@@ -87,7 +87,7 @@ type t = {
   operators : Purpose.operators;
   rpc_addr : string;
   rpc_port : int;
-  acl : Tezos_rpc_http_server.RPC_server.Acl.policy;
+  acl : Mavryk_rpc_http_server.RPC_server.Acl.policy;
   metrics_addr : string option;
   reconnection_delay : float;
   fee_parameters : fee_parameters;
@@ -148,7 +148,7 @@ val default_rpc_addr : string
 val default_rpc_port : int
 
 (** [default_acl] is the default value for [acl]. *)
-val default_acl : Tezos_rpc_http_server.RPC_server.Acl.policy
+val default_acl : Mavryk_rpc_http_server.RPC_server.Acl.policy
 
 (** [default_metrics_port] is the default port for the metrics server. *)
 val default_metrics_port : int

@@ -3,42 +3,42 @@
 
 (library
  (name tezos_benchmarks_proto_019_PtParisB)
- (public_name tezos-benchmarks-proto-019-PtParisB)
+ (public_name mavryk-benchmarks-proto-019-PtParisB)
  (instrumentation (backend bisect_ppx))
  (libraries
   str
-  octez-libs.stdlib
-  octez-libs.base
-  octez-libs.error-monad
-  tezos-protocol-019-PtParisB.parameters
-  octez-libs.lazy-containers
+  mavkit-libs.stdlib
+  mavkit-libs.base
+  mavkit-libs.error-monad
+  mavryk-protocol-019-PtParisB.parameters
+  mavkit-libs.lazy-containers
   tezos-benchmark
-  tezos-benchmark-019-PtParisB
-  tezos-benchmark-type-inference-019-PtParisB
-  tezos-protocol-019-PtParisB.protocol
-  octez-libs.crypto
-  octez-shell-libs.shell-benchmarks
-  octez-libs.micheline
-  octez-protocol-019-PtParisB-libs.test-helpers
-  octez-libs.tezos-sapling
-  octez-protocol-019-PtParisB-libs.client
-  octez-protocol-019-PtParisB-libs.plugin
-  octez-proto-libs.protocol-environment)
+  mavryk-benchmark-019-PtParisB
+  mavryk-benchmark-type-inference-019-PtParisB
+  mavryk-protocol-019-PtParisB.protocol
+  mavkit-libs.crypto
+  mavkit-shell-libs.shell-benchmarks
+  mavkit-libs.micheline
+  mavkit-protocol-019-PtParisB-libs.test-helpers
+  mavkit-libs.tezos-sapling
+  mavkit-protocol-019-PtParisB-libs.client
+  mavkit-protocol-019-PtParisB-libs.plugin
+  mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_stdlib
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_error_monad
-  -open Tezos_protocol_019_PtParisB_parameters
-  -open Tezos_lazy_containers
-  -open Tezos_benchmark
-  -open Tezos_benchmark_019_PtParisB
-  -open Tezos_benchmark_type_inference_019_PtParisB
-  -open Tezos_protocol_019_PtParisB
-  -open Tezos_protocol_019_PtParisB.Protocol
-  -open Tezos_micheline
-  -open Tezos_019_PtParisB_test_helpers
-  -open Tezos_client_019_PtParisB
-  -open Tezos_protocol_plugin_019_PtParisB))
+  -open Mavryk_stdlib
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_error_monad
+  -open Mavryk_protocol_019_PtParisB_parameters
+  -open Mavryk_lazy_containers
+  -open Mavryk_benchmark
+  -open Mavryk_benchmark_019_PtParisB
+  -open Mavryk_benchmark_type_inference_019_PtParisB
+  -open Mavryk_protocol_019_PtParisB
+  -open Mavryk_protocol_019_PtParisB.Protocol
+  -open Mavryk_micheline
+  -open Mavryk_019_PtParisB_test_helpers
+  -open Mavryk_client_019_PtParisB
+  -open Mavryk_protocol_plugin_019_PtParisB))

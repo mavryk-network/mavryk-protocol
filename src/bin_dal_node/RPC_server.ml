@@ -384,11 +384,11 @@ let register_new :
        Services.P2P.Peers.get_peer_info
        (P2P.get_peer_info ctxt)
   |> add_service
-       Tezos_rpc.Directory.opt_register1
+       Mavryk_rpc.Directory.opt_register1
        Services.P2P.Peers.patch_peer
        (P2P.patch_peer ctxt)
   |> add_service
-       Tezos_rpc.Directory.register
+       Mavryk_rpc.Directory.register
        Services.get_shard
        (Slots_handlers.get_shard ctxt)
 
@@ -421,7 +421,7 @@ let register_plugin node_ctxt =
 let start configuration ctxt =
   let open Lwt_syntax in
   let Configuration_file.{rpc_addr; _} = configuration in
-  let dir = Tezos_rpc.Directory.merge (register ctxt) (register_plugin ctxt) in
+  let dir = Mavryk_rpc.Directory.merge (register ctxt) (register_plugin ctxt) in
   let dir =
     Mavryk_rpc.Directory.register_describe_directory_service
       dir

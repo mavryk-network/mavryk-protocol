@@ -26,7 +26,7 @@
 
 open Protocol
 open Alpha_context
-open Tezos_micheline
+open Mavryk_micheline
 open Michelson_v1_printer
 
 module Program = Client_aliases.Alias (struct

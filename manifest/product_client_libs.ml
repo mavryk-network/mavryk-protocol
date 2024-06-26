@@ -59,12 +59,12 @@ let _kaitai_of_data_encoding_test =
 
 let _octez_codec_kaitai =
   public_exe
-    "octez-codec-kaitai"
+    "mavkit-codec-kaitai"
     ~path:"client-libs/bin_codec_kaitai"
     ~release_status:Unreleased
     ~internal_name:"codec"
     ~synopsis:
-      "Tezos: `octez-codec-kaitai` binary to generate kaitai descriptions"
+      "Tezos: `mavkit-codec-kaitai` binary to generate kaitai descriptions"
     ~with_macos_security_framework:true
     ~deps:
       ([
@@ -98,5 +98,5 @@ let _octez_codec_kaitai =
         [
           S "cram"
           :: G [S "deps" :: [S "codec.exe"]]
-          :: [S "package" :: [S "octez-codec-kaitai"]];
+          :: [S "package" :: [S "mavkit-codec-kaitai"]];
         ]

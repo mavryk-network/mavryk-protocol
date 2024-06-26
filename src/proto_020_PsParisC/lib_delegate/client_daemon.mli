@@ -30,8 +30,8 @@ module Baker : sig
   val run :
     Protocol_client_context.full ->
     ?minimal_fees:Protocol.Alpha_context.Tez.t ->
-    ?minimal_nanotez_per_gas_unit:Q.t ->
-    ?minimal_nanotez_per_byte:Q.t ->
+    ?minimal_nanomav_per_gas_unit:Q.t ->
+    ?minimal_nanomav_per_byte:Q.t ->
     ?votes:Baking_configuration.per_block_votes_config ->
     ?extra_operations:Baking_configuration.Operations_source.t ->
     ?dal_node_endpoint:Uri.t ->

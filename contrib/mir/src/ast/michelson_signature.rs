@@ -24,7 +24,7 @@ use super::{ByteReprError, ByteReprTrait};
 tezos_crypto_rs has some unfortunate quirks with signatures:
 
 - signature of all zeros is always converted to base58 representation for edsig,
-  but tests with octez-client show that it should be generic
+  but tests with mavkit-client show that it should be generic
 - spsig1 and p2sig are entirely missing
 - `verify_signature` requires generic `Signature` as argument, making it
   very inconvenient to use `tezos_crypto_rs::hash::Ed25519Signature`
@@ -375,9 +375,9 @@ pub mod tests {
 
     // Triples of (readable, output readable, binary) representations of signatures
     // binary representation produced by running
-    // `octez-client --mode mockup normalize data <readable> of type key --unparsing-mode Optimized`
+    // `mavkit-client --mode mockup normalize data <readable> of type key --unparsing-mode Optimized`
     // output readable, respectively, by running
-    // `octez-client --mode mockup normalize data <binary> of type key --unparsing-mode Readable`
+    // `mavkit-client --mode mockup normalize data <binary> of type key --unparsing-mode Readable`
     const FIXTURES: [(&str, &str, &str); 6] = [
         (
             "edsigtXomBKi5CTRf5cjATJWSyaRvhfYNHqSUGrn4SdbYRcGwQrUGjzEfQDTuqHhuA8b2d8NarZjz8TRf65WkpQmo423BtomS8Q",
@@ -430,7 +430,7 @@ pub mod tests {
     }
 
     /// tuples of (key, message, signature, is_valid).
-    /// signatures are produced via `octez-client sign bytes <msg> for <key>`
+    /// signatures are produced via `mavkit-client sign bytes <msg> for <key>`
     pub fn signature_fixtures() -> Vec<(Key, &'static [u8], Signature, bool)> {
         vec!
           [ ( Key::from_base58_check("BLpk1wfC8yTMJKYT3Q9YfGtjGiw3qpjbkoPhjoGVys7PjHSochLNxnMW7s4EUs37gvcTPZKDSoWi").unwrap()

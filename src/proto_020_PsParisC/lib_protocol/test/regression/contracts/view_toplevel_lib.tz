@@ -6,7 +6,7 @@
   view "test_failwith" nat (pair nat nat) { FAILWITH } ;
   view "step_constants"
        unit
-       (pair (pair mutez mutez) (pair (pair address address) address))
+       (pair (pair mumav mumav) (pair (pair address address) address))
        { DROP ;
          SOURCE ;
          SENDER ;

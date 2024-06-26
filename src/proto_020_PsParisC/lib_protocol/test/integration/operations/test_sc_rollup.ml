@@ -975,7 +975,7 @@ let test_originating_with_invalid_types () =
   (* Following types fail at validation time. *)
   let* () =
     [
-      "mutez";
+      "mumav";
       "big_map string nat";
       "contract string";
       "sapling_state 2";
@@ -1063,11 +1063,11 @@ let string_receiver =
         code { CDR ; NIL operation; PAIR } }
   |}
 
-(* A contract that receives a mutez. *)
-let mutez_receiver =
+(* A contract that receives a mumav. *)
+let mumav_receiver =
   {|
-      { parameter mutez;
-        storage mutez;
+      { parameter mumav;
+        storage mumav;
         code { CDR ; NIL operation; PAIR } }
   |}
 
@@ -1350,7 +1350,7 @@ let test_multi_transaction_batch () =
     (Some 10)
 
 (** Test that executing an L2 to L1 transaction that involves an invalid
-    parameter (mutez) fails. *)
+    parameter (mumav) fails. *)
 let test_transaction_with_invalid_type () =
   let open Lwt_result_syntax in
   let* block, (baker, originator) = context_init Context.T2 in
@@ -1358,10 +1358,10 @@ let test_transaction_with_invalid_type () =
   let* block, rollup =
     sc_originate block originator ~parameters_ty:"list (ticket string)"
   in
-  let* mutez_receiver, block =
+  let* mumav_receiver, block =
     originate_contract
       block
-      ~script:mutez_receiver
+      ~script:mumav_receiver
       ~storage:"0"
       ~source_contract:originator
       ~baker
@@ -1370,7 +1370,7 @@ let test_transaction_with_invalid_type () =
   let* cemented_commitment, block =
     publish_and_cement_dummy_commitment block ~originator rollup
   in
-  let transactions = [(mutez_receiver, Entrypoint.default, "12")] in
+  let transactions = [(mumav_receiver, Entrypoint.default, "12")] in
   (* Create an atomic batch message. *)
   let output =
     make_transaction_output ~outbox_level:0 ~message_index:1 transactions
@@ -3372,7 +3372,7 @@ let test_start_game_on_cemented_commitment () =
       (* The refutation game checks that [pA] stakes on [hash] and
          [pB] on [hash]. As the storage keeps in the storage only
          the metadata for active commitments, any game started on a cemented
-         commitment will fail with "<tz1> not staked on <hash>". *)
+         commitment will fail with "<mv1> not staked on <hash>". *)
       let refutation =
         Sc_rollup.Game.Start
           {player_commitment_hash = hash; opponent_commitment_hash = hash}
@@ -3521,7 +3521,7 @@ let verify_whitelist ~__LOC__ block rollup expected_whitelist =
   verify_whitelist ~loc:__LOC__ rollup (B block) ~expected_whitelist
 
 let verify_can_publish_commit_accounts block rollup accounts =
-  Tezos_base.TzPervasives.List.iter_es
+  Mavryk_base.TzPervasives.List.iter_es
     (fun (account, succeed) ->
       verify_can_publish_commit ~__LOC__ ~succeed rollup account block)
     accounts

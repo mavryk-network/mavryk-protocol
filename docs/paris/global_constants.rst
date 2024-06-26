@@ -26,12 +26,12 @@ The new ``register_global_constant`` operation includes an object with a
 single key ``"value"``, the value of which is the Micheline expression
 to be registered.
 
-You can submit this operation conveniently through a new :doc:`octez-client <cli-commands>` command.
+You can submit this operation conveniently through a new :doc:`mavkit-client <cli-commands>` command.
 For example, the command:
 
 .. code:: sh
 
-    octez-client register global constant "999" from bootstrap1 --burn-cap 0.017
+    mavkit-client register global constant "999" from bootstrap1 --burn-cap 0.017
 
 would result in the output:
 
@@ -44,23 +44,23 @@ would result in the output:
    Operation hash is 'onsFknW5iWa6eiTYqAghY4peQZ7JYQUJg5fR8MwAQkMKjXfNqGf'
    NOT waiting for the operation to be included.
    Use command
-     octez-client wait for onsFknW5iWa6eiTYqAghY4peQZ7JYQUJg5fR8MwAQkMKjXfNqGf to be included --confirmations 5 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
+     mavkit-client wait for onsFknW5iWa6eiTYqAghY4peQZ7JYQUJg5fR8MwAQkMKjXfNqGf to be included --confirmations 5 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
    and/or an external block explorer to make sure that it has been included.
    This sequence of operations was run:
      Manager signed operations:
-       From: tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx
+       From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
        Fee to the baker: ṁ0.000385
        Expected counter: 1
        Gas limit: 1540
        Storage limit: 88 bytes
        Balance updates:
-         tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx ................ -ṁ0.000385
+         mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ................ -ṁ0.000385
          fees(the baker who will include this operation,0) ... +ṁ0.000385
        Register Global:
          Value: 999
          This global constant registration was successfully applied
          Balance updates:
-           tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx ... -ṁ0.017
+           mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ṁ0.017
          Consumed gas: 1440
          Storage size: 68 bytes
          Global address: expruQN5r2umbZVHy6WynYM8f71F8zS4AERz9bugF8UkPBEqrHLuU8

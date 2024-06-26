@@ -166,7 +166,7 @@ let wait_first l1_ctxt =
 
 let get_latest_head l1_ctxt =
   Option.map
-    (fun (hash, {Tezos_base.Block_header.shell = {level; _} as header; _}) ->
+    (fun (hash, {Mavryk_base.Block_header.shell = {level; _} as header; _}) ->
       {hash; level; header})
     (get_latest_head l1_ctxt.l1)
 

@@ -19,7 +19,7 @@
   mavkit-libs.rpc
   mavkit-libs.rpc-http
   mavkit-libs.rpc-http-server
-  mavkit-libs.tezos-workers
+  mavkit-libs.mavryk-workers
   mavryk-dal-node-services
   mavryk-dal-node-lib
   mavkit-protocol-001-PtAtLas-libs.dac

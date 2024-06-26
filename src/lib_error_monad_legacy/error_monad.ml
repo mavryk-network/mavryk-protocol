@@ -26,13 +26,13 @@ let ( >|= ) = Lwt.Infix.( >|= )
 
 let ok = Result.ok
 
-let error e = Error (Tezos_error_monad.TzTrace.make e)
+let error e = Error (Mavryk_error_monad.TzTrace.make e)
 
 let ( >>? ) = Result.bind
 
 let ( >|? ) x f = Result.map f x
 
-let fail e = Lwt.return (Error (Tezos_error_monad.TzTrace.make e))
+let fail e = Lwt.return (Error (Mavryk_error_monad.TzTrace.make e))
 
 let ( >>=? ) = Lwt_result.bind
 

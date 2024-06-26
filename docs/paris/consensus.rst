@@ -178,8 +178,8 @@ not the other way around.):
 - ``spendable balance`` is obtained with ``../context/contracts/<pkh>/balance``
 
 Delegates can set an upper limit to their frozen deposits with the
-command ``octez-client set deposits limit for <delegate> to
-<deposit_limit>``, and unset this limit with the command ``octez-client
+command ``mavkit-client set deposits limit for <delegate> to
+<deposit_limit>``, and unset this limit with the command ``mavkit-client
 unset deposits limit for <delegate>``. These commands are implemented
 using a new manager operation ``Set_deposits_limit``.
 When emitting such a command in cycle ``c``, it affects the automatic deposit at

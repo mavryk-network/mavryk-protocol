@@ -1428,7 +1428,7 @@
   },
   {
     "file": "src/lib_context/test/test_context.ml",
-    "title": "tezos-context: context (disk:fork)",
+    "title": "mavryk-context: context (disk:fork)",
     "tags": [
       "alcotezt",
       "quick"

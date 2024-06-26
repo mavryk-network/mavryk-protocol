@@ -1,7 +1,7 @@
 Mavkit Software Architecture
 ============================
 
-This page presents the software architecture of the Mavkit suite, focusing on the most important tool in a Mavryk network: the Mavryk node, implemented in our case as the Mavkit node executable (``octez-node``).
+This page presents the software architecture of the Mavkit suite, focusing on the most important tool in a Mavryk network: the Mavryk node, implemented in our case as the Mavkit node executable (``mavkit-node``).
 The Mavkit node software architecture faithfully implements the `Tezos software architecture <https://docs.tezos.com/architecture>`__ principles:
 
 - It is separated into a shell and a protocol, to support protocol evolution.
@@ -235,7 +235,7 @@ Three kinds of economic protocols are included in the main Mavkit repository.
     The ``master`` branch contains additional variants of the genesis
     protocol, one for each of the existing :ref:`test
     networks<test_networks>`.
-  - The active protocols. ``tezos-protocol-nnn-hhhhhhhh``
+  - The active protocols. ``mavryk-protocol-nnn-hhhhhhhh``
     (``tezos-embedded-protocol-nnn-hhhhhhhh``) is either the current
     protocol on Mainnet or a protocol that has been active on Mainnet
     at some point, where ``nnn`` is a counter starting at 0 and

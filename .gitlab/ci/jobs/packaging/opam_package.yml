@@ -65,7 +65,7 @@ opam:bls12-381:
     when: always
   retry: 2
 
-opam:octez-accuser-PtAtLas:
+opam:mavkit-accuser-PtAtLas:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -116,7 +116,7 @@ opam:octez-accuser-PtAtLas:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-accuser-PtAtLas
+    package: mavkit-accuser-PtAtLas
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -129,7 +129,7 @@ opam:octez-accuser-PtAtLas:
     when: always
   retry: 2
 
-opam:octez-accuser-PsParisC:
+opam:mavkit-accuser-PsParisC:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -180,7 +180,7 @@ opam:octez-accuser-PsParisC:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-accuser-PsParisC
+    package: mavkit-accuser-PsParisC
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -193,7 +193,7 @@ opam:octez-accuser-PsParisC:
     when: always
   retry: 2
 
-opam:octez-accuser-PtParisB:
+opam:mavkit-accuser-PtParisB:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -244,7 +244,7 @@ opam:octez-accuser-PtParisB:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-accuser-PtParisB
+    package: mavkit-accuser-PtParisB
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -257,7 +257,7 @@ opam:octez-accuser-PtParisB:
     when: always
   retry: 2
 
-opam:octez-alcotezt:
+opam:mavkit-alcotezt:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -308,7 +308,7 @@ opam:octez-alcotezt:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-alcotezt
+    package: mavkit-alcotezt
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -321,7 +321,7 @@ opam:octez-alcotezt:
     when: always
   retry: 2
 
-opam:octez-baker-PtAtLas:
+opam:mavkit-baker-PtAtLas:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -372,7 +372,7 @@ opam:octez-baker-PtAtLas:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-baker-PtAtLas
+    package: mavkit-baker-PtAtLas
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -385,7 +385,7 @@ opam:octez-baker-PtAtLas:
     when: always
   retry: 2
 
-opam:octez-baker-PsParisC:
+opam:mavkit-baker-PsParisC:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -436,7 +436,7 @@ opam:octez-baker-PsParisC:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-baker-PsParisC
+    package: mavkit-baker-PsParisC
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -449,7 +449,7 @@ opam:octez-baker-PsParisC:
     when: always
   retry: 2
 
-opam:octez-baker-PtParisB:
+opam:mavkit-baker-PtParisB:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -500,7 +500,7 @@ opam:octez-baker-PtParisB:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-baker-PtParisB
+    package: mavkit-baker-PtParisB
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -513,7 +513,7 @@ opam:octez-baker-PtParisB:
     when: always
   retry: 2
 
-opam:octez-client:
+opam:mavkit-client:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -564,7 +564,7 @@ opam:octez-client:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-client
+    package: mavkit-client
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -577,7 +577,7 @@ opam:octez-client:
     when: always
   retry: 2
 
-opam:octez-codec:
+opam:mavkit-codec:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -628,7 +628,7 @@ opam:octez-codec:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-codec
+    package: mavkit-codec
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -641,7 +641,7 @@ opam:octez-codec:
     when: always
   retry: 2
 
-opam:octez-crawler:
+opam:mavkit-crawler:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -692,7 +692,7 @@ opam:octez-crawler:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-crawler
+    package: mavkit-crawler
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -705,7 +705,7 @@ opam:octez-crawler:
     when: always
   retry: 2
 
-opam:octez-dac-client:
+opam:mavkit-dac-client:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -756,7 +756,7 @@ opam:octez-dac-client:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-dac-client
+    package: mavkit-dac-client
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -769,7 +769,7 @@ opam:octez-dac-client:
     when: always
   retry: 2
 
-opam:octez-dac-node:
+opam:mavkit-dac-node:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -820,7 +820,7 @@ opam:octez-dac-node:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-dac-node
+    package: mavkit-dac-node
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -833,7 +833,7 @@ opam:octez-dac-node:
     when: always
   retry: 2
 
-opam:octez-dal-node:
+opam:mavkit-dal-node:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -884,7 +884,7 @@ opam:octez-dal-node:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-dal-node
+    package: mavkit-dal-node
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -897,7 +897,7 @@ opam:octez-dal-node:
     when: always
   retry: 2
 
-opam:octez-distributed-internal:
+opam:mavkit-distributed-internal:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -948,7 +948,7 @@ opam:octez-distributed-internal:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-distributed-internal
+    package: mavkit-distributed-internal
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -961,7 +961,7 @@ opam:octez-distributed-internal:
     when: always
   retry: 2
 
-opam:octez-distributed-lwt-internal:
+opam:mavkit-distributed-lwt-internal:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1012,7 +1012,7 @@ opam:octez-distributed-lwt-internal:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-distributed-lwt-internal
+    package: mavkit-distributed-lwt-internal
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1025,7 +1025,7 @@ opam:octez-distributed-lwt-internal:
     when: always
   retry: 2
 
-opam:octez-injector:
+opam:mavkit-injector:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1076,7 +1076,7 @@ opam:octez-injector:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-injector
+    package: mavkit-injector
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1089,7 +1089,7 @@ opam:octez-injector:
     when: always
   retry: 2
 
-opam:octez-internal-libs:
+opam:mavkit-internal-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1140,7 +1140,7 @@ opam:octez-internal-libs:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-internal-libs
+    package: mavkit-internal-libs
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1153,7 +1153,7 @@ opam:octez-internal-libs:
     when: always
   retry: 2
 
-opam:octez-l2-libs:
+opam:mavkit-l2-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1204,7 +1204,7 @@ opam:octez-l2-libs:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-l2-libs
+    package: mavkit-l2-libs
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1217,7 +1217,7 @@ opam:octez-l2-libs:
     when: always
   retry: 2
 
-opam:octez-libs:
+opam:mavkit-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1268,7 +1268,7 @@ opam:octez-libs:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-libs
+    package: mavkit-libs
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1281,7 +1281,7 @@ opam:octez-libs:
     when: always
   retry: 2
 
-opam:octez-node:
+opam:mavkit-node:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1332,7 +1332,7 @@ opam:octez-node:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-node
+    package: mavkit-node
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1345,7 +1345,7 @@ opam:octez-node:
     when: always
   retry: 2
 
-opam:octez-node-config:
+opam:mavkit-node-config:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1396,7 +1396,7 @@ opam:octez-node-config:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-node-config
+    package: mavkit-node-config
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1409,7 +1409,7 @@ opam:octez-node-config:
     when: always
   retry: 2
 
-opam:octez-proto-libs:
+opam:mavkit-proto-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1460,7 +1460,7 @@ opam:octez-proto-libs:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-proto-libs
+    package: mavkit-proto-libs
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1473,7 +1473,7 @@ opam:octez-proto-libs:
     when: always
   retry: 2
 
-opam:octez-protocol-000-Ps9mPmXa-libs:
+opam:mavkit-protocol-000-Ps9mPmXa-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1524,7 +1524,7 @@ opam:octez-protocol-000-Ps9mPmXa-libs:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-protocol-000-Ps9mPmXa-libs
+    package: mavkit-protocol-000-Ps9mPmXa-libs
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1537,7 +1537,7 @@ opam:octez-protocol-000-Ps9mPmXa-libs:
     when: always
   retry: 2
 
-opam:octez-protocol-001-PtAtLas-libs:
+opam:mavkit-protocol-001-PtAtLas-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1588,7 +1588,7 @@ opam:octez-protocol-001-PtAtLas-libs:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-protocol-001-PtAtLas-libs
+    package: mavkit-protocol-001-PtAtLas-libs
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1601,7 +1601,7 @@ opam:octez-protocol-001-PtAtLas-libs:
     when: always
   retry: 2
 
-opam:octez-protocol-019-PtParisB-libs:
+opam:mavkit-protocol-019-PtParisB-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1652,7 +1652,7 @@ opam:octez-protocol-019-PtParisB-libs:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-protocol-019-PtParisB-libs
+    package: mavkit-protocol-019-PtParisB-libs
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1665,7 +1665,7 @@ opam:octez-protocol-019-PtParisB-libs:
     when: always
   retry: 2
 
-opam:octez-protocol-020-PsParisC-libs:
+opam:mavkit-protocol-020-PsParisC-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1716,7 +1716,7 @@ opam:octez-protocol-020-PsParisC-libs:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-protocol-020-PsParisC-libs
+    package: mavkit-protocol-020-PsParisC-libs
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1729,7 +1729,7 @@ opam:octez-protocol-020-PsParisC-libs:
     when: always
   retry: 2
 
-opam:octez-protocol-alpha-libs:
+opam:mavkit-protocol-alpha-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1780,7 +1780,7 @@ opam:octez-protocol-alpha-libs:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-protocol-alpha-libs
+    package: mavkit-protocol-alpha-libs
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1793,7 +1793,7 @@ opam:octez-protocol-alpha-libs:
     when: always
   retry: 2
 
-opam:octez-protocol-compiler:
+opam:mavkit-protocol-compiler:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1844,7 +1844,7 @@ opam:octez-protocol-compiler:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-protocol-compiler
+    package: mavkit-protocol-compiler
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1857,7 +1857,7 @@ opam:octez-protocol-compiler:
     when: always
   retry: 2
 
-opam:octez-proxy-server:
+opam:mavkit-proxy-server:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1908,7 +1908,7 @@ opam:octez-proxy-server:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-proxy-server
+    package: mavkit-proxy-server
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1921,7 +1921,7 @@ opam:octez-proxy-server:
     when: always
   retry: 2
 
-opam:octez-rpc-process:
+opam:mavkit-rpc-process:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1972,7 +1972,7 @@ opam:octez-rpc-process:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-rpc-process
+    package: mavkit-rpc-process
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -1985,7 +1985,7 @@ opam:octez-rpc-process:
     when: always
   retry: 2
 
-opam:octez-shell-libs:
+opam:mavkit-shell-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -2036,7 +2036,7 @@ opam:octez-shell-libs:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-shell-libs
+    package: mavkit-shell-libs
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -2049,7 +2049,7 @@ opam:octez-shell-libs:
     when: always
   retry: 2
 
-opam:octez-signer:
+opam:mavkit-signer:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -2100,7 +2100,7 @@ opam:octez-signer:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-signer
+    package: mavkit-signer
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -2113,7 +2113,7 @@ opam:octez-signer:
     when: always
   retry: 2
 
-opam:octez-smart-rollup-node:
+opam:mavkit-smart-rollup-node:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -2164,7 +2164,7 @@ opam:octez-smart-rollup-node:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-smart-rollup-node
+    package: mavkit-smart-rollup-node
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -2177,7 +2177,7 @@ opam:octez-smart-rollup-node:
     when: always
   retry: 2
 
-opam:octez-smart-rollup-node-PtAtLas:
+opam:mavkit-smart-rollup-node-PtAtLas:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -2228,7 +2228,7 @@ opam:octez-smart-rollup-node-PtAtLas:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-smart-rollup-node-PtAtLas
+    package: mavkit-smart-rollup-node-PtAtLas
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -2241,7 +2241,7 @@ opam:octez-smart-rollup-node-PtAtLas:
     when: always
   retry: 2
 
-opam:octez-smart-rollup-node-PsParisC:
+opam:mavkit-smart-rollup-node-PsParisC:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -2292,7 +2292,7 @@ opam:octez-smart-rollup-node-PsParisC:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-smart-rollup-node-PsParisC
+    package: mavkit-smart-rollup-node-PsParisC
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -2305,7 +2305,7 @@ opam:octez-smart-rollup-node-PsParisC:
     when: always
   retry: 2
 
-opam:octez-smart-rollup-node-PtParisB:
+opam:mavkit-smart-rollup-node-PtParisB:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -2356,7 +2356,7 @@ opam:octez-smart-rollup-node-PtParisB:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-smart-rollup-node-PtParisB
+    package: mavkit-smart-rollup-node-PtParisB
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -2369,7 +2369,7 @@ opam:octez-smart-rollup-node-PtParisB:
     when: always
   retry: 2
 
-opam:octez-smart-rollup-node-alpha:
+opam:mavkit-smart-rollup-node-alpha:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -2420,7 +2420,7 @@ opam:octez-smart-rollup-node-alpha:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-smart-rollup-node-alpha
+    package: mavkit-smart-rollup-node-alpha
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -2433,7 +2433,7 @@ opam:octez-smart-rollup-node-alpha:
     when: always
   retry: 2
 
-opam:octez-smart-rollup-node-lib:
+opam:mavkit-smart-rollup-node-lib:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -2484,7 +2484,7 @@ opam:octez-smart-rollup-node-lib:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-smart-rollup-node-lib
+    package: mavkit-smart-rollup-node-lib
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -2497,7 +2497,7 @@ opam:octez-smart-rollup-node-lib:
     when: always
   retry: 2
 
-opam:octez-smart-rollup-wasm-debugger:
+opam:mavkit-smart-rollup-wasm-debugger:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -2548,7 +2548,7 @@ opam:octez-smart-rollup-wasm-debugger:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-smart-rollup-wasm-debugger
+    package: mavkit-smart-rollup-wasm-debugger
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -2561,7 +2561,7 @@ opam:octez-smart-rollup-wasm-debugger:
     when: always
   retry: 2
 
-opam:octez-smart-rollup-wasm-debugger-lib:
+opam:mavkit-smart-rollup-wasm-debugger-lib:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -2612,7 +2612,7 @@ opam:octez-smart-rollup-wasm-debugger-lib:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-smart-rollup-wasm-debugger-lib
+    package: mavkit-smart-rollup-wasm-debugger-lib
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -2625,7 +2625,7 @@ opam:octez-smart-rollup-wasm-debugger-lib:
     when: always
   retry: 2
 
-opam:octez-smart-rollup-wasm-debugger-plugin:
+opam:mavkit-smart-rollup-wasm-debugger-plugin:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -2676,7 +2676,7 @@ opam:octez-smart-rollup-wasm-debugger-plugin:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-smart-rollup-wasm-debugger-plugin
+    package: mavkit-smart-rollup-wasm-debugger-plugin
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -2689,7 +2689,7 @@ opam:octez-smart-rollup-wasm-debugger-plugin:
     when: always
   retry: 2
 
-opam:octez-version:
+opam:mavkit-version:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -2740,7 +2740,7 @@ opam:octez-version:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: octez-version
+    package: mavkit-version
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log

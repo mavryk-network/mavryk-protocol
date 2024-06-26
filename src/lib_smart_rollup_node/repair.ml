@@ -7,7 +7,7 @@
 
 let group =
   {
-    Tezos_clic.name = "smart_rollup.node.repair";
+    Mavryk_clic.name = "smart_rollup.node.repair";
     title = "Commands to repair the smart rollup node.";
   }
 
@@ -199,7 +199,7 @@ let command_fix_commitments_for_protocol cctxt ~data_dir protocol =
   fix_commitments_for_protocol node_ctxt protocol
 
 let repair_commitments_command =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   command
     ~group
     ~desc:"Repair commitments of L2 chain for a given protocol."

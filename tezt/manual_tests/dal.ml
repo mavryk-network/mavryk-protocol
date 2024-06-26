@@ -67,7 +67,7 @@ let dal_parameters ~is_fake =
     let use_mock_srs_for_testing = is_fake in
     Config.{activated = true; use_mock_srs_for_testing; bootstrap_peers = []}
   in
-  let find_srs_files = Tezos_base.Dal_srs.find_trusted_setup_files in
+  let find_srs_files = Mavryk_base.Dal_srs.find_trusted_setup_files in
   let check_make error_msg =
     match make parameters with
     | Ok _ -> unit
@@ -80,8 +80,8 @@ let dal_parameters ~is_fake =
     | Error errs ->
         Test.fail
           "Could not init prover. Reason:@.%a@."
-          (Tezos_error_monad.Error_monad.TzTrace.pp_print_top
-             Tezos_error_monad.Error_monad.pp)
+          (Mavryk_error_monad.Error_monad.TzTrace.pp_print_top
+             Mavryk_error_monad.Error_monad.pp)
           errs
   in
   let* () = check_make "The set of parameters is invalid for the verifier" in
@@ -91,8 +91,8 @@ let dal_parameters ~is_fake =
     | Error errs ->
         Test.fail
           "Could not init verifier. Reason:@.%a@."
-          (Tezos_error_monad.Error_monad.TzTrace.pp_print_top
-             Tezos_error_monad.Error_monad.pp)
+          (Mavryk_error_monad.Error_monad.TzTrace.pp_print_top
+             Mavryk_error_monad.Error_monad.pp)
           errs
   in
   let* () = check_make "The set of parameters is invalid for the verifier." in

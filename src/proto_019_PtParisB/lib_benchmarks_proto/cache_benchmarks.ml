@@ -151,7 +151,7 @@ module Cache_update_benchmark : Benchmarks_proto.Benchmark.S = struct
       We therefore do not take into account the length of the key in the model. *)
   let model =
     let affine_logn name =
-      let open Tezos_benchmark.Model in
+      let open Mavryk_benchmark.Model in
       let param_name param =
         Free_variable.of_namespace (Namespace.cons name param)
       in

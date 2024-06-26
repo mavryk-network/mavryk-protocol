@@ -39,7 +39,7 @@ let _ =
 let run_kernel ?(posix = false) ~input ?initrd () =
   let process =
     Process.spawn
-      ~hooks:Tezt_tezos.Tezos_regression.hooks
+      ~hooks:Tezt_tezos.Mavryk_regression.hooks
       (Uses.path risc_v_sandbox)
       (["rvemu"; "--input"; input]
       @ Option.fold ~none:[] ~some:(fun initrd -> ["--initrd"; initrd]) initrd

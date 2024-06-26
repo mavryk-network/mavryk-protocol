@@ -1438,7 +1438,7 @@
   },
   {
     "file": "src/lib_context/test/test_context.ml",
-    "title": "tezos-context: context (disk:list)",
+    "title": "mavryk-context: context (disk:list)",
     "tags": [
       "alcotezt",
       "quick"
@@ -2136,7 +2136,7 @@
   },
   {
     "file": "tezt/tests/encoding.ml",
-    "title": "octez-codec dump encodings",
+    "title": "mavkit-codec dump encodings",
     "tags": [
       "codec",
       "dump"

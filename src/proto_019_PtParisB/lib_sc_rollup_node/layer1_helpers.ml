@@ -59,7 +59,7 @@ let get_last_cemented_commitment (cctxt : #Client_context.full) rollup_address :
   let cctxt =
     new Protocol_client_context.wrap_full (cctxt :> Client_context.full)
   in
-  let rollup_address = Sc_rollup_proto_types.Address.of_octez rollup_address in
+  let rollup_address = Sc_rollup_proto_types.Address.of_mavkit rollup_address in
   let+ commitment, level =
     Plugin.RPC.Sc_rollup.last_cemented_commitment_hash_with_level
       cctxt
@@ -68,7 +68,7 @@ let get_last_cemented_commitment (cctxt : #Client_context.full) rollup_address :
   in
   {
     Node_context.commitment =
-      Sc_rollup_proto_types.Commitment_hash.to_octez commitment;
+      Sc_rollup_proto_types.Commitment_hash.to_mavkit commitment;
     level = Protocol.Alpha_context.Raw_level.to_int32 level;
   }
 
@@ -78,7 +78,7 @@ let get_last_published_commitment ?(allow_unstake = true)
   let cctxt =
     new Protocol_client_context.wrap_full (cctxt :> Client_context.full)
   in
-  let rollup_address = Sc_rollup_proto_types.Address.of_octez rollup_address in
+  let rollup_address = Sc_rollup_proto_types.Address.of_mavkit rollup_address in
   let*! res =
     Plugin.RPC.Sc_rollup.staked_on_commitment
       cctxt
@@ -101,18 +101,18 @@ let get_last_published_commitment ?(allow_unstake = true)
   | Error trace -> fail trace
   | Ok None -> return_none
   | Ok (Some (_staked_hash, staked_commitment)) ->
-      return_some (Sc_rollup_proto_types.Commitment.to_octez staked_commitment)
+      return_some (Sc_rollup_proto_types.Commitment.to_mavkit staked_commitment)
 
 let get_kind cctxt rollup_address =
   let open Lwt_result_syntax in
   let cctxt =
     new Protocol_client_context.wrap_full (cctxt :> Client_context.full)
   in
-  let rollup_address = Sc_rollup_proto_types.Address.of_octez rollup_address in
+  let rollup_address = Sc_rollup_proto_types.Address.of_mavkit rollup_address in
   let+ kind =
     RPC.Sc_rollup.kind cctxt (cctxt#chain, cctxt#block) rollup_address ()
   in
-  Sc_rollup_proto_types.Kind.to_octez kind
+  Sc_rollup_proto_types.Kind.to_mavkit kind
 
 let genesis_inbox cctxt ~genesis_level =
   let open Lwt_result_syntax in
@@ -122,7 +122,7 @@ let genesis_inbox cctxt ~genesis_level =
   let+ inbox =
     Plugin.RPC.Sc_rollup.inbox cctxt (cctxt#chain, `Level genesis_level)
   in
-  Sc_rollup_proto_types.Inbox.to_octez inbox
+  Sc_rollup_proto_types.Inbox.to_mavkit inbox
 
 let constants_of_parametric
     Protocol.Alpha_context.Constants.Parametric.
@@ -158,7 +158,7 @@ let constants_of_parametric
           commitment_period_in_blocks;
           reveal_activation_level =
             Some
-              (Sc_rollup_proto_types.Constants.reveal_activation_level_to_octez
+              (Sc_rollup_proto_types.Constants.reveal_activation_level_to_mavkit
                  reveal_activation_level);
           max_number_of_stored_cemented_commitments;
         };
@@ -195,7 +195,7 @@ let retrieve_genesis_info cctxt rollup_address =
     {
       level = Raw_level.to_int32 level;
       commitment_hash =
-        Sc_rollup_proto_types.Commitment_hash.to_octez commitment_hash;
+        Sc_rollup_proto_types.Commitment_hash.to_mavkit commitment_hash;
     }
 
 let get_boot_sector block_hash (node_ctxt : _ Node_context.t) =
@@ -267,4 +267,4 @@ let get_commitment cctxt rollup_address commitment_hash =
       rollup_address
       commitment_hash
   in
-  Sc_rollup_proto_types.Commitment.to_octez commitment
+  Sc_rollup_proto_types.Commitment.to_mavkit commitment

@@ -28,8 +28,8 @@ type cctxt = Dal_node_client.cctxt
 
 let get_commitments_history_hash_content (cctxt : cctxt) hash =
   cctxt#call_service
-    (Tezos_rpc.Service.prefix
-       Tezos_rpc.Path.(root / "plugin")
+    (Mavryk_rpc.Service.prefix
+       Mavryk_rpc.Path.(root / "plugin")
        Dal_services.Commitments_history.hash_content)
     ((), hash)
     ()

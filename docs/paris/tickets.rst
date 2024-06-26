@@ -99,13 +99,13 @@ Once a ticket has been constructed by a smart contract, it may be transferred to
 
 - *Between implicit accounts*: Implicit accounts can transfer existing tickets they own to other implicit accounts
   with ``Transfer_ticket`` operation from their wallets.
-  For instance, ``octez-client`` can be invoked in the following way by an implicit account holder ``alice``
+  For instance, ``mavkit-client`` can be invoked in the following way by an implicit account holder ``alice``
   to transfer a ticket of amount ``10``, type ``string``, content ``"some ticket"`` and ticketer ``ticketer``
   to another implicit account held by ``bob``.
 
 ::
 
-    octez-client transfer 10 tickets from alice to bob with entrypoint default and type string and content '"some ticket"' and ticketer 'ticketer'
+    mavkit-client transfer 10 tickets from alice to bob with entrypoint default and type string and content '"some ticket"' and ticketer 'ticketer'
 
 If the amount of the ticket ``"some ticket"`` owned by ``alice`` was greater than 10,
 this transfer would cause an automatic ticket split,
@@ -121,13 +121,13 @@ Of course, these expressions would not be interchangeable for tickets belonging 
 - *Implicit account to smart contract*: Using the same ``Transfer_ticket`` operation, implicit accounts
   can also send their tickets to smart contracts.
   In this case, the entrypoint, as defined by the specification of the target contract, must accept this kind of tickets.
-  Here is an example using ``octez-client`` to transfer a ticket of amount ``10``, type ``string``,
+  Here is an example using ``mavkit-client`` to transfer a ticket of amount ``10``, type ``string``,
   content ``"some ticket"`` and ticketer ``ticketer`` owned by ``alice`` to a contract ``receiver`` accepting tickets
   at the entrypoint ``save``.
 
 ::
 
-    octez-client transfer 10 tickets from alice to receiver with entrypoint save and type string and content '"some ticket"' and ticketer 'ticketer'
+    mavkit-client transfer 10 tickets from alice to receiver with entrypoint save and type string and content '"some ticket"' and ticketer 'ticketer'
 
 In this case, too, automatic ticket splitting may happen, under the same circumstances.
 

@@ -22,7 +22,7 @@ Rollup node
 ~~~~~~~~~~~
 
 Starting from version 19, the rollup node is *protocol-agnostic* -- This change was also backported to v18.1.
-This means that a single executable, ``octez-smart-rollup-node`` can be used with any Tezos protocols.
+This means that a single executable, ``mavkit-smart-rollup-node`` can be used with any Tezos protocols.
 The old executable names have been kept as symbolic links, but will be removed in a future version.
 
 The rollup client is not released anymore. Equivalent RPCs to the rollup node must be used instead of its commands.
@@ -46,11 +46,11 @@ The rollup client is not released anymore. Equivalent RPCs to the rollup node mu
     ==========================================  ====================================================
 
 The result of encode outbox message ``<transactions>`` can be achieved:
-``octez-codec encode alpha.smart_rollup.outbox.message from <transactions>.``
+``mavkit-codec encode alpha.smart_rollup.outbox.message from <transactions>.``
 
 The keys in the Smart Rollup client use the same format as the Octez client.
-They can be imported with ``octez-client import secret key <sk_uri>``, or by merging the key files
-between the ``octez-client`` base directory and the ``smart-rollup-client-<proto>`` base directory.
+They can be imported with ``mavkit-client import secret key <sk_uri>``, or by merging the key files
+between the ``mavkit-client`` base directory and the ``smart-rollup-client-<proto>`` base directory.
 
 The Smart Rollup node now allows multiple :ref:`batcher keys <rollup_batcher>`. Setting multiple
 keys for the batching purpose allows to inject multiple operations

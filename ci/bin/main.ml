@@ -13,9 +13,9 @@
 open Gitlab_ci
 open Gitlab_ci.Types
 open Gitlab_ci.Util
-open Tezos_ci
+open Mavryk_ci
 
-let () = Tezos_ci.Cli.init ()
+let () = Mavryk_ci.Cli.init ()
 
 (* Sets up the [default:] top-level configuration element. *)
 let default = default ~interruptible:true ()
@@ -75,16 +75,16 @@ let job_dummy : job =
    pipeline is defined. At the moment, all these pipelines are defined
    manually in .yml, but will eventually be generated. *)
 let () =
-  (* Matches Octez release tags, e.g. [octez-v1.2.3] or [octez-v1.2.3-rc4]. *)
-  let octez_release_tag_re = "/^octez-v\\d+\\.\\d+(?:\\-rc\\d+)?$/" in
-  (* Matches Octez beta release tags, e.g. [octez-v1.2.3-beta5]. *)
-  let octez_beta_release_tag_re = "/^octez-v\\d+\\.\\d+\\-beta\\d*$/" in
+  (* Matches Octez release tags, e.g. [mavkit-v1.2.3] or [mavkit-v1.2.3-rc4]. *)
+  let octez_release_tag_re = "/^mavkit-v\\d+\\.\\d+(?:\\-rc\\d+)?$/" in
+  (* Matches Octez beta release tags, e.g. [mavkit-v1.2.3-beta5]. *)
+  let octez_beta_release_tag_re = "/^mavkit-v\\d+\\.\\d+\\-beta\\d*$/" in
   (* Matches Etherlink release tags, e.g. [etherlink-v1.2.3] or [etherlink-v1.2.3-rc4]. *)
   let etherlink_release_tag_re = "/^etherlink-v\\d+\\.\\d+(?:\\-rc\\d+)?$/" in
   let open Rules in
   let open Pipeline in
   (* Matches either Octez release tags or Octez beta release tags,
-     e.g. [octez-v1.2.3], [octez-v1.2.3-rc4] or [octez-v1.2.3-beta5]. *)
+     e.g. [mavkit-v1.2.3], [mavkit-v1.2.3-rc4] or [mavkit-v1.2.3-beta5]. *)
   let has_any_octez_release_tag =
     If.(
       has_tag_match octez_release_tag_re
@@ -159,7 +159,7 @@ let config () =
       (name, `O [("image", `String (Image.name image_path))])
     in
     let config : Yaml.value = `O (List.map image_template (Image.all ())) in
-    Base.write_yaml ~header:Tezos_ci.header filename config ;
+    Base.write_yaml ~header:Mavryk_ci.header filename config ;
     {local = filename; rules = []}
   in
   let includes =
@@ -181,7 +181,7 @@ let () =
   (* If argument --verbose is set, then log generation info.
      If argument --inline-source, then print generation info in yml files. *)
   let filename = ".gitlab-ci.yml" in
-  Tezos_ci.to_file ~filename (config ()) ;
+  Mavryk_ci.to_file ~filename (config ()) ;
   (* Paths to exclude from generation check. As files are translated
      to CI-in-OCaml, they should be removed from this function *)
   let exclude = function
@@ -210,7 +210,7 @@ let () =
         true
     | _ -> false
   in
-  Tezos_ci.check_files
+  Mavryk_ci.check_files
     ~remove_extra_files:Cli.config.remove_extra_files
     ~exclude
     ()

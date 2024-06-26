@@ -27,14 +27,14 @@
 open Protocol
 open Alpha_context
 
-(** Calls {!Tezos_protocol_alpha.Protocol.Contract_services.list}. *)
+(** Calls {!Mavryk_protocol_alpha.Protocol.Contract_services.list}. *)
 val list_contract_labels :
   #Protocol_client_context.full ->
   chain:Shell_services.chain ->
   block:Shell_services.block ->
   (string * string * string) list tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Contract.get_storage_normalized}. *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Contract.get_storage_normalized}. *)
 val get_storage :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -43,7 +43,7 @@ val get_storage :
   Contract_hash.t ->
   Script.expr option tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Contract.get_used_storage_space}. *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Contract.get_used_storage_space}. *)
 val get_used_storage_space :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -51,7 +51,7 @@ val get_used_storage_space :
   Contract_hash.t ->
   Z.t option tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Contract.get_paid_storage_space}. *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Contract.get_paid_storage_space}. *)
 val get_paid_storage_space :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -59,7 +59,7 @@ val get_paid_storage_space :
   Contract_hash.t ->
   Z.t option tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_alpha.Protocol.Contract_services.contract_big_map_get_opt}. *)
+(** Calls {!Mavryk_protocol_alpha.Protocol.Contract_services.contract_big_map_get_opt}. *)
 val get_contract_big_map_value :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -92,7 +92,7 @@ val register_global_constant :
   (Kind.register_global_constant Kind.manager Injection.result, tztrace) result
   Lwt.t
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Big_map.big_map_get_normalized}. *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Big_map.big_map_get_normalized}. *)
 val get_big_map_value :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -102,7 +102,7 @@ val get_big_map_value :
   Script_expr_hash.t ->
   Script.expr tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Contract.get_script_normalized}. *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Contract.get_script_normalized}. *)
 val get_script :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -112,7 +112,7 @@ val get_script :
   Contract_hash.t ->
   Script.t option tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_alpha.Protocol.Contract_services.script_opt}. *)
+(** Calls {!Mavryk_protocol_alpha.Protocol.Contract_services.script_opt}. *)
 val get_script_hash :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -120,7 +120,7 @@ val get_script_hash :
   Contract_hash.t ->
   Script_expr_hash.t option tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_alpha.Protocol.Contract_services.val-balance}. *)
+(** Calls {!Mavryk_protocol_alpha.Protocol.Contract_services.val-balance}. *)
 val get_balance :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -128,7 +128,7 @@ val get_balance :
   Contract.t ->
   Tez.t tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_alpha.Protocol.Contract_services.val-staked_balance}. *)
+(** Calls {!Mavryk_protocol_alpha.Protocol.Contract_services.val-staked_balance}. *)
 val get_staked_balance :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -136,7 +136,7 @@ val get_staked_balance :
   Contract.t ->
   Tez.t option tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_alpha.Protocol.Contract_services.val-full_balance}. *)
+(** Calls {!Mavryk_protocol_alpha.Protocol.Contract_services.val-full_balance}. *)
 val get_full_balance :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -144,7 +144,7 @@ val get_full_balance :
   Contract.t ->
   Tez.t tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Contract.get_ticket_balance}. *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Contract.get_ticket_balance}. *)
 val get_contract_ticket_balance :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -153,7 +153,7 @@ val get_contract_ticket_balance :
   Ticket_token.unparsed_token ->
   Z.t tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Contract.get_all_ticket_balances}. *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Contract.get_all_ticket_balances}. *)
 val get_contract_all_ticket_balances :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -164,7 +164,7 @@ val get_contract_all_ticket_balances :
 val ticket_balances_encoding :
   (Ticket_token.unparsed_token * Z.t) list Data_encoding.t
 
-(** Calls {!Tezos_protocol_alpha.Protocol.Delegate_services.val-frozen_deposits_limit}. *)
+(** Calls {!Mavryk_protocol_alpha.Protocol.Delegate_services.val-frozen_deposits_limit}. *)
 val get_frozen_deposits_limit :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->
@@ -503,9 +503,9 @@ type ballots_info = {
 
 (** [get_period_info ~successor cctx ~chain ~block] returns the successor [period_info] if [successor],
     it returns the current [period_info] otherwise.
-    This function uses {!Tezos_protocol_alpha.Protocol.Voting_services.successor_period} if [successor],
-    otherwise it calls {!Tezos_protocol_alpha.Protocol.Voting_services.current_period}.
-    In any case, it also uses {!Tezos_protocol_alpha.Protocol.Voting_services.current_proposal}
+    This function uses {!Mavryk_protocol_alpha.Protocol.Voting_services.successor_period} if [successor],
+    otherwise it calls {!Mavryk_protocol_alpha.Protocol.Voting_services.current_period}.
+    In any case, it also uses {!Mavryk_protocol_alpha.Protocol.Voting_services.current_proposal}
 *)
 val get_period_info :
   ?successor:bool ->
@@ -515,9 +515,9 @@ val get_period_info :
   period_info tzresult Lwt.t
 
 (**  [get_ballots_info cctx ~chain ~block] returns the [ballots_info].
-     It calls {!Tezos_protocol_alpha.Protocol.Voting_services.ballots},
-     {!Tezos_protocol_alpha.Protocol.Voting_services.current_quorum}
-     and {!Tezos_protocol_alpha.Protocol.Voting_services.total_voting_power}.
+     It calls {!Mavryk_protocol_alpha.Protocol.Voting_services.ballots},
+     {!Mavryk_protocol_alpha.Protocol.Voting_services.current_quorum}
+     and {!Mavryk_protocol_alpha.Protocol.Voting_services.total_voting_power}.
 *)
 val get_ballots_info :
   #Protocol_client_context.full ->
@@ -525,7 +525,7 @@ val get_ballots_info :
   block:Shell_services.block ->
   ballots_info tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_alpha.Protocol.Voting_services.proposals} *)
+(** Calls {!Mavryk_protocol_alpha.Protocol.Voting_services.proposals} *)
 val get_proposals :
   #Protocol_client_context.full ->
   chain:Shell_services.chain ->
@@ -572,14 +572,14 @@ val display_receipt_for_operation :
   Operation_list_hash.elt ->
   unit tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_alpha.Protocol.Alpha_services.Cache.cached_contracts} *)
+(** Calls {!Mavryk_protocol_alpha.Protocol.Alpha_services.Cache.cached_contracts} *)
 val cached_contracts :
   #Protocol_client_context.full ->
   chain:Shell_services.chain ->
   block:Shell_services.block ->
   (Contract_hash.t * int) list tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_alpha.Protocol.Alpha_services.Cache.contract_rank} *)
+(** Calls {!Mavryk_protocol_alpha.Protocol.Alpha_services.Cache.contract_rank} *)
 val contract_rank :
   #Protocol_client_context.full ->
   chain:Shell_services.chain ->
@@ -587,14 +587,14 @@ val contract_rank :
   Contract_hash.t ->
   int option tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_alpha.Protocol.Alpha_services.Cache.contract_cache_size} *)
+(** Calls {!Mavryk_protocol_alpha.Protocol.Alpha_services.Cache.contract_cache_size} *)
 val contract_cache_size :
   #Protocol_client_context.full ->
   chain:Shell_services.chain ->
   block:Shell_services.block ->
   int tzresult Lwt.t
 
-(** Calls {!Tezos_protocol_alpha.Protocol.Alpha_services.Cache.contract_cache_size_limit} *)
+(** Calls {!Mavryk_protocol_alpha.Protocol.Alpha_services.Cache.contract_cache_size_limit} *)
 val contract_cache_size_limit :
   #Protocol_client_context.full ->
   chain:Shell_services.chain ->
@@ -897,7 +897,7 @@ val sc_rollup_timeout :
   tzresult
   Lwt.t
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Sc_rollup.get_ticket_balance}. *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Sc_rollup.get_ticket_balance}. *)
 val get_smart_rollup_ticket_balance :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->

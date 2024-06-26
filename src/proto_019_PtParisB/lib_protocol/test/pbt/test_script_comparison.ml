@@ -94,10 +94,10 @@ type ex_comparable_data_3 =
 (* We use the Michelson samplers from lib_benchmark and turn them into QCheck2
    generators *)
 module Parameters = struct
-  let atom_size_range : Tezos_benchmark.Base_samplers.range =
+  let atom_size_range : Mavryk_benchmark.Base_samplers.range =
     {min = 0; max = 10}
 
-  let other_size : Tezos_benchmark.Base_samplers.range = {min = 0; max = 100}
+  let other_size : Mavryk_benchmark.Base_samplers.range = {min = 0; max = 100}
 
   let parameters : Michelson_samplers.parameters =
     {
@@ -114,7 +114,7 @@ module Parameters = struct
 end
 
 module Crypto_samplers =
-Tezos_benchmark.Crypto_samplers.Make_finite_key_pool (struct
+Mavryk_benchmark.Crypto_samplers.Make_finite_key_pool (struct
   let size = 1000
 
   let algo = `Default
@@ -124,10 +124,10 @@ module Samplers : Michelson_samplers.S =
   Michelson_samplers.Make (Parameters) (Crypto_samplers)
 
 let ex_comparable_data_sampler :
-    ex_comparable_data Tezos_benchmark.Base_samplers.sampler =
+    ex_comparable_data Mavryk_benchmark.Base_samplers.sampler =
  fun random_state ->
   let size =
-    Tezos_benchmark.Base_samplers.sample_in_interval
+    Mavryk_benchmark.Base_samplers.sample_in_interval
       ~range:{min = 1; max = 20}
       random_state
   in
@@ -138,10 +138,10 @@ let ex_comparable_data_sampler :
   Ex_comparable_data (ty, x)
 
 let ex_comparable_data_2_sampler :
-    ex_comparable_data_2 Tezos_benchmark.Base_samplers.sampler =
+    ex_comparable_data_2 Mavryk_benchmark.Base_samplers.sampler =
  fun random_state ->
   let size =
-    Tezos_benchmark.Base_samplers.sample_in_interval
+    Mavryk_benchmark.Base_samplers.sample_in_interval
       ~range:{min = 1; max = 20}
       random_state
   in
@@ -153,10 +153,10 @@ let ex_comparable_data_2_sampler :
   Ex_comparable_data_2 (ty, x, y)
 
 let ex_comparable_data_3_sampler :
-    ex_comparable_data_3 Tezos_benchmark.Base_samplers.sampler =
+    ex_comparable_data_3 Mavryk_benchmark.Base_samplers.sampler =
  fun random_state ->
   let size =
-    Tezos_benchmark.Base_samplers.sample_in_interval
+    Mavryk_benchmark.Base_samplers.sample_in_interval
       ~range:{min = 1; max = 20}
       random_state
   in

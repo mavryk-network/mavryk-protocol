@@ -22,7 +22,7 @@
 (* DEALINGS IN THE SOFTWARE.                                                 *)
 (*                                                                           *)
 (*****************************************************************************)
-(** This module is largely inspired from {!module:Tezos_protocol_environment.Environement_context} *)
+(** This module is largely inspired from {!module:Mavryk_protocol_environment.Environement_context} *)
 open Store_sigs
 
 open Context_sigs
@@ -30,14 +30,14 @@ open Context_sigs
 (** This module dipatches context calls to contexts/pvm_states
     corresponding to the used pvm *)
 
-(** See {!module:Tezos_protocol_environment.Environement_context.ops} *)
+(** See {!module:Mavryk_protocol_environment.Environement_context.ops} *)
 type ('repo, 'tree) pvm_context_impl =
   (module Context_sigs.S with type repo = 'repo and type tree = 'tree)
 
 (* Context existential that embeds the context_module associated to
    pvm protocol_plugins *)
 
-(** See {!module:Tezos_protocol_environment.Environement_context.t} *)
+(** See {!module:Mavryk_protocol_environment.Environement_context.t} *)
 type 'a t = private
   | Context : {
       index : ('a, 'repo) index;

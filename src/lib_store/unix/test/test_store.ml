@@ -740,7 +740,7 @@ let test_block_of_identifier_success_savepoint chain_store table =
    A'' contains an operation targeting Y (valid)
 *)
 let test_live_blocks store_dir =
-  let open Tezos_protocol_alpha in
+  let open Mavryk_protocol_alpha in
   let open Lwt_result_syntax in
   let accounts =
     Stdlib.List.init 50 (fun _ -> Alpha_utils.Account.new_account ())
@@ -756,7 +756,7 @@ let test_live_blocks store_dir =
         }
     in
     let test_parameters =
-      let open Tezos_protocol_alpha_parameters in
+      let open Mavryk_protocol_alpha_parameters in
       {
         Default_parameters.(parameters_of_constants constants) with
         bootstrap_accounts =

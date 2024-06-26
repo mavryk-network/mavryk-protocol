@@ -186,7 +186,7 @@ let with_logger f =
   let get_log, logger = logger () in
   let* () = f logger in
   let* log = get_log () in
-  let capture s = Tezos_regression.replace_variables s |> Regression.capture in
+  let capture s = Mavryk_regression.replace_variables s |> Regression.capture in
   Format.kasprintf
     capture
     "@,@[<v 2>trace@,%a@]"
@@ -290,18 +290,18 @@ let () =
     [|
       transaction
         ~storage:"{}"
-        ~parameter:"Left \"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx\""
+        ~parameter:"Left \"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe\""
         "accounts";
       transaction
         ~storage:"{1; 2; 3}"
         ~parameter:"Pair {7; 8; 9} {4; 5; 6}"
         "append";
       transaction
-        ~amount:(Tez.of_mutez_exn 100_000_000L)
-        ~parameter:"\"tz1b7tUupMgCNw2cCLpKTkSD1NZzB5TkP2sv\""
+        ~amount:(Tez.of_mumav_exn 100_000_000L)
+        ~parameter:"\"mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn\""
         ~storage:
           "Pair \"2099-12-31T23:59:59Z\" (Pair 50000000 \
-           \"tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU\")"
+           \"mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ\")"
         "auction";
       transaction
         ~parameter:"{Pair \"string\" 12; Pair \"abc\" 99; Pair \"def\" 3}"
@@ -336,7 +336,7 @@ let () =
         ~storage:"Pair None None None None"
         "ediv";
       transaction
-        ~parameter:"\"tz1faswCTDciRzE4oJ9jn2Vm2dvjeyA9fUzU\""
+        ~parameter:"\"mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ\""
         ~storage:"\"2020-01-01T00:00:00Z\""
         "faucet";
       transaction
@@ -368,12 +368,12 @@ let () =
         ~storage:"{}"
         "reverse_loop";
       transaction
-        ~parameter:"Some \"tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN\""
+        ~parameter:"Some \"mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7\""
         ~storage:"Unit"
         "set_delegate";
       transaction ~parameter:"Right (Pair 3 2)" ~storage:"None" "shifts";
       transaction
-        ~amount:(Tez.of_mutez_exn 1_200_00L)
+        ~amount:(Tez.of_mumav_exn 1_200_00L)
         ~parameter:"7"
         ~storage:"{}"
         "spawn_identities";

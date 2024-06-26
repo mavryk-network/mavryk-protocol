@@ -628,7 +628,7 @@ let timelock_locked_value_arg =
 let default_minimal_fees =
   match Tez.of_mumav 100L with None -> assert false | Some t -> t
 
-let default_minimal_nanotez_per_gas_unit = Q.of_int 100
+let default_minimal_nanomav_per_gas_unit = Q.of_int 100
 
 let default_minimal_nanotez_per_byte = Q.of_int 1000
 
@@ -644,7 +644,7 @@ let minimal_fees_arg =
          | Some t -> return t
          | None -> tzfail (Bad_minimal_fees s)))
 
-let minimal_nanotez_per_gas_unit_arg =
+let minimal_nanomav_per_gas_unit_arg =
   let open Lwt_result_syntax in
   Mavryk_clic.default_arg
     ~long:"minimal-nanotez-per-gas-unit"
@@ -652,7 +652,7 @@ let minimal_nanotez_per_gas_unit_arg =
     ~doc:
       "exclude operations with fees per gas lower than this threshold (in \
        nanotez)"
-    ~default:(Q.to_string default_minimal_nanotez_per_gas_unit)
+    ~default:(Q.to_string default_minimal_nanomav_per_gas_unit)
     (Mavryk_clic.parameter (fun _ s ->
          try return (Q.of_string s) with _ -> tzfail (Bad_minimal_fees s)))
 
@@ -1066,7 +1066,7 @@ let fee_parameter_args =
       (fun _cctxt
            ( minimal_fees,
              minimal_nanotez_per_byte,
-             minimal_nanotez_per_gas_unit,
+             minimal_nanomav_per_gas_unit,
              force_low_fee,
              fee_cap,
              burn_cap ) ->
@@ -1074,7 +1074,7 @@ let fee_parameter_args =
         {
           Injection.minimal_fees;
           minimal_nanotez_per_byte;
-          minimal_nanotez_per_gas_unit;
+          minimal_nanomav_per_gas_unit;
           force_low_fee;
           fee_cap;
           burn_cap;
@@ -1083,7 +1083,7 @@ let fee_parameter_args =
        (Mavryk_clic.args6
           minimal_fees_arg
           minimal_nanotez_per_byte_arg
-          minimal_nanotez_per_gas_unit_arg
+          minimal_nanomav_per_gas_unit_arg
           force_low_fee_arg
           fee_cap_arg
           burn_cap_arg))

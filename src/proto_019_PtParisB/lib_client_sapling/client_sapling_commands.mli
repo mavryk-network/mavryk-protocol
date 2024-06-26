@@ -5,4 +5,4 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-val commands : unit -> Protocol_client_context.full Tezos_clic.command list
+val commands : unit -> Protocol_client_context.full Mavryk_clic.command list

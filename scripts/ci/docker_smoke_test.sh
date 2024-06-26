@@ -31,7 +31,7 @@ test_version() {
   echo "Found the following executables in the Docker image:"
   echo "$binaries"
 
-  for bin in octez-client octez-node; do
+  for bin in mavkit-client mavkit-node; do
     if ! echo "$binaries" | grep -q "^${bin}$"; then
       echo "Could not find binary $bin in Docker image."
       exit 1
@@ -40,7 +40,7 @@ test_version() {
     fi
   done
 
-  for binary in $(echo "$binaries" | grep octez-); do
+  for binary in $(echo "$binaries" | grep mavkit-); do
     printf "Checking version of %s: " "$binary"
 
     cmd="docker run --entrypoint $binary $IMAGE --version"

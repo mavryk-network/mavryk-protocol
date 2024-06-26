@@ -1,5 +1,5 @@
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/map_map_sideeffect.tz on storage '(Pair {} 0)' and input 10 --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/map_map_sideeffect.tz on storage '(Pair {} 0)' and input 10 --trace-stack
 storage
   (Pair {} 0)
 emitted operations
@@ -47,7 +47,7 @@ trace
     [ (Pair {} {} 0) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/map_map_sideeffect.tz on storage '(Pair { Elt "foo" 1 } 1)' and input 10 --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/map_map_sideeffect.tz on storage '(Pair { Elt "foo" 1 } 1)' and input 10 --trace-stack
 storage
   (Pair { Elt "foo" 11 } 11)
 emitted operations
@@ -138,7 +138,7 @@ trace
     [ (Pair {} { Elt "foo" 11 } 11) ]
 
 
-./octez-client --mode mockup run script michelson_test_scripts/opcodes/map_map_sideeffect.tz on storage '(Pair { Elt "bar" 5 ; Elt "foo" 1 } 6)' and input 15 --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/map_map_sideeffect.tz on storage '(Pair { Elt "bar" 5 ; Elt "foo" 1 } 6)' and input 15 --trace-stack
 storage
   (Pair { Elt "bar" 20 ; Elt "foo" 16 } 36)
 emitted operations

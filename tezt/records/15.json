@@ -1447,7 +1447,7 @@
   },
   {
     "file": "src/lib_context/test/test_context.ml",
-    "title": "tezos-context: context (memory:raw)",
+    "title": "mavryk-context: context (memory:raw)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1459,7 +1459,7 @@
   },
   {
     "file": "src/lib_clic/test/test_clic.ml",
-    "title": "Tezos_clic: auto-completion-parameters (non-terminal-seq: when first non-terminal-seq and its suffix are matched and args given, suggests all matching options in the next seq and its suffix)",
+    "title": "Mavryk_clic: auto-completion-parameters (non-terminal-seq: when first non-terminal-seq and its suffix are matched and args given, suggests all matching options in the next seq and its suffix)",
     "tags": [
       "alcotezt",
       "quick"

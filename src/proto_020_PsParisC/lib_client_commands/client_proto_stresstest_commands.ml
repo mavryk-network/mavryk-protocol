@@ -28,10 +28,10 @@ open Alpha_context
 module Smart_contracts = Client_proto_stresstest_contracts
 
 type transfer_strategy =
-  | Fixed_amount of {mutez : Tez.t}  (** Amount to transfer *)
+  | Fixed_amount of {mumav : Tez.t}  (** Amount to transfer *)
   | Evaporation of {fraction : float}
       (** Maximum fraction of current wealth to transfer.
-          Minimum amount is 1 mutez regardless of total wealth. *)
+          Minimum amount is 1 mumav regardless of total wealth. *)
 
 type limit =
   | Abs of int  (** Absolute level at which we should stop  *)
@@ -44,12 +44,12 @@ type parameters = {
   tps : float;  (** Transaction per seconds target *)
   strategy : transfer_strategy;
   regular_transfer_fee : Tez.t;
-      (** fees for each transfer (except for transfers to smart contracts), in mutez *)
+      (** fees for each transfer (except for transfers to smart contracts), in mumav *)
   regular_transfer_gas_limit : Gas.Arith.integral;
       (** gas limit per operation (except for transfers to smart contracts) *)
   storage_limit : Z.t;  (** storage limit per operation *)
   account_creation_storage : Z.t;
-      (** upper bound on bytes consumed when creating a tz1 account *)
+      (** upper bound on bytes consumed when creating a mv1 account *)
   total_transfers : int option;
       (** total number of transfers to perform; unbounded if None *)
   level_limit : limit option;
@@ -137,8 +137,8 @@ let default_parameters =
     seed = 0x533D;
     fresh_probability = 0.001;
     tps = 5.0;
-    strategy = Fixed_amount {mutez = Tez.one};
-    regular_transfer_fee = Tez.of_mutez_exn 2_000L;
+    strategy = Fixed_amount {mumav = Tez.one};
+    regular_transfer_fee = Tez.of_mumav_exn 2_000L;
     regular_transfer_gas_limit = Gas.Arith.integral_of_int_exn 1_600;
     (* [gas_limit] corresponds to a slight overapproximation of the
        gas needed to inject an operation. It was obtained by simulating
@@ -206,11 +206,11 @@ let parse_strategy s =
   | ["fixed"; parameter] -> (
       match int_of_string parameter with
       | exception _ -> Error "invalid integer literal"
-      | mutez when mutez <= 0 -> Error "negative amount"
-      | mutez -> (
-          match Tez.of_mutez (Int64.of_int mutez) with
-          | None -> Error "invalid mutez"
-          | Some mutez -> Ok (Fixed_amount {mutez})))
+      | mumav when mumav <= 0 -> Error "negative amount"
+      | mumav -> (
+          match Tez.of_mumav (Int64.of_int mumav) with
+          | None -> Error "invalid mumav"
+          | Some mumav -> Ok (Fixed_amount {mumav})))
   | ["evaporation"; parameter] -> (
       match float_of_string parameter with
       | exception _ -> Error "invalid float literal"
@@ -244,7 +244,7 @@ let normalize_source cctxt =
     with
     | Ok sk -> Lwt.return_some sk
     | Error _ ->
-        let+ r = Tezos_signer_backends.Encrypted.decrypt cctxt sk_uri in
+        let+ r = Mavryk_signer_backends.Encrypted.decrypt cctxt sk_uri in
         let sk = Option.of_result r in
         Option.bind sk Signature.Of_V_latest.secret_key
   in
@@ -372,8 +372,8 @@ let generate_fresh_source state =
    [promise] resolved when the stream is closed. [stopper ()] closes the
    stream. *)
 let heads_iter (cctxt : Protocol_client_context.full)
-    (f : Block_hash.t * Tezos_base.Block_header.t -> unit tzresult Lwt.t) :
-    (unit tzresult Lwt.t * Tezos_rpc.Context.stopper) tzresult Lwt.t =
+    (f : Block_hash.t * Mavryk_base.Block_header.t -> unit tzresult Lwt.t) :
+    (unit tzresult Lwt.t * Mavryk_rpc.Context.stopper) tzresult Lwt.t =
   let open Lwt_result_syntax in
   let* heads_stream, stopper = Shell_services.Monitor.heads cctxt `Main in
   let rec loop () : unit tzresult Lwt.t =
@@ -479,15 +479,15 @@ let rec sample_transfer (cctxt : Protocol_client_context.full) chain block
     in
     let amount =
       match parameters.strategy with
-      | Fixed_amount {mutez} -> mutez
+      | Fixed_amount {mumav} -> mumav
       | Evaporation {fraction} ->
-          let mutez = Int64.to_float (Tez.to_mutez tez) in
-          let max_fraction = Int64.of_float (mutez *. fraction) in
+          let mumav = Int64.to_float (Tez.to_mumav tez) in
+          let max_fraction = Int64.of_float (mumav *. fraction) in
           let amount =
             if max_fraction = 0L then 1L
             else max 1L (Random.State.int64 state.rng_state max_fraction)
           in
-          Tez.of_mutez_exn amount
+          Tez.of_mumav_exn amount
     in
     return {src; dst; fee; gas_limit; amount; counter = None; fresh_dst = fresh}
 
@@ -519,7 +519,7 @@ let manager_op_of_transfer parameters
   in
   let operation =
     let parameters =
-      let open Tezos_micheline in
+      let open Mavryk_micheline in
       Script.lazy_expr
         (match dst with
         | Implicit _ ->
@@ -826,7 +826,7 @@ let launch (cctxt : Protocol_client_context.full) (parameters : parameters)
       loop ()
   in
   let on_new_head :
-      Block_hash.t * Tezos_base.Block_header.t -> unit tzresult Lwt.t =
+      Block_hash.t * Mavryk_base.Block_header.t -> unit tzresult Lwt.t =
     (* Because of how Tenderbake works the target block should stay 2
        blocks in the past because this guarantees that we are targeting a
        block that is decided. *)
@@ -858,7 +858,7 @@ let launch (cctxt : Protocol_client_context.full) (parameters : parameters)
   return_unit
 
 let group =
-  Tezos_clic.
+  Mavryk_clic.
     {name = "stresstest"; title = "Commands for stress-testing the network"}
 
 let input_source_list_encoding = Data_encoding.list input_source_encoding
@@ -869,7 +869,7 @@ let pool_source_param =
     input_source_list_encoding
 
 let seed_arg =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   arg
     ~long:"seed"
     ~placeholder:"int"
@@ -882,7 +882,7 @@ let seed_arg =
          | i -> Lwt_result_syntax.return i))
 
 let tps_arg =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   arg
     ~long:"tps"
     ~placeholder:"float"
@@ -897,7 +897,7 @@ let tps_arg =
          | f -> Lwt_result_syntax.return f))
 
 let fresh_probability_arg =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   arg
     ~long:"fresh-probability"
     ~placeholder:"float in [0;1]"
@@ -921,7 +921,7 @@ let fresh_probability_arg =
          | f -> Lwt_result_syntax.return f))
 
 let smart_contract_parameters_arg =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   arg
     ~long:"smart-contract-parameters"
     ~placeholder:"JSON file with smart contract parameters"
@@ -935,10 +935,10 @@ let smart_contract_parameters_arg =
        Smart_contracts.contract_parameters_collection_encoding)
 
 let strategy_arg =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   arg
     ~long:"strategy"
-    ~placeholder:"fixed:mutez | evaporation:[0;1]"
+    ~placeholder:"fixed:mumav | evaporation:[0;1]"
     ~doc:"wealth redistribution strategy"
     (parameter (fun (cctxt : Protocol_client_context.full) s ->
          match parse_strategy s with
@@ -946,7 +946,7 @@ let strategy_arg =
          | Ok strategy -> Lwt_result_syntax.return strategy))
 
 let gas_limit_arg =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let gas_limit_kind =
     parameter (fun (cctxt : #Client_context.full) s ->
         try
@@ -967,7 +967,7 @@ let gas_limit_arg =
     gas_limit_kind
 
 let storage_limit_arg =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   let storage_limit_kind =
     parameter (fun (cctxt : #Client_context.full) s ->
         try
@@ -991,7 +991,7 @@ let storage_limit_arg =
     storage_limit_kind
 
 let transfers_arg =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   arg
     ~long:"transfers"
     ~placeholder:"integer"
@@ -1005,7 +1005,7 @@ let transfers_arg =
          | i -> Lwt_result_syntax.return i))
 
 let level_limit_arg =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   arg
     ~long:"level-limit"
     ~placeholder:"integer | +integer"
@@ -1022,14 +1022,14 @@ let level_limit_arg =
          | i -> if String.get s 0 = '+' then return (Rel i) else return (Abs i)))
 
 let verbose_arg =
-  Tezos_clic.switch
+  Mavryk_clic.switch
     ~long:"verbose"
     ~short:'v'
     ~doc:"Display detailed logs of the injected operations"
     ()
 
 let debug_arg =
-  Tezos_clic.switch ~long:"debug" ~short:'V' ~doc:"Display debug logs" ()
+  Mavryk_clic.switch ~long:"debug" ~short:'V' ~doc:"Display debug logs" ()
 
 let set_option opt f x = Option.fold ~none:x ~some:(f x) opt
 
@@ -1065,7 +1065,7 @@ let save_pool_callback (cctxt : Protocol_client_context.full) pool_source state
       catch_write_error r
 
 let generate_random_transactions =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   command
     ~group
     ~desc:"Generate random transactions"
@@ -1250,7 +1250,7 @@ let estimate_transaction_cost ?smart_contracts
       dst;
       fee;
       gas_limit;
-      amount = Tez.of_mutez_exn (Int64.of_int 1);
+      amount = Tez.of_mumav_exn (Int64.of_int 1);
       counter = Some transf_counter;
       fresh_dst = false;
     }
@@ -1286,9 +1286,9 @@ let estimate_transaction_cost ?smart_contracts
             Operation_result.pp_operation_result
             (op.protocol_data.contents, result.contents))
 
-let estimate_transaction_costs : Protocol_client_context.full Tezos_clic.command
+let estimate_transaction_costs : Protocol_client_context.full Mavryk_clic.command
     =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   command
     ~group
     ~desc:"Output gas estimations for transactions that stresstest uses"
@@ -1354,11 +1354,11 @@ let generate_reveals ~sources ~fee ~gas_limit ~storage_limit =
     accounts in a exponential way.
 *)
 let generate_starter_ops ~sources ~amount ~batch_size =
-  let fee = Tez.of_mutez_exn 1_000L in
+  let fee = Tez.of_mumav_exn 1_000L in
   let gas_limit = Gas.Arith.integral_of_int_exn 1_040 in
   let storage_limit = Z.of_int 257 in
   let parameters =
-    let open Tezos_micheline in
+    let open Mavryk_micheline in
     Script.lazy_expr
       (Micheline.strip_locations
          (Prim (0, Michelson_v1_primitives.D_Unit, [], [])))
@@ -1395,11 +1395,11 @@ let generate_account_funding_batches (starter_sources : source_with_uri list)
     (empty_accounts : source_with_uri list) ~batch_size ~amount =
   let open Lwt_result_syntax in
   let nb_sources = List.length starter_sources in
-  let fee = Tez.of_mutez_exn 1_000L in
+  let fee = Tez.of_mumav_exn 1_000L in
   let gas_limit = Gas.Arith.integral_of_int_exn 1_040 in
   let storage_limit = Z.of_int 257 in
   let parameters =
-    let open Tezos_micheline in
+    let open Mavryk_micheline in
     Script.lazy_expr
       (Micheline.strip_locations
          (Prim (0, Michelson_v1_primitives.D_Unit, [], [])))
@@ -1468,7 +1468,7 @@ let load_wallet cctxt ~source_pkh =
     | (_, pkh, pk, sk_uri) :: tl ->
         let* pk_uri = Client_keys.neuterize sk_uri in
         let payload =
-          Uri.path (sk_uri : Tezos_signer_backends.Unencrypted.sk_uri :> Uri.t)
+          Uri.path (sk_uri : Mavryk_signer_backends.Unencrypted.sk_uri :> Uri.t)
         in
         let sk = Signature.Secret_key.of_b58check_exn payload in
         aux ({pkh; pk; pk_uri; sk; sk_uri} :: acc) tl
@@ -1476,7 +1476,7 @@ let load_wallet cctxt ~source_pkh =
   aux [] keys
 
 let source_key_arg =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   param
     ~name:"source_key_arg"
     ~desc:
@@ -1493,7 +1493,7 @@ let source_key_arg =
                e))
 
 let batch_size_arg =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   default_arg
     ~long:"batch-size"
     ~placeholder:"integer"
@@ -1508,7 +1508,7 @@ let batch_size_arg =
          | None -> cctxt#error "Cannot read integer"))
 
 let batches_per_block_arg =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   default_arg
     ~long:"batches-per-block"
     ~placeholder:"integer"
@@ -1523,7 +1523,7 @@ let batches_per_block_arg =
          | None -> cctxt#error "Cannot read integer"))
 
 let initial_amount_arg =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   default_arg
     ~long:"initial-amount"
     ~placeholder:"integer"
@@ -1534,7 +1534,7 @@ let initial_amount_arg =
     (parameter (fun (cctxt : #Client_context.full) s ->
          match Int64.of_string_opt s with
          | Some i when i > 0L -> (
-             try Lwt_result_syntax.return (Tez.of_mutez_exn i)
+             try Lwt_result_syntax.return (Tez.of_mumav_exn i)
              with e ->
                cctxt#error "Cannot convert to Tez.t:%s" (Printexc.to_string e))
          | Some _ -> cctxt#error "Integer must be positive."
@@ -1732,9 +1732,9 @@ let inject_funding_batches cctxt
    It also allows to define additional parameters, such as fee, gas
    and storage limit.
 *)
-let fund_accounts_from_source : Protocol_client_context.full Tezos_clic.command
+let fund_accounts_from_source : Protocol_client_context.full Mavryk_clic.command
     =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   command
     ~group
     ~desc:"Funds all the given accounts"
@@ -1804,7 +1804,7 @@ let fund_accounts_from_source : Protocol_client_context.full Tezos_clic.command
                    = reveal + max_nb_transfers * (storage_fees + tx fees)
                    = 0.001tz + max_nb_transfers * (0.06425tz + 0.001tz)
                    =~ max_nb_transfers * 0.1 tz *)
-        let fees_approx = Tez.of_mutez_exn 100_000L in
+        let fees_approx = Tez.of_mumav_exn 100_000L in
         let amount =
           WithExceptions.Result.get_ok
             ~loc:__LOC__

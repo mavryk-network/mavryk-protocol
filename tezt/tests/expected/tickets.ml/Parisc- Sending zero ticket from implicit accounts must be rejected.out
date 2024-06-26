@@ -1,5 +1,5 @@
 
-./octez-client --mode mockup --wait none originate contract tickets_send transferring 0 from bootstrap1 running michelson_test_scripts/mini_scenarios/tickets_send_016.tz --init Unit --burn-cap 1
+./mavkit-client --mode mockup --wait none originate contract tickets_send transferring 0 from bootstrap1 running michelson_test_scripts/mini_scenarios/tickets_send_016.tz --init Unit --burn-cap 1
 Node is bootstrapped.
 Estimated gas: 614.216 units (will add 100 for safety)
 Estimated storage: 415 bytes added (will add 20 for safety)
@@ -7,7 +7,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -58,7 +58,7 @@ This sequence of operations was run:
 New contract [CONTRACT_HASH] originated.
 Contract memorized as tickets_send.
 
-./octez-client --mode mockup --wait none transfer 0 from bootstrap1 to '[CONTRACT_HASH]' --burn-cap 1 --arg 'Pair "[PUBLIC_KEY_HASH]" 1'
+./mavkit-client --mode mockup --wait none transfer 0 from bootstrap1 to '[CONTRACT_HASH]' --burn-cap 1 --arg 'Pair "[PUBLIC_KEY_HASH]" 1'
 Node is bootstrapped.
 Estimated gas: 1858.650 units (will add 100 for safety)
 Estimated storage: 66 bytes added (will add 20 for safety)
@@ -66,7 +66,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -107,10 +107,10 @@ This sequence of operations was run:
               [PUBLIC_KEY_HASH] ... +1
 
 
-./octez-client --mode mockup get ticket balance for bootstrap1 with ticketer '[CONTRACT_HASH]' and type string and content '"Ticket"'
+./mavkit-client --mode mockup get ticket balance for bootstrap1 with ticketer '[CONTRACT_HASH]' and type string and content '"Ticket"'
 1
 
-./octez-client --mode mockup --wait none originate contract tickets_bag transferring 0 from bootstrap1 running michelson_test_scripts/mini_scenarios/tickets_bag_016.tz --init '{}' --burn-cap 1
+./mavkit-client --mode mockup --wait none originate contract tickets_bag transferring 0 from bootstrap1 running michelson_test_scripts/mini_scenarios/tickets_bag_016.tz --init '{}' --burn-cap 1
 Node is bootstrapped.
 Estimated gas: 620.183 units (will add 100 for safety)
 Estimated storage: 451 bytes added (will add 20 for safety)
@@ -118,7 +118,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -169,6 +169,6 @@ This sequence of operations was run:
 New contract [CONTRACT_HASH] originated.
 Contract memorized as tickets_bag.
 
-./octez-client --mode mockup --wait none transfer 0 tickets from bootstrap1 to '[CONTRACT_HASH]' with entrypoint save and contents '"Ticket"' and type string and ticketer '[CONTRACT_HASH]' --burn-cap 1
+./mavkit-client --mode mockup --wait none transfer 0 tickets from bootstrap1 to '[CONTRACT_HASH]' with entrypoint save and contents '"Ticket"' and type string and ticketer '[CONTRACT_HASH]' --burn-cap 1
 Fatal error:
   ticket quantity should not be zero or negative

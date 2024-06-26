@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 module In_memory = struct
-  open Tezos_context_memory
+  open Mavryk_context_memory
 
   module Tree = struct
     include Context_binary.Tree
@@ -70,6 +70,6 @@ module In_memory = struct
     kinded_hash_to_state_hash proof.Context_binary.Proof.after
 
   let proof_encoding =
-    Tezos_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2
+    Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2
     .tree_proof_encoding
 end

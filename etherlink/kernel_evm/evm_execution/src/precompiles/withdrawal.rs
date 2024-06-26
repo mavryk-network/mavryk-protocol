@@ -158,7 +158,7 @@ mod tests {
 
         let expected_output = vec![];
         let expected_target =
-            Contract::from_b58check("tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w").unwrap();
+            Contract::from_b58check("mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe").unwrap();
 
         let expected_gas = 21000 // base cost, no additional cost for withdrawal
     + 1032 // transaction data cost (90 zero bytes + 42 non zero bytes)

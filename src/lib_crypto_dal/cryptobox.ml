@@ -295,9 +295,7 @@ module Inner = struct
 
   (* Error cases of this functions are not encapsulated into
      `tzresult` for modularity reasons. *)
-  let make
-      ({redundancy_factor; slot_size; page_size; number_of_shards} as
-      parameters) =
+  let make =
     let open Result_syntax in
     let table = Cache.create 5 in
     let with_cache (parameters, initialisation_parameters) f =
@@ -1092,7 +1090,7 @@ module Inner = struct
           Kate_amortized.verify
             t.kate_amortized
             ~commitment
-            ~srs_point:t.srs.kate_amortized_srs_g2_pages
+            ~srs_point
             ~domain
             ~root
             ~evaluations

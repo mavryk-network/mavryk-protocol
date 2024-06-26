@@ -1418,7 +1418,7 @@
   },
   {
     "file": "src/lib_context/test/test_context.ml",
-    "title": "tezos-context: context (disk:fold_keys_undefined)",
+    "title": "mavryk-context: context (disk:fold_keys_undefined)",
     "tags": [
       "alcotezt",
       "quick"

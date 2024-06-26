@@ -224,7 +224,7 @@ let compute_coeff =
     if Tez_repr.(base_total_issued_per_minute = zero) then Q.one
     else
       let q_base_total_issued_per_minute =
-        Tez_repr.to_mutez base_total_issued_per_minute |> Q.of_int64
+        Tez_repr.to_mumav base_total_issued_per_minute |> Q.of_int64
       in
       let f = Q.add base_reward_coeff_ratio (bonus :> Q.t) in
       let f = truncate_reward_coeff ~issuance_ratio_min ~issuance_ratio_max f in
@@ -260,9 +260,9 @@ let compute_and_store_reward_coeff_at_cycle_end ctxt ~new_cycle =
       Constants_storage.minimal_block_delay ctxt |> Period_repr.to_seconds
     in
     let seconds_per_cycle = Int64.mul blocks_per_cycle minimal_block_delay in
-    let q_total_supply = Tez_repr.to_mutez total_supply |> Q.of_int64 in
+    let q_total_supply = Tez_repr.to_mumav total_supply |> Q.of_int64 in
     let q_total_frozen_stake =
-      Tez_repr.to_mutez total_frozen_stake |> Q.of_int64
+      Tez_repr.to_mumav total_frozen_stake |> Q.of_int64
     in
     let stake_ratio =
       Q.div q_total_frozen_stake q_total_supply (* = portion of frozen stake *)

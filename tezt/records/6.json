@@ -1423,7 +1423,7 @@
   },
   {
     "file": "src/lib_context/test/test_context.ml",
-    "title": "tezos-context: context (disk:set_hash_version_tzresult)",
+    "title": "mavryk-context: context (disk:set_hash_version_tzresult)",
     "tags": [
       "alcotezt",
       "quick"

@@ -9,7 +9,7 @@
   mavkit-libs.stdlib
   mavkit-libs.stdlib-unix
   mavkit-libs.base
-  mavkit-libs.tezos-workers
+  mavkit-libs.mavryk-workers
   mavkit-libs.test-helpers
   mavkit-libs.base-test-helpers
   mavkit-alcotezt)

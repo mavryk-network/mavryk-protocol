@@ -19,8 +19,8 @@ tar cpf - . | (cd $RPM_BUILD_ROOT && tar xpf -)
 The Octez EVM node
 
 %files
-%{_bindir}/octez-*
-%{_sysconfdir}/init.d/octez-evmnode
+%{_bindir}/mavkit-*
+%{_sysconfdir}/init.d/mavkit-evmnode
 %config /etc/octez/evmnode.conf
 
 %post

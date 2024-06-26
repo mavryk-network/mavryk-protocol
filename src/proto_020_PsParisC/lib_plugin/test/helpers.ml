@@ -49,14 +49,14 @@ let manager_operation_gen =
 
 (** Generator for a packed manager operation with the specified
     total fee and gas limit. *)
-let manager_op_with_fee_and_gas_gen ~fee_in_mutez ~gas =
+let manager_op_with_fee_and_gas_gen ~fee_in_mumav ~gas =
   let open Alpha_context in
   let open QCheck2.Gen in
   let rec set_fee_and_gas :
       type kind. _ -> _ -> kind contents_list -> kind contents_list t =
    fun desired_total_fee desired_total_gas -> function
     | Single (Manager_operation data) ->
-        let fee = Tez.of_mutez_exn (Int64.of_int desired_total_fee) in
+        let fee = Tez.of_mumav_exn (Int64.of_int desired_total_fee) in
         let gas_limit = Gas.Arith.integral_of_int_exn desired_total_gas in
         return (Single (Manager_operation {data with fee; gas_limit}))
     | Cons (Manager_operation data, tail) ->
@@ -70,7 +70,7 @@ let manager_op_with_fee_and_gas_gen ~fee_in_mutez ~gas =
           | `All -> return desired_total_fee
         in
         let* local_gas = int_range 0 desired_total_gas in
-        let fee = Tez.of_mutez_exn (Int64.of_int local_fee) in
+        let fee = Tez.of_mumav_exn (Int64.of_int local_fee) in
         let gas_limit = Gas.Arith.integral_of_int_exn local_gas in
         let* tail =
           set_fee_and_gas
@@ -85,19 +85,19 @@ let manager_op_with_fee_and_gas_gen ~fee_in_mutez ~gas =
   (* Generate a random manager operation. *)
   let* batch_size = int_range 1 Operation_generator.max_batch_size in
   let* op = Operation_generator.generate_manager_operation batch_size in
-  (* Modify its fee and gas to match the [fee_in_mutez] and [gas] inputs. *)
+  (* Modify its fee and gas to match the [fee_in_mumav] and [gas] inputs. *)
   let {shell = _; protocol_data = Operation_data protocol_data} = op in
-  let* contents = set_fee_and_gas fee_in_mutez gas protocol_data.contents in
+  let* contents = set_fee_and_gas fee_in_mumav gas protocol_data.contents in
   let protocol_data = {protocol_data with contents} in
   let op = {op with protocol_data = Operation_data protocol_data} in
   return (Operation.hash_packed op, op)
 
 (** Generate a packed manager operation with the specified total fee
     and gas limit. *)
-let generate_manager_op_with_fee_and_gas ~fee_in_mutez ~gas =
-  QCheck2.Gen.generate1 (manager_op_with_fee_and_gas_gen ~fee_in_mutez ~gas)
+let generate_manager_op_with_fee_and_gas ~fee_in_mumav ~gas =
+  QCheck2.Gen.generate1 (manager_op_with_fee_and_gas_gen ~fee_in_mumav ~gas)
 
-(** Change the total fee of the packed operation [op] to [fee] (in mutez).
+(** Change the total fee of the packed operation [op] to [fee] (in mumav).
     Also change its source to [source] if the argument is provided.
 
     Precondition: [op] must be a manager operation. *)
@@ -106,9 +106,9 @@ let set_fee_and_source fee ?source op =
   let open QCheck2.Gen in
   let rec set_fee_contents_list_gen :
       type kind. int64 -> kind contents_list -> kind contents_list t =
-   fun desired_total_fee (* in mutez *) -> function
+   fun desired_total_fee (* in mumav *) -> function
     | Single (Manager_operation data) ->
-        let fee = Tez.of_mutez_exn desired_total_fee in
+        let fee = Tez.of_mumav_exn desired_total_fee in
         let contents =
           match source with
           | Some source -> Manager_operation {data with fee; source}
@@ -127,7 +127,7 @@ let set_fee_and_source fee ?source op =
           | `Zero -> return 0L
           | `All -> return desired_total_fee
         in
-        let fee = Tez.of_mutez_exn local_fee in
+        let fee = Tez.of_mumav_exn local_fee in
         let contents =
           match source with
           | Some source -> Manager_operation {data with fee; source}

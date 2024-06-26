@@ -139,7 +139,7 @@ let gen_algo = QCheck2.Gen.oneofl Signature.algos
 
 let random_seed =
   let open QCheck2.Gen in
-  let+ str = string_size (pure Tezos_crypto.Hacl.Ed25519.sk_size) in
+  let+ str = string_size (pure Mavryk_crypto.Hacl.Ed25519.sk_size) in
   Bytes.unsafe_of_string str
 
 let random_keys =
@@ -148,7 +148,7 @@ let random_keys =
   let+ seed = random_seed in
   Signature.generate_key ~algo ~seed ()
 
-let random_tz1 =
+let random_mv1 =
   let open QCheck2.Gen in
   let+ str = string_size (pure Signature.Ed25519.Public_key_hash.size) in
   (Ed25519 (Signature.Ed25519.Public_key_hash.of_string_exn str)
@@ -174,7 +174,7 @@ let random_pkh =
   let open QCheck2.Gen in
   let* algo = gen_algo in
   match algo with
-  | Ed25519 -> random_tz1
+  | Ed25519 -> random_mv1
   | Secp256k1 -> random_tz2
   | P256 -> random_tz3
   | Bls -> random_tz4
@@ -260,10 +260,10 @@ let random_code =
 
 (** {2 Operations parameters generators} *)
 
-let random_shell : Tezos_base.Operation.shell_header QCheck2.Gen.t =
+let random_shell : Mavryk_base.Operation.shell_header QCheck2.Gen.t =
   let open QCheck2.Gen in
   let+ branch = gen_block_hash in
-  Tezos_base.Operation.{branch}
+  Mavryk_base.Operation.{branch}
 
 let gen_slot =
   let open QCheck2.Gen in
@@ -293,7 +293,7 @@ let generate_consensus_content : consensus_content QCheck2.Gen.t =
 let gen_tez =
   let open QCheck2.Gen in
   let+ i = ui64 in
-  match Tez.of_mutez i with None -> Tez.zero | Some v -> v
+  match Tez.of_mumav i with None -> Tez.zero | Some v -> v
 
 let gen_fee = gen_tez
 
@@ -420,7 +420,7 @@ let generate_double_baking =
 let generate_activate_account =
   let open QCheck2.Gen in
   let* activation_code = random_code in
-  let+ id = random_tz1 in
+  let+ id = random_mv1 in
   let id = match id with Signature.Ed25519 pkh -> pkh | _ -> assert false in
   Activate_account {id; activation_code}
 
@@ -691,7 +691,7 @@ let generate_manager_operation batch_size =
 (** The default upper bound on the number of manager operations in a batch.
 
     As of December 2022, there is no batch maximal size enforced
-    anywhere in the protocol. However, the Octez Shell only accepts
+    anywhere in the protocol. However, the Mavkit Shell only accepts
     batches of at most [operations_batch_size] operations, which has a
     default value of [50] in [src/lib_shell_services/shell_limits.ml].
     The protocol tests do not necessarily have to align with this

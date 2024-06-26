@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 let build_rpc_directory () =
-  Tezos_rpc.Directory.gen_register
-    Tezos_rpc.Directory.empty
+  Mavryk_rpc.Directory.gen_register
+    Mavryk_rpc.Directory.empty
     Health_services.S.health
-    (fun () () () -> Tezos_rpc.Answer.return true)
+    (fun () () () -> Mavryk_rpc.Answer.return true)

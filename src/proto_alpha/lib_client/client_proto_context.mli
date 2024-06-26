@@ -897,7 +897,7 @@ val sc_rollup_timeout :
   tzresult
   Lwt.t
 
-(** Calls {!Tezos_protocol_plugin_alpha.Plugin.RPC.Sc_rollup.get_ticket_balance}. *)
+(** Calls {!Mavryk_protocol_plugin_alpha.Plugin.RPC.Sc_rollup.get_ticket_balance}. *)
 val get_smart_rollup_ticket_balance :
   #Protocol_client_context.rpc_context ->
   chain:Shell_services.chain ->

@@ -8,8 +8,8 @@
  (libraries
   mavkit-libs.base
   mavkit-libs.stdlib
-  irmin-pack
-  irmin-pack.mem
+  mavkit-internal-libs.irmin_pack
+  mavkit-internal-libs.irmin_pack.mem
   mavkit-libs.context.sigs
   mavkit-libs.mavryk-context.encoding
   mavkit-libs.mavryk-context.helpers)

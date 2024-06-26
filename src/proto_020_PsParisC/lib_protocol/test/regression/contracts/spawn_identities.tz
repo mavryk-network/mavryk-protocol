@@ -13,7 +13,7 @@
                      SUB ;
                      ABS ;
                      PUSH string "init" ;
-                     PUSH mutez 5000000 ;
+                     PUSH mumav 5000000 ;
                      NONE key_hash ;
                      CREATE_CONTRACT
                        { parameter string ;

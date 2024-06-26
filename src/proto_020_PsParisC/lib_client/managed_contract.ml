@@ -25,7 +25,7 @@
 open Protocol
 open Alpha_context
 open Protocol_client_context
-open Tezos_micheline
+open Mavryk_micheline
 
 let return_single_manager_result (oph, _, op, result) =
   let open Lwt_result_syntax in
@@ -206,23 +206,23 @@ let t_unit =
 let build_lambda_for_transfer_to_implicit ~destination ~amount =
   let (`Hex destination) = Signature.Public_key_hash.to_hex destination in
   Format.asprintf
-    "{ DROP ; NIL operation ;PUSH key_hash 0x%s; IMPLICIT_ACCOUNT;PUSH mutez \
+    "{ DROP ; NIL operation ;PUSH key_hash 0x%s; IMPLICIT_ACCOUNT;PUSH mumav \
      %Ld ;UNIT;TRANSFER_TOKENS ; CONS }"
     destination
-    (Tez.to_mutez amount)
+    (Tez.to_mumav amount)
 
 let build_lambda_for_transfer_to_originated ~destination ~entrypoint ~amount
     ~parameter_type ~parameter =
   let destination =
     Data_encoding.Binary.to_bytes_exn Contract.originated_encoding destination
   in
-  let amount = Tez.to_mutez amount in
+  let amount = Tez.to_mumav amount in
   let (`Hex destination) = Hex.of_bytes destination in
   let entrypoint = Entrypoint.to_address_suffix entrypoint in
   if parameter_type = t_unit then
     Format.asprintf
       "{ DROP ; NIL operation ;PUSH address 0x%s; CONTRACT %s %a; \
-       ASSERT_SOME;PUSH mutez %Ld ;UNIT;TRANSFER_TOKENS ; CONS }"
+       ASSERT_SOME;PUSH mumav %Ld ;UNIT;TRANSFER_TOKENS ; CONS }"
       destination
       entrypoint
       Michelson_v1_printer.print_expr
@@ -231,7 +231,7 @@ let build_lambda_for_transfer_to_originated ~destination ~entrypoint ~amount
   else
     Format.asprintf
       "{ DROP ; NIL operation ;PUSH address 0x%s; CONTRACT %s %a; \
-       ASSERT_SOME;PUSH mutez %Ld ;PUSH %a %a;TRANSFER_TOKENS ; CONS }"
+       ASSERT_SOME;PUSH mumav %Ld ;PUSH %a %a;TRANSFER_TOKENS ; CONS }"
       destination
       entrypoint
       Michelson_v1_printer.print_expr

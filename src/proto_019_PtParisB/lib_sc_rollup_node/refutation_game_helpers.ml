@@ -44,7 +44,7 @@ let page_info_from_pvm_state constants (node_ctxt : _ Node_context.t)
     match constants.Rollup_constants.sc_rollup.reveal_activation_level with
     | Some reveal_activation_level ->
         Sc_rollup.is_reveal_enabled_predicate
-          (Sc_rollup_proto_types.Constants.reveal_activation_level_of_octez
+          (Sc_rollup_proto_types.Constants.reveal_activation_level_of_mavkit
              reveal_activation_level)
     | None ->
         (* For older protocol, constants don't have the notion of reveal
@@ -115,16 +115,16 @@ let metadata (node_ctxt : _ Node_context.t) =
   Sc_rollup.Metadata.{address; origination_level}
 
 let generate_proof (node_ctxt : _ Node_context.t)
-    (game : Octez_smart_rollup.Game.t) (start_state : Context.pvmstate) =
+    (game : Mavkit_smart_rollup.Game.t) (start_state : Context.pvmstate) =
   let open Lwt_result_syntax in
   let module PVM = (val Pvm.of_kind node_ctxt.kind) in
   let snapshot =
-    Sc_rollup_proto_types.Inbox.history_proof_of_octez game.inbox_snapshot
+    Sc_rollup_proto_types.Inbox.history_proof_of_mavkit game.inbox_snapshot
   in
   (* NOTE: [snapshot_level_int32] below refers to the level of the snapshotted
      inbox (from the skip list) which also matches [game.start_level - 1]. *)
   let snapshot_level_int32 =
-    (Octez_smart_rollup.Inbox.Skip_list.content game.inbox_snapshot).level
+    (Mavkit_smart_rollup.Inbox.Skip_list.content game.inbox_snapshot).level
   in
   let* context =
     let* start_hash = Node_context.hash_of_level node_ctxt game.inbox_level in
@@ -133,7 +133,7 @@ let generate_proof (node_ctxt : _ Node_context.t)
   in
   let dal_slots_history =
     (* Similarly to what's done for inbox snapshot above. *)
-    Sc_rollup_proto_types.Dal.Slot_history.of_octez game.dal_snapshot
+    Sc_rollup_proto_types.Dal.Slot_history.of_mavkit game.dal_snapshot
   in
   let get_cell_from_hash hash =
     (* each time a DAL skip list cell is requested by hash, we retrieve it from the DAL node. *)
@@ -190,7 +190,7 @@ let generate_proof (node_ctxt : _ Node_context.t)
           ~dac_client:node_ctxt.dac_client
           ~pre_images_endpoint:node_ctxt.config.pre_images_endpoint
           ~data_dir:node_ctxt.data_dir
-          ~pvm_kind:(Sc_rollup_proto_types.Kind.to_octez PVM.kind)
+          ~pvm_kind:(Sc_rollup_proto_types.Kind.to_mavkit PVM.kind)
           hash
       in
       match res with Ok data -> return_some data | Error _ -> return_none
@@ -214,7 +214,7 @@ let generate_proof (node_ctxt : _ Node_context.t)
             Option.map
               (fun i ->
                 Sc_rollup.Inbox.take_snapshot
-                  (Sc_rollup_proto_types.Inbox.of_octez i))
+                  (Sc_rollup_proto_types.Inbox.of_mavkit i))
               inbox
 
       let get_payloads_history witness =
@@ -254,7 +254,7 @@ let generate_proof (node_ctxt : _ Node_context.t)
     match constants.sc_rollup.reveal_activation_level with
     | Some reveal_activation_level ->
         Sc_rollup.is_reveal_enabled_predicate
-          (Sc_rollup_proto_types.Constants.reveal_activation_level_of_octez
+          (Sc_rollup_proto_types.Constants.reveal_activation_level_of_mavkit
              reveal_activation_level)
     | None ->
         (* Constants for an older protocol, there is no notion of reveal
@@ -322,10 +322,10 @@ let make_dissection plugin (node_ctxt : _ Node_context.t) ~start_state
   in
   let state_hash_of_eval_state Pvm_plugin_sig.{state_hash; _} = state_hash in
   let start_chunk =
-    Sc_rollup_proto_types.Game.dissection_chunk_of_octez start_chunk
+    Sc_rollup_proto_types.Game.dissection_chunk_of_mavkit start_chunk
   in
   let our_stop_chunk =
-    Sc_rollup_proto_types.Game.dissection_chunk_of_octez our_stop_chunk
+    Sc_rollup_proto_types.Game.dissection_chunk_of_mavkit our_stop_chunk
   in
   let+ dissection =
     Game_helpers.make_dissection
@@ -339,7 +339,7 @@ let make_dissection plugin (node_ctxt : _ Node_context.t) ~start_state
          ~our_stop_chunk
          ~default_number_of_sections
   in
-  List.map Sc_rollup_proto_types.Game.dissection_chunk_to_octez dissection
+  List.map Sc_rollup_proto_types.Game.dissection_chunk_to_mavkit dissection
 
 let timeout_reached node_ctxt ~self ~opponent =
   let open Lwt_result_syntax in
@@ -365,7 +365,7 @@ let get_conflicts cctxt rollup staker =
   let+ conflicts =
     Plugin.RPC.Sc_rollup.conflicts cctxt (cctxt#chain, `Head 0) rollup staker
   in
-  List.map Sc_rollup_proto_types.Game.conflict_to_octez conflicts
+  List.map Sc_rollup_proto_types.Game.conflict_to_mavkit conflicts
 
 let get_ongoing_games cctxt rollup staker =
   let open Lwt_result_syntax in
@@ -379,5 +379,5 @@ let get_ongoing_games cctxt rollup staker =
   in
   List.map
     (fun (game, staker1, staker2) ->
-      (Sc_rollup_proto_types.Game.to_octez game, staker1, staker2))
+      (Sc_rollup_proto_types.Game.to_mavkit game, staker1, staker2))
     games

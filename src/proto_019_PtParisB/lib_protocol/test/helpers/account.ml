@@ -37,7 +37,7 @@ type account = t
 let known_accounts = Signature.Public_key_hash.Table.create 17
 
 let random_seed ~rng_state =
-  Bytes.init Tezos_crypto.Hacl.Ed25519.sk_size (fun _i ->
+  Bytes.init Mavryk_crypto.Hacl.Ed25519.sk_size (fun _i ->
       Char.chr (Random.State.int rng_state 256))
 
 let random_algo ~rng_state : Signature.algo =
@@ -85,7 +85,7 @@ let dummy_account =
   in
   new_account ~seed ()
 
-let default_initial_balance = Tez.of_mutez_exn 4_000_000_000_000L
+let default_initial_balance = Tez.of_mumav_exn 4_000_000_000_000L
 
 let generate_accounts ?rng_state n : t list tzresult =
   Signature.Public_key_hash.Table.clear known_accounts ;
@@ -135,7 +135,7 @@ let rec make_bootstrap_accounts ?(bootstrap_balances = [])
         decons_of_opt bootstrap_consensus_keys
       in
       make_bootstrap_account
-        ?balance:(Option.map Tez.of_mutez_exn balance)
+        ?balance:(Option.map Tez.of_mumav_exn balance)
         ~delegate_to
         ~consensus_key
         account

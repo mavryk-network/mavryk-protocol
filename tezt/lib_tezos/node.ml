@@ -707,7 +707,7 @@ let wait_for_disconnections node disconnections =
   let* () = wait_for_ready node in
   waiter
 
-let create ?runner ?(path = Uses.path Constant.octez_node) ?name ?color
+let create ?runner ?(path = Uses.path Constant.mavkit_node) ?name ?color
     ?data_dir ?event_pipe ?net_addr ?net_port ?advertised_net_port ?metrics_addr
     ?metrics_port ?(rpc_external = false) ?(rpc_host = Constant.default_host)
     ?rpc_port ?rpc_tls ?(allow_all_rpc = true)

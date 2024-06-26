@@ -4,4 +4,4 @@
 (executable
  (name main)
  (public_name gas_parameter_diff)
- (package tezos-tooling))
+ (package mavryk-tooling))

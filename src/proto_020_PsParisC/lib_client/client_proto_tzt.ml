@@ -7,7 +7,7 @@
 
 open Protocol
 open Alpha_context
-open Tezos_micheline
+open Mavryk_micheline
 
 type unit_test_with_source = {
   source : string;
@@ -30,8 +30,8 @@ let convert_error trace =
            ( 0,
              "MutezUnderflow",
              [
-               Int (0, Z.of_int64 @@ Tez_repr.to_mutez a);
-               Int (0, Z.of_int64 @@ Tez_repr.to_mutez b);
+               Int (0, Z.of_int64 @@ Tez_repr.to_mumav a);
+               Int (0, Z.of_int64 @@ Tez_repr.to_mumav b);
              ],
              [] ))
   | Tez_repr.Negative_multiplicator _ -> return (Prim (0, "NegMul", [], []))

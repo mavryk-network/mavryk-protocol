@@ -54,7 +54,7 @@ type additional_info = Mavryk_version_parser.additional_info =
 val string_of_additional_info : additional_info -> string
 
 (** Product information. *)
-type product = Tezos_version_parser.product = Mavkit | Etherlink
+type product = Mavryk_version_parser.product = Mavkit | Etherlink
 
 (** Convert the product information to a string. *)
 val string_of_product : product -> string

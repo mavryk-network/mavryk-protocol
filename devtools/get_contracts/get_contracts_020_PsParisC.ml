@@ -22,8 +22,8 @@
 (* DEALINGS IN THE SOFTWARE.                                                 *)
 (*                                                                           *)
 (*****************************************************************************)
-open Tezos_protocol_020_PsParisC
-open Tezos_client_020_PsParisC
+open Mavryk_protocol_020_PsParisC
+open Mavryk_client_020_PsParisC
 open Protocol
 
 module Proto = struct

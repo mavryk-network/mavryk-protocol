@@ -67,11 +67,11 @@ operations included in newly received blocks, whose validation is
 triggered by the :ref:`block validator<block_validator>`, in order to
 localize validation rules as needed. The resulting concrete API is
 specified by the :package-api:`Protocol
-<octez-proto-libs/Tezos_protocol_environment/V12/module-type-T/Updater/module-type-PROTOCOL/index.html>`
+<mavkit-proto-libs/Mavryk_protocol_environment/V12/module-type-T/Updater/module-type-PROTOCOL/index.html>`
 module in the :doc:`protocol
 environment<../shell/protocol_environment>` ``V12``, and it is
 implemented by this protocol in the
-:package-api:`Main<tezos-protocol-019-PtParisB/Tezos_raw_protocol_019_PtParisB/Main/index.html>`
+:package-api:`Main<mavryk-protocol-019-PtParisB/Mavryk_raw_protocol_019_PtParisB/Main/index.html>`
 module.
 
 The rest of this document is organized as follows: we first describe

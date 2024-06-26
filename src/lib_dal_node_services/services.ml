@@ -108,12 +108,12 @@ let get_page_proof :
     ; params : unit * Types.page_index
     ; query : unit >
     service =
-  Tezos_rpc.Service.post_service
+  Mavryk_rpc.Service.post_service
     ~description:"Compute the proof associated with a page of a given slot."
-    ~query:Tezos_rpc.Query.empty
+    ~query:Mavryk_rpc.Query.empty
     ~input:slot_encoding
     ~output:Cryptobox.page_proof_encoding
-    Tezos_rpc.Path.(open_root / "pages" /: Tezos_rpc.Arg.int / "proof")
+    Mavryk_rpc.Path.(open_root / "pages" /: Mavryk_rpc.Arg.int / "proof")
 
 let put_commitment_shards :
     < meth : [`PUT]
@@ -256,9 +256,9 @@ let get_attestable_slots :
 let get_shard :
     < meth : [`GET]
     ; input : unit
-    ; output : Tezos_crypto_dal.Cryptobox.shard
+    ; output : Mavryk_crypto_dal.Cryptobox.shard
     ; prefix : unit
-    ; params : (unit * Tezos_crypto_dal.Cryptobox.commitment) * int
+    ; params : (unit * Mavryk_crypto_dal.Cryptobox.commitment) * int
     ; query : unit >
     service =
   let shard_arg = Mavryk_rpc.Arg.int in
@@ -455,7 +455,7 @@ module P2P = struct
         ; params : unit * P2p_peer.Id.t
         ; query : unit >
         service =
-      Tezos_rpc.Service.patch_service
+      Mavryk_rpc.Service.patch_service
         ~description:
           "Change the permissions of a given peer. With `{acl: ban}`: \
            blacklist the given peer and remove it from the whitelist if \
@@ -465,7 +465,7 @@ module P2P = struct
            cannot be blocked (but its host IP still can). In all cases, the \
            updated information for the peer is returned. If input is omitted, \
            this is equivalent to using the `GET` version of this RPC."
-        ~query:Tezos_rpc.Query.empty
+        ~query:Mavryk_rpc.Query.empty
         ~input:
           Data_encoding.(
             obj1

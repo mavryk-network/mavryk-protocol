@@ -35,9 +35,9 @@
    assumptions underlying [register] and [expand] don't change out
    from under us.*)
 
-open Tezos_benchmark
+open Mavryk_benchmark
 open Benchmarks_proto
-open Tezos_micheline
+open Mavryk_micheline
 open Protocol
 
 let ns = Namespace.make Registration_helpers.ns "global_constants_storage"
@@ -213,7 +213,7 @@ module Micheline_sampler = struct
       T_signature;
       T_string;
       T_bytes;
-      T_mutez;
+      T_mumav;
       T_timestamp;
       T_unit;
       T_operation;

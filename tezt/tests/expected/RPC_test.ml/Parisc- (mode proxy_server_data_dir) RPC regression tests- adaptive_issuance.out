@@ -1,5 +1,5 @@
 
-./octez-client rpc get /chains/main/blocks/head/context/contracts
+./mavkit-client rpc get /chains/main/blocks/head/context/contracts
 [ "[CONTRACT_HASH]",
   "[CONTRACT_HASH]",
   "[CONTRACT_HASH]",
@@ -9,32 +9,32 @@
   "[PUBLIC_KEY_HASH]",
   "[PUBLIC_KEY_HASH]" ]
 
-./octez-client rpc get /chains/main/blocks/head/context/delegates
+./mavkit-client rpc get /chains/main/blocks/head/context/delegates
 [ "[PUBLIC_KEY_HASH]",
   "[PUBLIC_KEY_HASH]",
   "[PUBLIC_KEY_HASH]",
   "[PUBLIC_KEY_HASH]",
   "[PUBLIC_KEY_HASH]" ]
 
-./octez-client rpc get /chains/main/blocks/head/context/total_supply
+./mavkit-client rpc get /chains/main/blocks/head/context/total_supply
 "20000001416766"
 
-./octez-client rpc get /chains/main/blocks/head/context/total_frozen_stake
+./mavkit-client rpc get /chains/main/blocks/head/context/total_frozen_stake
 "1000000000000"
 
-./octez-client rpc get /chains/main/blocks/head/context/issuance/current_yearly_rate
+./mavkit-client rpc get /chains/main/blocks/head/context/issuance/current_yearly_rate
 "210.260"
 
-./octez-client rpc get /chains/main/blocks/head/context/issuance/current_yearly_rate_exact
+./mavkit-client rpc get /chains/main/blocks/head/context/issuance/current_yearly_rate_exact
 { "numerator": "700868433120000", "denominator": "3333333569461" }
 
-./octez-client rpc get /chains/main/blocks/head/context/issuance/issuance_per_minute
+./mavkit-client rpc get /chains/main/blocks/head/context/issuance/issuance_per_minute
 "80007812"
 
-./octez-client rpc get /chains/main/blocks/head/context/adaptive_issuance_launch_cycle
+./mavkit-client rpc get /chains/main/blocks/head/context/adaptive_issuance_launch_cycle
 5
 
-./octez-client rpc get /chains/main/blocks/head/context/issuance/expected_issuance
+./mavkit-client rpc get /chains/main/blocks/head/context/issuance/expected_issuance
 [ { "cycle": 0, "baking_reward_fixed_portion": "333333",
     "baking_reward_bonus_per_slot": "1302",
     "attesting_reward_per_slot": "2604", "seed_nonce_revelation_tip": "260",
@@ -48,20 +48,20 @@
     "attesting_reward_per_slot": "2604", "seed_nonce_revelation_tip": "260",
     "vdf_revelation_tip": "260" } ]
 
-./octez-client rpc get '/chains/main/blocks/head/context/delegates/[PUBLIC_KEY_HASH]/stakers'
+./mavkit-client rpc get '/chains/main/blocks/head/context/delegates/[PUBLIC_KEY_HASH]/stakers'
 [ { "staker": "[PUBLIC_KEY_HASH]",
     "frozen_deposits": "200000000000" } ]
 
-./octez-client rpc get /chains/main/blocks/head/context/issuance/current_yearly_rate_details
+./mavkit-client rpc get /chains/main/blocks/head/context/issuance/current_yearly_rate_details
 { "static":
     { "numerator": "700868433120000", "denominator": "3333333569461" },
   "dynamic": { "numerator": "0", "denominator": "1" } }
 
-./octez-client rpc get '/chains/main/blocks/head/context/delegates/[PUBLIC_KEY_HASH]/total_delegated_stake'
+./mavkit-client rpc get '/chains/main/blocks/head/context/delegates/[PUBLIC_KEY_HASH]/total_delegated_stake'
 "0"
 
-./octez-client rpc get '/chains/main/blocks/head/context/delegates/[PUBLIC_KEY_HASH]/staking_denominator'
+./mavkit-client rpc get '/chains/main/blocks/head/context/delegates/[PUBLIC_KEY_HASH]/staking_denominator'
 "0"
 
-./octez-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/staking_numerator'
+./mavkit-client rpc get '/chains/main/blocks/head/context/contracts/[PUBLIC_KEY_HASH]/staking_numerator'
 "0"

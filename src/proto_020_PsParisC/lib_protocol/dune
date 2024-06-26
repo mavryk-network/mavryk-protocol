@@ -2,35 +2,35 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_protocol_environment_020_PsParisC)
- (public_name tezos-protocol-020-PsParisC.protocol.environment)
+ (name mavryk_protocol_environment_020_PsParisC)
+ (public_name mavryk-protocol-020-PsParisC.protocol.environment)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-proto-libs.protocol-environment)
+  mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
- (modules Tezos_protocol_environment_020_PsParisC))
+ (modules Mavryk_protocol_environment_020_PsParisC))
 
 (rule
- (targets tezos_protocol_environment_020_PsParisC.ml)
+ (targets mavryk_protocol_environment_020_PsParisC.ml)
  (action
   (write-file
    %{targets}
-   "module Name = struct let name = \"020-PsParisC\" end\ninclude Tezos_protocol_environment.V12.Make(Name)()\n")))
+   "module Name = struct let name = \"020-PsParisC\" end\ninclude Mavryk_protocol_environment.V12.Make(Name)()\n")))
 
 (library
  (name tezos_raw_protocol_020_PsParisC)
- (public_name tezos-protocol-020-PsParisC.protocol.raw)
+ (public_name mavryk-protocol-020-PsParisC.protocol.raw)
  (instrumentation (backend bisect_ppx))
  (libraries
-  tezos-protocol-020-PsParisC.protocol.environment)
+  mavryk-protocol-020-PsParisC.protocol.environment)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -nostdlib
   -nopervasives
-  -open Tezos_protocol_environment_020_PsParisC
-  -open Tezos_protocol_environment_020_PsParisC.Pervasives
-  -open Tezos_protocol_environment_020_PsParisC.Error_monad)
+  -open Mavryk_protocol_environment_020_PsParisC
+  -open Mavryk_protocol_environment_020_PsParisC.Pervasives
+  -open Mavryk_protocol_environment_020_PsParisC.Error_monad)
  (modules
   Misc
   Non_empty_string
@@ -294,36 +294,36 @@
   Main))
 
 (library
- (name tezos_protocol_020_PsParisC)
- (public_name tezos-protocol-020-PsParisC.protocol)
+ (name mavryk_protocol_020_PsParisC)
+ (public_name mavryk-protocol-020-PsParisC.protocol)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-proto-libs.protocol-environment
-  octez-proto-libs.protocol-environment.sigs
-  tezos-protocol-020-PsParisC.protocol.raw)
+  mavkit-proto-libs.protocol-environment
+  mavkit-proto-libs.protocol-environment.sigs
+  mavryk-protocol-020-PsParisC.protocol.raw)
  (flags
   (:standard)
   -nopervasives)
- (modules Protocol Tezos_protocol_020_PsParisC))
+ (modules Protocol Mavryk_protocol_020_PsParisC))
 
 (install
- (package tezos-protocol-020-PsParisC)
+ (package mavryk-protocol-020-PsParisC)
  (section lib)
- (files (TEZOS_PROTOCOL as protocol/raw/TEZOS_PROTOCOL)))
+ (files (MAVRYK_PROTOCOL as protocol/raw/MAVRYK_PROTOCOL)))
 
 (rule
  (targets protocol.ml)
  (action
   (write-file
    %{targets}
-   "\nlet hash = Tezos_crypto.Hashed.Protocol_hash.of_b58check_exn \"PsParisCZo7KAh1Z1smVd9ZMZ1HHn5gkzbM94V3PLCpknFWhUAi\"\nlet name = Tezos_protocol_environment_020_PsParisC.Name.name\ninclude Tezos_raw_protocol_020_PsParisC\ninclude Tezos_raw_protocol_020_PsParisC.Main\n")))
+   "\nlet hash = Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn \"PsParisCZo7KAh1Z1smVd9ZMZ1HHn5gkzbM94V3PLCpknFWhUAi\"\nlet name = Mavryk_protocol_environment_020_PsParisC.Name.name\ninclude Mavryk_raw_protocol_020_PsParisC\ninclude Mavryk_raw_protocol_020_PsParisC.Main\n")))
 
 (rule
- (targets tezos_protocol_020_PsParisC.ml)
+ (targets mavryk_protocol_020_PsParisC.ml)
  (action
   (write-file
    %{targets}
-   "\nmodule Environment = Tezos_protocol_environment_020_PsParisC\nmodule Protocol = Protocol\n")))
+   "\nmodule Environment = Mavryk_protocol_environment_020_PsParisC\nmodule Protocol = Protocol\n")))
 
 (rule
  (alias runtest_compile_protocol)
@@ -592,21 +592,21 @@
   adaptive_issuance_services.ml adaptive_issuance_services.mli
   alpha_services.ml alpha_services.mli
   main.ml main.mli
-  (:src_dir TEZOS_PROTOCOL))
- (action (run %{bin:octez-protocol-compiler} -warn-error +a .)))
+  (:src_dir MAVRYK_PROTOCOL))
+ (action (run %{bin:mavkit-protocol-compiler} -warn-error +a .)))
 
 (library
- (name tezos_protocol_020_PsParisC_lifted)
- (public_name tezos-protocol-020-PsParisC.protocol.lifted)
+ (name mavryk_protocol_020_PsParisC_lifted)
+ (public_name mavryk-protocol-020-PsParisC.protocol.lifted)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-proto-libs.protocol-environment
-  octez-proto-libs.protocol-environment.sigs
-  tezos-protocol-020-PsParisC.protocol)
+  mavkit-proto-libs.protocol-environment
+  mavkit-proto-libs.protocol-environment.sigs
+  mavryk-protocol-020-PsParisC.protocol)
  (flags
   (:standard)
   -nopervasives
-  -open Tezos_protocol_020_PsParisC)
+  -open Mavryk_protocol_020_PsParisC)
  (modules Lifted_protocol))
 
 (rule
@@ -617,10 +617,10 @@
    "\ninclude Environment.Lift (Protocol)\nlet hash = Protocol.hash\n")))
 
 (library
- (name tezos_protocol_020_PsParisC_functor)
+ (name mavryk_protocol_020_PsParisC_functor)
  (libraries
-  octez-proto-libs.protocol-environment
-  octez-proto-libs.protocol-environment.sigs)
+  mavkit-proto-libs.protocol-environment
+  mavkit-proto-libs.protocol-environment.sigs)
  (flags
   (:standard)
   -nopervasives)
@@ -892,22 +892,22 @@
   dal_services.ml dal_services.mli
   adaptive_issuance_services.ml adaptive_issuance_services.mli
   alpha_services.ml alpha_services.mli
-  main.ml main.mli (:src_dir TEZOS_PROTOCOL))
+  main.ml main.mli (:src_dir MAVRYK_PROTOCOL))
  (action
   (with-stdout-to
    %{targets}
    (chdir
     %{workspace_root}
-    (run %{bin:octez-protocol-compiler.octez-protocol-packer} %{src_dir})))))
+    (run %{bin:mavkit-protocol-compiler.mavkit-protocol-packer} %{src_dir})))))
 
 (library
  (name tezos_embedded_protocol_020_PsParisC)
- (public_name tezos-protocol-020-PsParisC.embedded-protocol)
+ (public_name mavryk-protocol-020-PsParisC.embedded-protocol)
  (instrumentation (backend bisect_ppx))
  (libraries
-  tezos-protocol-020-PsParisC.protocol
-  octez-shell-libs.protocol-updater
-  octez-proto-libs.protocol-environment)
+  mavryk-protocol-020-PsParisC.protocol
+  mavkit-shell-libs.protocol-updater
+  mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
  (modules Registerer))
 
@@ -1177,10 +1177,10 @@
   dal_services.ml dal_services.mli
   adaptive_issuance_services.ml adaptive_issuance_services.mli
   alpha_services.ml alpha_services.mli
-  main.ml main.mli (:src_dir TEZOS_PROTOCOL))
+  main.ml main.mli (:src_dir MAVRYK_PROTOCOL))
  (action
   (with-stdout-to
    %{targets}
    (chdir
     %{workspace_root}
-    (run %{bin:octez-embedded-protocol-packer} %{src_dir} 020_PsParisC)))))
+    (run %{bin:mavkit-embedded-protocol-packer} %{src_dir} 020_PsParisC)))))

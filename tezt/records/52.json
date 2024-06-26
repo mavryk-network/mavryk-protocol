@@ -1449,7 +1449,7 @@
   },
   {
     "file": "src/lib_clic/test/test_clic.ml",
-    "title": "Tezos_clic: auto-completion-parameters (prefix: when given prev arg matches first word, suggests the next words)",
+    "title": "Mavryk_clic: auto-completion-parameters (prefix: when given prev arg matches first word, suggests the next words)",
     "tags": [
       "alcotezt",
       "quick"

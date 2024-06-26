@@ -22,9 +22,9 @@
   mavryk-dac-lib
   mavryk_dac_node_lib
   mavkit-l2-libs.layer2_store
-  irmin-pack
-  irmin-pack.unix
-  irmin
+  mavkit-internal-libs.irmin_pack
+  mavkit-internal-libs.irmin_pack.unix
+  mavkit-internal-libs.irmin
   mavkit-protocol-001-PtAtLas-libs.dac
   mavkit-protocol-019-PtParisB-libs.dac
   mavkit-protocol-020-PsParisC-libs.dac

@@ -1110,7 +1110,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "octez-risc-v-pvm"
+name = "mavkit-risc-v-pvm"
 version = "0.0.0"
 dependencies = [
  "cbindgen",
@@ -1485,8 +1485,8 @@ dependencies = [
  "ratatui",
  "risc-v-interpreter",
  "rvemu",
- "tezos-smart-rollup-constants",
- "tezos-smart-rollup-encoding",
+ "mavryk-smart-rollup-constants",
+ "mavryk-smart-rollup-encoding",
  "tezos_crypto_rs",
  "vm-fdt",
 ]
@@ -1850,18 +1850,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "222a222a5bfe1bba4a77b45ec488a741b3cb8872e5e499451fd7d0129c9c7c3d"
 
 [[package]]
-name = "tezos-smart-rollup-constants"
+name = "mavryk-smart-rollup-constants"
 version = "0.2.2"
 
 [[package]]
-name = "tezos-smart-rollup-core"
+name = "mavryk-smart-rollup-core"
 version = "0.2.2"
 dependencies = [
- "tezos-smart-rollup-constants",
+ "mavryk-smart-rollup-constants",
 ]
 
 [[package]]
-name = "tezos-smart-rollup-encoding"
+name = "mavryk-smart-rollup-encoding"
 version = "0.2.2"
 dependencies = [
  "hex",
@@ -1869,8 +1869,8 @@ dependencies = [
  "num-bigint",
  "num-traits",
  "regex",
- "tezos-smart-rollup-core",
- "tezos-smart-rollup-host",
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-host",
  "tezos_crypto_rs",
  "tezos_data_encoding",
  "tezos_data_encoding_derive",
@@ -1879,10 +1879,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "tezos-smart-rollup-host"
+name = "mavryk-smart-rollup-host"
 version = "0.2.2"
 dependencies = [
- "tezos-smart-rollup-core",
+ "mavryk-smart-rollup-core",
 ]
 
 [[package]]

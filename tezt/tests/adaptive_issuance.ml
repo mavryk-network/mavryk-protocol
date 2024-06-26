@@ -166,7 +166,7 @@ let init ?(overrides = default_overrides) protocol =
   let* () = Client.activate_protocol ~protocol sandbox_client ~parameter_file in
   Log.info "Activated protocol." ;
   return
-  @@ ( Tezos_crypto.Hashed.Protocol_hash.of_b58check_exn (Protocol.hash protocol),
+  @@ ( Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn (Protocol.hash protocol),
        sandbox_endpoint,
        sandbox_client,
        sandbox_node )

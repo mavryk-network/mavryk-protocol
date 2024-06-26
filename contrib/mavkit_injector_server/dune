@@ -3,8 +3,8 @@
 
 (executable
  (name mavkit_injector_server)
- (public_name mavkit-injector-server)
- (package mavkit-injector-server)
+ (public_name mavryk-injector-server)
+ (package mavryk-injector-server)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-libs.base

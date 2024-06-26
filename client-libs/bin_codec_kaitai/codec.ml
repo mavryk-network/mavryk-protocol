@@ -33,7 +33,7 @@ let warn_if_argv0_name_not_octez () =
   if TzString.has_prefix executable_name ~prefix then
     let expected_name =
       let len_prefix = String.length prefix in
-      "octez-"
+      "mavkit-"
       ^ String.sub
           executable_name
           len_prefix
@@ -58,7 +58,7 @@ let home = try Sys.getenv "HOME" with Not_found -> "/tmp"
 let default_base_dir = Filename.concat home ".tezos-client"
 
 let base_dir_arg =
-  let open Tezos_clic in
+  let open Mavryk_clic in
   arg
     ~long:"base-dir"
     ~short:'d'
@@ -69,7 +69,7 @@ let base_dir_arg =
         By default: '" ^ default_base_dir ^ "'.")
     (parameter (fun _ctxt x -> Lwt.return_ok x))
 
-let global_options = Tezos_clic.args1 base_dir_arg
+let global_options = Mavryk_clic.args1 base_dir_arg
 
 let parse_config_args argv =
   let open Lwt_result_syntax in
@@ -77,7 +77,7 @@ let parse_config_args argv =
      that is created based on some of the parsed arguments. *)
   let ctxt = Client_context.null_printer in
   let* base_dir, argv =
-    Tezos_clic.parse_global_options global_options ctxt argv
+    Mavryk_clic.parse_global_options global_options ctxt argv
   in
   let* base_dir =
     match base_dir with
@@ -119,33 +119,33 @@ let main commands =
     in
     Random.self_init () ;
     ignore
-      Tezos_clic.(
+      Mavryk_clic.(
         setup_formatter
           Format.std_formatter
           (if Unix.isatty Unix.stdout then Ansi else Plain)
           Short) ;
     warn_if_argv0_name_not_octez () ;
     ignore
-      Tezos_clic.(
+      Mavryk_clic.(
         setup_formatter
           Format.err_formatter
           (if Unix.isatty Unix.stderr then Ansi else Plain)
           Short) ;
-    let*! () = Tezos_base_unix.Internal_event_unix.init () in
+    let*! () = Mavryk_base_unix.Internal_event_unix.init () in
     let* base_dir, argv = parse_config_args argv in
     let ctxt = new Client_context_unix.unix_logger ~base_dir in
     let commands =
-      Tezos_clic.add_manual
+      Mavryk_clic.add_manual
         ~executable_name
         ~global_options
-        (if Unix.isatty Unix.stdout then Tezos_clic.Ansi else Tezos_clic.Plain)
+        (if Unix.isatty Unix.stdout then Mavryk_clic.Ansi else Mavryk_clic.Plain)
         Format.std_formatter
         commands
     in
     match autocomplete with
     | Some (prev_arg, cur_arg, script) ->
         let* completions =
-          Tezos_clic.autocompletion
+          Mavryk_clic.autocompletion
             ~script
             ~cur_arg
             ~prev_arg
@@ -156,7 +156,7 @@ let main commands =
         in
         List.iter print_endline completions ;
         return_unit
-    | None -> Tezos_clic.dispatch commands ctxt argv
+    | None -> Mavryk_clic.dispatch commands ctxt argv
   in
   Stdlib.exit
     (Lwt_main.run
@@ -168,21 +168,21 @@ let main commands =
           in
           match r with
           | Ok () -> Lwt.return 0
-          | Error [Tezos_clic.Version] ->
+          | Error [Mavryk_clic.Version] ->
               let version =
-                Tezos_version_value.Bin_version.octez_version_string
+                Mavryk_version_value.Bin_version.octez_version_string
               in
               Format.printf "%s\n" version ;
               Lwt.return 0
-          | Error [Tezos_clic.Help command] ->
-              Tezos_clic.usage
+          | Error [Mavryk_clic.Help command] ->
+              Mavryk_clic.usage
                 Format.std_formatter
                 ~executable_name
                 ~global_options
                 (match command with None -> [] | Some c -> [c]) ;
               Lwt.return 0
           | Error errs ->
-              Tezos_clic.pp_cli_errors
+              Mavryk_clic.pp_cli_errors
                 Format.err_formatter
                 ~executable_name
                 ~global_options

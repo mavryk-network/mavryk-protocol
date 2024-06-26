@@ -26,13 +26,13 @@
 
 open Store_sigs
 open Context_sigs
-module Context_encoding = Tezos_context_encoding.Context_binary
+module Context_encoding = Mavryk_context_encoding.Context_binary
 
-(* We shadow [Tezos_context_encoding] to prevent accidentally using
-   [Tezos_context_encoding.Context] instead of
-   [Tezos_context_encoding.Context_binary] during a future
+(* We shadow [Mavryk_context_encoding] to prevent accidentally using
+   [Mavryk_context_encoding.Context] instead of
+   [Mavryk_context_encoding.Context_binary] during a future
    refactoring.*)
-module Tezos_context_encoding = struct end
+module Mavryk_context_encoding = struct end
 
 module Maker = Irmin_pack_unix.Maker (Context_encoding.Conf)
 
@@ -42,7 +42,7 @@ module IStore = struct
 end
 
 module IStoreTree =
-  Tezos_context_helpers.Context.Make_tree (Context_encoding.Conf) (IStore)
+  Mavryk_context_helpers.Context.Make_tree (Context_encoding.Conf) (IStore)
 
 type repo = IStore.Repo.t
 
@@ -69,7 +69,7 @@ type hash = Context_hash.t
 type path = string list
 
 module Tree :
-  Tezos_context_sigs.Context.TREE
+  Mavryk_context_sigs.Context.TREE
     with type tree = IStore.tree
      and type key = string list
      and type value = bytes
@@ -217,13 +217,13 @@ module Proof (Hash : sig
   val of_context_hash : Context_hash.t -> t
 end) (Proof_encoding : sig
   val proof_encoding :
-    Tezos_context_sigs.Context.Proof_types.tree
-    Tezos_context_sigs.Context.Proof_types.t
+    Mavryk_context_sigs.Context.Proof_types.tree
+    Mavryk_context_sigs.Context.Proof_types.t
     Data_encoding.t
 end) =
 struct
   module IStoreProof =
-    Tezos_context_helpers.Context.Make_proof (IStore) (Context_encoding.Conf)
+    Mavryk_context_helpers.Context.Make_proof (IStore) (Context_encoding.Conf)
 
   module Tree = struct
     include IStoreTree

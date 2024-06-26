@@ -172,7 +172,7 @@ let simulate_messages (node_ctxt : Node_context.ro) block ~reveal_pages
   let is_reveal_enabled =
     constants.sc_rollup.reveal_activation_level
     |> WithExceptions.Option.get ~loc:__LOC__
-    |> Sc_rollup_proto_types.Constants.reveal_activation_level_of_octez
+    |> Sc_rollup_proto_types.Constants.reveal_activation_level_of_mavkit
     |> Protocol.Alpha_context.Sc_rollup.is_reveal_enabled_predicate
   in
   let*! status =
@@ -236,7 +236,7 @@ let () =
   let is_reveal_enabled =
     constants.sc_rollup.reveal_activation_level
     |> WithExceptions.Option.get ~loc:__LOC__
-    |> Sc_rollup_proto_types.Constants.reveal_activation_level_of_octez
+    |> Sc_rollup_proto_types.Constants.reveal_activation_level_of_mavkit
     |> Protocol.Alpha_context.Sc_rollup.is_reveal_enabled_predicate
   in
   let open (val Pvm.of_kind node_ctxt.kind) in
@@ -256,7 +256,7 @@ let () =
     Node_context.get_all_slot_headers node_ctxt ~published_in_block_hash:block
   in
   List.rev_map
-    (Sc_rollup_proto_types.Dal.Slot_header.of_octez
+    (Sc_rollup_proto_types.Dal.Slot_header.of_mavkit
        ~number_of_slots:constants.dal.number_of_slots)
     slots
   |> List.rev
@@ -293,7 +293,7 @@ let () =
   @@ fun (node_ctxt, _block_hash) output () ->
   let open Lwt_result_syntax in
   let+ commitment, proof = Outbox.proof_of_output node_ctxt output in
-  (Sc_rollup_proto_types.Commitment_hash.of_octez commitment, proof)
+  (Sc_rollup_proto_types.Commitment_hash.of_mavkit commitment, proof)
 
 let () =
   Block_helpers_directory.register1
@@ -303,7 +303,7 @@ let () =
   let+ commitment, proof =
     Outbox.proof_of_output_simple node_ctxt ~outbox_level ~message_index
   in
-  (Sc_rollup_proto_types.Commitment_hash.of_octez commitment, proof)
+  (Sc_rollup_proto_types.Commitment_hash.of_mavkit commitment, proof)
 
 let () =
   Block_directory.register0 Sc_rollup_services.Block.simulate
@@ -322,8 +322,8 @@ let () =
 let block_directory (node_ctxt : _ Node_context.t) =
   let module PVM = (val Pvm_rpc.of_kind node_ctxt.kind) in
   List.fold_left
-    (fun dir f -> Tezos_rpc.Directory.merge dir (f node_ctxt))
-    Tezos_rpc.Directory.empty
+    (fun dir f -> Mavryk_rpc.Directory.merge dir (f node_ctxt))
+    Mavryk_rpc.Directory.empty
     [
       Block_directory.build_sub_directory;
       Block_helpers_directory.build_sub_directory;
@@ -331,8 +331,8 @@ let block_directory (node_ctxt : _ Node_context.t) =
     ]
 
 let directory (node_ctxt : _ Node_context.t) =
-  Tezos_rpc.Directory.merge
-    (Octez_smart_rollup_node.Rpc_directory.top_directory node_ctxt)
-    (Tezos_rpc.Directory.prefix
+  Mavryk_rpc.Directory.merge
+    (Mavkit_smart_rollup_node.Rpc_directory.top_directory node_ctxt)
+    (Mavryk_rpc.Directory.prefix
        Sc_rollup_services.Block.prefix
        (block_directory node_ctxt))

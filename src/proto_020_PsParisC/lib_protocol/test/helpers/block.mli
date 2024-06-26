@@ -32,7 +32,7 @@ type t = {
   hash : Block_hash.t;
   header : Block_header.t;
   operations : Operation.packed list;
-  context : Tezos_protocol_environment.Context.t;  (** Resulting context *)
+  context : Mavryk_protocol_environment.Context.t;  (** Resulting context *)
   constants : Constants.Parametric.t;
 }
 

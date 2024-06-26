@@ -8,14 +8,14 @@ set -eu
 # you should manually delete any previously created package, otherwise it will
 # reupload the files inside the same package, creating duplicates
 
-# shellcheck source=./scripts/ci/octez-release.sh
-. ./scripts/ci/octez-release.sh
+# shellcheck source=./scripts/ci/mavkit-release.sh
+. ./scripts/ci/mavkit-release.sh
 
-debian_bookworm_packages="$(find packages/debian/bookworm/ -maxdepth 1 -name octez-\*.deb 2> /dev/null || printf '')"
-ubuntu_focal_packages="$(find packages/ubuntu/focal/ -maxdepth 1 -name octez-\*.deb 2> /dev/null || printf '')"
-ubuntu_jammy_packages="$(find packages/ubuntu/jammy/ -maxdepth 1 -name octez-\*.deb 2> /dev/null || printf '')"
-fedora_packages="$(find packages/fedora/39/ -maxdepth 1 -name octez-\*.rpm 2> /dev/null || printf '')"
-rockylinux_packages="$(find packages/rockylinux/9.3/ -maxdepth 1 -name octez-\*.rpm 2> /dev/null || printf '')"
+debian_bookworm_packages="$(find packages/debian/bookworm/ -maxdepth 1 -name mavkit-\*.deb 2> /dev/null || printf '')"
+ubuntu_focal_packages="$(find packages/ubuntu/focal/ -maxdepth 1 -name mavkit-\*.deb 2> /dev/null || printf '')"
+ubuntu_jammy_packages="$(find packages/ubuntu/jammy/ -maxdepth 1 -name mavkit-\*.deb 2> /dev/null || printf '')"
+fedora_packages="$(find packages/fedora/39/ -maxdepth 1 -name mavkit-\*.rpm 2> /dev/null || printf '')"
+rockylinux_packages="$(find packages/rockylinux/9.3/ -maxdepth 1 -name mavkit-\*.rpm 2> /dev/null || printf '')"
 
 # https://docs.gitlab.com/ee/user/packages/generic_packages/index.html#download-package-file
 # :gitlab_api_url/projects/:id/packages/generic/:package_name/:package_version/:file_name
@@ -68,17 +68,17 @@ for architecture in ${architectures}; do
 
   # Loop over binaries
   for binary in ${binaries}; do
-    gitlab_upload "octez-binaries/${architecture}/${binary}" "${architecture}-${binary}"
+    gitlab_upload "mavkit-binaries/${architecture}/${binary}" "${architecture}-${binary}"
   done
 
   echo "Upload tarball with all binaries (${architecture})"
 
-  mkdir -pv "octez-binaries/octez-${architecture}"
-  cp -a octez-binaries/"${architecture}"/* "octez-binaries/octez-${architecture}/"
+  mkdir -pv "mavkit-binaries/mavkit-${architecture}"
+  cp -a mavkit-binaries/"${architecture}"/* "mavkit-binaries/mavkit-${architecture}/"
 
-  cd octez-binaries/
-  tar -czf "octez-${architecture}.tar.gz" "octez-${architecture}/"
-  gitlab_upload "octez-${architecture}.tar.gz" "${gitlab_octez_binaries_package_name}-linux-${architecture}.tar.gz"
+  cd mavkit-binaries/
+  tar -czf "mavkit-${architecture}.tar.gz" "mavkit-${architecture}/"
+  gitlab_upload "mavkit-${architecture}.tar.gz" "${gitlab_octez_binaries_package_name}-linux-${architecture}.tar.gz"
   cd ..
 done
 

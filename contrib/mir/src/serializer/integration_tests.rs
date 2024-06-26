@@ -18,10 +18,10 @@ mod test_typed_encode {
     use crate::ast::{Address, TypedValue};
 
     // Expected bytes to be produced with
-    // octez-client --mode mockup run script "parameter unit; storage bytes; code { DROP; PUSH $ty $val; PACK; NIL operation; PAIR }" on storage 0x and input Unit
+    // mavkit-client --mode mockup run script "parameter unit; storage bytes; code { DROP; PUSH $ty $val; PACK; NIL operation; PAIR }" on storage 0x and input Unit
     //
-    // Or in 19.0-rc1 version of octez-client simply:
-    // octez-client --mode mockup run michelson code PACK on stack "{Stack_elt $ty $val}"
+    // Or in 19.0-rc1 version of mavkit-client simply:
+    // mavkit-client --mode mockup run michelson code PACK on stack "{Stack_elt $ty $val}"
 
     #[track_caller]
     fn check(v: TypedValue, hex_bytes: &str) {

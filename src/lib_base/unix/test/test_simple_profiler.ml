@@ -13,9 +13,9 @@
    Subject:      Testing simple profiler
 *)
 open Tezt
-open Tezos_base.TzPervasives
+open Mavryk_base.TzPervasives
 open Profiler
-module WithExceptions = Tezos_error_monad.TzLwtreslib.WithExceptions
+module WithExceptions = Mavryk_error_monad.TzLwtreslib.WithExceptions
 open Lwt_syntax
 
 let replace_variables string =
@@ -248,7 +248,7 @@ let get_profiler file_name =
   let profiler = unplugged () in
   let test_profiler_instance =
     Profiler.instance
-      Tezos_base_unix.Simple_profiler.auto_write_to_txt_file
+      Mavryk_base_unix.Simple_profiler.auto_write_to_txt_file
       (file_name, Profiler.Detailed)
   in
   plug profiler test_profiler_instance ;

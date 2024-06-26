@@ -10,7 +10,7 @@
   mavkit-libs.base
   mavkit-libs.version
   index
-  irmin-pack
+  mavkit-internal-libs.irmin_pack
   mavkit-shell-libs.store.shared
   mavkit-proto-libs.protocol-environment
   mavkit-libs.mavryk-context

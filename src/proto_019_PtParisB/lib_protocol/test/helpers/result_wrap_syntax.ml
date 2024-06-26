@@ -5,7 +5,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-include Tezos_base.TzPervasives.Result_syntax
+include Mavryk_base.TzPervasives.Result_syntax
 
 let wrap = Environment.wrap_tzresult
 

@@ -16,7 +16,7 @@ end)
 
 let _octez_tooling =
   public_lib
-    "tezos-tooling"
+    "mavryk-tooling"
     ~path:"src/tooling"
     ~synopsis:"Tezos: tooling for the project"
     ~modules:[]
@@ -45,7 +45,7 @@ let _node_wrapper =
 let octez_tooling_opam_file_format =
   private_lib
     "opam_file_format"
-    ~opam:"tezos-tooling"
+    ~opam:"mavryk-tooling"
     ~path:"src/tooling/opam-lint/opam-file-format-src"
     ~deps:[unix]
     ~dune:Dune.[ocamllex "opamLexer"; ocamlyacc "opamBaseParser"]
@@ -55,7 +55,7 @@ let _octez_tooling_opam_lint =
     "opam_lint"
     ~alias:""
     ~path:"src/tooling/opam-lint"
-    ~opam:"tezos-tooling"
+    ~opam:"mavryk-tooling"
     ~deps:[octez_tooling_opam_file_format; unix]
 
 let _git_gas_diff =
@@ -64,7 +64,7 @@ let _git_gas_diff =
     ~path:"devtools/git-gas-diff/bin"
     ~release_status:Unreleased
     ~internal_name:"main"
-    ~opam:"tezos-tooling"
+    ~opam:"mavryk-tooling"
     ~deps:[external_lib "num" V.True; re]
     ~static:false
     ~bisect_ppx:No
@@ -75,7 +75,7 @@ let _gas_parameter_diff =
     ~path:"devtools/gas_parameter_diff/bin"
     ~release_status:Unreleased
     ~internal_name:"main"
-    ~opam:"tezos-tooling"
+    ~opam:"mavryk-tooling"
     ~deps:[]
     ~static:false
     ~bisect_ppx:No
@@ -85,7 +85,7 @@ let _benchmark_tools_purge_disk_cache =
     "purge_disk_cache"
     ~path:"devtools/benchmarks-tools/purge_disk_cache"
     ~internal_name:"purge_disk_cache"
-    ~opam:"tezos-tooling"
+    ~opam:"mavryk-tooling"
     ~release_status:Unreleased
     ~deps:[]
     ~static:false

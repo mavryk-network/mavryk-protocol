@@ -339,7 +339,7 @@ let apply_delegation ~ctxt ~(sender : Contract.t) ~delegate ~before_operation =
               ctxt
               ~sender_contract:sender
               ~delegate
-              Tez.max_mutez)
+              Tez.max_mumav)
   in
   let+ ctxt = Contract.Delegate.set ctxt sender delegate in
   (ctxt, Gas.consumed ~since:before_operation ~until:ctxt, balance_updates, [])

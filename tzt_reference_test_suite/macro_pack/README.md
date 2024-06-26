@@ -16,5 +16,5 @@ and preserving this in its exact form is important as it affects behaviour of
 You can check the exact expansion via the following command
 
 ```sh
-octez-client expand macros in "$MACRO"
+mavkit-client expand macros in "$MACRO"
 ```

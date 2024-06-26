@@ -1454,7 +1454,7 @@
   },
   {
     "file": "src/lib_clic/test/test_clic.ml",
-    "title": "Tezos_clic: dispatch (basic)",
+    "title": "Mavryk_clic: dispatch (basic)",
     "tags": [
       "alcotezt",
       "quick"

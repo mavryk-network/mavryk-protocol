@@ -8,8 +8,8 @@
  (libraries
   mavkit-libs.base
   mavkit-libs.stdlib
-  irmin
-  irmin-pack)
+  mavkit-internal-libs.irmin
+  mavkit-internal-libs.irmin_pack)
  (flags
   (:standard)
   -open Mavryk_base.TzPervasives

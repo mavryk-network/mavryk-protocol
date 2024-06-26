@@ -31,8 +31,8 @@ documentation:manuals:
     - ./.gitlab/ci/jobs/doc/documentation:manuals.sh
   artifacts:
     paths:
-      - docs/*/octez-*.html
-      - docs/api/octez-*.txt
+      - docs/*/mavkit-*.html
+      - docs/api/mavkit-*.txt
       - docs/developer/metrics.csv
       - docs/user/node-config.json
     expire_in: 1 week

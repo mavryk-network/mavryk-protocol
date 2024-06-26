@@ -31,7 +31,7 @@
     Subject:      Migration
 *)
 
-open Tezos_micheline
+open Mavryk_micheline
 open Protocol
 
 module type LEGACY_SCRIPT_PATCHES = sig

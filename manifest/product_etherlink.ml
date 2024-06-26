@@ -31,15 +31,15 @@ let tezt_etherlink =
       ]
     ~release_status:Unreleased
 
-(* Container of the registered sublibraries of [octez-evm-node] *)
+(* Container of the registered sublibraries of [mavkit-evm-node] *)
 let registered_octez_evm_node_libs = Sub_lib.make_container ()
 
-(* Registers a sub-library in the [octez-evm-node] package. *)
+(* Registers a sub-library in the [mavkit-evm-node] package. *)
 let octez_evm_node_lib =
   Sub_lib.sub_lib
     ~package_synopsis:"Octez EVM node libraries"
     ~container:registered_octez_evm_node_libs
-    ~package:"octez-evm-node-libs"
+    ~package:"mavkit-evm-node-libs"
 
 let evm_node_config =
   octez_evm_node_lib
@@ -195,7 +195,7 @@ let _octez_evm_node_tests =
   tezt
     ["test_rlp"; "test_ethbloom"]
     ~path:"etherlink/bin_node/test"
-    ~opam:"octez-evm-node-tests"
+    ~opam:"mavkit-evm-node-tests"
     ~synopsis:"Tests for the EVM Node"
     ~with_macos_security_framework:true
     ~deps:
@@ -232,10 +232,10 @@ let _tezt_etherlink =
 
 let _evm_node =
   public_exe
-    (sf "octez-evm-node")
+    (sf "mavkit-evm-node")
     ~internal_name:(sf "main")
     ~path:"etherlink/bin_node"
-    ~opam:"octez-evm-node"
+    ~opam:"mavkit-evm-node"
     ~synopsis:
       "An implementation of a subset of Ethereum JSON-RPC API for the EVM \
        rollup"
@@ -260,7 +260,7 @@ let _evm_node =
 
 let _tezt_testnet_scenarios =
   public_exe
-    "octez-testnet-scenarios"
+    "mavkit-testnet-scenarios"
     ~internal_name:"main"
     ~path:"src/bin_testnet_scenarios"
     ~synopsis:"Run scenarios on testnets"

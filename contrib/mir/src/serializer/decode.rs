@@ -340,7 +340,7 @@ mod test {
         );
     }
     // To figure out the expected bytes, use
-    // octez-client convert data 'VALUE' from michelson to binary
+    // mavkit-client convert data 'VALUE' from michelson to binary
 
     mod value {
         use crate::ast::micheline::test_helpers::{app, seq};

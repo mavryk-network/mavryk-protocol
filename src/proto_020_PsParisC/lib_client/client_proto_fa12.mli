@@ -55,11 +55,11 @@ val print_action : Format.formatter -> action -> unit
 val action_encoding : action Data_encoding.encoding
 
 val action_to_expr :
-  loc:'loc -> action -> ('loc, Script.prim) Tezos_micheline.Micheline.node
+  loc:'loc -> action -> ('loc, Script.prim) Mavryk_micheline.Micheline.node
 
 val action_of_expr :
   entrypoint:string ->
-  (_, Script.prim) Tezos_micheline.Micheline.node ->
+  (_, Script.prim) Mavryk_micheline.Micheline.node ->
   action tzresult
 
 (** [convert_wrapped_parameter_into_action cctxt ~chain ~block

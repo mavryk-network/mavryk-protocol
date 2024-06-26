@@ -117,14 +117,14 @@ Often, large `.wasm` files are produced. The size of these can be significantly 
 wasm-strip kernel.wasm
 ```
 
-You can test this kernel by using the [`octez-smart-rollup-wasm-debugger`](https://tezos.gitlab.io/alpha/smart_rollups.html#testing-your-kernel).
+You can test this kernel by using the [`mavkit-smart-rollup-wasm-debugger`](https://tezos.gitlab.io/alpha/smart_rollups.html#testing-your-kernel).
 
 ```shell
 # Create an empty inputs.json file - the 'hello world' kernel does not read inputs.
 echo '[[], []]' > inputs.json
 
 # Run the kernel:
-octez-smart-rollup-wasm-debugger --kernel kernel.wasm --inputs inputs.json
+mavkit-smart-rollup-wasm-debugger --kernel kernel.wasm --inputs inputs.json
 ```
 
 Once in the debugger, you can run the following commands to test the kernel:

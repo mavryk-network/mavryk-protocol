@@ -25,10 +25,10 @@ type ex_data = Ex_data : ('a, _) ty * 'a -> ex_data
 (* We use the Michelson samplers from lib_benchmark. They are later turned into
    QCheck2 generators (see [data_generator]). *)
 module Parameters = struct
-  let atom_size_range : Tezos_benchmark.Base_samplers.range =
+  let atom_size_range : Mavryk_benchmark.Base_samplers.range =
     {min = 0; max = 10}
 
-  let other_size : Tezos_benchmark.Base_samplers.range = {min = 0; max = 2}
+  let other_size : Mavryk_benchmark.Base_samplers.range = {min = 0; max = 2}
   (* Anything larger than max=2 leads to rare very large values which
      cannot be packed within Data_encoding limits. *)
 
@@ -47,7 +47,7 @@ module Parameters = struct
 end
 
 module Crypto_samplers =
-Tezos_benchmark.Crypto_samplers.Make_finite_key_pool (struct
+Mavryk_benchmark.Crypto_samplers.Make_finite_key_pool (struct
   let size = 1000
 
   let algo = `Default
@@ -74,10 +74,10 @@ let ctxt =
     let* v = Incremental.begin_construction b in
     return (Incremental.alpha_ctxt v))
 
-let ex_data_sampler : ex_data Tezos_benchmark.Base_samplers.sampler =
+let ex_data_sampler : ex_data Mavryk_benchmark.Base_samplers.sampler =
  fun random_state ->
   let size =
-    Tezos_benchmark.Base_samplers.sample_in_interval
+    Mavryk_benchmark.Base_samplers.sample_in_interval
       ~range:{min = 1; max = 20}
       random_state
   in
@@ -101,10 +101,10 @@ let ex_data_sampler : ex_data Tezos_benchmark.Base_samplers.sampler =
   let x = Samplers.Random_value.value ty random_state in
   Ex_data (ty, x)
 
-let big_map_data_sampler : ex_data Tezos_benchmark.Base_samplers.sampler =
+let big_map_data_sampler : ex_data Mavryk_benchmark.Base_samplers.sampler =
  fun random_state ->
   let size =
-    Tezos_benchmark.Base_samplers.sample_in_interval
+    Mavryk_benchmark.Base_samplers.sample_in_interval
       ~range:{min = 1; max = 20}
       random_state
   in

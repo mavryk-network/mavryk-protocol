@@ -137,7 +137,7 @@ module Conflict_map : sig
       a conflict with an pre-existing operation and the
       {!val-conflict_handler} has returned [`Keep]. When both
       operations are manager operations, this function returns the
-      minimal fee (in mutez) that [candidate_op] would need in order to
+      minimal fee (in mumav) that [candidate_op] would need in order to
       win the conflict, i.e. make the {!val-conflict_handler} return
       [`Replace] instead. Otherwise, it returns [None]. *)
   val fee_needed_to_replace_by_fee :
@@ -147,7 +147,7 @@ module Conflict_map : sig
     int64 option
 end
 
-(** Compute the minimal fee (expressed in mutez) that [candidate_op] would
+(** Compute the minimal fee (expressed in mumav) that [candidate_op] would
     need to have in order to be strictly greater than [op_to_overtake]
     according to {!Protocol.Alpha_context.Operation.compare}, when both
     operations are manager operations.
@@ -166,20 +166,20 @@ val fee_needed_to_overtake :
 (** The following type, encoding, and default values are exported for
     [bin_sc_rollup_node/configuration.ml]. *)
 
-(** An amount of fees in nanotez. *)
-type nanotez = Q.t
+(** An amount of fees in nanomav. *)
+type nanomav = Q.t
 
-(** Encoding for {!nanotez}. *)
-val nanotez_enc : nanotez Data_encoding.t
+(** Encoding for {!nanomav}. *)
+val nanomav_enc : nanomav Data_encoding.t
 
 (** Minimal absolute fees in {!default_config}. *)
 val default_minimal_fees : Protocol.Alpha_context.Tez.t
 
 (** Minimal fee over gas_limit ratio in {!default_config}. *)
-val default_minimal_nanotez_per_gas_unit : nanotez
+val default_minimal_nanomav_per_gas_unit : nanomav
 
 (** Minimal fee over byte size ratio in {!default_config}. *)
-val default_minimal_nanotez_per_byte : nanotez
+val default_minimal_nanomav_per_byte : nanomav
 
 module Internal_for_tests : sig
   open Protocol.Alpha_context
@@ -188,7 +188,7 @@ module Internal_for_tests : sig
   val default_config_with_clock_drift : Period.t option -> config
 
   (** {!default_config} with a custom [replace_by_fee_factor]. *)
-  val default_config_with_replace_factor : nanotez -> config
+  val default_config_with_replace_factor : nanomav -> config
 
   (** Return the [clock_drift] field of the given {!config}. *)
   val get_clock_drift : config -> Period.t option

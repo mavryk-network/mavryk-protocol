@@ -1421,7 +1421,7 @@
   },
   {
     "file": "src/lib_context/test/test_context.ml",
-    "title": "tezos-context: context (disk:to_memory_tree)",
+    "title": "mavryk-context: context (disk:to_memory_tree)",
     "tags": [
       "alcotezt",
       "quick"

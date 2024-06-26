@@ -31,8 +31,8 @@ path = "../interpreter"
 git = "https://github.com/vapourismo/rvemu.git"
 branch = "pub-translate"
 
-[dependencies.tezos-smart-rollup-encoding]
+[dependencies.mavryk-smart-rollup-encoding]
 path = "../../kernel_sdk/encoding"
 
-[dependencies.tezos-smart-rollup-constants]
+[dependencies.mavryk-smart-rollup-constants]
 path = "../../kernel_sdk/constants"

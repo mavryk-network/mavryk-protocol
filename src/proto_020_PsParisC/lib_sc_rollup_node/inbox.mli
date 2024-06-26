@@ -44,8 +44,8 @@ val process_head :
   Node_context.rw ->
   predecessor:Layer1.header ->
   Layer1.header ->
-  (Octez_smart_rollup.Inbox.Hash.t
-  * Octez_smart_rollup.Inbox.t
+  (Mavkit_smart_rollup.Inbox.Hash.t
+  * Mavkit_smart_rollup.Inbox.t
   * Merkelized_payload_hashes_hash.t
   * string list)
   tzresult
@@ -89,7 +89,7 @@ val payloads_history_of_all_messages :
 val same_as_layer_1 :
   _ Node_context.t ->
   Block_hash.t ->
-  Octez_smart_rollup.Inbox.t ->
+  Mavkit_smart_rollup.Inbox.t ->
   unit tzresult Lwt.t
 
 (** Serialize an external messages to the protocol representation. NOTE: this
@@ -102,7 +102,7 @@ val init :
   predecessor_timestamp:Time.Protocol.t ->
   predecessor:Block_hash.t ->
   level:int32 ->
-  Octez_smart_rollup.Inbox.t
+  Mavkit_smart_rollup.Inbox.t
 
 (**/**)
 
@@ -113,8 +113,8 @@ module Internal_for_tests : sig
     predecessor:Layer1.header ->
     Layer1.header ->
     string list ->
-    (Octez_smart_rollup.Inbox.Hash.t
-    * Octez_smart_rollup.Inbox.t
+    (Mavkit_smart_rollup.Inbox.Hash.t
+    * Mavkit_smart_rollup.Inbox.t
     * Merkelized_payload_hashes_hash.t
     * string list)
     tzresult

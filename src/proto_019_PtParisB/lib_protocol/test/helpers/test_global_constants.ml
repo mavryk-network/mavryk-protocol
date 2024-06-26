@@ -203,7 +203,7 @@ module Generators = struct
       T_signature;
       T_string;
       T_bytes;
-      T_mutez;
+      T_mumav;
       T_timestamp;
       T_unit;
       T_operation;

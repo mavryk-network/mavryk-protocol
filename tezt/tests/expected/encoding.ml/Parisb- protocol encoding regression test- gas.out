@@ -1,18 +1,18 @@
 
-./octez-codec encode 019-PtParisB.gas from '"1238"'
+./mavkit-codec encode 019-PtParisB.gas from '"1238"'
 009613
 
-./octez-codec decode 019-PtParisB.gas from 009613
+./mavkit-codec decode 019-PtParisB.gas from 009613
 "1238"
 
-./octez-codec encode 019-PtParisB.gas from '"unaccounted"'
+./mavkit-codec encode 019-PtParisB.gas from '"unaccounted"'
 01
 
-./octez-codec decode 019-PtParisB.gas from 01
+./mavkit-codec decode 019-PtParisB.gas from 01
 "unaccounted"
 
-./octez-codec encode 019-PtParisB.gas from '"0"'
+./mavkit-codec encode 019-PtParisB.gas from '"0"'
 0000
 
-./octez-codec decode 019-PtParisB.gas from 0000
+./mavkit-codec decode 019-PtParisB.gas from 0000
 "0"

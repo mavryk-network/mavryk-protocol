@@ -110,7 +110,7 @@ pub fn expand_macro<'a>(
         (FAIL, _) => Err(unex_arg_err),
 
         // Do not wrap expansion of DII+P and DUU+P in a Seq to
-        // match octez-client behavior.
+        // match mavkit-client behavior.
         (DIIP(c), OneArg(ib)) => Ok(M::prim2(arena, DIP, M::Int((*c).into()), ib)),
         (DIIP(_), _) => Err(unex_arg_err),
 
@@ -126,7 +126,7 @@ mod tests {
     #[test]
     fn test_macros() {
         // The tests below checks that the macro expands to the same sequence
-        // of instruction as produced by the octez-client. The latter is also
+        // of instruction as produced by the mavkit-client. The latter is also
         // provided as the expectation.
         assert_eq!(
             parse("{ ASSERT }").unwrap(),

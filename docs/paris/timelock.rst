@@ -8,7 +8,7 @@ For more background information on time-locks and their uses, see `Timelocks <ht
 Cryptographic design
 --------------------
 
-The time-lock features are supported in Octez by the :package-api:`Tezos_crypto.Timelock library <octez-libs/Tezos_crypto/Timelock/index.html>`.
+The time-lock features are supported in Octez by the :package-api:`Mavryk_crypto.Timelock library <mavkit-libs/Mavryk_crypto/Timelock/index.html>`.
 
 Users first generate a RSA modulus and a symmetric encryption key.
 They use authenticated encryption to encrypt a packed Michelson value (an array of bytes computed with ``PACK``)

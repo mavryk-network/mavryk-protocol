@@ -263,12 +263,12 @@ let combine_operations ?public_key ?counter ?spurious_operation ~source ctxt
   let open Lwt_result_wrap_syntax in
   assert (match packed_operations with [] -> false | _ :: _ -> true) ;
   (* Hypothesis : each operation must have the same branch (is this really true?) *)
-  let {Tezos_base.Operation.branch} =
+  let {Mavryk_base.Operation.branch} =
     (WithExceptions.Option.get ~loc:__LOC__ @@ List.hd packed_operations).shell
   in
   assert (
     List.for_all
-      (fun {shell = {Tezos_base.Operation.branch = b; _}; _} ->
+      (fun {shell = {Mavryk_base.Operation.branch = b; _}; _} ->
         Block_hash.(branch = b))
       packed_operations) ;
   (* TODO? : check signatures consistency *)
@@ -534,7 +534,7 @@ let contract_origination_gen k ?force_reveal ?counter ?delegate ~script
     ?public_key ?credit ?fee ?gas_limit ?storage_limit ctxt source =
   let open Lwt_result_syntax in
   let* account = Context.Contract.manager ctxt source in
-  let default_credit = Tez.of_mutez @@ Int64.of_int 1000001 in
+  let default_credit = Tez.of_mumav @@ Int64.of_int 1000001 in
   let default_credit =
     WithExceptions.Option.to_exn ~none:Impossible default_credit
   in
@@ -795,7 +795,7 @@ let dummy_script =
       storage = lazy_expr (strip_locations (Prim ((), D_Unit, [], [])));
     }
 
-let dummy_script_cost = Test_tez.of_mutez_exn 9_500L
+let dummy_script_cost = Test_tez.of_mumav_exn 9_500L
 
 let transfer_ticket ?force_reveal ?counter ?fee ?gas_limit ?storage_limit ctxt
     ~(source : Contract.t) ~contents ~ty ~ticketer ~amount ~destination

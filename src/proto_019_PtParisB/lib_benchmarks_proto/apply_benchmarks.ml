@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_benchmark
+open Mavryk_benchmark
 open Benchmarks_proto
 
 let ns = Namespace.make Registration.ns "apply"
@@ -56,7 +56,7 @@ let make_context ~rng_state =
     (* Required for eg Create_contract *)
     Protocol.Alpha_context.Origination_nonce.init
       ctxt
-      Tezos_crypto.Hashed.Operation_hash.zero
+      Mavryk_crypto.Hashed.Operation_hash.zero
   in
   return (ctxt, src, dst)
 

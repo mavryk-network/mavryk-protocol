@@ -30,11 +30,11 @@ let add_service registerer subst service handler directory =
 let register_commitments_history ctxt directory =
   directory
   |> add_service
-       Tezos_rpc.Directory.register
-       Tezos_rpc.Service.subst1
+       Mavryk_rpc.Directory.register
+       Mavryk_rpc.Service.subst1
        Dal_proto_services.Commitments_history.hash_content
        Skip_list_handlers.cell
-  |> Tezos_rpc.Directory.map (fun _prefix -> Lwt.return ctxt)
+  |> Mavryk_rpc.Directory.map (fun _prefix -> Lwt.return ctxt)
 
 let directory (rpc_ctxt : Skip_list_cells_store.t) =
-  register_commitments_history rpc_ctxt Tezos_rpc.Directory.empty
+  register_commitments_history rpc_ctxt Mavryk_rpc.Directory.empty

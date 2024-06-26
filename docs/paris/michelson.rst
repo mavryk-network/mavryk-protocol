@@ -1508,7 +1508,7 @@ built on the :doc:`../user/mockup` mode of Octez client is available in
 
 ::
 
-   $ octez-client --mode mockup --base-dir /tmp/mockup create mockup
+   $ mavkit-client --mode mockup --base-dir /tmp/mockup create mockup
    $ rlwrap scripts/michelson_repl.sh
    > UNIT
      { Stack_elt unit Unit }
@@ -2116,13 +2116,13 @@ particular order.
    instruction
 
  - ``sender`` (optional, defaults to
-   ``"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"``): the sender address
+   ``"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"``): the sender address
    that should be pushed by the `SENDER
    <https://tezos.gitlab.io/michelson-reference/#instr-SENDER>`__
    instruction
 
  - ``source`` (optional, defaults to
-   ``"tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"``): the source address
+   ``"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"``): the source address
    that should be pushed by the `SOURCE
    <https://tezos.gitlab.io/michelson-reference/#instr-SOURCE>`__
    instruction
@@ -2278,11 +2278,11 @@ test; for example these two tests pass:
 
    input {Stack_elt address 0x0000e7670f32038107a59a2b9cfefae36ea21f5aa63c};
    code {};
-   output {Stack_elt address "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN"}
+   output {Stack_elt address "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"}
 
 ::
 
-   input {Stack_elt address "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN"};
+   input {Stack_elt address "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"};
    code {};
    output {Stack_elt address 0x0000e7670f32038107a59a2b9cfefae36ea21f5aa63c}
 
@@ -2293,7 +2293,7 @@ readable format so the following test does not pass:
 
 ::
 
-   input {Stack_elt address "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN"};
+   input {Stack_elt address "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"};
    code {};
    output {Stack_elt _ 0x0000e7670f32038107a59a2b9cfefae36ea21f5aa63c}
 
@@ -2303,7 +2303,7 @@ but the following test does pass:
 
    input {Stack_elt address 0x0000e7670f32038107a59a2b9cfefae36ea21f5aa63c};
    code {};
-   output {Stack_elt _ "tz1gjaF81ZRRvdzjobyfVNsAeSC6PScjfQwN"}
+   output {Stack_elt _ "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"}
 
 .. _syntax_of_errors_paris:
 

@@ -3,27 +3,27 @@
 
 (library
  (name tezos_dac_020_PsParisC)
- (public_name octez-protocol-020-PsParisC-libs.dac)
+ (public_name mavkit-protocol-020-PsParisC-libs.dac)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  octez-protocol-compiler.registerer
-  octez-libs.stdlib-unix
-  tezos-dac-lib
-  tezos-dac-client-lib
-  octez-protocol-020-PsParisC-libs.client
-  tezos-protocol-020-PsParisC.embedded-protocol
-  tezos-protocol-020-PsParisC.protocol)
+  mavkit-libs.base
+  mavkit-protocol-compiler.registerer
+  mavkit-libs.stdlib-unix
+  mavryk-dac-lib
+  mavryk-dac-client-lib
+  mavkit-protocol-020-PsParisC-libs.client
+  mavryk-protocol-020-PsParisC.embedded-protocol
+  mavryk-protocol-020-PsParisC.protocol)
  (inline_tests (flags -verbose) (modes native))
  (preprocess (pps ppx_expect))
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_protocol_registerer
-  -open Tezos_stdlib_unix
-  -open Tezos_dac_lib
-  -open Tezos_dac_client_lib
-  -open Tezos_client_020_PsParisC
-  -open Tezos_embedded_protocol_020_PsParisC
-  -open Tezos_protocol_020_PsParisC))
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_registerer
+  -open Mavryk_stdlib_unix
+  -open Mavryk_dac_lib
+  -open Mavryk_dac_client_lib
+  -open Mavryk_client_020_PsParisC
+  -open Mavryk_embedded_protocol_020_PsParisC
+  -open Mavryk_protocol_020_PsParisC))

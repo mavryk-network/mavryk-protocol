@@ -115,11 +115,11 @@ let test_participation ~sufficient_participation () =
   in
   let* bal2_at_pred_b =
     let+ t = Context.Contract.balance (B pred_b) account2 in
-    Tez.to_mutez t
+    Tez.to_mumav t
   in
   let* bal2_at_b =
     let+ t = Context.Contract.balance (B b) account2 in
-    Tez.to_mutez t
+    Tez.to_mumav t
   in
   (* - If not sufficient_participation, we check that the balance of del2 at b is the
      balance of del2 at pred_b; consequently, no rewards could have been given
@@ -132,7 +132,7 @@ let test_participation ~sufficient_participation () =
       ~expected_attesting_power:expected_nb_slots
   in
   let autostaked =
-    Tez.to_mutez @@ Option.value ~default:Tez.zero last_del2_autostaked
+    Tez.to_mumav @@ Option.value ~default:Tez.zero last_del2_autostaked
   in
   let attesting_rewards = if sufficient_participation then er else Tez.zero in
   let* attesting_rewards =
@@ -142,7 +142,7 @@ let test_participation ~sufficient_participation () =
       del2
       attesting_rewards
   in
-  let attesting_rewards = Test_tez.to_mutez attesting_rewards in
+  let attesting_rewards = Test_tez.to_mumav attesting_rewards in
   let expected_bal2_at_b =
     Int64.(sub (add bal2_at_pred_b attesting_rewards) autostaked)
   in

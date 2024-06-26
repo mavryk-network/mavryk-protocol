@@ -44,7 +44,7 @@ code
         SWAP; # big_map :: parameter.snd - 1 :: big_map :: []
         RIGHT bool ; # Right big_map :: parameter.snd - 1 :: big_map :: []
         PAIR; # Right big_map * (parameter.snd - 1) :: big_map :: []
-        DIP { SELF; PUSH mutez 0; }; # Right big_map * (parameter.snd - 1) :: 0 mutez :: self :: big_map :: []
+        DIP { SELF; PUSH mumav 0; }; # Right big_map * (parameter.snd - 1) :: 0 mumav :: self :: big_map :: []
         TRANSFER_TOKENS; # transfer_tokens :: big_map :: []
         NIL operation; # nil_operation :: transfer_tokens :: big_map :: []
         SWAP; # transfer_tokens :: nil_operation :: big_map :: []
@@ -57,8 +57,8 @@ code
             NIL operation; # list operation :: big_map :: []
           }
           { # big_map :: big_map :: []
-            PUSH mutez 0; # 0 mutez :: big_map :: big_map :: []
-            NONE key_hash; # None key_hash :: 0 mutez :: big_map :: big_map :: []
+            PUSH mumav 0; # 0 mumav :: big_map :: big_map :: []
+            NONE key_hash; # None key_hash :: 0 mumav :: big_map :: big_map :: []
             CREATE_CONTRACT
               {
                 parameter unit;

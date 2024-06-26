@@ -36,9 +36,9 @@
     Do not fail if something goes wrong.
 *)
 
-let invoice_contract ctxt ~address ~amount_mutez =
+let invoice_contract ctxt ~address ~amount_mumav =
   let open Lwt_result_syntax in
-  match Tez_repr.of_mutez amount_mutez with
+  match Tez_repr.of_mumav amount_mumav with
   | None -> Lwt.return (ctxt, [])
   | Some amount -> (
       let*! result =
@@ -236,7 +236,7 @@ let update_total_supply_for_p chain_id ctxt =
   if Chain_id.equal Constants_repr.mainnet_id chain_id then
     let* current_total_supply = Storage.Contract.Total_supply.get ctxt in
     let*? updated_total_supply =
-      Tez_repr.(current_total_supply +? of_mutez_exn 16458634911983L)
+      Tez_repr.(current_total_supply +? of_mumav_exn 16458634911983L)
     in
     let*! ctxt = Storage.Contract.Total_supply.add ctxt updated_total_supply in
     return ctxt

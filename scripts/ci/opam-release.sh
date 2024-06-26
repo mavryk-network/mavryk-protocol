@@ -12,8 +12,8 @@ log() {
   printf '\e[1m%s\e[0m' "$1"
 }
 
-# shellcheck source=./scripts/ci/octez-release.sh
-. "$ci_dir/octez-release.sh"
+# shellcheck source=./scripts/ci/mavkit-release.sh
+. "$ci_dir/mavkit-release.sh"
 
 # set up ssh credentials to access github
 mkdir -p "$HOME/.ssh"
@@ -36,7 +36,7 @@ echo "$script_dir/opam-release.sh" \
   "$opam_dir"
 
 # Matches the corresponding variable in /scripts/opam-release.sh.
-branch_name="octez-$(echo "$opam_release_tag" | tr '~' -)"
+branch_name="mavkit-$(echo "$opam_release_tag" | tr '~' -)"
 
 log "While we're here, update master on the fork..."
 cd "$opam_dir"

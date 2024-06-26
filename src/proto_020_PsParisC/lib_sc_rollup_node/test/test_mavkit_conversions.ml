@@ -27,13 +27,13 @@
     -------
     Component:  Smart rollup node library, type conversions
     Invocation: dune exec src/proto_020_PsParisC/lib_sc_rollup_node/test/main.exe \
-                -- -f test_octez_conversions.ml
-    Subject:    Ensure conversions between octez smart rollup structures and
+                -- -f test_mavkit_conversions.ml
+    Subject:    Ensure conversions between mavkit smart rollup structures and
                 protocol ones are bijective.
 *)
 
 open Qcheck2_helpers
-open Octez_smart_rollup
+open Mavkit_smart_rollup
 
 let gen_hash ~size of_bytes =
   let open QCheck2.Gen in
@@ -78,14 +78,14 @@ let gen_commitment =
   let* inbox_level = gen_level in
   let* predecessor = gen_commitment_hash in
   let+ number_of_ticks = uint64 in
-  Octez_smart_rollup.Commitment.
+  Mavkit_smart_rollup.Commitment.
     {compressed_state; inbox_level; predecessor; number_of_ticks}
 
 let gen_dissection_chunk =
   let open QCheck2.Gen in
   let* state_hash = option gen_state_hash in
   let+ tick = gen_tick in
-  Octez_smart_rollup.Game.{state_hash; tick}
+  Mavkit_smart_rollup.Game.{state_hash; tick}
 
 let gen_dissection = QCheck2.Gen.small_list gen_dissection_chunk
 
@@ -101,13 +101,13 @@ let gen_step =
   | None ->
       (* shrink there *)
       let+ dissection = gen_dissection in
-      Octez_smart_rollup.Game.Dissection dissection
+      Mavkit_smart_rollup.Game.Dissection dissection
   | Some () ->
       let+ proof = gen_proof in
-      Octez_smart_rollup.Game.Proof proof
+      Mavkit_smart_rollup.Game.Proof proof
 
 let random_seed ~rng_state =
-  Bytes.init Tezos_crypto.Hacl.Ed25519.sk_size (fun _i ->
+  Bytes.init Mavryk_crypto.Hacl.Ed25519.sk_size (fun _i ->
       Char.chr (Random.State.int rng_state 256))
 
 let random_algo ~rng_state : Signature.algo =
@@ -130,7 +130,7 @@ let gen_stakers =
   let open QCheck2.Gen in
   let* p1 = gen_pkh in
   let+ p2 = gen_pkh in
-  Octez_smart_rollup.Game.make_index p1 p2
+  Mavkit_smart_rollup.Game.make_index p1 p2
 
 let gen_refutation =
   let open QCheck2.Gen in
@@ -139,12 +139,12 @@ let gen_refutation =
   | true ->
       let* player_commitment_hash = gen_commitment_hash in
       let+ opponent_commitment_hash = gen_commitment_hash in
-      Octez_smart_rollup.Game.Start
+      Mavkit_smart_rollup.Game.Start
         {player_commitment_hash; opponent_commitment_hash}
   | false ->
       let* choice = gen_tick in
       let+ step = gen_step in
-      Octez_smart_rollup.Game.Move {choice; step}
+      Mavkit_smart_rollup.Game.Move {choice; step}
 
 let gen_inbox =
   let open Protocol in
@@ -185,7 +185,7 @@ let gen_inbox =
   in
   return
   @@ (witness_and_inbox |> function
-      | Ok v -> Sc_rollup_proto_types.Inbox.to_octez v
+      | Ok v -> Sc_rollup_proto_types.Inbox.to_mavkit v
       | Error e ->
           Stdlib.failwith (Format.asprintf "%a" Error_monad.pp_print_trace e))
 
@@ -205,7 +205,7 @@ let gen_slot_header_commitment =
   let open QCheck2.Gen in
   make_primitive
     ~gen:(fun state ->
-      Tezos_crypto_dal.Cryptobox.Internal_for_tests.dummy_commitment ~state ())
+      Mavryk_crypto_dal.Cryptobox.Internal_for_tests.dummy_commitment ~state ())
     ~shrink:(fun _ -> Seq.empty)
 
 let gen_slot_header =
@@ -213,10 +213,10 @@ let gen_slot_header =
   let* published_level = gen_level in
   let* index = gen_slot_index in
   let+ commitment = gen_slot_header_commitment in
-  Octez_smart_rollup.Dal.Slot_header.{id = {published_level; index}; commitment}
+  Mavkit_smart_rollup.Dal.Slot_header.{id = {published_level; index}; commitment}
 
-let compare_slot_header_id (s1 : Octez_smart_rollup.Dal.Slot_header.id)
-    (s2 : Octez_smart_rollup.Dal.Slot_header.id) =
+let compare_slot_header_id (s1 : Mavkit_smart_rollup.Dal.Slot_header.id)
+    (s2 : Mavkit_smart_rollup.Dal.Slot_header.id) =
   let c = Int32.compare s1.published_level s2.published_level in
   if c <> 0 then c else Int.compare s1.index s2.index
 
@@ -225,18 +225,18 @@ let gen_slot_headers =
   let size = int_bound 50 in
   let+ l = list_size size gen_slot_header in
   List.sort
-    (fun (h1 : Octez_smart_rollup.Dal.Slot_header.t)
-         (h2 : Octez_smart_rollup.Dal.Slot_header.t) ->
+    (fun (h1 : Mavkit_smart_rollup.Dal.Slot_header.t)
+         (h2 : Mavkit_smart_rollup.Dal.Slot_header.t) ->
       compare_slot_header_id h1.id h2.id)
     l
   |> fun l ->
   match l with
   | [] -> []
-  | (h : Octez_smart_rollup.Dal.Slot_header.t) :: _ ->
+  | (h : Mavkit_smart_rollup.Dal.Slot_header.t) :: _ ->
       let min_level = h.id.published_level in
       (* smallest level *)
       List.mapi
-        (fun i (h : Octez_smart_rollup.Dal.Slot_header.t) ->
+        (fun i (h : Mavkit_smart_rollup.Dal.Slot_header.t) ->
           (* patch the published level to comply with the invariants *)
           let published_level = Int32.(add min_level (of_int i)) in
           let h = {h with id = {h.id with published_level}} in
@@ -252,7 +252,7 @@ let gen_slot_history =
       (fun (lvl, h) ->
         ( Raw_level.of_int32_exn lvl,
           List.map
-            (Sc_rollup_proto_types.Dal.Slot_header.of_octez ~number_of_slots)
+            (Sc_rollup_proto_types.Dal.Slot_header.of_mavkit ~number_of_slots)
             h ))
       l
   in
@@ -268,7 +268,7 @@ let gen_slot_history =
   |> function
   | Error e ->
       Stdlib.failwith (Format.asprintf "%a" Environment.Error_monad.pp_trace e)
-  | Ok v -> Sc_rollup_proto_types.Dal.Slot_history.to_octez v
+  | Ok v -> Sc_rollup_proto_types.Dal.Slot_history.to_mavkit v
 
 let gen_slot_history_cache =
   let open Protocol.Alpha_context in
@@ -280,7 +280,7 @@ let gen_slot_history_cache =
       (fun (lvl, h) ->
         ( Raw_level.of_int32_exn lvl,
           List.map
-            (Sc_rollup_proto_types.Dal.Slot_header.of_octez ~number_of_slots)
+            (Sc_rollup_proto_types.Dal.Slot_header.of_mavkit ~number_of_slots)
             h ))
       l
   in
@@ -297,15 +297,15 @@ let gen_slot_history_cache =
   |> function
   | Error e ->
       Stdlib.failwith (Format.asprintf "%a" Environment.Error_monad.pp_trace e)
-  | Ok (_, c) -> Sc_rollup_proto_types.Dal.Slot_history_cache.to_octez c
+  | Ok (_, c) -> Sc_rollup_proto_types.Dal.Slot_history_cache.to_mavkit c
 
-let test_roundtrip ~count name gen to_octez from_octez octez_encoding
+let test_roundtrip ~count name gen to_mavkit from_mavkit mavkit_encoding
     proto_encoding =
-  let test octez1 =
+  let test mavkit1 =
     try
-      let proto1 = from_octez octez1 in
-      let octez2 = to_octez proto1 in
-      let proto2 = from_octez octez2 in
+      let proto1 = from_mavkit mavkit1 in
+      let mavkit2 = to_mavkit proto1 in
+      let proto2 = from_mavkit mavkit2 in
       let check version enc v1 v2 =
         let b1 = Data_encoding.Binary.to_bytes_exn enc v1 in
         let b2 = Data_encoding.Binary.to_bytes_exn enc v2 in
@@ -316,7 +316,7 @@ let test_roundtrip ~count name gen to_octez from_octez octez_encoding
             version
       in
       check "protocol" proto_encoding proto1 proto2 ;
-      check "octez" octez_encoding octez1 octez2 ;
+      check "mavkit" mavkit_encoding mavkit1 mavkit2 ;
       true
     with exn ->
       QCheck2.Test.fail_reportf
@@ -325,7 +325,7 @@ let test_roundtrip ~count name gen to_octez from_octez octez_encoding
         (Printexc.to_string exn)
   in
   let print v =
-    Data_encoding.Json.construct octez_encoding v
+    Data_encoding.Json.construct mavkit_encoding v
     |> Data_encoding.Json.to_string ~minify:false
   in
   QCheck2.Test.make
@@ -340,9 +340,9 @@ let test_address =
     ~count:1000
     "address"
     gen_address
-    Sc_rollup_proto_types.Address.to_octez
-    Sc_rollup_proto_types.Address.of_octez
-    Octez_smart_rollup.Address.encoding
+    Sc_rollup_proto_types.Address.to_mavkit
+    Sc_rollup_proto_types.Address.of_mavkit
+    Mavkit_smart_rollup.Address.encoding
     Protocol.Alpha_context.Sc_rollup.Address.encoding
 
 let test_state_hash =
@@ -350,9 +350,9 @@ let test_state_hash =
     ~count:1000
     "state_hash"
     gen_state_hash
-    Sc_rollup_proto_types.State_hash.to_octez
-    Sc_rollup_proto_types.State_hash.of_octez
-    Octez_smart_rollup.State_hash.encoding
+    Sc_rollup_proto_types.State_hash.to_mavkit
+    Sc_rollup_proto_types.State_hash.of_mavkit
+    Mavkit_smart_rollup.State_hash.encoding
     Protocol.Alpha_context.Sc_rollup.State_hash.encoding
 
 let test_payload_hash =
@@ -360,9 +360,9 @@ let test_payload_hash =
     ~count:1000
     "payload_hash"
     gen_payload_hash
-    Sc_rollup_proto_types.Merkelized_payload_hashes_hash.to_octez
-    Sc_rollup_proto_types.Merkelized_payload_hashes_hash.of_octez
-    Octez_smart_rollup.Merkelized_payload_hashes_hash.encoding
+    Sc_rollup_proto_types.Merkelized_payload_hashes_hash.to_mavkit
+    Sc_rollup_proto_types.Merkelized_payload_hashes_hash.of_mavkit
+    Mavkit_smart_rollup.Merkelized_payload_hashes_hash.encoding
     Protocol.Alpha_context.Sc_rollup.Inbox_merkelized_payload_hashes.Hash
     .encoding
 
@@ -371,9 +371,9 @@ let test_commitment_hash =
     ~count:1000
     "commitment_hash"
     gen_commitment_hash
-    Sc_rollup_proto_types.Commitment_hash.to_octez
-    Sc_rollup_proto_types.Commitment_hash.of_octez
-    Octez_smart_rollup.Commitment.Hash.encoding
+    Sc_rollup_proto_types.Commitment_hash.to_mavkit
+    Sc_rollup_proto_types.Commitment_hash.of_mavkit
+    Mavkit_smart_rollup.Commitment.Hash.encoding
     Protocol.Alpha_context.Sc_rollup.Commitment.Hash.encoding
 
 let test_commitment =
@@ -381,9 +381,9 @@ let test_commitment =
     ~count:1000
     "commitment"
     gen_commitment
-    Sc_rollup_proto_types.Commitment.to_octez
-    Sc_rollup_proto_types.Commitment.of_octez
-    Octez_smart_rollup.Commitment.encoding
+    Sc_rollup_proto_types.Commitment.to_mavkit
+    Sc_rollup_proto_types.Commitment.of_mavkit
+    Mavkit_smart_rollup.Commitment.encoding
     Protocol.Alpha_context.Sc_rollup.Commitment.encoding
 
 let test_stakers =
@@ -391,9 +391,9 @@ let test_stakers =
     ~count:1000
     "stakers"
     gen_stakers
-    Sc_rollup_proto_types.Game.index_to_octez
-    Sc_rollup_proto_types.Game.index_of_octez
-    Octez_smart_rollup.Game.index_encoding
+    Sc_rollup_proto_types.Game.index_to_mavkit
+    Sc_rollup_proto_types.Game.index_of_mavkit
+    Mavkit_smart_rollup.Game.index_encoding
     Protocol.Alpha_context.Sc_rollup.Game.Index.encoding
 
 let test_refutation =
@@ -401,9 +401,9 @@ let test_refutation =
     ~count:1000
     "refutation"
     gen_refutation
-    Sc_rollup_proto_types.Game.refutation_to_octez
-    Sc_rollup_proto_types.Game.refutation_of_octez
-    Octez_smart_rollup.Game.refutation_encoding
+    Sc_rollup_proto_types.Game.refutation_to_mavkit
+    Sc_rollup_proto_types.Game.refutation_of_mavkit
+    Mavkit_smart_rollup.Game.refutation_encoding
     Protocol.Alpha_context.Sc_rollup.Game.refutation_encoding
 
 let test_inbox =
@@ -411,9 +411,9 @@ let test_inbox =
     ~count:1000
     "inbox"
     gen_inbox
-    Sc_rollup_proto_types.Inbox.to_octez
-    Sc_rollup_proto_types.Inbox.of_octez
-    Octez_smart_rollup.Inbox.encoding
+    Sc_rollup_proto_types.Inbox.to_mavkit
+    Sc_rollup_proto_types.Inbox.of_mavkit
+    Mavkit_smart_rollup.Inbox.encoding
     Protocol.Alpha_context.Sc_rollup.Inbox.encoding
 
 let test_slot_index =
@@ -421,9 +421,9 @@ let test_slot_index =
     ~count:100
     "dal_slot_index"
     gen_slot_index
-    Sc_rollup_proto_types.Dal.Slot_index.to_octez
-    (Sc_rollup_proto_types.Dal.Slot_index.of_octez ~number_of_slots)
-    Octez_smart_rollup.Dal.Slot_index.encoding
+    Sc_rollup_proto_types.Dal.Slot_index.to_mavkit
+    (Sc_rollup_proto_types.Dal.Slot_index.of_mavkit ~number_of_slots)
+    Mavkit_smart_rollup.Dal.Slot_index.encoding
     Protocol.Alpha_context.Dal.Slot_index.encoding
 
 let test_page_index =
@@ -431,9 +431,9 @@ let test_page_index =
     ~count:100
     "dal_page_index"
     gen_page_index
-    Sc_rollup_proto_types.Dal.Page_index.to_octez
-    Sc_rollup_proto_types.Dal.Page_index.of_octez
-    Octez_smart_rollup.Dal.Page_index.encoding
+    Sc_rollup_proto_types.Dal.Page_index.to_mavkit
+    Sc_rollup_proto_types.Dal.Page_index.of_mavkit
+    Mavkit_smart_rollup.Dal.Page_index.encoding
     Protocol.Alpha_context.Dal.Page.Index.encoding
 
 let test_slot_header =
@@ -441,9 +441,9 @@ let test_slot_header =
     ~count:1000
     "dal_slot_header"
     gen_slot_header
-    Sc_rollup_proto_types.Dal.Slot_header.to_octez
-    (Sc_rollup_proto_types.Dal.Slot_header.of_octez ~number_of_slots)
-    Octez_smart_rollup.Dal.Slot_header.encoding
+    Sc_rollup_proto_types.Dal.Slot_header.to_mavkit
+    (Sc_rollup_proto_types.Dal.Slot_header.of_mavkit ~number_of_slots)
+    Mavkit_smart_rollup.Dal.Slot_header.encoding
     Protocol.Alpha_context.Dal.Slot.Header.encoding
 
 let test_slot_history =
@@ -451,9 +451,9 @@ let test_slot_history =
     ~count:300
     "dal_slot_history"
     gen_slot_history
-    Sc_rollup_proto_types.Dal.Slot_history.to_octez
-    Sc_rollup_proto_types.Dal.Slot_history.of_octez
-    Octez_smart_rollup.Dal.Slot_history.encoding
+    Sc_rollup_proto_types.Dal.Slot_history.to_mavkit
+    Sc_rollup_proto_types.Dal.Slot_history.of_mavkit
+    Mavkit_smart_rollup.Dal.Slot_history.encoding
     Protocol.Alpha_context.Dal.Slots_history.encoding
 
 let test_slot_history_cache =
@@ -461,9 +461,9 @@ let test_slot_history_cache =
     ~count:300
     "dal_slot_history_cache"
     gen_slot_history_cache
-    Sc_rollup_proto_types.Dal.Slot_history_cache.to_octez
-    Sc_rollup_proto_types.Dal.Slot_history_cache.of_octez
-    Octez_smart_rollup.Dal.Slot_history_cache.encoding
+    Sc_rollup_proto_types.Dal.Slot_history_cache.to_mavkit
+    Sc_rollup_proto_types.Dal.Slot_history_cache.of_mavkit
+    Mavkit_smart_rollup.Dal.Slot_history_cache.encoding
     Protocol.Alpha_context.Dal.Slots_history.History_cache.encoding
 
 let tests =
@@ -486,5 +486,5 @@ let tests =
 let () =
   Alcotest.run
     ~__FILE__
-    (Protocol.name ^ ": Smart rollup types octez conversions")
+    (Protocol.name ^ ": Smart rollup types mavkit conversions")
     [("roundtrip", qcheck_wrap tests)]

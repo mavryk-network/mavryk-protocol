@@ -15,7 +15,7 @@
    {{:https://gitlab.com/tezos/tezos/-/releases}Octez releases on
    GitLab}, the associated artifacts, and to push releases to opam. *)
 
-open Tezos_ci
+open Mavryk_ci
 open Common
 
 (** Type of release tag pipelines.
@@ -65,7 +65,7 @@ let octez_jobs ?(test = false) release_tag_pipeline_type =
   let job_static_x86_64_release =
     job_build_static_binaries ~__POS__ ~arch:Amd64 ~release:true ()
   in
-  let job_gitlab_release ~dependencies : Tezos_ci.tezos_job =
+  let job_gitlab_release ~dependencies : Mavryk_ci.tezos_job =
     job
       ~__POS__
       ~image:Images.ci_release
@@ -78,7 +78,7 @@ let octez_jobs ?(test = false) release_tag_pipeline_type =
         "./scripts/ci/gitlab-release.sh";
       ]
   in
-  let job_gitlab_publish ~dependencies : Tezos_ci.tezos_job =
+  let job_gitlab_publish ~dependencies : Mavryk_ci.tezos_job =
     job
       ~__POS__
       ~image:Images.ci_release
@@ -104,7 +104,7 @@ let octez_jobs ?(test = false) release_tag_pipeline_type =
     | Non_release_tag -> job_gitlab_publish ~dependencies
     | _ -> job_gitlab_release ~dependencies
   in
-  let job_opam_release : Tezos_ci.tezos_job =
+  let job_opam_release : Mavryk_ci.tezos_job =
     job
       ~__POS__
       ~image:Images.runtime_build_test_dependencies
@@ -130,7 +130,7 @@ let octez_jobs ?(test = false) release_tag_pipeline_type =
 
 (** Create an etherlink release tag pipeline of type {!release_tag_pipeline_type}. *)
 let etherlink_jobs () =
-  let job_produce_docker_artifacts : Tezos_ci.tezos_job =
+  let job_produce_docker_artifacts : Mavryk_ci.tezos_job =
     job_docker_authenticated
       ~__POS__
       ~stage:Stages.prepare_release
@@ -141,7 +141,7 @@ let etherlink_jobs () =
            ["kernels.tar.gz"])
       ["./scripts/ci/docker_prepare_etherlink_release.sh"]
   in
-  let job_gitlab_release : Tezos_ci.tezos_job =
+  let job_gitlab_release : Mavryk_ci.tezos_job =
     job
       ~__POS__
       ~image:Images.ci_release

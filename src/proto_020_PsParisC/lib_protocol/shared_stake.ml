@@ -70,8 +70,8 @@ let compute_reward_distrib
       Tez_repr.mul_ratio
         ~rounding:`Down
         rewards
-        ~num:(Tez_repr.to_mutez weighted_delegated)
-        ~den:(Tez_repr.to_mutez total_stake)
+        ~num:(Tez_repr.to_mumav weighted_delegated)
+        ~den:(Tez_repr.to_mumav total_stake)
     in
     let* to_frozen = Tez_repr.(rewards -? to_spendable) in
     let* {baker_part; stakers_part} =

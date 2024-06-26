@@ -113,7 +113,7 @@ pub enum LazyStorageError {
 /// All the operations for working with the lazy storage.
 ///
 /// Note that in the Tezos protocol implementation, work with this layer is
-/// observable. When you call a contract with `octez-client`, you can see, for
+/// observable. When you call a contract with `mavkit-client`, you can see, for
 /// instance:
 ///
 /// ```txt

@@ -364,7 +364,7 @@ let check_last_commitment_published cctxt snapshot_metadata =
   Error.trace_lwt_result_with
     "Last commitment of snapshot is not published on L1."
   @@ let* {current_protocol; _} =
-       Tezos_shell_services.Shell_services.Blocks.protocols
+       Mavryk_shell_services.Shell_services.Blocks.protocols
          cctxt
          ~block:(`Head 0)
          ()

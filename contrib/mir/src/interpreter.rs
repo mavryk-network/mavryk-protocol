@@ -2478,7 +2478,7 @@ mod interpreter_tests {
             assert!(interpret_one(&Int(overloads::Int::Bytes), &mut ctx, &mut stack).is_ok());
             assert_eq!(stack, expected_stack);
         }
-        // checked against octez-client
+        // checked against mavkit-client
         test("", 0);
         test("00", 0);
         test("0000", 0);
@@ -2503,7 +2503,7 @@ mod interpreter_tests {
             assert!(interpret_one(&Nat, &mut ctx, &mut stack).is_ok());
             assert_eq!(stack, expected_stack);
         }
-        // checked against octez-client
+        // checked against mavkit-client
         test("", 0u32);
         test("00", 0u32);
         test("0000", 0u32);
@@ -2531,7 +2531,7 @@ mod interpreter_tests {
                 assert!(interpret_one(&Bytes(overloads::Bytes::Nat), &mut ctx, &mut stack).is_ok());
                 assert_eq!(stack, expected_stack);
             }
-            // checked against octez-client
+            // checked against mavkit-client
             test("", 0u32);
             test("01", 1u32);
             test("0100", 256u32);
@@ -2551,7 +2551,7 @@ mod interpreter_tests {
                 assert!(interpret_one(&Bytes(overloads::Bytes::Int), &mut ctx, &mut stack).is_ok());
                 assert_eq!(stack, expected_stack);
             }
-            // checked against octez-client
+            // checked against mavkit-client
             test("", 0);
             test("01", 1);
             test("0100", 256);

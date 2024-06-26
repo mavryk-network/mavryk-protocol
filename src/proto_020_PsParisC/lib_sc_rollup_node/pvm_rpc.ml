@@ -27,11 +27,11 @@ module type S = sig
   (** Build RPC directory of the PVM *)
   val build_sub_directory :
     Node_context.rw ->
-    (unit * Rollup_node_services.Arg.block_id) Tezos_rpc.Directory.t
+    (unit * Rollup_node_services.Arg.block_id) Mavryk_rpc.Directory.t
 end
 
 module No_rpc = struct
-  let build_sub_directory _node_ctxt = Tezos_rpc.Directory.empty
+  let build_sub_directory _node_ctxt = Mavryk_rpc.Directory.empty
 end
 
 let no_rpc = (module No_rpc : S)

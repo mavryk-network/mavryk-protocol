@@ -158,7 +158,7 @@ mod tests {
         let arena = Arena::new();
         assert_eq!(
             closure.into_micheline_optimized_legacy(&arena),
-            // checked against octez-client
+            // checked against mavkit-client
             // { PUSH nat 2 ; PAIR ; { PUSH int 1 ; PAIR ; { DROP ; UNIT } } }
             seq! {
               app!(PUSH[app!(nat), 2]);
@@ -190,7 +190,7 @@ mod tests {
         let arena = Arena::new();
         assert_eq!(
             closure.into_micheline_optimized_legacy(&arena),
-            // checked against octez-client
+            // checked against mavkit-client
             //   { PUSH nat 2 ;
             //     PAIR ;
             //     { PUSH int 1 ;
@@ -243,7 +243,7 @@ mod tests {
         let arena = Arena::new();
         assert_eq!(
             closure.into_micheline_optimized_legacy(&arena),
-            // checked against octez-client's PACK behaviour.
+            // checked against mavkit-client's PACK behaviour.
             // the partially-applied lambda above packs into
             // 0x020000002507430965000000060362036203620000000007070001070700010001034202000000020317
             // which, converted to Micheline, yields:

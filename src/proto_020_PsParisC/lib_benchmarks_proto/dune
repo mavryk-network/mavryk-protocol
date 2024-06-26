@@ -3,42 +3,42 @@
 
 (library
  (name tezos_benchmarks_proto_020_PsParisC)
- (public_name tezos-benchmarks-proto-020-PsParisC)
+ (public_name mavryk-benchmarks-proto-020-PsParisC)
  (instrumentation (backend bisect_ppx))
  (libraries
   str
-  octez-libs.stdlib
-  octez-libs.base
-  octez-libs.error-monad
-  tezos-protocol-020-PsParisC.parameters
-  octez-libs.lazy-containers
+  mavkit-libs.stdlib
+  mavkit-libs.base
+  mavkit-libs.error-monad
+  mavryk-protocol-020-PsParisC.parameters
+  mavkit-libs.lazy-containers
   tezos-benchmark
-  tezos-benchmark-020-PsParisC
-  tezos-benchmark-type-inference-020-PsParisC
-  tezos-protocol-020-PsParisC.protocol
-  octez-libs.crypto
-  octez-shell-libs.shell-benchmarks
-  octez-libs.micheline
-  octez-protocol-020-PsParisC-libs.test-helpers
-  octez-libs.tezos-sapling
-  octez-protocol-020-PsParisC-libs.client
-  octez-protocol-020-PsParisC-libs.plugin
-  octez-proto-libs.protocol-environment)
+  mavryk-benchmark-020-PsParisC
+  mavryk-benchmark-type-inference-020-PsParisC
+  mavryk-protocol-020-PsParisC.protocol
+  mavkit-libs.crypto
+  mavkit-shell-libs.shell-benchmarks
+  mavkit-libs.micheline
+  mavkit-protocol-020-PsParisC-libs.test-helpers
+  mavkit-libs.tezos-sapling
+  mavkit-protocol-020-PsParisC-libs.client
+  mavkit-protocol-020-PsParisC-libs.plugin
+  mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_stdlib
-  -open Tezos_base
-  -open Tezos_base.TzPervasives
-  -open Tezos_error_monad
-  -open Tezos_protocol_020_PsParisC_parameters
-  -open Tezos_lazy_containers
-  -open Tezos_benchmark
-  -open Tezos_benchmark_020_PsParisC
-  -open Tezos_benchmark_type_inference_020_PsParisC
-  -open Tezos_protocol_020_PsParisC
-  -open Tezos_protocol_020_PsParisC.Protocol
-  -open Tezos_micheline
-  -open Tezos_020_PsParisC_test_helpers
-  -open Tezos_client_020_PsParisC
-  -open Tezos_protocol_plugin_020_PsParisC))
+  -open Mavryk_stdlib
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_error_monad
+  -open Mavryk_protocol_020_PsParisC_parameters
+  -open Mavryk_lazy_containers
+  -open Mavryk_benchmark
+  -open Mavryk_benchmark_020_PsParisC
+  -open Mavryk_benchmark_type_inference_020_PsParisC
+  -open Mavryk_protocol_020_PsParisC
+  -open Mavryk_protocol_020_PsParisC.Protocol
+  -open Mavryk_micheline
+  -open Mavryk_020_PsParisC_test_helpers
+  -open Mavryk_client_020_PsParisC
+  -open Mavryk_protocol_plugin_020_PsParisC))

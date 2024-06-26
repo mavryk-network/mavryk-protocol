@@ -7,26 +7,26 @@
  (libraries
   tezt.core
   tezt
-  octez-libs.tezos-context
-  octez-alcotezt
-  octez-libs.base
-  octez-protocol-020-PsParisC-libs.client
-  tezos-protocol-020-PsParisC.protocol
-  tezos-protocol-020-PsParisC.parameters
-  octez-protocol-020-PsParisC-libs.test-helpers
-  octez-libs.base-test-helpers)
+  mavkit-libs.mavryk-context
+  mavkit-alcotezt
+  mavkit-libs.base
+  mavkit-protocol-020-PsParisC-libs.client
+  mavryk-protocol-020-PsParisC.protocol
+  mavryk-protocol-020-PsParisC.parameters
+  mavkit-protocol-020-PsParisC-libs.test-helpers
+  mavkit-libs.base-test-helpers)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Octez_alcotezt
-  -open Tezos_base.TzPervasives
-  -open Tezos_client_020_PsParisC
-  -open Tezos_protocol_020_PsParisC
-  -open Tezos_protocol_020_PsParisC_parameters
-  -open Tezos_020_PsParisC_test_helpers
-  -open Tezos_base_test_helpers)
+  -open Mavkit_alcotezt
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_client_020_PsParisC
+  -open Mavryk_protocol_020_PsParisC
+  -open Mavryk_protocol_020_PsParisC_parameters
+  -open Mavryk_020_PsParisC_test_helpers
+  -open Mavryk_base_test_helpers)
  (modules
   test_constants
   test_frozen_bonds
@@ -50,7 +50,7 @@
 
 (rule
  (alias runtest)
- (package tezos-protocol-020-PsParisC-tests)
+ (package mavryk-protocol-020-PsParisC-tests)
  (deps (glob_files wasm_kernel/*.wasm))
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))

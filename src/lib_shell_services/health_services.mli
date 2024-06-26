@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 module S : sig
-  val health : ([`GET], unit, unit, unit, unit, bool) Tezos_rpc.Service.service
+  val health : ([`GET], unit, unit, unit, unit, bool) Mavryk_rpc.Service.service
 end
 
-val health : #Tezos_rpc.Context.simple -> bool Error_monad.tzresult Lwt.t
+val health : #Mavryk_rpc.Context.simple -> bool Error_monad.tzresult Lwt.t

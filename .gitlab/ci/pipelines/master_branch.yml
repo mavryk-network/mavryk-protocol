@@ -40,7 +40,7 @@ oc.build:static-x86_64-linux-binaries:
     EXECUTABLE_FILES: script-inputs/released-executables script-inputs/experimental-executables
   artifacts:
     paths:
-    - octez-binaries/$ARCH/*
+    - mavkit-binaries/$ARCH/*
 
 oc.build:static-arm64-linux-binaries:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
@@ -60,7 +60,7 @@ oc.build:static-arm64-linux-binaries:
     EXECUTABLE_FILES: script-inputs/released-executables script-inputs/experimental-executables
   artifacts:
     paths:
-    - octez-binaries/$ARCH/*
+    - mavkit-binaries/$ARCH/*
 
 oc.build_arm64-released:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
@@ -84,7 +84,7 @@ oc.build_arm64-released:
     name: build-$ARCH-$CI_COMMIT_REF_SLUG
     expire_in: 1 day
     paths:
-    - octez-*
+    - mavkit-*
     - src/proto_*/parameters/*.json
     - _build/default/src/lib_protocol_compiler/bin/main_native.exe
     - _build/default/tezt/tests/main.exe
@@ -115,7 +115,7 @@ oc.build_arm64-exp-dev-extra:
     name: build-$ARCH-$CI_COMMIT_REF_SLUG
     expire_in: 1 day
     paths:
-    - octez-*
+    - mavkit-*
     - src/proto_*/parameters/*.json
     - _build/default/src/lib_protocol_compiler/bin/main_native.exe
     - _build/default/tezt/tests/main.exe

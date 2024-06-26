@@ -30,8 +30,8 @@ open Protocol.Alpha_context
 val bake :
   Protocol_client_context.full ->
   ?minimal_fees:Tez.t ->
-  ?minimal_nanotez_per_gas_unit:Q.t ->
-  ?minimal_nanotez_per_byte:Q.t ->
+  ?minimal_nanomav_per_gas_unit:Q.t ->
+  ?minimal_nanomav_per_byte:Q.t ->
   ?force_apply:bool ->
   ?force:bool ->
   ?minimal_timestamp:bool ->
@@ -61,8 +61,8 @@ val attest :
 val propose :
   Protocol_client_context.full ->
   ?minimal_fees:Tez.t ->
-  ?minimal_nanotez_per_gas_unit:Q.t ->
-  ?minimal_nanotez_per_byte:Q.t ->
+  ?minimal_nanomav_per_gas_unit:Q.t ->
+  ?minimal_nanomav_per_byte:Q.t ->
   ?force_apply:bool ->
   ?force:bool ->
   ?minimal_timestamp:bool ->

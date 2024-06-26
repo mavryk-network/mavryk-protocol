@@ -1449,7 +1449,7 @@
   },
   {
     "file": "src/lib_context/memory/test/test.ml",
-    "title": "tezos-context-memory: hash (large-dir-10000)",
+    "title": "mavryk-context-memory: hash (large-dir-10000)",
     "tags": [
       "alcotezt",
       "quick"

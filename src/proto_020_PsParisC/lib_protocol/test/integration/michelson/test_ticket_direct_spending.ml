@@ -67,7 +67,7 @@ code
     DROP;
     NIL operation;
     SENDER; CONTRACT (ticket unit); ASSERT_SOME;
-    PUSH mutez 0;
+    PUSH mumav 0;
     PUSH nat 1; UNIT; TICKET; ASSERT_SOME;
     TRANSFER_TOKENS;
     CONS;
@@ -103,7 +103,7 @@ let test_spending ~direct_ticket_spending_enable ~constructor () =
   let open Lwt_result_syntax in
   let constants =
     let default_constants =
-      Tezos_protocol_020_PsParisC_parameters.Default_parameters.constants_test
+      Mavryk_protocol_020_PsParisC_parameters.Default_parameters.constants_test
     in
     {
       default_constants with

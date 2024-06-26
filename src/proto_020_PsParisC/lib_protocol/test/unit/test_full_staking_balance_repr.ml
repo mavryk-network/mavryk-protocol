@@ -47,7 +47,7 @@ let equal_full_staking_balance (a : Full_staking_balance_repr.t)
   let open Full_staking_balance_repr in
   let open Full_staking_balance_repr.Internal_for_tests_and_RPCs in
   let equal_tez_repr ~loc a b =
-    Assert.equal_int64 ~loc (Tez_repr.to_mutez a) (Tez_repr.to_mutez b)
+    Assert.equal_int64 ~loc (Tez_repr.to_mumav a) (Tez_repr.to_mumav b)
   in
   let equal_cycle_repr ~loc a b =
     Assert.equal_int32 ~loc (Cycle_repr.to_int32 a) (Cycle_repr.to_int32 b)

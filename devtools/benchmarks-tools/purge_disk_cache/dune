@@ -4,4 +4,4 @@
 (executable
  (name purge_disk_cache)
  (public_name purge_disk_cache)
- (package tezos-tooling))
+ (package mavryk-tooling))

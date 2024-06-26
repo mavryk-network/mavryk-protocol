@@ -9,7 +9,7 @@
 open Protocol.Alpha_context
 
 type 'rpc service =
-  ('meth, 'prefix, 'params, 'query, 'input, 'output) Tezos_rpc.Service.service
+  ('meth, 'prefix, 'params, 'query, 'input, 'output) Mavryk_rpc.Service.service
   constraint
     'rpc =
     < meth : 'meth

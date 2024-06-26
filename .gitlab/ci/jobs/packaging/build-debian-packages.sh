@@ -26,7 +26,7 @@ make all
 # Prepare the packaging by copying all the freshly compiled binaries
 mkdir -p scripts/packaging/octez/binaries
 mkdir -p scripts/packaging/octez/zcash-params
-cp octez-* scripts/packaging/octez/binaries/
+cp mavkit-* scripts/packaging/octez/binaries/
 
 # Copy the zcash parametes to be packaged
 cp -a _opam/share/zcash-params scripts/packaging/octez/

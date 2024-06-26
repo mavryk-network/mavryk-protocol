@@ -262,7 +262,7 @@ let gen_random_hash =
 
 (** Generate the number of sections in the dissection. *)
 let gen_num_sections =
-  let open Tezos_protocol_019_PtParisB_parameters.Default_parameters in
+  let open Mavryk_protocol_019_PtParisB_parameters.Default_parameters in
   let testnet = constants_test.sc_rollup.number_of_sections_in_dissection in
   let mainnet = constants_mainnet.sc_rollup.number_of_sections_in_dissection in
   let sandbox = constants_sandbox.sc_rollup.number_of_sections_in_dissection in
@@ -750,7 +750,7 @@ module Dissection = struct
         (* The test is not general enough to support all kind of number of
            sections. *)
         let number_of_sections =
-          Tezos_protocol_019_PtParisB_parameters.Default_parameters
+          Mavryk_protocol_019_PtParisB_parameters.Default_parameters
           .constants_mainnet
             .sc_rollup
             .number_of_sections_in_dissection
@@ -899,7 +899,7 @@ type player_client = {
   inbox : Sc_rollup_helpers.Node_inbox.t;
   payloads_per_levels : payloads_per_level list;
   metadata : Metadata.t;
-  context : Tezos_context_memory.Context_binary.t;
+  context : Mavryk_context_memory.Context_binary.t;
 }
 
 let pp_player_client ppf
@@ -1301,7 +1301,7 @@ let gen_game ~p1_strategy ~p2_strategy =
 
   (* Create a context with a rollup originated. *)
   let commitment_period =
-    Tezos_protocol_019_PtParisB_parameters.Default_parameters.constants_mainnet
+    Mavryk_protocol_019_PtParisB_parameters.Default_parameters.constants_mainnet
       .sc_rollup
       .commitment_period_in_blocks
   in

@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 open Protocol
-open Tezos_micheline
+open Mavryk_micheline
 open Micheline
 
 let print_expr ppf expr =

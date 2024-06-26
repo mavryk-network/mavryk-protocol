@@ -26,13 +26,13 @@ val ( >|= ) : 'a Lwt.t -> ('a -> 'b) -> 'b Lwt.t
 
 val ok : 'a -> ('a, 'e) result
 
-val error : 'e -> ('a, 'e Tezos_error_monad.TzTrace.trace) result
+val error : 'e -> ('a, 'e Mavryk_error_monad.TzTrace.trace) result
 
 val ( >>? ) : ('a, 'e) result -> ('a -> ('b, 'e) result) -> ('b, 'e) result
 
 val ( >|? ) : ('a, 'e) result -> ('a -> 'b) -> ('b, 'e) result
 
-val fail : 'e -> ('a, 'e Tezos_error_monad.TzTrace.trace) result Lwt.t
+val fail : 'e -> ('a, 'e Mavryk_error_monad.TzTrace.trace) result Lwt.t
 
 val ( >>=? ) :
   ('a, 'e) result Lwt.t ->

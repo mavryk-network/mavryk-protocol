@@ -58,7 +58,7 @@ let await_protocol_start (cctxt : #Protocol_client_context.full) ~chain =
 
 module Baker = struct
   let run (cctxt : Protocol_client_context.full) ?minimal_fees
-      ?minimal_nanotez_per_gas_unit ?minimal_nanotez_per_byte ?votes
+      ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte ?votes
       ?extra_operations ?dal_node_endpoint ?pre_emptive_forge_time ?force_apply
       ?context_path ?state_recorder ~chain ~keep_alive delegates =
     let open Lwt_result_syntax in
@@ -104,8 +104,8 @@ module Baker = struct
       let config =
         Baking_configuration.make
           ?minimal_fees
-          ?minimal_nanotez_per_gas_unit
-          ?minimal_nanotez_per_byte
+          ?minimal_nanomav_per_gas_unit
+          ?minimal_nanomav_per_byte
           ?votes
           ?extra_operations
           ?dal_node_endpoint
@@ -119,9 +119,9 @@ module Baker = struct
       let*! () =
         cctxt#message
           "Baker %a (%s) for %a started."
-          Tezos_version.Version.pp_simple
-          Tezos_version_value.Current_git_info.octez_version
-          Tezos_version_value.Current_git_info.abbreviated_commit_hash
+          Mavryk_version.Version.pp_simple
+          Mavryk_version_value.Current_git_info.mavkit_version
+          Mavryk_version_value.Current_git_info.abbreviated_commit_hash
           Protocol_hash.pp_short
           Protocol.hash
       in
@@ -158,9 +158,9 @@ module Accuser = struct
       let*! () =
         cctxt#message
           "Accuser %a (%s) for %a started."
-          Tezos_version.Version.pp_simple
-          Tezos_version_value.Current_git_info.octez_version
-          Tezos_version_value.Current_git_info.abbreviated_commit_hash
+          Mavryk_version.Version.pp_simple
+          Mavryk_version_value.Current_git_info.mavkit_version
+          Mavryk_version_value.Current_git_info.abbreviated_commit_hash
           Protocol_hash.pp_short
           Protocol.hash
       in
@@ -200,9 +200,9 @@ module VDF = struct
       let*! () =
         cctxt#message
           "VDF daemon %a (%s) for %a started."
-          Tezos_version.Version.pp_simple
-          Tezos_version_value.Current_git_info.octez_version
-          Tezos_version_value.Current_git_info.abbreviated_commit_hash
+          Mavryk_version.Version.pp_simple
+          Mavryk_version_value.Current_git_info.mavkit_version
+          Mavryk_version_value.Current_git_info.abbreviated_commit_hash
           Protocol_hash.pp_short
           Protocol.hash
       in

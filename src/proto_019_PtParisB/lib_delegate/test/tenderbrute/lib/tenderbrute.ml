@@ -37,7 +37,7 @@ module LevelRoundMap = Map.Make (struct
       (Raw_level_repr.to_int32 l2.Level_repr.level, Round_repr.to_int32 r2)
 end)
 
-let _ = Client_keys.register_signer (module Tezos_signer_backends.Unencrypted)
+let _ = Client_keys.register_signer (module Mavryk_signer_backends.Unencrypted)
 
 (* Initialize a context in memory with the Mockup *)
 let init_context ?constants_overrides_json ?bootstrap_accounts_json parameters =

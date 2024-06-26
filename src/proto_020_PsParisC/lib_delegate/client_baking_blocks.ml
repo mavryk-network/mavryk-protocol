@@ -48,7 +48,7 @@ let raw_info cctxt ?(chain = `Main) hash shell_header =
     Shell_services.Blocks.protocols cctxt ~chain ~block ()
   in
   let {
-    Tezos_base.Block_header.predecessor;
+    Mavryk_base.Block_header.predecessor;
     fitness;
     timestamp;
     level;
@@ -86,7 +86,7 @@ let info cctxt ?(chain = `Main) block =
 module Block_seen_event = struct
   type t = {
     hash : Block_hash.t;
-    header : Tezos_base.Block_header.t;
+    header : Mavryk_base.Block_header.t;
     occurrence : [`Valid_blocks of Chain_id.t | `Heads];
   }
 
@@ -133,7 +133,7 @@ module Block_seen_event = struct
                          | `Valid_blocks ch -> Some ((), ch) | _ -> None)
                        (fun ((), ch) -> `Valid_blocks ch);
                    ]))
-             (req "header" Tezos_base.Block_header.encoding))
+             (req "header" Mavryk_base.Block_header.encoding))
       in
       With_version.(encoding ~name (first_version v0_encoding))
 
@@ -164,7 +164,7 @@ let monitor_applied_blocks cctxt ?chains ?protocols ~next_protocols () =
             cctxt
             ~chain:(`Hash chain)
             block
-            header.Tezos_base.Block_header.shell)
+            header.Mavryk_base.Block_header.shell)
         block_stream,
       stop )
 
@@ -175,7 +175,7 @@ let monitor_heads cctxt ~next_protocols chain =
   in
   return
     ( Lwt_stream.map_s
-        (fun (block, ({Tezos_base.Block_header.shell; _} as header)) ->
+        (fun (block, ({Mavryk_base.Block_header.shell; _} as header)) ->
           let* () = Block_seen_event.(Event.emit (make block header `Heads)) in
           raw_info cctxt ~chain block shell)
         block_stream,
@@ -191,7 +191,7 @@ let blocks_from_current_cycle cctxt ?(chain = `Main) block ?(offset = 0l) () =
     Plugin.RPC.levels_in_current_cycle cctxt ~offset (chain, block)
   in
   match result with
-  | Error (Tezos_rpc.Context.Not_found _ :: _) -> return_nil
+  | Error (Mavryk_rpc.Context.Not_found _ :: _) -> return_nil
   | Error _ as err -> Lwt.return err
   | Ok (first, last) ->
       let length = Int32.to_int (Int32.sub level (Raw_level.to_int32 first)) in

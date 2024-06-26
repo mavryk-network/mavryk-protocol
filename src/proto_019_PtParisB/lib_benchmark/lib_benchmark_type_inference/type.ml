@@ -96,7 +96,7 @@ module Base = struct
     | Bytes_t -> Format.pp_print_string fmtr "bytes"
     | Key_hash_t -> Format.pp_print_string fmtr "key_hash"
     | Timestamp_t -> Format.pp_print_string fmtr "timestamp"
-    | Mutez_t -> Format.pp_print_string fmtr "mutez"
+    | Mutez_t -> Format.pp_print_string fmtr "mumav"
     | Key_t -> Format.pp_print_string fmtr "key"
     | Option_t ty -> Format.fprintf fmtr "(option %a)" pp ty
     | List_t ty -> Format.fprintf fmtr "(list %a)" pp ty
@@ -174,7 +174,7 @@ let key_hash = Base.Table.hashcons Base.table Key_hash_t
 
 let timestamp = Base.Table.hashcons Base.table Timestamp_t
 
-let mutez = Base.Table.hashcons Base.table Mutez_t
+let mumav = Base.Table.hashcons Base.table Mutez_t
 
 let key = Base.Table.hashcons Base.table Key_t
 

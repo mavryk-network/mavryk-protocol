@@ -36,9 +36,9 @@
     Do not fail if something goes wrong.
 *)
 
-let invoice_contract ctxt ~address ~amount_mutez =
+let invoice_contract ctxt ~address ~amount_mumav =
   let open Lwt_result_syntax in
-  match Tez_repr.of_mutez amount_mutez with
+  match Tez_repr.of_mumav amount_mumav with
   | None -> Lwt.return (ctxt, [])
   | Some amount -> (
       let*! result =

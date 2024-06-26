@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* open Tezos_rewriting *)
+(* open Mavryk_rewriting *)
 open Mikhailsky
 
 let unopt x = match x with Some x -> x | None -> assert false
@@ -107,7 +107,7 @@ module Test3 = struct
     Format.printf "Testing rewriting and type inference\n" ;
     Format.printf "Source program: %a\n" Mikhailsky.pp program
 
-  open Tezos_micheline_rewriting
+  open Mavryk_micheline_rewriting
 
   module Lang =
     Micheline_with_hash_consing.Make

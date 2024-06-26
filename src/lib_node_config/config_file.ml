@@ -296,10 +296,10 @@ let blockchain_network_encoding : blockchain_network Data_encoding.t =
           ~description:
             "USE FOR TESTING PURPOSE ONLY. Configuration for the \
              data-availibility layer"
-          Tezos_crypto_dal.Cryptobox.Config.encoding
+          Mavryk_crypto_dal.Cryptobox.Config.encoding
           (* We use default config unless explicitly overridden via the config file.
              Note that such override is expected to only be used in test networks. *)
-          Tezos_crypto_dal.Cryptobox.Config.default))
+          Mavryk_crypto_dal.Cryptobox.Config.default))
 
 let builtin_blockchain_networks_with_tags =
   [
@@ -368,10 +368,10 @@ and p2p = {
   advertised_net_port : int option;
   discovery_addr : string option;
   private_mode : bool;
-  limits : Tezos_p2p_services.P2p_limits.t;
+  limits : Mavryk_p2p_services.P2p_limits.t;
   disable_mempool : bool;
   enable_testchain : bool;
-  reconnection_config : Tezos_p2p_services.Point_reconnection_config.t;
+  reconnection_config : Mavryk_p2p_services.Point_reconnection_config.t;
   disable_peer_discovery : bool;
 }
 
@@ -396,10 +396,10 @@ let default_p2p =
     advertised_net_port = None;
     discovery_addr = None;
     private_mode = false;
-    limits = Tezos_p2p_services.P2p_limits.default;
+    limits = Mavryk_p2p_services.P2p_limits.default;
     disable_mempool = false;
     enable_testchain = false;
-    reconnection_config = Tezos_p2p_services.Point_reconnection_config.default;
+    reconnection_config = Mavryk_p2p_services.Point_reconnection_config.default;
     disable_peer_discovery = false;
   }
 
@@ -533,8 +533,8 @@ let p2p =
           (dft
              "limits"
              ~description:"Network limits"
-             Tezos_p2p_services.P2p_limits.encoding
-             Tezos_p2p_services.P2p_limits.default)
+             Mavryk_p2p_services.P2p_limits.encoding
+             Mavryk_p2p_services.P2p_limits.default)
           (dft
              "disable_mempool"
              ~description:
@@ -554,7 +554,7 @@ let p2p =
                 blocks."
              bool
              default_p2p.enable_testchain)
-          (let open Tezos_p2p_services.Point_reconnection_config in
+          (let open Mavryk_p2p_services.Point_reconnection_config in
           dft
             "greylisting_config"
             ~description:
@@ -908,7 +908,7 @@ let update ?(disable_config_validation = false) ?data_dir ?min_connections
   in
   let peer_table_size = Option.map (fun i -> (i, i / 4 * 3)) peer_table_size in
   let unopt_list ~default = function [] -> default | l -> l in
-  let limits : Tezos_p2p_services.P2p_limits.t =
+  let limits : Mavryk_p2p_services.P2p_limits.t =
     {
       cfg.p2p.limits with
       min_connections =

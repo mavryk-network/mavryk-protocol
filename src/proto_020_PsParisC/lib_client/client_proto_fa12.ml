@@ -26,7 +26,7 @@
 open Protocol_client_context
 open Protocol
 open Alpha_context
-open Tezos_micheline
+open Mavryk_micheline
 
 type error += Contract_has_no_script of Contract_hash.t
 

@@ -25,7 +25,7 @@
   mavkit-libs.mavryk-context
   mavkit-shell-libs.validation
   mavkit-shell-libs.shell-context
-  mavkit-libs.tezos-workers
+  mavkit-libs.mavryk-workers
   mavkit-shell-libs.protocol-updater
   cmdliner
   fmt.cli
@@ -47,10 +47,10 @@
   mavryk-protocol-000-Ps9mPmXa.embedded-protocol
   mavryk-protocol-001-PtAtLas.embedded-protocol
   mavkit-protocol-001-PtAtLas-libs.plugin-registerer
-  tezos-protocol-019-PtParisB.embedded-protocol
-  octez-protocol-019-PtParisB-libs.plugin-registerer
-  tezos-protocol-020-PsParisC.embedded-protocol
-  octez-protocol-020-PsParisC-libs.plugin-registerer
+  mavryk-protocol-019-PtParisB.embedded-protocol
+  mavkit-protocol-019-PtParisB-libs.plugin-registerer
+  mavryk-protocol-020-PsParisC.embedded-protocol
+  mavkit-protocol-020-PsParisC-libs.plugin-registerer
   (select void_for_linking-mavryk-protocol-alpha-embedded-protocol from
    (mavryk-protocol-alpha.embedded-protocol -> void_for_linking-mavryk-protocol-alpha-embedded-protocol.empty)
    (-> void_for_linking-mavryk-protocol-alpha-embedded-protocol.empty))

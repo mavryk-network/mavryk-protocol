@@ -24,7 +24,8 @@
   mavkit-protocol-alpha-libs.plugin
   mavkit-alcotezt
   tezt
-  mavkit-libs.test-helpers)
+  mavkit-libs.test-helpers
+  mavkit-libs.event-logging-test-helpers)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -44,7 +45,8 @@
   -open Mavryk_protocol_alpha_parameters
   -open Mavryk_protocol_plugin_alpha
   -open Mavkit_alcotezt
-  -open Mavryk_test_helpers)
+  -open Mavryk_test_helpers
+  -open Mavryk_event_logging_test_helpers)
  (modules
   test
   test_snapshots
@@ -59,7 +61,6 @@
   test_store
   test_testchain
   test_utils
-  tezt_sink
   assert_lib))
 
 (executable

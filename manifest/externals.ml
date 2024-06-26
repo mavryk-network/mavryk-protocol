@@ -366,7 +366,7 @@ end
 
 let () =
   List.iter
-    (add_dep_to_profile "octez-dev-deps")
+    (add_dep_to_profile "mavkit-dev-deps")
     [
       external_lib "merlin" V.(at_least "4.14");
       (* TODO: https://gitlab.com/tezos/tezos/-/issues/7085

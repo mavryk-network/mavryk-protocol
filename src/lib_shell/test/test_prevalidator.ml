@@ -24,13 +24,13 @@ type op_data = High | Medium | Low
 (** Same as [Mock_all_unit] except that [operation_data] is [High | Medium |
     Low] and that the mempool accept every operation. *)
 module Mock_protocol :
-  Tezos_protocol_environment.PROTOCOL
+  Mavryk_protocol_environment.PROTOCOL
     with type operation_data = op_data
      and type operation_receipt = unit
      and type validation_state = unit
      and type application_state = unit = struct
   include
-    Tezos_protocol_environment.Internal_for_tests.Environment_protocol_T_test
+    Mavryk_protocol_environment.Internal_for_tests.Environment_protocol_T_test
     .Mock_all_unit
 
   type operation_data = op_data
@@ -96,8 +96,8 @@ module Mock_protocol :
     let init _ _ ~head_hash:_ ~head:_ ~cache:_ = Lwt_result.return ((), ())
 
     type conflict_handler =
-      existing_operation:Tezos_crypto.Hashed.Operation_hash.t * operation ->
-      new_operation:Tezos_crypto.Hashed.Operation_hash.t * operation ->
+      existing_operation:Mavryk_crypto.Hashed.Operation_hash.t * operation ->
+      new_operation:Mavryk_crypto.Hashed.Operation_hash.t * operation ->
       [`Keep | `Replace]
 
     let add_operation ?check_signature:_ ?conflict_handler:_ _ _ _ =
@@ -109,7 +109,7 @@ module Mock_protocol :
   end
 end
 
-module Wrap_protocol (Proto : Tezos_protocol_environment.PROTOCOL) :
+module Wrap_protocol (Proto : Mavryk_protocol_environment.PROTOCOL) :
   Protocol_plugin.T
     with type operation_data = Proto.operation_data
      and type operation = Proto.operation

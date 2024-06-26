@@ -33,9 +33,9 @@
   mavkit-libs.crypto
   mavkit-libs.base.p2p-identity-file
   mavkit-shell-libs.shell-services
-  irmin-pack
-  irmin-pack.unix
-  irmin
+  mavkit-internal-libs.irmin_pack
+  mavkit-internal-libs.irmin_pack.unix
+  mavkit-internal-libs.irmin
   prometheus-app
   prometheus
   mavkit-protocol-001-PtAtLas-libs.dal

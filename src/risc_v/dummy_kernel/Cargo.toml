@@ -7,7 +7,7 @@ edition = "2021"
 version = "0.5.2"
 default-features = false
 
-[dependencies.tezos-smart-rollup]
+[dependencies.mavryk-smart-rollup]
 path = "../../kernel_sdk/sdk"
 version = "0.2.2"
 default-features = false
@@ -20,5 +20,5 @@ features = [
   "experimental-host-in-memory-store",
 ]
 
-[dependencies.tezos-smart-rollup-constants]
+[dependencies.mavryk-smart-rollup-constants]
 path = "../../kernel_sdk/constants"

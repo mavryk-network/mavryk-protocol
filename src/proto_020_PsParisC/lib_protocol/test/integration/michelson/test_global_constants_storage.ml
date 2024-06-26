@@ -83,7 +83,7 @@ let get_happy_path () =
   let* b = assert_unchanged b in
   let do_many_transfers b =
     let* b = Incremental.begin_construction b in
-    let* b = n_transactions 10 b alice bob (Tez.of_mutez_exn 1000L) in
+    let* b = n_transactions 10 b alice bob (Tez.of_mumav_exn 1000L) in
     let* b = Incremental.finalize_block b in
     assert_unchanged b
   in

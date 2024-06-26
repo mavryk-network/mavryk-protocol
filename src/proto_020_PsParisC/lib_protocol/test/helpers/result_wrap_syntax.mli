@@ -14,7 +14,7 @@
     character symbolizes the {!e wrapping} of the internal error monad type in a
     shell error.  *)
 
-include module type of Tezos_base.TzPervasives.Result_syntax
+include module type of Mavryk_base.TzPervasives.Result_syntax
 
 (** [wrap res] is equivalent to [Environment.wrap_tzresult res] *)
 val wrap : 'a Environment.Error_monad.tzresult -> 'a tzresult

@@ -252,7 +252,7 @@ let test_compute_coeff () =
   in
   let base_total_issued_per_minute =
     Default_parameters.constants_test.issuance_weights
-      .base_total_issued_per_minute |> Tez.to_mutez |> Tez_repr.of_mutez_exn
+      .base_total_issued_per_minute |> Tez.to_mumav |> Tez_repr.of_mumav_exn
   in
   let compute_coeff
       ?(base_total_issued_per_minute = base_total_issued_per_minute)
@@ -271,7 +271,7 @@ let test_compute_coeff () =
     let base_issuance = 20_000_000L in
     let compute_coeff base =
       compute_coeff
-        ~base_total_issued_per_minute:(Tez_repr.of_mutez_exn base)
+        ~base_total_issued_per_minute:(Tez_repr.of_mumav_exn base)
         ~base_reward_coeff_ratio:Q.(1 // 100)
         ~bonus:Issuance_bonus_repr.zero
         ()

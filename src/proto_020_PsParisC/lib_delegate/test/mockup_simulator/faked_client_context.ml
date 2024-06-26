@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_client_base
+open Mavryk_client_base
 
 let logger =
   let log _channel msg = Lwt_fmt.printf "%s@." msg in
@@ -47,10 +47,10 @@ let log _channel msg =
   Lwt.return_unit
 
 class faked_ctxt (hooks : Faked_services.hooks) (chain_id : Chain_id.t) :
-  Tezos_rpc.Context.generic =
+  Mavryk_rpc.Context.generic =
   let local_ctxt =
     let module Services = Faked_services.Make ((val hooks)) in
-    Tezos_mockup_proxy.RPC_client.local_ctxt (Services.directory chain_id)
+    Mavryk_mockup_proxy.RPC_client.local_ctxt (Services.directory chain_id)
   in
   object
     method base = local_ctxt#base
@@ -60,7 +60,7 @@ class faked_ctxt (hooks : Faked_services.hooks) (chain_id : Chain_id.t) :
 
     method call_service
         : 'm 'p 'q 'i 'o.
-          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Tezos_rpc.Service.t ->
+          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Mavryk_rpc.Service.t ->
           'p ->
           'q ->
           'i ->
@@ -70,7 +70,7 @@ class faked_ctxt (hooks : Faked_services.hooks) (chain_id : Chain_id.t) :
 
     method call_streamed_service
         : 'm 'p 'q 'i 'o.
-          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Tezos_rpc.Service.t ->
+          (([< Resto.meth] as 'm), unit, 'p, 'q, 'i, 'o) Mavryk_rpc.Service.t ->
           on_chunk:('o -> unit) ->
           on_close:(unit -> unit) ->
           'p ->

@@ -31,7 +31,7 @@
     Subject:      Test of --mode proxy and tezos-proxy-server heuristic
 *)
 
-let proxy_mode_gen = QCheck2.Gen.oneofl Tezos_proxy.Proxy.[Client; Server]
+let proxy_mode_gen = QCheck2.Gen.oneofl Mavryk_proxy.Proxy.[Client; Server]
 
 let key_gen =
   (* Segments taken from the implementation of split_key in src/proto_alpha/lib_client/proxy.ml *)

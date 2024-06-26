@@ -50,11 +50,11 @@ module Uses = struct
 
   let lookup path = String_map.find_opt (canonicalize_path path) !known_paths
 
-  let octez_node = make ~tag:"node" ~path:"./octez-node"
+  let mavkit_node = make ~tag:"node" ~path:"./mavkit-node"
 
-  let octez_client = make ~tag:"client" ~path:"./octez-client"
+  let octez_client = make ~tag:"client" ~path:"./mavkit-client"
 
-  let octez_admin_client = make ~tag:"admin_client" ~path:"./octez-admin-client"
+  let octez_admin_client = make ~tag:"admin_client" ~path:"./mavkit-admin-client"
 
   let register_meta_test () =
     Regression.register
@@ -79,7 +79,7 @@ let error mode =
 let wrap ~file ~title ~tags ?(uses = []) ?(uses_node = true)
     ?(uses_client = true) ?(uses_admin_client = true) ~run_test () =
   (* Add default uses. *)
-  let uses = if uses_node then Uses.octez_node :: uses else uses in
+  let uses = if uses_node then Uses.mavkit_node :: uses else uses in
   let uses = if uses_client then Uses.octez_client :: uses else uses in
   let uses =
     if uses_admin_client then Uses.octez_admin_client :: uses else uses

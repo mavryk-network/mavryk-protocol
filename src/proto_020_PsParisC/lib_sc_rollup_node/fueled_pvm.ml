@@ -62,7 +62,7 @@ module Make_fueled (F : Fuel.S) : FUELED_PVM with type fuel = F.t = struct
 
   let metadata (node_ctxt : _ Node_context.t) =
     let address =
-      Sc_rollup_proto_types.Address.of_octez node_ctxt.config.sc_rollup_address
+      Sc_rollup_proto_types.Address.of_mavkit node_ctxt.config.sc_rollup_address
     in
     let origination_level =
       Raw_level.of_int32_exn node_ctxt.genesis_info.level
@@ -88,7 +88,7 @@ module Make_fueled (F : Fuel.S) : FUELED_PVM with type fuel = F.t = struct
       | None -> fun ~current_block_level:_ _ -> true
       | Some reveal_activation_level ->
           reveal_activation_level
-          |> Sc_rollup_proto_types.Constants.reveal_activation_level_of_octez
+          |> Sc_rollup_proto_types.Constants.reveal_activation_level_of_mavkit
           |> Protocol.Alpha_context.Sc_rollup.is_reveal_enabled_predicate
     in
     let module PVM = (val Pvm.of_kind node_ctxt.kind) in
@@ -446,7 +446,7 @@ module Make_fueled (F : Fuel.S) : FUELED_PVM with type fuel = F.t = struct
     let open Delayed_write_monad.Lwt_result_syntax in
     let open (val Pvm.of_kind node_ctxt.kind) in
     (* Obtain inbox and its messages for this block. *)
-    let inbox_level = Octez_smart_rollup.Inbox.inbox_level inbox in
+    let inbox_level = Mavkit_smart_rollup.Inbox.inbox_level inbox in
     let*! initial_tick = get_tick (Ctxt_wrapper.of_node_pvmstate state) in
     (* Evaluate all the messages for this level. *)
     let>* state, remaining_fuel, num_messages, remaining_messages =
@@ -466,7 +466,7 @@ module Make_fueled (F : Fuel.S) : FUELED_PVM with type fuel = F.t = struct
     let eval_state =
       {
         state;
-        state_hash = Sc_rollup_proto_types.State_hash.to_octez state_hash;
+        state_hash = Sc_rollup_proto_types.State_hash.to_mavkit state_hash;
         tick = Sc_rollup.Tick.to_z final_tick;
         inbox_level;
         message_counter_offset = num_messages;
@@ -535,7 +535,7 @@ module Make_fueled (F : Fuel.S) : FUELED_PVM with type fuel = F.t = struct
     let eval_state =
       {
         state;
-        state_hash = Sc_rollup_proto_types.State_hash.to_octez state_hash;
+        state_hash = Sc_rollup_proto_types.State_hash.to_mavkit state_hash;
         tick = final_tick;
         inbox_level;
         message_counter_offset = message_counter_offset + num_messages;

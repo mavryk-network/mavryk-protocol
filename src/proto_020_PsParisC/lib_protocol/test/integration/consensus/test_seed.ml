@@ -43,7 +43,7 @@ let test_seed_no_commitment () =
   let n_cycles = 15 in
   let (Hash initial_seed) =
     let empty_bytes = Bytes.(copy empty) in
-    Tezos_crypto.Hacl.Blake2b.direct empty_bytes Nonce_hash.size
+    Mavryk_crypto.Hacl.Blake2b.direct empty_bytes Nonce_hash.size
   in
   let seeds =
     (* compute the first `n_cycles` expected seeds *)
@@ -52,7 +52,7 @@ let test_seed_no_commitment () =
       | 0 -> []
       | n ->
           let (Hash h) =
-            Tezos_crypto.Hacl.Blake2b.direct
+            Mavryk_crypto.Hacl.Blake2b.direct
               (Bytes.cat s zero_bytes)
               Nonce_hash.size
           in

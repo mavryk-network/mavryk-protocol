@@ -10,14 +10,14 @@ current_dir=$(cd "$(dirname "${0}")" && pwd)
 # shellcheck source=./scripts/ci/docker.sh
 . "${current_dir}/docker.sh"
 
-# shellcheck source=./scripts/ci/octez-release.sh
-. ./scripts/ci/octez-release.sh
+# shellcheck source=./scripts/ci/mavkit-release.sh
+. ./scripts/ci/mavkit-release.sh
 
 ## The goal of this script is to retag existing Docker images (do not rebuild them)
 target_tag='latest'
 
 if [ -z "${gitlab_release}" ]; then
-  echo "Error: could not find valid tag like octez-vX.Y at branch HEAD"
+  echo "Error: could not find valid tag like mavkit-vX.Y at branch HEAD"
   exit 1
 fi
 

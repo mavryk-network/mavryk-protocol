@@ -1424,7 +1424,7 @@
   },
   {
     "file": "src/lib_context/test/test_context.ml",
-    "title": "tezos-context: context (memory:trees)",
+    "title": "mavryk-context: context (memory:trees)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1436,7 +1436,7 @@
   },
   {
     "file": "src/lib_clic/test/test_clic.ml",
-    "title": "Tezos_clic: auto-completion-parameters (param: when given arg matches exactly one option, suggests that option)",
+    "title": "Mavryk_clic: auto-completion-parameters (param: when given arg matches exactly one option, suggests that option)",
     "tags": [
       "alcotezt",
       "quick"

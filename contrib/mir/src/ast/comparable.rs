@@ -148,7 +148,7 @@ mod tests {
 
     #[test]
     fn compare_addrs() {
-        // ordering was verified against octez-client, see script below
+        // ordering was verified against mavkit-client, see script below
         let ordered_addrs = [
             "tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw",
             "tz1SNL5w4RFRbCWRMB4yDWvoRQrPQxZmNzeQ",
@@ -190,7 +190,7 @@ mod tests {
     /// checks that an array of chain ids is sorted without a priori assuming
     /// that the comparison operator on chain ids is transitive.
     fn compare_chain_ids() {
-        // ordering was verified against octez-client
+        // ordering was verified against mavkit-client
         let ordered_chain_ids = [
             "00000000", "00000001", "00000002", "00000100", "00000200", "01020304", "a0b0c0d0",
             "a1b2c3d4", "ffffffff",
@@ -257,7 +257,7 @@ prev=""
 for addr in "${addrs[@]}"; do
   if [ -n "$prev" ]; then
     echo $prev $addr
-    octez-client --mode mockup run script 'parameter address; storage address; code { UNPAIR; SWAP; COMPARE; FAILWITH }' on storage "\"$prev\"" and input "\"$addr\"" 2>&1 | grep '^with'
+    mavkit-client --mode mockup run script 'parameter address; storage address; code { UNPAIR; SWAP; COMPARE; FAILWITH }' on storage "\"$prev\"" and input "\"$addr\"" 2>&1 | grep '^with'
   fi
   prev="$addr"
 done

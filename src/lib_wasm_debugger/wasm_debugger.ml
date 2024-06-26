@@ -282,7 +282,7 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
     switch ~doc:"Hides the kernel debug messages." ~long:"no-kernel-debug" ()
 
   let flamecharts_directory_arg =
-    let open Tezos_clic in
+    let open Mavryk_clic in
     arg
       ~doc:
         (Format.sprintf

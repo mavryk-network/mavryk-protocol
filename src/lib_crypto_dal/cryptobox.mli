@@ -201,20 +201,22 @@ val commit :
   t ->
   polynomial ->
   ( commitment,
-    [> `Invalid_degree_strictly_less_than_expected of (int, int) error_container]
-  )
-  Result.t
+  [> `Invalid_degree_strictly_less_than_expected of (int, int) error_container
+  | `Prover_SRS_not_loaded ] )
+Result.t
 
 (** [pp_commit_error fmt error] pretty-prints the error returned by {!val:commit}. *)
 val pp_commit_error :
-  Format.formatter ->
-  [< `Invalid_degree_strictly_less_than_expected of (int, int) error_container] ->
-  unit
+Format.formatter ->
+[< `Invalid_degree_strictly_less_than_expected of (int, int) error_container
+| `Prover_SRS_not_loaded ] ->
+unit
 
 (** [string_of_commit_error error] returns an error string message for [error]. *)
 val string_of_commit_error :
-  [< `Invalid_degree_strictly_less_than_expected of (int, int) error_container] ->
-  string
+[< `Invalid_degree_strictly_less_than_expected of (int, int) error_container
+| `Prover_SRS_not_loaded ] ->
+string
 
 (** A portion of the data represented by a polynomial. *)
 type share
@@ -370,13 +372,15 @@ val verify_shard_multi :
 
     Fails with:
     - [Error `Invalid_degree_strictly_less_than_expected _] if the SRS
-    contained in [t] is too small to produce the proof *)
+    contained in [t] is too small to produce the proof
+    - [Error `Prover_SRS_not_loaded] if the prover’s SRS is not loaded
+    (ie: [init_dal_verifier] has been used to load the SRS). *)
 val prove_commitment :
   t ->
   polynomial ->
   ( commitment_proof,
-    [> `Invalid_degree_strictly_less_than_expected of (int, int) error_container]
-  )
+    [> `Invalid_degree_strictly_less_than_expected of (int, int) error_container
+    | `Prover_SRS_not_loaded ] )
   Result.t
 
 (** [prove_page t polynomial n] produces a proof for the [n]-th page of
@@ -391,6 +395,8 @@ val prove_commitment :
     - [Error (`Page_index_out_of_range msg)] if the page index
     is not within the range [0, slot_size/page_size - 1]
     (where [slot_size] and [page_size] are found in [t]).
+    - [Error `Prover_SRS_not_loaded] if the SRS has been loaded with
+    [init_dal_verifier].
 
     Ensures:
     - [verify_page t commitment ~page_index page page_proof = Ok ()] if
@@ -405,7 +411,8 @@ val prove_page :
   int ->
   ( page_proof,
     [> `Invalid_degree_strictly_less_than_expected of (int, int) error_container
-    | `Page_index_out_of_range ] )
+    | `Page_index_out_of_range
+    | `Prover_SRS_not_loaded ] )
   Result.t
 
 (** The precomputation used to produce shard proofs. *)
@@ -556,6 +563,11 @@ module Internal_for_tests : sig
   (** [ensure_validity parameters] returns true if the [parameters] are valid.
      See implementation file for details. *)
   val ensure_validity : parameters -> bool
+
+  (** Same as [ensure_validity parameters], except that it returns an error if the
+      [parameters] aren't valid and doesn't check the SRS. *)
+  val ensure_validity_without_srs :
+    parameters -> (unit, [> `Fail of string]) result
 
   val slot_as_polynomial_length : slot_size:int -> page_size:int -> int
 end

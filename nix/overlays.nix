@@ -9,8 +9,8 @@
     prev.repository.select {
       opams = [
         {
-          name = "octez-deps";
-          opam = ../opam/virtual/octez-deps.opam.locked;
+          name = "mavkit-deps";
+          opam = ../opam/virtual/mavkit-deps.opam.locked;
         }
       ];
     };

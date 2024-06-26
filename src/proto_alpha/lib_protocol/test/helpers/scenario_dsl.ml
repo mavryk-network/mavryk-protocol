@@ -94,7 +94,7 @@ let unfolded_to_test :
 
 let register_test ~__FILE__ ~tags ((title, is_slow, test) : test_closure) : unit
     =
-  let tags = if is_slow then Tezos_test_helpers.Tag.slow :: tags else tags in
+  let tags = if is_slow then Mavryk_test_helpers.Tag.slow :: tags else tags in
   Tezt_tezos.Protocol.(
     register_test
       ~__FILE__

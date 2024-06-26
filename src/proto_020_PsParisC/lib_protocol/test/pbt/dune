@@ -6,40 +6,40 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  octez-libs.base
-  octez-libs.micheline
-  octez-protocol-020-PsParisC-libs.client
-  tezos-protocol-020-PsParisC.protocol
-  octez-libs.tezos-context.merkle_proof_encoding
-  octez-libs.test-helpers
-  octez-protocol-020-PsParisC-libs.test-helpers
-  octez-alcotezt
+  mavkit-libs.base
+  mavkit-libs.micheline
+  mavkit-protocol-020-PsParisC-libs.client
+  mavryk-protocol-020-PsParisC.protocol
+  mavkit-libs.mavryk-context.merkle_proof_encoding
+  mavkit-libs.test-helpers
+  mavkit-protocol-020-PsParisC-libs.test-helpers
+  mavkit-alcotezt
   qcheck-alcotest
   tezos-benchmark
-  tezos-benchmark-020-PsParisC
-  tezos-benchmark-type-inference-020-PsParisC
-  octez-protocol-020-PsParisC-libs.smart-rollup
-  octez-libs.crypto-dal
-  octez-libs.base-test-helpers
-  tezos-protocol-020-PsParisC.parameters)
+  mavryk-benchmark-020-PsParisC
+  mavryk-benchmark-type-inference-020-PsParisC
+  mavkit-protocol-020-PsParisC-libs.smart-rollup
+  mavkit-libs.crypto-dal
+  mavkit-libs.base-test-helpers
+  mavryk-protocol-020-PsParisC.parameters)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open Tezos_base.TzPervasives
-  -open Tezos_micheline
-  -open Tezos_client_020_PsParisC
-  -open Tezos_protocol_020_PsParisC
-  -open Tezos_test_helpers
-  -open Tezos_020_PsParisC_test_helpers
-  -open Octez_alcotezt
-  -open Tezos_benchmark_020_PsParisC
-  -open Tezos_benchmark_type_inference_020_PsParisC
-  -open Tezos_smart_rollup_020_PsParisC
-  -open Tezos_crypto_dal
-  -open Tezos_base_test_helpers
-  -open Tezos_protocol_020_PsParisC_parameters)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_micheline
+  -open Mavryk_client_020_PsParisC
+  -open Mavryk_protocol_020_PsParisC
+  -open Mavryk_test_helpers
+  -open Mavryk_020_PsParisC_test_helpers
+  -open Mavkit_alcotezt
+  -open Mavryk_benchmark_020_PsParisC
+  -open Mavryk_benchmark_type_inference_020_PsParisC
+  -open Mavryk_smart_rollup_020_PsParisC
+  -open Mavryk_crypto_dal
+  -open Mavryk_base_test_helpers
+  -open Mavryk_protocol_020_PsParisC_parameters)
  (modules
   liquidity_baking_pbt
   saturation_fuzzing
@@ -75,7 +75,7 @@
 
 (rule
  (alias runtest)
- (package tezos-protocol-020-PsParisC-tests)
+ (package mavryk-protocol-020-PsParisC-tests)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

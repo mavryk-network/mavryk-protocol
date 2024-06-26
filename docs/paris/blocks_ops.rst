@@ -14,7 +14,7 @@ those available to end-users on Tezos Mainnet. The complete list of
 operations, including those corresponding to features in development
 or available only on test networks, is given in the
 :package-api:`OCaml Documentation
-<tezos-protocol-019-PtParisB/Tezos_raw_protocol_019_PtParisB/Operation_repr/index.html>`.
+<mavryk-protocol-019-PtParisB/Mavryk_raw_protocol_019_PtParisB/Operation_repr/index.html>`.
 
 .. _validation_passes_paris:
 
@@ -267,7 +267,7 @@ operation from the message that is being signed or checked.
 
 ::
 
-   octez-client sign message "hello world" for <account>
+   mavkit-client sign message "hello world" for <account>
 
-   octez-client check that message "hello world" was signed by <account> to
+   mavkit-client check that message "hello world" was signed by <account> to
    produce <signature>

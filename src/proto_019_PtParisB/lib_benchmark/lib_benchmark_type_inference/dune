@@ -3,21 +3,21 @@
 
 (library
  (name tezos_benchmark_type_inference_019_PtParisB)
- (public_name tezos-benchmark-type-inference-019-PtParisB)
+ (public_name mavryk-benchmark-type-inference-019-PtParisB)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.stdlib
-  octez-libs.error-monad
-  octez-libs.crypto
-  octez-libs.micheline
+  mavkit-libs.stdlib
+  mavkit-libs.error-monad
+  mavkit-libs.crypto
+  mavkit-libs.micheline
   tezos-micheline-rewriting
-  tezos-protocol-019-PtParisB.protocol
+  mavryk-protocol-019-PtParisB.protocol
   hashcons)
  (flags
   (:standard)
-  -open Tezos_stdlib
-  -open Tezos_error_monad
-  -open Tezos_crypto
-  -open Tezos_micheline
-  -open Tezos_micheline_rewriting
-  -open Tezos_protocol_019_PtParisB))
+  -open Mavryk_stdlib
+  -open Mavryk_error_monad
+  -open Mavryk_crypto
+  -open Mavryk_micheline
+  -open Mavryk_micheline_rewriting
+  -open Mavryk_protocol_019_PtParisB))

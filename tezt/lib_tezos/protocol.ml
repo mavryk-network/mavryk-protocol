@@ -78,15 +78,21 @@ let parameter_file ?(constants = default_constants) protocol =
 
 let daemon_name = function Alpha -> "alpha" | p -> String.sub (hash p) 0 8
 
-let protocol_dependent_uses ~tag ~path protocol =
-  let protocol = daemon_name protocol in
-  Uses.make ~tag:(tag ^ String.lowercase_ascii protocol) ~path:(path ^ protocol)
+let protocol_dependent_uses ~tag ~path =
+  let make protocol =
+    let protocol = daemon_name protocol in
+    Uses.make
+      ~tag:(tag ^ String.lowercase_ascii protocol)
+      ~path:(path ^ protocol)
+  in
+  (* Make sure [Uses.lookup] knows about all executables even before tests
+     actually registers themselves. *)
+  let _ = List.map make all in
+  make
 
 let accuser = protocol_dependent_uses ~tag:"accuser_" ~path:"./mavkit-accuser-"
 
-let baker proto = "./mavkit-baker-" ^ daemon_name proto
-
-let sc_rollup_client proto = "./mavkit-smart-rollup-client-" ^ daemon_name proto
+let baker = protocol_dependent_uses ~tag:"baker_" ~path:"./mavkit-baker-"
 
 let encoding_prefix = function
   | Alpha -> "alpha"
@@ -270,8 +276,6 @@ let previous_protocol = function
 
 let has_predecessor p = previous_protocol p <> None
 
-let all = [Atlas; Alpha]
-
 type supported_protocols =
   | Any_protocol
   | From_protocol of int
@@ -325,13 +329,22 @@ let add_to_test_parameters protocol title tags uses =
   let uses = match uses with None -> [] | Some uses -> uses protocol in
   (name protocol ^ ": " ^ title, tag protocol :: tags, uses)
 
-let register_test ~__FILE__ ~title ~tags ?uses ?supports body protocols =
+let register_test ~__FILE__ ~title ~tags ?uses ?uses_node ?uses_client
+    ?uses_admin_client ?supports body protocols =
   iter_on_supported_protocols ~title ~protocols ?supports @@ fun protocol ->
   let title, tags, uses = add_to_test_parameters protocol title tags uses in
-  Test.register ~__FILE__ ~title ~tags ~uses (fun () -> body protocol)
+  Test.register
+    ~__FILE__
+    ~title
+    ~tags
+    ~uses
+    ?uses_node
+    ?uses_client
+    ?uses_admin_client
+    (fun () -> body protocol)
 
-let register_long_test ~__FILE__ ~title ~tags ?uses ?supports ?team ~executors
-    ~timeout body protocols =
+let register_long_test ~__FILE__ ~title ~tags ?uses ?uses_node ?uses_client
+    ?uses_admin_client ?supports ?team ~executors ~timeout body protocols =
   iter_on_supported_protocols ~title ~protocols ?supports @@ fun protocol ->
   let title, tags, uses = add_to_test_parameters protocol title tags uses in
   Long_test.register
@@ -339,16 +352,27 @@ let register_long_test ~__FILE__ ~title ~tags ?uses ?supports ?team ~executors
     ~title
     ~tags
     ~uses
+    ?uses_node
+    ?uses_client
+    ?uses_admin_client
     ?team
     ~executors
     ~timeout
     (fun () -> body protocol)
 
-let register_regression_test ~__FILE__ ~title ~tags ?uses ?supports body
-    protocols =
+let register_regression_test ~__FILE__ ~title ~tags ?uses ?uses_node
+    ?uses_client ?uses_admin_client ?supports body protocols =
   iter_on_supported_protocols ~title ~protocols ?supports @@ fun protocol ->
   let title, tags, uses = add_to_test_parameters protocol title tags uses in
-  Regression.register ~__FILE__ ~title ~tags ~uses (fun () -> body protocol)
+  Regression.register
+    ~__FILE__
+    ~title
+    ~tags
+    ~uses
+    ?uses_node
+    ?uses_client
+    ?uses_admin_client
+    (fun () -> body protocol)
 
 let with_predecessor f protocol =
   match previous_protocol protocol with

@@ -16,7 +16,7 @@
 
 open Gitlab_ci.Types
 open Gitlab_ci.Util
-open Tezos_ci
+open Mavryk_ci
 
 (* Define [stages:]
 
@@ -224,7 +224,7 @@ let opt_var name f = function Some value -> [(name, f value)] | None -> []
     OCaml unit test jobs like [oc.unit:*-x86_64] as they build the test
     runners before their execution. *)
 let enable_coverage_instrumentation : tezos_job -> tezos_job =
-  Tezos_ci.append_variables
+  Mavryk_ci.append_variables
     [("COVERAGE_OPTIONS", "--instrument-with bisect_ppx")]
 
 (** Add variable specifying coverage trace storage.
@@ -235,7 +235,7 @@ let enable_coverage_instrumentation : tezos_job -> tezos_job =
     this variable also _enables_ coverage trace output for
     instrumented binaries. *)
 let enable_coverage_location : tezos_job -> tezos_job =
-  Tezos_ci.append_variables
+  Mavryk_ci.append_variables
     [("BISECT_FILE", "$CI_PROJECT_DIR/_coverage_output/")]
 
 (** Add variables for bisect_ppx output and store the traces as an
@@ -246,7 +246,7 @@ let enable_coverage_output_artifact ?(expire_in = Duration (Days 1)) :
     tezos_job -> tezos_job =
  fun job ->
   job |> enable_coverage_location
-  |> Tezos_ci.add_artifacts
+  |> Mavryk_ci.add_artifacts
        ~expire_in
        ~name:"coverage-files-$CI_JOB_ID"
        ~when_:On_success
@@ -254,7 +254,7 @@ let enable_coverage_output_artifact ?(expire_in = Duration (Days 1)) :
 
 let enable_coverage_report job : tezos_job =
   job
-  |> Tezos_ci.add_artifacts
+  |> Mavryk_ci.add_artifacts
        ~expose_as:"Coverage report"
        ~reports:
          (reports
@@ -267,7 +267,7 @@ let enable_coverage_report job : tezos_job =
        ~expire_in:(Duration (Days 15))
        ~when_:Always
        ["_coverage_report/"; "$BISECT_FILE"]
-  |> Tezos_ci.append_variables [("SLACK_COVERAGE_CHANNEL", "C02PHBE7W73")]
+  |> Mavryk_ci.append_variables [("SLACK_COVERAGE_CHANNEL", "C02PHBE7W73")]
 
 (** Add variable enabling sccache.
 
@@ -275,7 +275,7 @@ let enable_coverage_report job : tezos_job =
     which has a configured sccache Gitlab CI cache. *)
 let enable_sccache ?error_log ?idle_timeout ?log
     ?(dir = "$CI_PROJECT_DIR/_sccache") : tezos_job -> tezos_job =
-  Tezos_ci.append_variables
+  Mavryk_ci.append_variables
     ([("SCCACHE_DIR", dir); ("RUSTC_WRAPPER", "sccache")]
     @ opt_var "SCCACHE_ERROR_LOG" Fun.id error_log
     @ opt_var "SCCACHE_IDLE_TIMEOUT" Fun.id idle_timeout
@@ -283,7 +283,7 @@ let enable_sccache ?error_log ?idle_timeout ?log
 
 (** Add common variables used by jobs compiling kernels *)
 let enable_kernels =
-  Tezos_ci.append_variables
+  Mavryk_ci.append_variables
     [
       ("CC", "clang");
       ("CARGO_HOME", "$CI_PROJECT_DIR/cargo");
@@ -498,7 +498,7 @@ let job_build_static_binaries ~__POS__ ~arch ?(release = false) ?rules
   let artifacts =
     (* Extend the lifespan to prevent failure for external tools using artifacts. *)
     let expire_in = if release then Some (Duration (Days 90)) else None in
-    artifacts ?expire_in ["octez-binaries/$ARCH/*"]
+    artifacts ?expire_in ["mavkit-binaries/$ARCH/*"]
   in
   let executable_files =
     "script-inputs/released-executables"
@@ -747,7 +747,7 @@ let job_build_bin_package ?dependencies ?rules ~__POS__ ~name
       "DISTRO=$(echo \"$DISTRIBUTION\" | cut -d':' -f1)";
       "RELEASE=$(echo \"$DISTRIBUTION\" | cut -d':' -f2)";
       "mkdir -p packages/$DISTRO/$RELEASE";
-      "mv octez-*.* packages/$DISTRO/$RELEASE/";
+      "mv mavkit-*.* packages/$DISTRO/$RELEASE/";
     ]
 
 let job_build_dpkg_amd64 : unit -> tezos_job =
@@ -811,7 +811,7 @@ let job_build_dynamic_binaries ?rules ~__POS__ ~arch ?(release = false)
       ~expire_in:(Duration (Days 1))
       (* TODO: [paths] can be refined based on [release] *)
       [
-        "octez-*";
+        "mavkit-*";
         "src/proto_*/parameters/*.json";
         "_build/default/src/lib_protocol_compiler/bin/main_native.exe";
         "_build/default/tezt/tests/main.exe";

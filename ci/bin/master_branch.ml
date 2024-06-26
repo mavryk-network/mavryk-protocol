@@ -18,7 +18,7 @@
 open Common
 open Gitlab_ci
 open Gitlab_ci.Util
-open Tezos_ci
+open Mavryk_ci
 
 let jobs =
   let job_docker_rust_toolchain =

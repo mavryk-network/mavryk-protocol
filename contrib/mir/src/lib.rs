@@ -1163,8 +1163,8 @@ mod multisig_tests {
 
     /*
         # Create a private/public key pair.
-        $ octez-client import secret key bob 'unencrypted:edsk3SQWDxieaYEVsQbogKwVnArgwbWHQkQYaW1JcNmRmyWWLFXPTt'
-        $ octez-client show address bob
+        $ mavkit-client import secret key bob 'unencrypted:edsk3SQWDxieaYEVsQbogKwVnArgwbWHQkQYaW1JcNmRmyWWLFXPTt'
+        $ mavkit-client show address bob
         Public Key: edpku6Ffo8HgLgeBcArjtWeZ29hLEXP7ewsq5aAj8jr7giUVAAVnUM
     */
     static PUBLIC_KEY: &str = "edpku6Ffo8HgLgeBcArjtWeZ29hLEXP7ewsq5aAj8jr7giUVAAVnUM";
@@ -1227,7 +1227,7 @@ mod multisig_tests {
 
         /*
             # Pack the parameter we will be sending to the multisig contract.
-            $ BYTES=$(octez-client --mode mockup hash data "
+            $ BYTES=$(mavkit-client --mode mockup hash data "
                 Pair
                     (Pair $CHAIN_ID \"$SELF_ADDRESS\")
                     $ANTI_REPLAY_COUNTER
@@ -1235,7 +1235,7 @@ mod multisig_tests {
                 " of type $PARAM_TYPE | sed -n 's/^Raw packed data: //p')
 
             # Sign the packed parameter.
-            $ octez-client --mode mockup sign bytes $BYTES for bob
+            $ mavkit-client --mode mockup sign bytes $BYTES for bob
             Signature: edsigu1GCyS754UrkFLng9P5vG5T51Hs8TcgZoV7fPfj5qeXYzC1JKuUYzyowpfGghEEqUyPxpUdU7WRFrdxad5pnspQg9hwk6v
         */
         let transfer_amount = 123;
@@ -1300,7 +1300,7 @@ mod multisig_tests {
 
         /*
             # Pack the parameter we will be sending to the multisig contract.
-            $ BYTES=$(octez-client --mode mockup hash data "
+            $ BYTES=$(mavkit-client --mode mockup hash data "
                 Pair
                     (Pair $CHAIN_ID \"$SELF_ADDRESS\")
                     $ANTI_REPLAY_COUNTER
@@ -1308,7 +1308,7 @@ mod multisig_tests {
                 " of type $PARAM_TYPE | sed -n 's/^Raw packed data: //p')
 
             # Sign the packed parameter.
-            $ octez-client --mode mockup sign bytes $BYTES for bob
+            $ mavkit-client --mode mockup sign bytes $BYTES for bob
             Signature: edsigtXyZmxgR3MDhDRdtAtopHNNE8rPsPRHgPXurkMacmRLvbLyBCTjtBFNFYHEcLTjx94jdvUf81Wd7uybJNGn5phJYaPAJST
         */
         let new_delegate = "tz1V8fDHpHzN8RrZqiYCHaJM9EocsYZch5Cy";

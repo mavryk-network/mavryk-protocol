@@ -26,14 +26,14 @@
 
 let () =
   Client_commands.register Protocol.hash @@ fun _network ->
-  List.map (Tezos_clic.map_command (new Protocol_client_context.wrap_full))
+  List.map (Mavryk_clic.map_command (new Protocol_client_context.wrap_full))
   @@ Baking_commands.baker_commands ()
 
 let select_commands _ _ =
   let open Lwt_result_syntax in
   return
     (List.map
-       (Tezos_clic.map_command (new Protocol_client_context.wrap_full))
+       (Mavryk_clic.map_command (new Protocol_client_context.wrap_full))
        (Baking_commands.baker_commands ()))
 
 (* This call is not strictly necessary as the parameters are initialized
@@ -43,12 +43,12 @@ let select_commands _ _ =
    parameters files are there at the start and avoid failing much later while
    validating an operation. Plus paying this cost upfront means that the first
    validation will not be more expensive. *)
-let () = Tezos_sapling.Core.Validator.init_params ()
+let () = Mavryk_sapling.Core.Validator.init_params ()
 
 module Config = struct
   include Daemon_config
 
-  let default_daily_logs_path = Some ("octez-baker-" ^ Protocol.name)
+  let default_daily_logs_path = Some ("mavkit-baker-" ^ Protocol.name)
 end
 
 let () = Client_main_run.run (module Config) ~select_commands

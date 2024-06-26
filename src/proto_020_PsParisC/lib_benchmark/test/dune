@@ -8,27 +8,27 @@
   test_autocompletion
   test_distribution)
  (libraries
-  octez-libs.base
-  octez-libs.micheline
+  mavkit-libs.base
+  mavkit-libs.micheline
   tezos-micheline-rewriting
-  tezos-protocol-020-PsParisC.protocol
+  mavryk-protocol-020-PsParisC.protocol
   tezos-benchmark
-  tezos-benchmark-type-inference-020-PsParisC
-  tezos-benchmark-020-PsParisC
-  octez-protocol-020-PsParisC-libs.test-helpers
-  octez-libs.error-monad
+  mavryk-benchmark-type-inference-020-PsParisC
+  mavryk-benchmark-020-PsParisC
+  mavkit-protocol-020-PsParisC-libs.test-helpers
+  mavkit-libs.error-monad
   prbnmcn-stats)
  (link_flags
   (:standard)
   (:include %{workspace_root}/macos-link-flags.sexp))
  (flags
   (:standard)
-  -open Tezos_micheline
-  -open Tezos_protocol_020_PsParisC
-  -open Tezos_benchmark
-  -open Tezos_benchmark_type_inference_020_PsParisC
-  -open Tezos_benchmark_020_PsParisC
-  -open Tezos_020_PsParisC_test_helpers))
+  -open Mavryk_micheline
+  -open Mavryk_protocol_020_PsParisC
+  -open Mavryk_benchmark
+  -open Mavryk_benchmark_type_inference_020_PsParisC
+  -open Mavryk_benchmark_020_PsParisC
+  -open Mavryk_020_PsParisC_test_helpers))
 
 (rule
  (alias runtest_micheline_rewriting_data)

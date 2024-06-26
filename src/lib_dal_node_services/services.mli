@@ -188,9 +188,9 @@ val get_attestable_slots :
 val get_shard :
   < meth : [`GET]
   ; input : unit
-  ; output : Tezos_crypto_dal.Cryptobox.shard
+  ; output : Mavryk_crypto_dal.Cryptobox.shard
   ; prefix : unit
-  ; params : (unit * Tezos_crypto_dal.Cryptobox.commitment) * int
+  ; params : (unit * Mavryk_crypto_dal.Cryptobox.commitment) * int
   ; query : unit >
   service
 

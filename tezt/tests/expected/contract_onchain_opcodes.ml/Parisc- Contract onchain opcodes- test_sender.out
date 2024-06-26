@@ -1,5 +1,5 @@
 
-./octez-client --mode mockup --wait none originate contract proxy transferring 0 from bootstrap1 running michelson_test_scripts/opcodes/proxy.tz --burn-cap 10 --force
+./mavkit-client --mode mockup --wait none originate contract proxy transferring 0 from bootstrap1 running michelson_test_scripts/opcodes/proxy.tz --burn-cap 10 --force
 Node is bootstrapped.
 Estimated gas: 585.098 units (will add 100 for safety)
 Estimated storage: 312 bytes added (will add 20 for safety)
@@ -7,7 +7,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -49,7 +49,7 @@ This sequence of operations was run:
 New contract [CONTRACT_HASH] originated.
 Contract memorized as proxy.
 
-./octez-client --mode mockup --wait none originate contract sender transferring 0 from bootstrap1 running michelson_test_scripts/opcodes/sender.tz --init '"[PUBLIC_KEY_HASH]"' --burn-cap 10 --force
+./mavkit-client --mode mockup --wait none originate contract sender transferring 0 from bootstrap1 running michelson_test_scripts/opcodes/sender.tz --init '"[PUBLIC_KEY_HASH]"' --burn-cap 10 --force
 Node is bootstrapped.
 Estimated gas: 585.452 units (will add 100 for safety)
 Estimated storage: 322 bytes added (will add 20 for safety)
@@ -57,7 +57,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -93,7 +93,7 @@ This sequence of operations was run:
 New contract [CONTRACT_HASH] originated.
 Contract memorized as sender.
 
-./octez-client --mode mockup --wait none transfer 0 from '[PUBLIC_KEY_HASH]' to '[CONTRACT_HASH]' --burn-cap 10 --arg Unit
+./mavkit-client --mode mockup --wait none transfer 0 from '[PUBLIC_KEY_HASH]' to '[CONTRACT_HASH]' --burn-cap 10 --arg Unit
 Node is bootstrapped.
 Estimated gas: 1278.793 units (will add 100 for safety)
 Estimated storage: no bytes added
@@ -101,7 +101,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -123,10 +123,10 @@ This sequence of operations was run:
       Consumed gas: 1279.372
 
 
-./octez-client --mode mockup get contract storage for '[CONTRACT_HASH]'
+./mavkit-client --mode mockup get contract storage for '[CONTRACT_HASH]'
 "[PUBLIC_KEY_HASH]"
 
-./octez-client --mode mockup --wait none transfer 0 from '[PUBLIC_KEY_HASH]' to '[CONTRACT_HASH]' --burn-cap 10 --arg '"[CONTRACT_HASH]"'
+./mavkit-client --mode mockup --wait none transfer 0 from '[PUBLIC_KEY_HASH]' to '[CONTRACT_HASH]' --burn-cap 10 --arg '"[CONTRACT_HASH]"'
 Node is bootstrapped.
 Estimated gas: 2948.882 units (will add 100 for safety)
 Estimated storage: no bytes added
@@ -134,7 +134,7 @@ Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
 Use command
-  octez-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
@@ -166,5 +166,5 @@ This sequence of operations was run:
           Consumed gas: 1210.707
 
 
-./octez-client --mode mockup get contract storage for '[CONTRACT_HASH]'
+./mavkit-client --mode mockup get contract storage for '[CONTRACT_HASH]'
 "[CONTRACT_HASH]"

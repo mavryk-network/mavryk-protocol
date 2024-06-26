@@ -9,9 +9,9 @@
   mavkit-libs.base
   bigstringaf
   fmt
-  irmin
-  irmin-pack
-  irmin-pack.unix
+  mavkit-internal-libs.irmin
+  mavkit-internal-libs.irmin_pack
+  mavkit-internal-libs.irmin_pack.unix
   logs.fmt
   mavkit-libs.stdlib-unix
   mavkit-libs.stdlib

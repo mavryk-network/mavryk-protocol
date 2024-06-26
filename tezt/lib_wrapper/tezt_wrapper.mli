@@ -52,7 +52,7 @@ module Uses : sig
   (** Get the first [Uses.t] that was created using [make] for a given path.
 
       Paths are considered equal modulo some inconsequential variations.
-      For instance, ["./bin//./octez-node"] and ["bin/octez-node"]
+      For instance, ["./bin//./mavkit-node"] and ["bin/mavkit-node"]
       are considered equivalent. *)
   val lookup : string -> t option
 
@@ -61,13 +61,13 @@ module Uses : sig
   (** The following uses are added by default, but can be removed by specifying
       [~uses_node:false] or [~uses_client:false]. *)
 
-  (** ["./octez-node"], with tag ["node"]. *)
-  val octez_node : t
+  (** ["./mavkit-node"], with tag ["node"]. *)
+  val mavkit_node : t
 
-  (** ["./octez-client"], with tag ["client"]. *)
+  (** ["./mavkit-client"], with tag ["client"]. *)
   val octez_client : t
 
-  (** ["./octez-admin-client"], with tag ["admin_client"]. *)
+  (** ["./mavkit-admin-client"], with tag ["admin_client"]. *)
   val octez_admin_client : t
 
   (** Register a test that generates:

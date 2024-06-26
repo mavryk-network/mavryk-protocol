@@ -58,7 +58,7 @@ type t = {
   operators : Purpose.operators;
   rpc_addr : string;
   rpc_port : int;
-  acl : Tezos_rpc_http_server.RPC_server.Acl.policy;
+  acl : Mavryk_rpc_http_server.RPC_server.Acl.policy;
   metrics_addr : string option;
   reconnection_delay : float;
   fee_parameters : fee_parameters;
@@ -120,7 +120,7 @@ let default_rpc_port = 8932
 
 let default_metrics_port = 9933
 
-let default_acl = Tezos_rpc_http_server.RPC_server.Acl.empty_policy
+let default_acl = Mavryk_rpc_http_server.RPC_server.Acl.empty_policy
 
 let default_reconnection_delay = 2.0 (* seconds *)
 
@@ -695,7 +695,7 @@ let override_acl ~rpc_addr ~rpc_port acl = function
       let addr =
         P2p_point.Id.{addr = rpc_addr; port = Some rpc_port; peer_id = None}
       in
-      Tezos_rpc_http_server.RPC_server.Acl.put_policy (addr, new_acl) acl
+      Mavryk_rpc_http_server.RPC_server.Acl.put_policy (addr, new_acl) acl
 
 let save ~force ~data_dir config =
   loser_warning_message config ;

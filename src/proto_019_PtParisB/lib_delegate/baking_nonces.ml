@@ -370,7 +370,7 @@ let generate_seed_nonce (nonce_config : Baking_configuration.nonce_config)
         return (Data_encoding.Binary.of_bytes_exn Nonce.encoding nonce)
     | Random -> (
         match
-          Nonce.of_bytes (Tezos_crypto.Rand.generate Constants.nonce_length)
+          Nonce.of_bytes (Mavryk_crypto.Rand.generate Constants.nonce_length)
         with
         | Error _errs -> assert false
         | Ok nonce -> return nonce)

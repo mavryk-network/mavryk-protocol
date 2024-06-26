@@ -89,7 +89,7 @@ mod test {
 
     #[test]
     fn tz1_b58check() {
-        let tz1 = "tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w";
+        let tz1 = "mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe";
 
         let pkh = PublicKeyHash::from_b58check(tz1);
 
@@ -128,7 +128,7 @@ mod test {
 
     #[test]
     fn tz1_encoding() {
-        let tz1 = "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx";
+        let tz1 = "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe";
 
         let pkh = PublicKeyHash::from_b58check(tz1).expect("expected valid tz1 hash");
 

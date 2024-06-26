@@ -192,7 +192,7 @@ mod tests {
 
     // binary representation produced by running
     //
-    // `octez-client --mode mockup normalize data ... of type key_hash --unparsing-mode Optimized`
+    // `mavkit-client --mode mockup normalize data ... of type key_hash --unparsing-mode Optimized`
     const FIXTURES: &[(&str, &str)] = &[
         (
             "tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw",

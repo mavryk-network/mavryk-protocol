@@ -161,7 +161,7 @@ mod tests {
 
     // binary representation produced by running
     //
-    // `octez-client --mode mockup run script 'parameter address; storage unit;
+    // `mavkit-client --mode mockup run script 'parameter address; storage unit;
     // code { CAR; FAILWITH }' on storage Unit and input "\"$addr\""`
     const FIXTURES: [(&str, &str); 25] = [
         (

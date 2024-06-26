@@ -11,8 +11,8 @@
   mavkit-libs.mavryk-context.encoding
   mavkit-libs.context.sigs
   mavkit-libs.mavryk-context.merkle_proof_encoding
-  irmin
-  irmin-pack)
+  mavkit-internal-libs.irmin
+  mavkit-internal-libs.irmin_pack)
  (flags
   (:standard)
   -open Mavryk_base.TzPervasives

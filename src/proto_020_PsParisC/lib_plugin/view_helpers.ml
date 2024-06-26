@@ -27,7 +27,7 @@
 
 open Protocol
 open Alpha_context
-open Tezos_micheline
+open Mavryk_micheline
 
 type Environment.Error_monad.error += Viewed_contract_has_no_script
 

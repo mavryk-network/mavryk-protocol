@@ -454,7 +454,7 @@ struct
 end
 
 let tests =
-  let open Tezos_protocol_020_PsParisC_parameters.Default_parameters in
+  let open Mavryk_protocol_020_PsParisC_parameters.Default_parameters in
   let module Test = Make (struct
     let name = "test"
 

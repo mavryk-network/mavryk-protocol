@@ -218,11 +218,11 @@ mod tests {
     //
     // binary representation produced by running
     //
-    // `octez-client --mode mockup normalize data ... of type key --unparsing-mode Optimized`
+    // `mavkit-client --mode mockup normalize data ... of type key --unparsing-mode Optimized`
     //
     // address hashes are produced by running
     //
-    // octez-client --mode mockup run michelson code '{ HASH_KEY }' on stack '{Stack_elt key "..."}'
+    // mavkit-client --mode mockup run michelson code '{ HASH_KEY }' on stack '{Stack_elt key "..."}'
     const FIXTURES: [(&str, &str, &str); 8] = [
         (
             "edpkupxHveP7SFVnBq4X9Dkad5smzLcSxpRx9tpR7US8DPN5bLPFwu",

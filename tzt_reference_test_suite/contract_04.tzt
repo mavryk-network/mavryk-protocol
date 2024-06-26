@@ -1,4 +1,4 @@
 code { CONTRACT unit } ;
-input { Stack_elt address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" } ;
-output { Stack_elt (option (contract unit)) (Some "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx") } ;
+input { Stack_elt address "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" } ;
+output { Stack_elt (option (contract unit)) (Some "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe") } ;
 other_contracts { }

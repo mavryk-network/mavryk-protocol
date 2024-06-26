@@ -616,9 +616,9 @@ let rec parse_ty :
       | Prim (loc, T_bytes, [], annot) ->
           let+ () = check_type_annot loc annot in
           return ctxt bytes_t
-      | Prim (loc, T_mutez, [], annot) ->
+      | Prim (loc, T_mumav, [], annot) ->
           let+ () = check_type_annot loc annot in
-          return ctxt mutez_t
+          return ctxt mumav_t
       | Prim (loc, T_bool, [], annot) ->
           let+ () = check_type_annot loc annot in
           return ctxt bool_t
@@ -887,7 +887,7 @@ let rec parse_ty :
       | Prim
           ( loc,
             (( T_unit | T_signature | T_int | T_nat | T_string | T_bytes
-             | T_mutez | T_bool | T_key | T_key_hash | T_timestamp | T_address
+             | T_mumav | T_bool | T_key | T_key_hash | T_timestamp | T_address
              | T_chain_id | T_operation | T_never ) as prim),
             l,
             _ ) ->
@@ -922,7 +922,7 @@ let rec parse_ty :
                  T_lambda;
                  T_list;
                  T_map;
-                 T_mutez;
+                 T_mumav;
                  T_nat;
                  T_never;
                  T_operation;
@@ -1538,19 +1538,19 @@ let parse_nat ctxt :
                (loc, strip_locations expr, "a non-negative integer"))
   | expr -> tzfail @@ Invalid_kind (location expr, [Int_kind], kind expr)
 
-let parse_mutez ctxt : Script.node -> (Tez.t * context) tzresult =
+let parse_mumav ctxt : Script.node -> (Tez.t * context) tzresult =
   let open Result_syntax in
   function
   | Int (loc, v) as expr -> (
       match
         let open Option in
-        bind (catch (fun () -> Z.to_int64 v)) Tez.of_mutez
+        bind (catch (fun () -> Z.to_int64 v)) Tez.of_mumav
       with
       | Some tez -> Ok (tez, ctxt)
       | None ->
           tzfail
           @@ Invalid_syntactic_constant
-               (loc, strip_locations expr, "a valid mutez amount"))
+               (loc, strip_locations expr, "a valid mumav amount"))
   | expr -> tzfail @@ Invalid_kind (location expr, [Int_kind], kind expr)
 
 let parse_timestamp ctxt :
@@ -2252,7 +2252,7 @@ let rec parse_data :
   | Bytes_t, expr -> Lwt.return @@ traced_no_lwt @@ parse_bytes ctxt expr
   | Int_t, expr -> Lwt.return @@ traced_no_lwt @@ parse_int ctxt expr
   | Nat_t, expr -> Lwt.return @@ traced_no_lwt @@ parse_nat ctxt expr
-  | Mutez_t, expr -> Lwt.return @@ traced_no_lwt @@ parse_mutez ctxt expr
+  | Mutez_t, expr -> Lwt.return @@ traced_no_lwt @@ parse_mumav ctxt expr
   | Timestamp_t, expr ->
       Lwt.return @@ traced_no_lwt @@ parse_timestamp ctxt expr
   | Key_t, expr -> Lwt.return @@ traced_no_lwt @@ parse_key ctxt expr
@@ -3963,7 +3963,7 @@ and parse_instr :
     ->
       let*? () = check_var_annot loc annot in
       let instr = {apply = (fun k -> ISub_tez (loc, k))} in
-      let stack = Item_t (option_mutez_t, rest) in
+      let stack = Item_t (option_mumav_t, rest) in
       typed ctxt loc instr stack
   | Prim (loc, I_MUL, [], annot), Item_t (Mutez_t, Item_t (Nat_t, rest)) ->
       (* no type name check *)
@@ -4085,12 +4085,12 @@ and parse_instr :
   | Prim (loc, I_EDIV, [], annot), Item_t (Mutez_t, Item_t (Nat_t, rest)) ->
       let*? () = check_var_annot loc annot in
       let instr = {apply = (fun k -> IEdiv_teznat (loc, k))} in
-      let stack = Item_t (option_pair_mutez_mutez_t, rest) in
+      let stack = Item_t (option_pair_mumav_mumav_t, rest) in
       typed ctxt loc instr stack
   | Prim (loc, I_EDIV, [], annot), Item_t (Mutez_t, Item_t (Mutez_t, rest)) ->
       let*? () = check_var_annot loc annot in
       let instr = {apply = (fun k -> IEdiv_tez (loc, k))} in
-      let stack = Item_t (option_pair_nat_mutez_t, rest) in
+      let stack = Item_t (option_pair_nat_mumav_t, rest) in
       typed ctxt loc instr stack
   | Prim (loc, I_EDIV, [], annot), Item_t (Int_t, Item_t (Int_t, rest)) ->
       let*? () = check_var_annot loc annot in
@@ -4410,7 +4410,7 @@ and parse_instr :
   | Prim (loc, I_AMOUNT, [], annot), stack ->
       let*? () = check_var_annot loc annot in
       let instr = {apply = (fun k -> IAmount (loc, k))} in
-      let stack = Item_t (mutez_t, stack) in
+      let stack = Item_t (mumav_t, stack) in
       typed ctxt loc instr stack
   | Prim (loc, I_CHAIN_ID, [], annot), stack ->
       let*? () = check_var_annot loc annot in
@@ -4420,7 +4420,7 @@ and parse_instr :
   | Prim (loc, I_BALANCE, [], annot), stack ->
       let*? () = check_var_annot loc annot in
       let instr = {apply = (fun k -> IBalance (loc, k))} in
-      let stack = Item_t (mutez_t, stack) in
+      let stack = Item_t (mumav_t, stack) in
       typed ctxt loc instr stack
   | Prim (loc, I_LEVEL, [], annot), stack ->
       let*? () = check_var_annot loc annot in

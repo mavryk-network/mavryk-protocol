@@ -77,9 +77,9 @@ end)
 
 (* Note: This weight is also used by the plugin and the prevalidator to sort
    operations in the pending mempool.
-   See {!Tezos_protocol_plugin_alpha.Plugin.Mempool.weight_manager_operation}. *)
+   See {!Mavryk_protocol_plugin_alpha.Plugin.Mempool.weight_manager_operation}. *)
 let prioritize_manager ~max_size ~hard_gas_limit_per_block ~minimal_fees
-    ~minimal_nanotez_per_gas_unit ~minimal_nanotez_per_byte operation =
+    ~minimal_nanomav_per_gas_unit ~minimal_nanomav_per_byte operation =
   let open Result_syntax in
   let op = Operation_pool.Prioritized_operation.packed operation in
   let {protocol_data = Operation_data {contents; _}; _} = op in
@@ -111,7 +111,7 @@ let prioritize_manager ~max_size ~hard_gas_limit_per_block ~minimal_fees
         let size = Data_encoding.Binary.length Operation.encoding op in
         let size_f = Q.of_int size in
         let gas_f = Q.of_bigint (Gas.Arith.integral_to_z gas) in
-        let fee_f = Q.of_int64 (Tez.to_mutez fee) in
+        let fee_f = Q.of_int64 (Tez.to_mumav fee) in
         let size_ratio = Q.(size_f / Q.of_int max_size) in
         let gas_ratio =
           Q.(
@@ -119,22 +119,22 @@ let prioritize_manager ~max_size ~hard_gas_limit_per_block ~minimal_fees
             / Q.of_bigint (Gas.Arith.integral_to_z hard_gas_limit_per_block))
         in
         let weight = Q.(fee_f / max size_ratio gas_ratio) in
-        let fees_in_nanotez =
-          Q.mul (Q.of_int64 (Tez.to_mutez fee)) (Q.of_int 1000)
+        let fees_in_nanomav =
+          Q.mul (Q.of_int64 (Tez.to_mumav fee)) (Q.of_int 1000)
         in
         let enough_fees_for_gas =
-          let minimal_fees_in_nanotez =
+          let minimal_fees_in_nanomav =
             Q.mul
-              minimal_nanotez_per_gas_unit
+              minimal_nanomav_per_gas_unit
               (Q.of_bigint @@ Gas.Arith.integral_to_z gas)
           in
-          Q.compare minimal_fees_in_nanotez fees_in_nanotez <= 0
+          Q.compare minimal_fees_in_nanomav fees_in_nanomav <= 0
         in
         let enough_fees_for_size =
-          let minimal_fees_in_nanotez =
-            Q.mul minimal_nanotez_per_byte (Q.of_int size)
+          let minimal_fees_in_nanomav =
+            Q.mul minimal_nanomav_per_byte (Q.of_int size)
           in
-          Q.compare minimal_fees_in_nanotez fees_in_nanotez <= 0
+          Q.compare minimal_fees_in_nanomav fees_in_nanomav <= 0
         in
         if enough_fees_for_size && enough_fees_for_gas then
           Some {op = operation; size; weight; fee; gas; source; counter}
@@ -142,7 +142,7 @@ let prioritize_manager ~max_size ~hard_gas_limit_per_block ~minimal_fees
   | _ -> None
 
 let prioritize_managers ~hard_gas_limit_per_block ~minimal_fees
-    ~minimal_nanotez_per_gas_unit ~minimal_nanotez_per_byte managers =
+    ~minimal_nanomav_per_gas_unit ~minimal_nanomav_per_byte managers =
   Prioritized_operation_set.fold
     (fun op acc ->
       match
@@ -150,8 +150,8 @@ let prioritize_managers ~hard_gas_limit_per_block ~minimal_fees
           ~max_size:managers_quota.max_size
           ~hard_gas_limit_per_block
           ~minimal_fees
-          ~minimal_nanotez_per_gas_unit
-          ~minimal_nanotez_per_byte
+          ~minimal_nanomav_per_gas_unit
+          ~minimal_nanomav_per_byte
           op
       with
       | None -> acc
@@ -162,7 +162,7 @@ let prioritize_managers ~hard_gas_limit_per_block ~minimal_fees
 (** Simulation *)
 
 type simulation_result = {
-  validation_result : Tezos_protocol_environment.validation_result option;
+  validation_result : Mavryk_protocol_environment.validation_result option;
   block_header_metadata : block_header_metadata option;
   operations : packed_operation list list;
   operations_hash : Operation_list_list_hash.t;
@@ -199,7 +199,7 @@ let validate_operation inc op =
 
 let filter_valid_operations_up_to_quota inc (ops, quota) =
   let open Lwt_syntax in
-  let {Tezos_protocol_environment.max_size; max_op} = quota in
+  let {Mavryk_protocol_environment.max_size; max_op} = quota in
   let exception Full of (Baking_simulator.incremental * packed_operation list)
   in
   try
@@ -229,7 +229,7 @@ let filter_valid_operations_up_to_quota inc (ops, quota) =
 let filter_valid_managers_up_to_quota inc ~hard_gas_limit_per_block (ops, quota)
     =
   let open Lwt_syntax in
-  let {Tezos_protocol_environment.max_size; max_op} = quota in
+  let {Mavryk_protocol_environment.max_size; max_op} = quota in
   let rec loop (inc, curr_size, nb_ops, remaining_gas, acc) = function
     | [] -> return (inc, List.rev acc)
     | {op; size = op_size; gas = op_gas; _} :: l -> (
@@ -271,8 +271,8 @@ let filter_operations_with_simulation initial_inc fees_config
   let open Lwt_result_syntax in
   let {
     Baking_configuration.minimal_fees;
-    minimal_nanotez_per_gas_unit;
-    minimal_nanotez_per_byte;
+    minimal_nanomav_per_gas_unit;
+    minimal_nanomav_per_byte;
   } =
     fees_config
   in
@@ -296,8 +296,8 @@ let filter_operations_with_simulation initial_inc fees_config
     prioritize_managers
       ~hard_gas_limit_per_block
       ~minimal_fees
-      ~minimal_nanotez_per_gas_unit
-      ~minimal_nanotez_per_byte
+      ~minimal_nanomav_per_gas_unit
+      ~minimal_nanomav_per_byte
       managers
   in
   let*! inc, managers =
@@ -335,7 +335,7 @@ let filter_operations_with_simulation initial_inc fees_config
         }
 
 let filter_valid_operations_up_to_quota_without_simulation (ops, quota) =
-  let {Tezos_protocol_environment.max_size; max_op} = quota in
+  let {Mavryk_protocol_environment.max_size; max_op} = quota in
   let exception Full of packed_operation list in
   try
     List.fold_left
@@ -371,8 +371,8 @@ let filter_operations_without_simulation fees_config ~hard_gas_limit_per_block
   in
   let {
     Baking_configuration.minimal_fees;
-    minimal_nanotez_per_gas_unit;
-    minimal_nanotez_per_byte;
+    minimal_nanomav_per_gas_unit;
+    minimal_nanomav_per_byte;
   } =
     fees_config
   in
@@ -381,8 +381,8 @@ let filter_operations_without_simulation fees_config ~hard_gas_limit_per_block
     prioritize_managers
       ~hard_gas_limit_per_block
       ~minimal_fees
-      ~minimal_nanotez_per_gas_unit
-      ~minimal_nanotez_per_byte
+      ~minimal_nanomav_per_gas_unit
+      ~minimal_nanomav_per_byte
       managers
   in
   let managers =

@@ -864,15 +864,15 @@ let commands_ro () =
         return_unit);
   ]
 
-let dry_run_switch : (_, Protocol_client_context.full) Tezos_clic.arg =
-  Tezos_clic.switch
+let dry_run_switch : (_, Protocol_client_context.full) Mavryk_clic.arg =
+  Mavryk_clic.switch
     ~long:"dry-run"
     ~short:'D'
     ~doc:"don't inject the operation, just display it"
     ()
 
-let verbose_signing_switch : (_, Protocol_client_context.full) Tezos_clic.arg =
-  Tezos_clic.switch
+let verbose_signing_switch : (_, Protocol_client_context.full) Mavryk_clic.arg =
+  Mavryk_clic.switch
     ~long:"verbose-signing"
     ~doc:"display extra information before signing the operation"
     ()

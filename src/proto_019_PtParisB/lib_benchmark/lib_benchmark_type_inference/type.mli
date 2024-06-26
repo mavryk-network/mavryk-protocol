@@ -86,7 +86,7 @@ val key_hash : Base.t
 
 val timestamp : Base.t
 
-val mutez : Base.t
+val mumav : Base.t
 
 val key : Base.t
 

@@ -368,7 +368,7 @@ let mavkit_error_monad =
 let mavkit_error_monad_legacy =
   mavkit_lib
     "error-monad-legacy"
-    ~internal_name:"tezos_error_monad_legacy"
+    ~internal_name:"mavryk_error_monad_legacy"
     ~path:"src/lib_error_monad_legacy"
     ~synopsis:"Error monad (legacy)"
     ~deps:[lwt; mavkit_error_monad]
@@ -2278,7 +2278,7 @@ let mavkit_p2p_services =
 
 let mavkit_workers =
   mavkit_lib
-    "tezos-workers"
+    "mavryk-workers"
     ~path:"src/lib_workers"
     ~synopsis:"Worker library"
     ~documentation:
@@ -2308,7 +2308,7 @@ let _mavkit_workers_tests =
 
 let mavkit_merkle_proof_encoding =
   mavkit_lib
-    "tezos-context.merkle_proof_encoding"
+    "mavryk-context.merkle_proof_encoding"
     ~path:"src/lib_context/merkle_proof_encoding"
     ~deps:
       [
@@ -2551,7 +2551,7 @@ let _mavkit_wasmer_test =
 
 let mavkit_context_encoding =
   mavkit_lib
-    "tezos-context.encoding"
+    "mavryk-context.encoding"
     ~path:"src/lib_context/encoding"
     ~deps:
       [
@@ -2564,7 +2564,7 @@ let mavkit_context_encoding =
 
 let mavkit_context_helpers =
   mavkit_lib
-    "tezos-context.helpers"
+    "mavryk-context.helpers"
     ~path:"src/lib_context/helpers"
     ~deps:
       [
@@ -2580,7 +2580,7 @@ let mavkit_context_helpers =
 
 let mavkit_context_memory =
   mavkit_lib
-    "tezos-context.memory"
+    "mavryk-context.memory"
     ~path:"src/lib_context/memory"
     ~deps:
       [
@@ -2629,14 +2629,14 @@ let mavkit_scoru_wasm_fast =
 
 let mavkit_context_dump =
   mavkit_lib
-    "tezos-context.dump"
+    "mavryk-context.dump"
     ~path:"src/lib_context/dump"
     ~deps:
       [mavkit_base |> open_ ~m:"TzPervasives"; mavkit_stdlib_unix |> open_; fmt]
 
 let mavkit_context_disk =
   mavkit_lib
-    "tezos-context.disk"
+    "mavryk-context.disk"
     ~path:"src/lib_context/disk"
     ~deps:
       [
@@ -2678,7 +2678,7 @@ let _tree_encoding_tests =
 
 let mavkit_context =
   mavkit_lib
-    "tezos-context"
+    "mavryk-context"
     ~path:"src/lib_context"
     ~synopsis:"On-disk context abstraction for [mavkit-node]"
     ~deps:[mavkit_context_disk; mavkit_context_memory]
@@ -2851,18 +2851,18 @@ let _mavkit_sapling_ctypes_gen =
     ~modules:
       ["rustzcash_ctypes_gen"; "rustzcash_ctypes_bindings"; "gen_runtime_js"]
 
-let tezos_protocol_environment_sigs_internals =
+let mavryk_protocol_environment_sigs_internals =
   mavkit_proto_lib
     "protocol-environment.sigs-internals"
-    ~internal_name:"tezos_protocol_environment_sigs_internals"
+    ~internal_name:"mavryk_protocol_environment_sigs_internals"
     ~path:"src/lib_protocol_environment/sigs-internals"
 
-let tezos_protocol_environment_sigs =
+let mavryk_protocol_environment_sigs =
   mavkit_proto_lib
     "protocol-environment.sigs"
-    ~internal_name:"tezos_protocol_environment_sigs"
+    ~internal_name:"mavryk_protocol_environment_sigs"
     ~path:"src/lib_protocol_environment/sigs"
-    ~deps:[tezos_protocol_environment_sigs_internals]
+    ~deps:[mavryk_protocol_environment_sigs_internals]
     ~flags:(Flags.standard ~nopervasives:true ~nostdlib:true ())
     ~dune:
       (let gen n =
@@ -2892,7 +2892,7 @@ let tezos_protocol_environment_sigs =
 let mavkit_protocol_environment_structs =
   mavkit_proto_lib
     "protocol-environment.structs"
-    ~internal_name:"tezos_protocol_environment_structs"
+    ~internal_name:"mavryk_protocol_environment_structs"
     ~path:"src/lib_protocol_environment/structs"
     ~deps:
       [
@@ -2908,7 +2908,7 @@ let mavkit_protocol_environment_structs =
 let mavkit_protocol_environment =
   mavkit_proto_lib
     "protocol-environment"
-    ~internal_name:"tezos_protocol_environment"
+    ~internal_name:"mavryk_protocol_environment"
     ~path:"src/lib_protocol_environment"
     ~documentation:[Dune.[S "package"; S "mavkit-proto-libs"]]
     ~deps:
@@ -2923,7 +2923,7 @@ let mavkit_protocol_environment =
         aches_lwt;
         mavkit_base |> open_ ~m:"TzPervasives";
         mavkit_sapling;
-        tezos_protocol_environment_sigs;
+        mavryk_protocol_environment_sigs;
         mavkit_protocol_environment_structs;
         mavkit_micheline |> open_;
         mavkit_context_memory;
@@ -2998,9 +2998,9 @@ let mavkit_protocol_compiler_registerer =
   public_lib
     "mavkit-protocol-compiler.registerer"
     ~path:"src/lib_protocol_compiler/registerer"
-    ~internal_name:"tezos_protocol_registerer"
+    ~internal_name:"mavryk_protocol_registerer"
     ~deps:
-      [mavkit_base |> open_ ~m:"TzPervasives"; tezos_protocol_environment_sigs]
+      [mavkit_base |> open_ ~m:"TzPervasives"; mavryk_protocol_environment_sigs]
     ~flags:(Flags.standard ~opaque:true ())
 
 let _mavkit_protocol_compiler_cmis_of_cma =
@@ -3020,7 +3020,7 @@ let mavkit_protocol_compiler_lib =
       [
         mavkit_base |> open_ ~m:"TzPervasives";
         mavkit_base_unix |> open_;
-        tezos_protocol_environment_sigs;
+        mavryk_protocol_environment_sigs;
         mavkit_stdlib_unix |> open_;
         compiler_libs_common;
         lwt_unix;
@@ -3071,7 +3071,7 @@ let mavkit_protocol_compiler_lib =
                   V
                     [
                       S
-                        "%{lib:mavkit-proto-libs.protocol-environment.sigs:tezos_protocol_environment_sigs.cmxa}";
+                        "%{lib:mavkit-proto-libs.protocol-environment.sigs:mavryk_protocol_environment_sigs.cmxa}";
                     ];
                 ];
               ];
@@ -3104,7 +3104,7 @@ let mavkit_protocol_compiler_lib =
                     S "-o";
                     S "%{targets}";
                   ];
-                S "%{cmi:registerer/tezos_protocol_registerer}";
+                S "%{cmi:registerer/mavryk_protocol_registerer}";
               ];
           targets_rule
             ["defaults.ml"]
@@ -3144,7 +3144,7 @@ let mavkit_protocol_compiler_native =
 let mavkit_protocol_updater =
   mavkit_shell_lib
     "protocol-updater"
-    ~internal_name:"tezos_protocol_updater"
+    ~internal_name:"mavryk_protocol_updater"
     ~path:"src/lib_protocol_updater"
     ~synopsis:"Economic-protocol dynamic loading for `mavkit-node`"
     ~deps:
@@ -3951,7 +3951,7 @@ let mavkit_benchmark =
 
 let mavkit_benchmark_examples =
   public_lib
-    "tezos-benchmark-examples"
+    "mavryk-benchmark-examples"
     ~path:"src/lib_benchmark/example"
     ~synopsis:"Tezos: examples for lib-benchmarks"
     ~deps:
@@ -3974,7 +3974,7 @@ let _mavkit_benchmark_tests =
       "test_benchmark_helpers";
     ]
     ~path:"src/lib_benchmark/test"
-    ~opam:"tezos-benchmark-tests"
+    ~opam:"mavryk-benchmark-tests"
     ~synopsis:"Tezos: tests for lib-benchmarks"
     ~deps:
       [
@@ -4075,7 +4075,7 @@ let _mavkit_protocol_compiler_bin =
     ~linkall:true
     ~modules:["Main_native"]
 
-let mavkit_protocol_compiler_tezos_protocol_packer =
+let mavkit_protocol_compiler_mavryk_protocol_packer =
   public_exe
     "mavkit-protocol-compiler.mavkit-protocol-packer"
     ~path:"src/lib_protocol_compiler/bin"
@@ -4143,9 +4143,9 @@ let _mavkit_layer2_indexed_store_test =
 
 let mavkit_dal_node_services =
   public_lib
-    "tezos-dal-node-services"
+    "mavryk-dal-node-services"
     ~path:"src/lib_dal_node_services"
-    ~opam:"tezos-dal-node-services"
+    ~opam:"mavryk-dal-node-services"
     ~synopsis:"Tezos: `tezos-dal-node` RPC services"
     ~deps:
       [
@@ -4157,9 +4157,9 @@ let mavkit_dal_node_services =
 
 let mavkit_dal_node_lib =
   public_lib
-    "tezos-dal-node-lib"
+    "mavryk-dal-node-lib"
     ~path:"src/lib_dal_node"
-    ~opam:"tezos-dal-node-lib"
+    ~opam:"mavryk-dal-node-lib"
     ~synopsis:"Tezos: `tezos-dal-node` library"
     ~deps:
       [
@@ -4177,7 +4177,7 @@ let mavkit_dal_node_lib =
 
 let mavkit_dal_node_gossipsub_lib =
   public_lib
-    "tezos-dal-node-lib.gossipsub"
+    "mavryk-dal-node-lib.gossipsub"
     ~path:"src/lib_dal_node/gossipsub"
     ~deps:
       [
@@ -4192,18 +4192,18 @@ let mavkit_dal_node_gossipsub_lib =
 
 let mavkit_dac_lib =
   public_lib
-    "tezos-dac-lib"
+    "mavryk-dac-lib"
     ~path:"src/lib_dac"
-    ~opam:"tezos-dac-lib"
+    ~opam:"mavryk-dac-lib"
     ~synopsis:"Tezos: `tezos-dac` library"
     ~deps:
       [mavkit_base |> open_ ~m:"TzPervasives"; mavkit_protocol_updater |> open_]
 
 let mavkit_dac_client_lib =
   public_lib
-    "tezos-dac-client-lib"
+    "mavryk-dac-client-lib"
     ~path:"src/lib_dac_client"
-    ~opam:"tezos-dac-client-lib"
+    ~opam:"mavryk-dac-client-lib"
     ~synopsis:"Tezos: `tezos-dac-client` library"
     ~deps:
       [
@@ -4256,7 +4256,7 @@ let _mavkit_dac_lib_tests =
   tezt
     ["test_certificate"; "test_dac_plugin"; "test_dac_clic_helpers"]
     ~path:"src/lib_dac/test"
-    ~opam:"tezos-dac-lib-test"
+    ~opam:"mavryk-dac-lib-test"
     ~synopsis:"Test for dac lib"
     ~with_macos_security_framework:true
     ~deps:
@@ -4894,7 +4894,7 @@ end = struct
           ]
           ~path:(path // "lib_protocol/test/integration/consensus")
           ~with_macos_security_framework:true
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~deps:
             [
               alcotezt;
@@ -4911,7 +4911,7 @@ end = struct
         tezt
           ["test_gas_costs"; "test_gas_levels"]
           ~path:(path // "lib_protocol/test/integration/gas")
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~with_macos_security_framework:true
           ~deps:
             [
@@ -4954,7 +4954,7 @@ end = struct
         tezt
           modules
           ~path:(path // "lib_protocol/test/integration/michelson")
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~with_macos_security_framework:true
           ~dep_globs:
             (conditional_list
@@ -5007,7 +5007,7 @@ end = struct
         tezt
           modules
           ~path:(path // "lib_protocol/test/integration/operations")
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~with_macos_security_framework:true
           ~dep_globs:(conditional_list [("contracts/*", N.(number >= 013))])
           ~deps:
@@ -5039,7 +5039,7 @@ end = struct
             "validate_helpers";
           ]
           ~path:(path // "lib_protocol/test/integration/validate")
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~with_macos_security_framework:true
           ~deps:
             [
@@ -5081,7 +5081,7 @@ end = struct
         tezt
           modules
           ~path:(path // "lib_protocol/test/integration")
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~with_macos_security_framework:true
           ~deps:
             [
@@ -5130,7 +5130,7 @@ end = struct
           list
           ~synopsis:"Tezos/Protocol: tests for economic-protocol definition"
           ~path:(path // "lib_protocol/test/pbt")
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~with_macos_security_framework:true
           ~deps:
             [
@@ -5200,7 +5200,7 @@ end = struct
         tezt
           modules
           ~path:(path // "lib_protocol/test/unit")
-          ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+          ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~with_macos_security_framework:true
           ~deps:
             [
@@ -5241,7 +5241,7 @@ end = struct
               ["test_logging"]
               ~path:(path // "lib_protocol/test/regression")
               ~with_macos_security_framework:true
-              ~opam:(sf "tezos-protocol-%s-tests" name_dash)
+              ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
               ~deps:
                 [
                   mavkit_base |> open_ ~m:"TzPervasives";
@@ -5264,15 +5264,15 @@ end = struct
       let number = Name.number name in
       let path = Name.base_path name in
       let dirname = path // "lib_protocol" in
-      let tezos_protocol_filename = dirname // "TEZOS_PROTOCOL" in
-      let tezos_protocol = Tezos_protocol.of_file_exn tezos_protocol_filename in
+      let mavryk_protocol_filename = dirname // "MAVRYK_PROTOCOL" in
+      let tezos_protocol = Mavryk_protocol.of_file_exn mavryk_protocol_filename in
       (* Container of the registered sublibraries of [mavkit-protocol-libs] *)
       let registered_tezos_protocol = Sub_lib.make_container () in
-      let tezos_protocol_sub_lib =
+      let mavryk_protocol_sub_lib =
         Sub_lib.sub_lib
           ~package_synopsis:(sf "Tezos protocol %s package" name_dash)
           ~container:registered_tezos_protocol
-          ~package:(sf "tezos-protocol-%s" name_dash)
+          ~package:(sf "mavryk-protocol-%s" name_dash)
       in
       let modules_as_deps =
         let basenames_of_module module_ =
@@ -5283,7 +5283,7 @@ end = struct
                  else None)
         in
         let s_expr =
-          tezos_protocol.Tezos_protocol.modules
+          tezos_protocol.Mavryk_protocol.modules
           |> List.map (fun module_ ->
                  match basenames_of_module module_ with
                  | _ :: _ as basenames -> Dune.(G (of_atom_list basenames))
@@ -5293,7 +5293,7 @@ end = struct
                           "In %s a module %s was declared, but no \
                            corresponding .ml or .mli files were found in \
                            directory %s"
-                          tezos_protocol_filename
+                          mavryk_protocol_filename
                           module_
                           dirname))
           |> Dune.of_list
@@ -5313,18 +5313,18 @@ end = struct
             else [6; 7; 9; 16; 29; 32; 51; 68]
       in
       let environment =
-        tezos_protocol_sub_lib
+        mavryk_protocol_sub_lib
           "protocol.environment"
-          ~internal_name:(sf "tezos_protocol_environment_%s" name_underscore)
+          ~internal_name:(sf "mavryk_protocol_environment_%s" name_underscore)
           ~path:(path // "lib_protocol")
-          ~modules:[sf "Tezos_protocol_environment_%s" name_underscore]
+          ~modules:[sf "Mavryk_protocol_environment_%s" name_underscore]
           ~linkall:true
           ~deps:[mavkit_protocol_environment]
           ~dune:
             Dune.
               [
                 targets_rule
-                  [sf "tezos_protocol_environment_%s.ml" name_underscore]
+                  [sf "mavryk_protocol_environment_%s.ml" name_underscore]
                   ~action:
                     [
                       S "write-file";
@@ -5332,7 +5332,7 @@ end = struct
                       S
                         (sf
                            {|module Name = struct let name = "%s" end
-include Tezos_protocol_environment.V%d.Make(Name)()
+include Mavryk_protocol_environment.V%d.Make(Name)()
 |}
                            name_dash
                            tezos_protocol.expected_env_version);
@@ -5340,7 +5340,7 @@ include Tezos_protocol_environment.V%d.Make(Name)()
               ]
       in
       let raw_protocol =
-        tezos_protocol_sub_lib
+        mavryk_protocol_sub_lib
           "protocol.raw"
           ~internal_name:(sf "tezos_raw_protocol_%s" name_underscore)
           ~path:(path // "lib_protocol")
@@ -5359,7 +5359,7 @@ include Tezos_protocol_environment.V%d.Make(Name)()
             ]
       in
       let main =
-        tezos_protocol_sub_lib
+        mavryk_protocol_sub_lib
           "protocol"
           ~internal_name:(sf "tezos_protocol-%s" name_dash)
           ~path:(path // "lib_protocol")
@@ -5375,20 +5375,20 @@ include Tezos_protocol_environment.V%d.Make(Name)()
                   "Tezos/Protocol: %s economic-protocol definition"
                   name_underscore
             | Alpha | V _ -> "Tezos/Protocol: economic-protocol definition")
-          ~modules:["Protocol"; sf "Tezos_protocol_%s" name_underscore]
+          ~modules:["Protocol"; sf "Mavryk_protocol_%s" name_underscore]
           ~flags:(Flags.standard ~nopervasives:true ~disable_warnings ())
           ~deps:
             [
               mavkit_protocol_environment;
-              tezos_protocol_environment_sigs;
+              mavryk_protocol_environment_sigs;
               raw_protocol;
             ]
           ~dune:
             Dune.
               [
                 install
-                  [as_ "TEZOS_PROTOCOL" "protocol/raw/TEZOS_PROTOCOL"]
-                  ~package:(sf "tezos-protocol-%s" name_dash)
+                  [as_ "MAVRYK_PROTOCOL" "protocol/raw/MAVRYK_PROTOCOL"]
+                  ~package:(sf "mavryk-protocol-%s" name_dash)
                   ~section:"lib";
                 targets_rule
                   ["protocol.ml"]
@@ -5399,10 +5399,10 @@ include Tezos_protocol_environment.V%d.Make(Name)()
                       S
                         (sf
                            {|
-let hash = Tezos_crypto.Hashed.Protocol_hash.of_b58check_exn "%s"
-let name = Tezos_protocol_environment_%s.Name.name
-include Tezos_raw_protocol_%s
-include Tezos_raw_protocol_%s.Main
+let hash = Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn "%s"
+let name = Mavryk_protocol_environment_%s.Name.name
+include Mavryk_raw_protocol_%s
+include Mavryk_raw_protocol_%s.Main
 |}
                            tezos_protocol.hash
                            name_underscore
@@ -5410,7 +5410,7 @@ include Tezos_raw_protocol_%s.Main
                            name_underscore);
                     ];
                 targets_rule
-                  [sf "tezos_protocol_%s.ml" name_underscore]
+                  [sf "mavryk_protocol_%s.ml" name_underscore]
                   ~action:
                     [
                       S "write-file";
@@ -5418,7 +5418,7 @@ include Tezos_raw_protocol_%s.Main
                       S
                         (sf
                            {|
-module Environment = Tezos_protocol_environment_%s
+module Environment = Mavryk_protocol_environment_%s
 module Protocol = Protocol
 |}
                            name_underscore);
@@ -5426,14 +5426,14 @@ module Protocol = Protocol
                 alias_rule
                   "runtest_compile_protocol"
                   ~deps_dune:
-                    [modules_as_deps; [S ":src_dir"; S "TEZOS_PROTOCOL"]]
+                    [modules_as_deps; [S ":src_dir"; S "MAVRYK_PROTOCOL"]]
                   ~action:
                     [
                       S "run";
                       S "%{bin:mavkit-protocol-compiler}";
                       (if
                        String_set.mem
-                         tezos_protocol.Tezos_protocol.hash
+                         tezos_protocol.Mavryk_protocol.hash
                          final_protocol_versions
                       then E
                       else S "-no-hash-check");
@@ -5451,7 +5451,7 @@ module Protocol = Protocol
               ]
       in
       let lifted =
-        tezos_protocol_sub_lib
+        mavryk_protocol_sub_lib
           "protocol.lifted"
           ~internal_name:(sf "tezos_protocol-%s.lifted" name_dash)
           ~path:(path // "lib_protocol")
@@ -5460,7 +5460,7 @@ module Protocol = Protocol
           ~deps:
             [
               mavkit_protocol_environment;
-              tezos_protocol_environment_sigs;
+              mavryk_protocol_environment_sigs;
               main |> open_;
             ]
           ~dune:
@@ -5482,7 +5482,7 @@ let hash = Protocol.hash
       in
       let _functor =
         private_lib
-          (sf "tezos_protocol_%s_functor" name_underscore)
+          (sf "mavryk_protocol_%s_functor" name_underscore)
           ~path:(path // "lib_protocol")
           ~opam:""
           ~synopsis:
@@ -5505,14 +5505,14 @@ let hash = Protocol.hash
             (* https://gitlab.com/tezos/tezos/-/issues/1927 *)
           ~bisect_ppx:No
           ~flags:(Flags.standard ~nopervasives:true ~disable_warnings ())
-          ~opam_only_deps:[mavkit_protocol_compiler_tezos_protocol_packer]
-          ~deps:[mavkit_protocol_environment; tezos_protocol_environment_sigs]
+          ~opam_only_deps:[mavkit_protocol_compiler_mavryk_protocol_packer]
+          ~deps:[mavkit_protocol_environment; mavryk_protocol_environment_sigs]
           ~dune:
             Dune.
               [
                 targets_rule
                   ["functor.ml"]
-                  ~deps:[modules_as_deps; [S ":src_dir"; S "TEZOS_PROTOCOL"]]
+                  ~deps:[modules_as_deps; [S ":src_dir"; S "MAVRYK_PROTOCOL"]]
                   ~action:
                     [
                       S "with-stdout-to";
@@ -5531,7 +5531,7 @@ let hash = Protocol.hash
               ]
       in
       let embedded =
-        tezos_protocol_sub_lib
+        mavryk_protocol_sub_lib
           "embedded-protocol"
           ~internal_name:(sf "tezos_embedded_protocol_%s" name_underscore)
           ~path:(path // "lib_protocol")
@@ -5570,7 +5570,7 @@ let hash = Protocol.hash
               [
                 targets_rule
                   ["registerer.ml"]
-                  ~deps:[modules_as_deps; [S ":src_dir"; S "TEZOS_PROTOCOL"]]
+                  ~deps:[modules_as_deps; [S ":src_dir"; S "MAVRYK_PROTOCOL"]]
                   ~action:
                     [
                       S "with-stdout-to";
@@ -5702,7 +5702,7 @@ let hash = Protocol.hash
     let parameters =
       only_if (N.(number >= 011) && not_overridden) @@ fun () ->
       public_lib
-        (sf "tezos-protocol-%s.parameters" name_dash)
+        (sf "mavryk-protocol-%s.parameters" name_dash)
         ~path:(path // "lib_parameters")
         ~all_modules_except:["gen"]
         ~deps:
@@ -5718,7 +5718,7 @@ let hash = Protocol.hash
       private_exe
         "gen"
         ~path:(path // "lib_parameters")
-        ~opam:(sf "tezos-protocol-%s" name_dash)
+        ~opam:(sf "mavryk-protocol-%s" name_dash)
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives";
@@ -5749,7 +5749,7 @@ let hash = Protocol.hash
                 [
                   install
                     (List.map (fun n -> S (n ^ "-parameters.json")) networks)
-                    ~package:(sf "tezos-protocol-%s" name_dash)
+                    ~package:(sf "mavryk-protocol-%s" name_dash)
                     ~section:"lib";
                 ]))
         ~bisect_ppx:No
@@ -5761,7 +5761,7 @@ let hash = Protocol.hash
         ~internal_name:(sf "tezos_smart_rollup_%s" name_dash)
         ~path:(path // "lib_sc_rollup")
         ~synopsis:
-          "Protocol specific library of helpers for `tezos-smart-rollup`"
+          "Protocol specific library of helpers for `mavryk-smart-rollup`"
         ~deps:[mavkit_base |> open_ ~m:"TzPervasives"; main |> open_]
         ~inline_tests:ppx_expect
         ~linkall:true
@@ -5770,7 +5770,7 @@ let hash = Protocol.hash
       only_if (N.(number >= 007) && not_overridden) @@ fun () ->
       mavkit_protocol_lib
         "plugin"
-        ~internal_name:(sf "tezos_protocol_plugin_%s" name_dash)
+        ~internal_name:(sf "mavryk_protocol_plugin_%s" name_dash)
         ~path:(path // "lib_plugin")
         ~synopsis:"Protocol plugin"
         ~documentation:
@@ -5789,7 +5789,7 @@ let hash = Protocol.hash
       opt_map plugin @@ fun plugin ->
       mavkit_protocol_lib
         "plugin-registerer"
-        ~internal_name:(sf "tezos_protocol_plugin_%s_registerer" name_dash)
+        ~internal_name:(sf "mavryk_protocol_plugin_%s_registerer" name_dash)
         ~path:(path // "lib_plugin")
         ~synopsis:"Protocol plugin registerer"
         ~release_status:optional_library_release_status
@@ -6354,7 +6354,7 @@ let hash = Protocol.hash
         ~path:(path // "lib_injector")
         ~synopsis:
           "Tezos/Protocol: protocol-specific library for the injector binary"
-        ~opam:(sf "tezos-injector-%s" name_dash)
+        ~opam:(sf "mavryk-injector-%s" name_dash)
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives";
@@ -6372,7 +6372,7 @@ let hash = Protocol.hash
         "smart-rollup-layer2"
         ~internal_name:(sf "tezos_smart_rollup_layer2_%s" name_dash)
         ~path:(path // "lib_sc_rollup_layer2")
-        ~synopsis:"Protocol specific library for `tezos-smart-rollup`"
+        ~synopsis:"Protocol specific library for `mavryk-smart-rollup`"
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives";
@@ -6449,7 +6449,7 @@ let hash = Protocol.hash
       tezt
         ["serialized_proofs"; "test_mavkit_conversions"]
         ~path:(path // "lib_sc_rollup_node/test")
-        ~opam:"tezos-sc-rollup-node-test"
+        ~opam:"mavryk-sc-rollup-node-test"
         ~synopsis:"Tests for the smart rollup node library"
         ~with_macos_security_framework:true
         ~deps:
@@ -6466,7 +6466,7 @@ let hash = Protocol.hash
     let benchmark_type_inference =
       only_if active @@ fun () ->
       public_lib
-        (sf "tezos-benchmark-type-inference-%s" name_dash)
+        (sf "mavryk-benchmark-type-inference-%s" name_dash)
         ~path:(path // "lib_benchmark/lib_benchmark_type_inference")
         ~synopsis:"Tezos: type inference for partial Michelson expressions"
         ~deps:
@@ -6485,7 +6485,7 @@ let hash = Protocol.hash
       tests
         ["test_uf"; "test_inference"]
         ~path:(path // "lib_benchmark/lib_benchmark_type_inference/test")
-        ~opam:(sf "tezos-benchmark-type-inference-%s" name_dash)
+        ~opam:(sf "mavryk-benchmark-type-inference-%s" name_dash)
         ~with_macos_security_framework:true
         ~deps:
           [
@@ -6501,7 +6501,7 @@ let hash = Protocol.hash
       opt_map test_helpers @@ fun test_helpers ->
       only_if active @@ fun () ->
       public_lib
-        (sf "tezos-benchmark-%s" name_dash)
+        (sf "mavryk-benchmark-%s" name_dash)
         ~path:(path // "lib_benchmark")
         ~synopsis:
           "Tezos/Protocol: library for writing benchmarks (protocol-specific \
@@ -6541,7 +6541,7 @@ let hash = Protocol.hash
         ]
         ~path:(path // "lib_benchmark/test")
         ~with_macos_security_framework:true
-        ~opam:(sf "tezos-benchmark-%s" name_dash)
+        ~opam:(sf "mavryk-benchmark-%s" name_dash)
         ~deps:
           [
             mavkit_base |> error_monad_module N.(number <= 018);
@@ -6572,7 +6572,7 @@ let hash = Protocol.hash
       @@ fun (benchmark, test_helpers) ->
       only_if active @@ fun () ->
       public_lib
-        (sf "tezos-benchmarks-proto-%s" name_dash)
+        (sf "mavryk-benchmarks-proto-%s" name_dash)
         ~path:(path // "lib_benchmarks_proto")
         ~synopsis:"Tezos/Protocol: protocol benchmarks"
         ~deps:
@@ -6891,14 +6891,14 @@ let get_contracts_lib =
              in
              let contents =
                Str.global_replace
-                 (Str.regexp_string "open Tezos_protocol_alpha")
-                 ("open Tezos_protocol_" ^ Protocol.name_underscore proto)
+                 (Str.regexp_string "open Mavryk_protocol_alpha")
+                 ("open Mavryk_protocol_" ^ Protocol.name_underscore proto)
                  contents
              in
              let contents =
                Str.global_replace
-                 (Str.regexp_string "open Tezos_client_alpha")
-                 ("open Tezos_client_" ^ Protocol.name_underscore proto)
+                 (Str.regexp_string "open Mavryk_client_alpha")
+                 ("open Mavryk_client_" ^ Protocol.name_underscore proto)
                  contents
              in
              write get_contracts_ml (fun fmt ->
@@ -6979,8 +6979,8 @@ let yes_wallet_lib =
              in
              let contents =
                Str.global_replace
-                 (Str.regexp_string "open Tezos_protocol_alpha")
-                 ("open Tezos_protocol_" ^ Protocol.name_underscore proto)
+                 (Str.regexp_string "open Mavryk_protocol_alpha")
+                 ("open Mavryk_protocol_" ^ Protocol.name_underscore proto)
                  contents
              in
              write get_delegates_ml (fun fmt ->
@@ -7090,12 +7090,12 @@ let simulation_scenario_lib =
                    Str.global_replace re replace contents)
                  contents
                  [
-                   ( Str.regexp_string "open Tezos_client_alpha",
-                     "open Tezos_client_" ^ Protocol.name_underscore proto );
-                   ( Str.regexp_string "open Tezos_baking_alpha",
-                     "open Tezos_baking_" ^ Protocol.name_underscore proto );
-                   ( Str.regexp_string "open Tezos_protocol_alpha",
-                     "open Tezos_protocol_" ^ Protocol.name_underscore proto );
+                   ( Str.regexp_string "open Mavryk_client_alpha",
+                     "open Mavryk_client_" ^ Protocol.name_underscore proto );
+                   ( Str.regexp_string "open Mavryk_baking_alpha",
+                     "open Mavryk_baking_" ^ Protocol.name_underscore proto );
+                   ( Str.regexp_string "open Mavryk_protocol_alpha",
+                     "open Mavryk_protocol_" ^ Protocol.name_underscore proto );
                  ]
              in
              write tool_path (fun fmt -> Format.pp_print_string fmt contents)) ;
@@ -7531,7 +7531,7 @@ let _mavkit_snoop =
 
 let _mavkit_injector_server =
   public_exe
-    "mavkit-injector-server"
+    "mavryk-injector-server"
     ~internal_name:"mavkit_injector_server"
     ~path:"contrib/mavkit_injector_server"
     ~synopsis:"Mavkit injector"
@@ -7903,7 +7903,7 @@ let _mavkit_smart_rollup_node_lib_tests =
   tezt
     ["canary"; "test_context_gc"; "test_store_gc"]
     ~path:"src/lib_smart_rollup_node/test/"
-    ~opam:"tezos-smart-rollup-node-lib-test"
+    ~opam:"mavryk-smart-rollup-node-lib-test"
     ~synopsis:"Tests for the smart rollup node library"
     ~with_macos_security_framework:true
     ~deps:

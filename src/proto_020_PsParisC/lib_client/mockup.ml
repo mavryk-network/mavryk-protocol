@@ -52,7 +52,7 @@ module Protocol_constants_overrides = struct
             (opt "chain_id" Chain_id.encoding)
             (opt "initial_timestamp" Time.Protocol.encoding)))
 
-  let default_value (cctxt : Tezos_client_base.Client_context.full) :
+  let default_value (cctxt : Mavryk_client_base.Client_context.full) :
       t tzresult Lwt.t =
     let open Lwt_result_syntax in
     let cpctxt = new Protocol_client_context.wrap_full cctxt in
@@ -101,8 +101,8 @@ module Parsed_account = struct
 
   let to_bootstrap_account repr =
     let open Lwt_result_syntax in
-    let* pk_uri = Tezos_client_base.Client_keys.neuterize repr.sk_uri in
-    let* public_key = Tezos_client_base.Client_keys.public_key pk_uri in
+    let* pk_uri = Mavryk_client_base.Client_keys.neuterize repr.sk_uri in
+    let* public_key = Mavryk_client_base.Client_keys.public_key pk_uri in
     let public_key_hash = Signature.Public_key.hash public_key in
     return
       Parameters.
@@ -114,7 +114,7 @@ module Parsed_account = struct
           consensus_key = None;
         }
 
-  let default_to_json (cctxt : Tezos_client_base.Client_context.full) :
+  let default_to_json (cctxt : Mavryk_client_base.Client_context.full) :
       string tzresult Lwt.t =
     let open Lwt_result_syntax in
     let rpc_context = new Protocol_client_context.wrap_full cctxt in
@@ -136,7 +136,7 @@ module Parsed_account = struct
               in
               match tz_balance with
               | Ok balance -> (
-                  let tez_repr = Tez.of_mutez @@ Tez.to_mutez balance in
+                  let tez_repr = Tez.of_mumav @@ Tez.to_mumav balance in
                   match tez_repr with
                   | None ->
                       (* we're reading the wallet, it's content MUST be valid *)
@@ -267,7 +267,7 @@ module Forge = struct
        predecessor's protocol level because protocol levels are
        encoded as uint8. *)
     let proto_level = 1 in
-    Tezos_base.Block_header.
+    Mavryk_base.Block_header.
       {
         level;
         predecessor;
@@ -311,8 +311,8 @@ let initial_context chain_id (header : Block_header.shell_header)
     Data_encoding.Binary.to_bytes_exn Data_encoding.json json
   in
   let*! ctxt =
-    Tezos_protocol_environment.Context.(
-      let empty = Tezos_protocol_environment.Memory_context.empty in
+    Mavryk_protocol_environment.Context.(
+      let empty = Mavryk_protocol_environment.Memory_context.empty in
       let*! ctxt = add empty ["version"] (Bytes.of_string "genesis") in
       add ctxt ["protocol_parameters"] proto_params)
   in
@@ -339,7 +339,7 @@ let initial_context chain_id (header : Block_header.shell_header)
 
   *)
   let predecessor =
-    Tezos_base.Block_header.hash {shell = header; protocol_data = Bytes.empty}
+    Mavryk_base.Block_header.hash {shell = header; protocol_data = Bytes.empty}
   in
   let* value_of_key =
     let*! r =
@@ -361,7 +361,7 @@ let initial_context chain_id (header : Block_header.shell_header)
       See {!Environment_context.source_of_cache}.
   *)
   let* context =
-    Tezos_protocol_environment.Context.load_cache
+    Mavryk_protocol_environment.Context.load_cache
       predecessor
       context
       `Lazy
@@ -372,11 +372,11 @@ let initial_context chain_id (header : Block_header.shell_header)
   return context
 
 let mem_init :
-    cctxt:Tezos_client_base.Client_context.printer ->
+    cctxt:Mavryk_client_base.Client_context.printer ->
     parameters:Protocol_parameters.t ->
     constants_overrides_json:Data_encoding.json option ->
     bootstrap_accounts_json:Data_encoding.json option ->
-    Tezos_mockup_registration.Registration.mockup_context tzresult Lwt.t =
+    Mavryk_mockup_registration.Registration.mockup_context tzresult Lwt.t =
   let open Lwt_result_syntax in
   fun ~cctxt ~parameters ~constants_overrides_json ~bootstrap_accounts_json ->
     let hash = genesis_block_hash in
@@ -461,7 +461,7 @@ let mem_init :
       override_protocol_parameters constants_overrides_json parameters
     in
     let chain_id =
-      Tezos_mockup_registration.Mockup_args.Chain_id.choose
+      Mavryk_mockup_registration.Mockup_args.Chain_id.choose
         ~from_config_file:protocol_overrides.chain_id
     in
     let default = parameters.initial_timestamp in
@@ -581,21 +581,21 @@ let mem_init :
         {contents; signature}
     in
     return
-      Tezos_mockup_registration.Registration_intf.
+      Mavryk_mockup_registration.Registration_intf.
         {
           chain = chain_id;
           rpc_context =
-            Tezos_protocol_environment.
+            Mavryk_protocol_environment.
               {block_hash = hash; block_header = shell_header; context};
           protocol_data;
         }
 
 let migrate :
-    Tezos_mockup_registration.Registration.mockup_context ->
-    Tezos_mockup_registration.Registration.mockup_context tzresult Lwt.t =
+    Mavryk_mockup_registration.Registration.mockup_context ->
+    Mavryk_mockup_registration.Registration.mockup_context tzresult Lwt.t =
   let open Lwt_result_syntax in
   fun {chain; rpc_context; protocol_data} ->
-    let Tezos_protocol_environment.{block_hash; context; block_header} =
+    let Mavryk_protocol_environment.{block_hash; context; block_header} =
       rpc_context
     in
     let*! context = Environment.Updater.activate context Protocol.hash in
@@ -604,17 +604,17 @@ let migrate :
       Lwt.return (Environment.wrap_tzresult r)
     in
     let rpc_context =
-      Tezos_protocol_environment.{block_hash; block_header; context}
+      Mavryk_protocol_environment.{block_hash; block_header; context}
     in
     return
-      Tezos_mockup_registration.Registration_intf.
+      Mavryk_mockup_registration.Registration_intf.
         {chain; rpc_context; protocol_data}
 
 (* ------------------------------------------------------------------------- *)
 (* Register mockup *)
 
 module M :
-  Tezos_mockup_registration.Registration_intf.MOCKUP
+  Mavryk_mockup_registration.Registration_intf.MOCKUP
     with module Protocol = Lifted_protocol = struct
   type parameters = Protocol_parameters.t
 
@@ -640,7 +640,7 @@ module M :
   let init ~cctxt ~parameters ~constants_overrides_json ~bootstrap_accounts_json
       =
     mem_init
-      ~cctxt:(cctxt :> Tezos_client_base.Client_context.printer)
+      ~cctxt:(cctxt :> Mavryk_client_base.Client_context.printer)
       ~parameters
       ~constants_overrides_json
       ~bootstrap_accounts_json
@@ -649,4 +649,4 @@ module M :
 end
 
 let () =
-  Tezos_mockup_registration.Registration.register_mockup_environment (module M)
+  Mavryk_mockup_registration.Registration.register_mockup_environment (module M)

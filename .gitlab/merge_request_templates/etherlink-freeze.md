@@ -67,7 +67,7 @@ if STORAGE_VERSION == current_version + 1 {
 
 Simply compile everything and run the tests!
 ```
-$ make octez-evm-node && make -f etherlink.mk evm_kernel.wasm
+$ make mavkit-evm-node && make -f etherlink.mk evm_kernel.wasm
 $ dune exec etherlink/tezt/tests/main.exe -- -f evm_sequencer.ml -f evm_rollup.ml -j 4 --keep-going
 ```
 

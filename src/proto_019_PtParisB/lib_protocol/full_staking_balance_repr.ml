@@ -93,7 +93,7 @@ let voting_weight
   let open Result_syntax in
   let* frozen = Tez_repr.(own_frozen +? staked_frozen) in
   let+ all = Tez_repr.(frozen +? delegated) in
-  Tez_repr.to_mutez all
+  Tez_repr.to_mumav all
 
 let apply_slashing ~percentage
     {
@@ -239,8 +239,8 @@ let own_ratio ~adaptive_issuance_global_limit_of_staking_over_baking
     in
     if Tez_repr.(allowed_staked_frozen = zero) then (1L, 1L)
     else
-      let own_frozen = Tez_repr.to_mutez own_frozen in
-      let allowed_staked_frozen = Tez_repr.to_mutez allowed_staked_frozen in
+      let own_frozen = Tez_repr.to_mumav own_frozen in
+      let allowed_staked_frozen = Tez_repr.to_mumav allowed_staked_frozen in
       (own_frozen, Int64.add own_frozen allowed_staked_frozen)
 
 let has_minimal_frozen_stake ~minimal_frozen_stake full_staking_balance =

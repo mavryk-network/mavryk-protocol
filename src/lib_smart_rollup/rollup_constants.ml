@@ -163,4 +163,4 @@ let encoding =
              (req "number_of_slots" int31)
              (req
                 "cryptobox_parameters"
-                Tezos_crypto_dal.Cryptobox.parameters_encoding)))
+                Mavryk_crypto_dal.Cryptobox.parameters_encoding)))

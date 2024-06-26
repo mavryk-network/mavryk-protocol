@@ -1423,7 +1423,7 @@
   },
   {
     "file": "src/lib_context/test/test_context.ml",
-    "title": "tezos-context: context (memory:is_empty)",
+    "title": "mavryk-context: context (memory:is_empty)",
     "tags": [
       "alcotezt",
       "quick"

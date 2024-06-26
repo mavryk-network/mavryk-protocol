@@ -32,7 +32,7 @@
 *)
 
 open Protocol
-module Context_binary = Tezos_context_memory.Context_binary
+module Context_binary = Mavryk_context_memory.Context_binary
 
 (* We first instantiate an arithmetic PVM capable of generating proofs. *)
 module Tree :
@@ -63,7 +63,7 @@ module Arith_Context = struct
   type proof = Context_binary.Proof.tree Context_binary.Proof.t
 
   let proof_encoding =
-    Tezos_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2
+    Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2
     .tree_proof_encoding
 
   let kinded_hash_to_state_hash = function
@@ -568,7 +568,7 @@ let dummy_internal_transfer address =
     WithExceptions.Result.get_ok
       ~loc:__LOC__
       (Signature.Public_key_hash.of_b58check
-         "tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w")
+         "mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe")
   in
   let payload = Bytes.of_string "foo" in
   let*! result =

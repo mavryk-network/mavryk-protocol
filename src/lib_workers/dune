@@ -3,7 +3,7 @@
 
 (library
  (name mavryk_workers)
- (public_name mavkit-libs.tezos-workers)
+ (public_name mavkit-libs.mavryk-workers)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-libs.base

@@ -39,7 +39,7 @@ module Make_in_memory_context (Context : sig
   type tree
 
   include
-    Tezos_context_sigs.Context.TEZOS_CONTEXT
+    Mavryk_context_sigs.Context.TEZOS_CONTEXT
       with type memory_context_tree := tree
        and type tree := tree
        and type value_key = Context_hash.t
@@ -89,20 +89,20 @@ struct
   let proof_after proof = kinded_hash_to_state_hash proof.Context.Proof.after
 
   let proof_encoding =
-    Tezos_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2
+    Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2
     .tree_proof_encoding
 end
 
 module Wrong_in_memory_context =
-  Make_in_memory_context (Tezos_context_memory.Context)
+  Make_in_memory_context (Mavryk_context_memory.Context)
 
 module Wrong_arith_pvm :
   Sc_rollup.PVM.S
     with type context = Wrong_in_memory_context.Tree.t
      and type state = Wrong_in_memory_context.tree
      and type proof =
-      Tezos_context_memory.Context.Proof.tree
-      Tezos_context_memory.Context.Proof.t =
+      Mavryk_context_memory.Context.Proof.tree
+      Mavryk_context_memory.Context.Proof.t =
   Sc_rollup.ArithPVM.Make (Wrong_in_memory_context)
 
 let genesis_commitment ~boot_sector ~origination_level kind =

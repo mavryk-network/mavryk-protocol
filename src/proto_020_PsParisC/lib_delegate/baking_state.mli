@@ -160,7 +160,7 @@ type prepared_block = {
   signed_block_header : block_header;
   round : Round.t;
   delegate : consensus_key_and_delegate;
-  operations : Tezos_base.Operation.t list list;
+  operations : Mavryk_base.Operation.t list list;
   baking_votes : Per_block_votes_repr.per_block_votes;
 }
 
@@ -291,7 +291,7 @@ type global_state = {
   validation_mode : validation_mode;
   delegates : consensus_key list;
   cache : cache;
-  dal_node_rpc_ctxt : Tezos_rpc.Context.generic option;
+  dal_node_rpc_ctxt : Mavryk_rpc.Context.generic option;
 }
 
 type state = {

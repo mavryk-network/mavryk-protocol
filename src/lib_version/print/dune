@@ -2,13 +2,13 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name octez_version_print)
- (public_name octez-version.print)
+ (name mavkit_version_print)
+ (public_name mavkit-version.print)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.version
-  octez-version.value)
+  mavkit-libs.version
+  mavkit-version.value)
  (flags
   (:standard)
-  -open Tezos_version
-  -open Tezos_version_value))
+  -open Mavryk_version
+  -open Mavryk_version_value))

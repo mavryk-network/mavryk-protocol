@@ -351,7 +351,7 @@ let fetch_preimage_from_remote endpoint hash_hex =
   match resp.status with
   | `OK ->
       let contents_hash_hex =
-        let open Tezos_protocol_alpha.Protocol.Sc_rollup_reveal_hash in
+        let open Mavryk_protocol_alpha.Protocol.Sc_rollup_reveal_hash in
         hash_string ~scheme:Blake2B [body_str] |> to_hex
       in
       if not (String.equal contents_hash_hex hash_hex) then

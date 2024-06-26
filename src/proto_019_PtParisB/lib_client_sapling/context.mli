@@ -15,7 +15,7 @@
    from the last scanned state.
 *)
 
-open Tezos_sapling.Core.Client
+open Mavryk_sapling.Core.Client
 
 module Tez : module type of Protocol.Alpha_context.Tez
 
@@ -30,9 +30,9 @@ module Shielded_tez : sig
 
   val zero : t
 
-  val of_mutez : int64 -> t option
+  val of_mumav : int64 -> t option
 
-  val to_mutez : t -> int64
+  val to_mumav : t -> int64
 
   val of_tez : Tez.t -> t
 

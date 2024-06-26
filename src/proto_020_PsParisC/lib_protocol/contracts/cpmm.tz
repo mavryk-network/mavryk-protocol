@@ -6,18 +6,18 @@
             (or (pair %removeLiquidity
                    (address %to)
                    (pair (nat %lqtBurned)
-                         (pair (mutez %minXtzWithdrawn) (pair (nat %minTokensWithdrawn) (timestamp %deadline)))))
+                         (pair (mumav %minXtzWithdrawn) (pair (nat %minTokensWithdrawn) (timestamp %deadline)))))
                 (pair %tokenToToken
                    (address %outputDexterContract)
                    (pair (nat %minTokensBought)
                          (pair (address %to) (pair (nat %tokensSold) (timestamp %deadline)))))))
         (or (pair %tokenToXtz
                (address %to)
-               (pair (nat %tokensSold) (pair (mutez %minXtzBought) (timestamp %deadline))))
+               (pair (nat %tokensSold) (pair (mumav %minXtzBought) (timestamp %deadline))))
             (pair %xtzToToken (address %to) (pair (nat %minTokensBought) (timestamp %deadline))))) ;
   storage
     (pair (nat %tokenPool)
-          (pair (mutez %xtzPool)
+          (pair (mumav %xtzPool)
                 (pair (nat %lqtTotal) (pair (address %tokenAddress) (address %lqtAddress))))) ;
   code { DUP ;
          CDR ;
@@ -45,7 +45,7 @@
                      COMPARE ;
                      GE ;
                      IF { DROP 4 ; PUSH nat 3 ; FAILWITH }
-                        { PUSH mutez 1 ;
+                        { PUSH mumav 1 ;
                           DIG 4 ;
                           DUP ;
                           DUG 5 ;
@@ -55,7 +55,7 @@
                           IF_NONE { PUSH string "DIV by 0" ; FAILWITH } {} ;
                           CAR ;
                           AMOUNT ;
-                          PUSH mutez 1 ;
+                          PUSH mumav 1 ;
                           SWAP ;
                           EDIV ;
                           IF_NONE { PUSH string "DIV by 0" ; FAILWITH } {} ;
@@ -184,7 +184,7 @@
                                     CAR ;
                                     CONTRACT %transfer (pair address (pair address nat)) ;
                                     IF_NONE { PUSH nat 0 ; FAILWITH } {} ;
-                                    PUSH mutez 0 ;
+                                    PUSH mumav 0 ;
                                     DIG 3 ;
                                     DIG 3 ;
                                     PAIR ;
@@ -210,7 +210,7 @@
                                     CDR ;
                                     CONTRACT %mintOrBurn (pair (int %quantity) (address %target)) ;
                                     IF_NONE { PUSH nat 12 ; FAILWITH } {} ;
-                                    PUSH mutez 0 ;
+                                    PUSH mumav 0 ;
                                     DIG 2 ;
                                     DIG 3 ;
                                     PAIR ;
@@ -264,7 +264,7 @@
                      COMPARE ;
                      GE ;
                      IF { DROP 5 ; PUSH nat 3 ; FAILWITH }
-                        { PUSH mutez 0 ;
+                        { PUSH mumav 0 ;
                           AMOUNT ;
                           COMPARE ;
                           GT ;
@@ -275,7 +275,7 @@
                                CDR ;
                                CDR ;
                                CAR ;
-                               PUSH mutez 1 ;
+                               PUSH mumav 1 ;
                                DIG 6 ;
                                DUP ;
                                DUG 7 ;
@@ -291,7 +291,7 @@
                                EDIV ;
                                IF_NONE { PUSH string "DIV by 0" ; FAILWITH } {} ;
                                CAR ;
-                               PUSH mutez 1 ;
+                               PUSH mumav 1 ;
                                SWAP ;
                                MUL ;
                                DIG 5 ;
@@ -367,7 +367,7 @@
                                          CDR ;
                                          CONTRACT %mintOrBurn (pair (int %quantity) (address %target)) ;
                                          IF_NONE { PUSH nat 12 ; FAILWITH } {} ;
-                                         PUSH mutez 0 ;
+                                         PUSH mumav 0 ;
                                          DIG 2 ;
                                          DIG 3 ;
                                          PAIR ;
@@ -400,7 +400,7 @@
                                          CAR ;
                                          CONTRACT %transfer (pair address (pair address nat)) ;
                                          IF_NONE { PUSH nat 0 ; FAILWITH } {} ;
-                                         PUSH mutez 0 ;
+                                         PUSH mumav 0 ;
                                          DIG 3 ;
                                          DIG 3 ;
                                          PAIR ;
@@ -481,7 +481,7 @@
                      CONTRACT %xtzToToken
                        (pair (address %to) (pair (nat %minTokensBought) (timestamp %deadline))) ;
                      IF_NONE { PUSH nat 31 ; FAILWITH } {} ;
-                     PUSH mutez 0 ;
+                     PUSH mumav 0 ;
                      AMOUNT ;
                      COMPARE ;
                      GT ;
@@ -581,7 +581,7 @@
                                CAR ;
                                CONTRACT %transfer (pair address (pair address nat)) ;
                                IF_NONE { PUSH nat 0 ; FAILWITH } {} ;
-                               PUSH mutez 0 ;
+                               PUSH mumav 0 ;
                                DIG 3 ;
                                DIG 3 ;
                                PAIR ;
@@ -601,7 +601,7 @@
                                DIG 3 ;
                                DIG 4 ;
                                SUB ;
-                               PUSH address "tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU" ;
+                               PUSH address "mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5" ;
                                CONTRACT unit ;
                                IF_NONE { PUSH nat 9 ; FAILWITH } {} ;
                                SWAP ;
@@ -636,7 +636,7 @@
                  COMPARE ;
                  GE ;
                  IF { DROP 4 ; PUSH nat 3 ; FAILWITH }
-                    { PUSH mutez 0 ;
+                    { PUSH mumav 0 ;
                       AMOUNT ;
                       COMPARE ;
                       GT ;
@@ -653,7 +653,7 @@
                            CAR ;
                            MUL ;
                            ADD ;
-                           PUSH mutez 1 ;
+                           PUSH mumav 1 ;
                            DIG 5 ;
                            DUP ;
                            DUG 6 ;
@@ -671,7 +671,7 @@
                            EDIV ;
                            IF_NONE { PUSH string "DIV by 0" ; FAILWITH } {} ;
                            CAR ;
-                           PUSH mutez 1 ;
+                           PUSH mumav 1 ;
                            SWAP ;
                            MUL ;
                            PUSH nat 1000 ;
@@ -718,7 +718,7 @@
                            CAR ;
                            CONTRACT %transfer (pair address (pair address nat)) ;
                            IF_NONE { PUSH nat 0 ; FAILWITH } {} ;
-                           PUSH mutez 0 ;
+                           PUSH mumav 0 ;
                            DIG 3 ;
                            DIG 3 ;
                            PAIR ;
@@ -762,7 +762,7 @@
                            DIG 3 ;
                            DIG 4 ;
                            SUB ;
-                           PUSH address "tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU" ;
+                           PUSH address "mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5" ;
                            CONTRACT unit ;
                            IF_NONE { PUSH nat 9 ; FAILWITH } {} ;
                            SWAP ;
@@ -791,7 +791,7 @@
                  COMPARE ;
                  GE ;
                  IF { DROP 3 ; PUSH nat 3 ; FAILWITH }
-                    { PUSH mutez 1 ;
+                    { PUSH mumav 1 ;
                       DIG 3 ;
                       DUP ;
                       DUG 4 ;
@@ -801,7 +801,7 @@
                       IF_NONE { PUSH string "DIV by 0" ; FAILWITH } {} ;
                       CAR ;
                       AMOUNT ;
-                      PUSH mutez 1 ;
+                      PUSH mumav 1 ;
                       SWAP ;
                       EDIV ;
                       IF_NONE { PUSH string "DIV by 0" ; FAILWITH } {} ;
@@ -861,7 +861,7 @@
                       DUG 6 ;
                       CDR ;
                       CDR ;
-                      PUSH mutez 1 ;
+                      PUSH mumav 1 ;
                       DIG 5 ;
                       MUL ;
                       DIG 6 ;
@@ -903,17 +903,17 @@
                       CAR ;
                       CONTRACT %transfer (pair address (pair address nat)) ;
                       IF_NONE { PUSH nat 0 ; FAILWITH } {} ;
-                      PUSH mutez 0 ;
+                      PUSH mumav 0 ;
                       DIG 3 ;
                       DIG 3 ;
                       PAIR ;
                       DIG 3 ;
                       PAIR ;
                       TRANSFER_TOKENS ;
-                      PUSH mutez 1 ;
+                      PUSH mumav 1 ;
                       DIG 3 ;
                       MUL ;
-                      PUSH address "tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU" ;
+                      PUSH address "mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5" ;
                       CONTRACT unit ;
                       IF_NONE { PUSH nat 9 ; FAILWITH } {} ;
                       SWAP ;

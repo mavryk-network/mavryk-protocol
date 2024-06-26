@@ -1,11 +1,11 @@
-# tezos-context
+# mavryk-context
 
 <!-- Summary line: One sentence about this component. -->
 Context library for storing ledger and operations on disk and in memory
 
 ## API Documentation
 
-<https://tezos.gitlab.io/api/odoc/_html/octez-libs/Tezos_context/index.html>
+<https://tezos.gitlab.io/api/odoc/_html/mavkit-libs/Mavryk_context/index.html>
 
 ## Overview
 
@@ -14,11 +14,11 @@ There are two containers that are used to store different things. The reunion of
 - storage
   - `store`
     - contains the blocks
-  - `tezos-context` (irmin)
+  - `mavryk-context` (irmin)
     - ledger
     - contains the state of every account and their updates
 
-`tezos-context` provides an abstraction over the ledger storage (be it on disk and in memory).
+`mavryk-context` provides an abstraction over the ledger storage (be it on disk and in memory).
 
 ## Implementation details
 
@@ -121,20 +121,20 @@ type t = context
 
 ### Summary
 
-- The `Tezos_context` module (dispatched between `Lib_context.Sigs.Context`, `Lib_context.Memory.Context` and `Lib_context.Disk.Context` is the intermediary between Tezos and Irmin
+- The `Mavryk_context` module (dispatched between `Lib_context.Sigs.Context`, `Lib_context.Memory.Context` and `Lib_context.Disk.Context` is the intermediary between Tezos and Irmin
 - Irmin handles both a `Tree` (in-memory partial representation of the context) and an `index` (on-disk representation of the context that can be limited to the most recent commits)
-- Most functions used in `Tezos_context` communicate with the `Tree` and are later reflected to the disk by using the `commit` function
+- Most functions used in `Mavryk_context` communicate with the `Tree` and are later reflected to the disk by using the `commit` function
 
 As we saw, the main names are `Context` = `Tree` + `Index` yet Irmin uses `Store` as an alias for `Context`. Whenever `Store` is seen, it needs to be understood as `Context`.
 
 ### Issues: Creating a Tezos context
 
 The way a Tezos context (store) is created is convoluted:
-- `Make` expects and `Encoding` of type `Tezos_context_encoding.Context`
+- `Make` expects and `Encoding` of type `Mavryk_context_encoding.Context`
 - A `Store` is created:
   - by creating `Maker` which is the application of `Irmin_pack_unix.Maker` to `Encoding.Conf`
   - `Maker.Make` is then applied to `Encoding.Schema`
-  - `Schema` is aliased as `Tezos_context_encoding.Context.Schema`
+  - `Schema` is aliased as `Mavryk_context_encoding.Context.Schema`
   - `Store.Backend` is almost the same as the `Schema` where all functors have been applied to the relevant modules and some modules have been added.
 
 Creating a `Maker` functor applied to a `Conf` and then applying it to a `Schema` when both are already known beforehand could (should?) be simplified.

@@ -466,7 +466,7 @@ struct
     return_unit
 
   let run scenario =
-    Tezos_stdlib_unix.Lwt_utils_unix.with_tempdir
+    Mavryk_stdlib_unix.Lwt_utils_unix.with_tempdir
       "tezos-layer2-indexed-store-test-"
       (run_in_dir scenario)
 

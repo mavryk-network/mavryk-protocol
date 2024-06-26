@@ -33,11 +33,11 @@ module Sapling_gen_cmd = struct
   (* Generic max-%s argument *)
   let max name =
     let open Lwt_result_syntax in
-    Tezos_clic.arg
+    Mavryk_clic.arg
       ~doc:(Printf.sprintf "Maximum number of %s" name)
       ~long:(Printf.sprintf "max-%s" name)
       ~placeholder:"integer"
-      (Tezos_clic.parameter (fun (_ : unit) parsed ->
+      (Mavryk_clic.parameter (fun (_ : unit) parsed ->
            match int_of_string parsed with
            | exception Failure _ ->
                Format.eprintf
@@ -55,17 +55,17 @@ module Sapling_gen_cmd = struct
   let seed_arg =
     let open Lwt_result_syntax in
     let seed =
-      Tezos_clic.parameter (fun (_ : unit) parsed ->
+      Mavryk_clic.parameter (fun (_ : unit) parsed ->
           try return (int_of_string parsed)
           with _ ->
             Format.eprintf "Error while parsing --seed argument.@." ;
             exit 1)
     in
-    Tezos_clic.arg ~doc:"RNG seed" ~long:"seed" ~placeholder:"int" seed
+    Mavryk_clic.arg ~doc:"RNG seed" ~long:"seed" ~placeholder:"int" seed
 
   let positive_param =
     let open Lwt_result_syntax in
-    Tezos_clic.parameter (fun _ s ->
+    Mavryk_clic.parameter (fun _ s ->
         match int_of_string_opt s with
         | Some i when i > 0 -> return i
         | _ -> failwith "Parameter should be a positive integer literal")
@@ -100,7 +100,7 @@ module Sapling_gen_cmd = struct
     return_unit
 
   let options =
-    Tezos_clic.args5
+    Mavryk_clic.args5
       (max "inputs")
       (max "outputs")
       (max "nullifiers")
@@ -108,7 +108,7 @@ module Sapling_gen_cmd = struct
       seed_arg
 
   let params =
-    Tezos_clic.(
+    Mavryk_clic.(
       prefixes [Protocol.name; "sapling"; "generate"]
       @@ param
            ~name:"SAPLING-TX-COUNT"
@@ -122,12 +122,12 @@ module Sapling_gen_cmd = struct
 
   let group =
     {
-      Tezos_clic.name = "Sapling tx generation";
+      Mavryk_clic.name = "Sapling tx generation";
       title = "Command for generating random sapling transactions";
     }
 
   let command =
-    Tezos_clic.command
+    Mavryk_clic.command
       ~group
       ~desc:"Sapling transaction generation"
       options

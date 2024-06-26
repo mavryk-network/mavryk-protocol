@@ -24,7 +24,7 @@
   mavkit-libs.mavryk-p2p-services
   mavkit-shell-libs.protocol-updater
   mavkit-libs.requester
-  mavkit-libs.tezos-workers
+  mavkit-libs.mavryk-workers
   mavkit-shell-libs.validation
   mavkit-libs.version
   mavkit-libs.crypto-dal.dal-config

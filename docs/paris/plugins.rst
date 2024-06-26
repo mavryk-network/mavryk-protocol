@@ -50,7 +50,7 @@ the filters of the previous protocol. Notice that prevalidator filters are not
 mandatory, their absence does not break the Tezos blockchain protocol.
 
 The interface of the prevalidator plugin is described at the :package-api:`mempool plugin API
-<octez-libs/Tezos_base/Mempool/index.html>`.
+<mavkit-libs/Mavryk_base/Mempool/index.html>`.
 
 The different kinds of prevalidator filters are described below.
 
@@ -64,7 +64,7 @@ network with, valid but useless, zero-fees operations. This is why the
 prevalidator filter currently restricts operations based on their
 associated fees, to reject "too cheap" or "zero-fees" operations. This
 can be configured via the ``minimal_fees``,
-``minimal_nanotez_per_gas_unit`` and ``minimal_nanotez_per_byte`` (see
+``minimal_nanomav_per_gas_unit`` and ``minimal_nanotez_per_byte`` (see
 :ref:`filter RPCs<active_filter_rpc_paris>`) parameters of the filter
 configuration of your node.
 
@@ -136,11 +136,11 @@ by a factor (currently fixed to 5%). In case of successful replacement, the old
 operation is re-classified as ``Outdated``.
 
 Concretely, a user can replace a successfully prechecked manager operation in the
-mempool, with the help of ``octez-client``, using two methods :
+mempool, with the help of ``mavkit-client``, using two methods :
 
 - manually provide a higher fee to bump the "fee/gas limit" ratio by at least 5% for the new
   operation,
-- via option ``--replace``: In this case, ``octez-client`` will automatically
+- via option ``--replace``: In this case, ``mavkit-client`` will automatically
   compute the minimal amount of fee for the second operation to be able to
   replace the one in the mempool.
 
@@ -215,7 +215,7 @@ respectively:
 The following parameters can be thus inspected and modified:
 
 - ``minimal_fees``: type ``int``, default ``100``
-- ``minimal_nanotez_per_gas_unit``: type ``int``, default ``100``
+- ``minimal_nanomav_per_gas_unit``: type ``int``, default ``100``
 - ``minimal_nanotez_per_byte``: type ``int``, default ``1000``
 - ``allow_script_failure``: type ``bool``, default ``true``
 - ``clock_drift`` : type ``Period.t option``, default ``None``
@@ -225,9 +225,9 @@ The following parameters can be thus inspected and modified:
 For example, each command below modifies the provided parameter and resets all
 the others to their default values::
 
-   octez-client rpc post /chains/main/mempool/filter with '{ "minimal_fees": "42" }'
-   octez-client rpc post /chains/main/mempool/filter with '{ "replace_by_fee_factor": [ "23", "20" ] }'
-   octez-client rpc post /chains/main/mempool/filter with '{ "max_prechecked_manager_operations": 7500 }'
+   mavkit-client rpc post /chains/main/mempool/filter with '{ "minimal_fees": "42" }'
+   mavkit-client rpc post /chains/main/mempool/filter with '{ "replace_by_fee_factor": [ "23", "20" ] }'
+   mavkit-client rpc post /chains/main/mempool/filter with '{ "max_prechecked_manager_operations": 7500 }'
 
 Changing filters default configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

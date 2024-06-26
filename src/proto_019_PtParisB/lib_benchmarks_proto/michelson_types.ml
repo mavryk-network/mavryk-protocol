@@ -49,8 +49,8 @@ let bytes = bytes_t
 (* the type of booleans *)
 let bool = bool_t
 
-(* the type of mutez *)
-let mutez = mutez_t
+(* the type of mumav *)
+let mumav = mumav_t
 
 (* the type of public key *)
 let public_key = key_t

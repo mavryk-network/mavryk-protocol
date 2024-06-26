@@ -16,41 +16,41 @@
 
 let octez_legal_versions =
   [
-    ( "octez-10.93",
+    ( "mavkit-10.93",
       {
         product = Octez;
         Version.major = 10;
         minor = 93;
         additional_info = Release;
       } );
-    ( "octez-v10.93",
+    ( "mavkit-v10.93",
       {
         product = Octez;
         Version.major = 10;
         minor = 93;
         additional_info = Release;
       } );
-    ( "octez-10.93+dev",
+    ( "mavkit-10.93+dev",
       {product = Octez; Version.major = 10; minor = 93; additional_info = Dev}
     );
-    ( "octez-10.93-rc1",
+    ( "mavkit-10.93-rc1",
       {product = Octez; Version.major = 10; minor = 93; additional_info = RC 1}
     );
-    ( "octez-10.93-rc1+dev",
+    ( "mavkit-10.93-rc1+dev",
       {
         product = Octez;
         Version.major = 10;
         minor = 93;
         additional_info = RC_dev 1;
       } );
-    ( "octez-10.93-beta1",
+    ( "mavkit-10.93-beta1",
       {
         product = Octez;
         Version.major = 10;
         minor = 93;
         additional_info = Beta 1;
       } );
-    ( "octez-10.93-beta1+dev",
+    ( "mavkit-10.93-beta1+dev",
       {
         product = Octez;
         Version.major = 10;

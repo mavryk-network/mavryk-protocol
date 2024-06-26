@@ -215,17 +215,17 @@ end
 
 module Destination_alias = struct
   let contract_parameter () =
-    Tezos_clic.map_parameter
+    Mavryk_clic.map_parameter
       ~f:(fun c -> Destination.Contract c)
       (Contract_alias.destination_parameter ())
 
   let smart_rollup_parameter () =
-    Tezos_clic.map_parameter
+    Mavryk_clic.map_parameter
       ~f:(fun sc -> Destination.Sc_rollup sc)
       (Smart_rollup_alias.Address.parameter ())
 
   let destination_parameter () =
-    Tezos_clic.compose_parameters
+    Mavryk_clic.compose_parameters
       (contract_parameter ())
       (smart_rollup_parameter ())
 
@@ -239,7 +239,7 @@ module Destination_alias = struct
            Use 'text:<literal>', 'alias:<name>', 'key:<key>' to force.";
         ]
     in
-    Tezos_clic.param ~name ~desc (destination_parameter ()) next
+    Mavryk_clic.param ~name ~desc (destination_parameter ()) next
 end
 
 let list_contracts cctxt =

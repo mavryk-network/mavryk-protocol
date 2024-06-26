@@ -65,7 +65,7 @@ module Operations_source = struct
         | Baking_configuration.Operations_source.Local {filename} ->
             if Sys.file_exists filename then
               let*! result =
-                Tezos_stdlib_unix.Lwt_utils_unix.Json.read_file filename
+                Mavryk_stdlib_unix.Lwt_utils_unix.Json.read_file filename
               in
               match result with
               | Error _ ->
@@ -87,7 +87,7 @@ module Operations_source = struct
                 with_timeout
                   (Systime_os.sleep (Time.System.Span.of_seconds_exn 5.))
                   (fun _ ->
-                    Tezos_rpc_http_client_unix.RPC_client_unix
+                    Mavryk_rpc_http_client_unix.RPC_client_unix
                     .generic_media_type_call
                       ~accept:[Media_type.json]
                       ?headers:http_headers
@@ -472,7 +472,7 @@ let may_get_dal_content state consensus_vote =
             return_none
         | `RPC_result (Ok res) -> (
             match res with
-            | Tezos_dal_node_services.Types.Not_in_committee -> return_none
+            | Mavryk_dal_node_services.Types.Not_in_committee -> return_none
             | Attestable_slots {slots = attestation_flags; published_level} ->
                 let number_of_slots =
                   state.global_state.constants.parametric.dal.number_of_slots
@@ -598,7 +598,7 @@ let forge_and_sign_consensus_vote global_state ~branch unsigned_consensus_vote :
   let {vote_kind; vote_consensus_content; delegate = ck, _; dal_content} =
     unsigned_consensus_vote
   in
-  let shell = {Tezos_base.Operation.branch} in
+  let shell = {Mavryk_base.Operation.branch} in
   let watermark =
     match vote_kind with
     | Preattestation -> Operation.(to_watermark (Preattestation chain_id))

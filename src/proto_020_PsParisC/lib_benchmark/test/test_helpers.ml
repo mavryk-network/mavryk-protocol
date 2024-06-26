@@ -64,7 +64,7 @@ let typecheck_by_tezos =
     let* vs =
       Incremental.begin_construction
         ~timestamp:
-          (Tezos_base.Time.Protocol.add
+          (Mavryk_base.Time.Protocol.add
              block.header.shell.timestamp
              minimal_block_delay)
         block
@@ -74,7 +74,7 @@ let typecheck_by_tezos =
     return
     @@ Protocol.Alpha_context.Origination_nonce.init
          ctxt
-         Tezos_crypto.Hashed.Operation_hash.zero
+         Mavryk_crypto.Hashed.Operation_hash.zero
   in
   fun bef node ->
     Stdlib.Result.get_ok

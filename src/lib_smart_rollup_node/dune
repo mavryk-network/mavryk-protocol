@@ -25,7 +25,7 @@
   mavkit-version.value
   mavkit-l2-libs.layer2_store
   mavkit-crawler
-  mavkit-libs.tezos-workers
+  mavkit-libs.mavryk-workers
   mavkit-l2-libs.smart-rollup)
  (flags
   (:standard)

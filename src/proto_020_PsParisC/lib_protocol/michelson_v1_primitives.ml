@@ -177,7 +177,7 @@ type prim =
   | T_signature
   | T_string
   | T_bytes
-  | T_mutez
+  | T_mumav
   | T_timestamp
   | T_unit
   | T_operation
@@ -231,7 +231,7 @@ let namespace = function
       Instr_namespace
   | T_address | T_tx_rollup_l2_address | T_big_map | T_bool | T_bytes
   | T_chain_id | T_contract | T_int | T_key | T_key_hash | T_lambda | T_list
-  | T_map | T_mutez | T_nat | T_never | T_operation | T_option | T_or | T_pair
+  | T_map | T_mumav | T_nat | T_never | T_operation | T_option | T_or | T_pair
   | T_sapling_state | T_sapling_transaction | T_sapling_transaction_deprecated
   | T_set | T_signature | T_string | T_timestamp | T_unit | T_bls12_381_fr
   | T_bls12_381_g1 | T_bls12_381_g2 | T_ticket | T_chest_key | T_chest ->
@@ -391,7 +391,7 @@ let string_of_prim = function
   | T_signature -> "signature"
   | T_string -> "string"
   | T_bytes -> "bytes"
-  | T_mutez -> "mutez"
+  | T_mumav -> "mumav"
   | T_timestamp -> "timestamp"
   | T_unit -> "unit"
   | T_operation -> "operation"
@@ -553,7 +553,7 @@ let prim_of_string =
   | "signature" -> return T_signature
   | "string" -> return T_string
   | "bytes" -> return T_bytes
-  | "mutez" -> return T_mutez
+  | "mumav" -> return T_mumav
   | "timestamp" -> return T_timestamp
   | "unit" -> return T_unit
   | "operation" -> return T_operation
@@ -730,7 +730,7 @@ let prim_encoding =
          ("signature", T_signature);
          ("string", T_string);
          ("bytes", T_bytes);
-         ("mutez", T_mutez);
+         ("mumav", T_mumav);
          ("timestamp", T_timestamp);
          ("unit", T_unit);
          ("operation", T_operation);

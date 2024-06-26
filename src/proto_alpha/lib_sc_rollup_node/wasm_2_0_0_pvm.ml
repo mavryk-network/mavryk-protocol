@@ -194,7 +194,7 @@ module Impl : Pvm_sig.S with type Unsafe_patches.t = unsafe_patch = struct
 
   let eval_many ~reveal_builtins ~write_debug ~is_reveal_enabled:_ =
     Backend.compute_step_many
-      ~wasm_entrypoint:Tezos_scoru_wasm.Constants.wasm_entrypoint
+      ~wasm_entrypoint:Mavryk_scoru_wasm.Constants.wasm_entrypoint
       ~reveal_builtins
       ~write_debug
 end

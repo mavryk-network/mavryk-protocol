@@ -7,7 +7,7 @@ It contains the following libraries:
 - {{!module-Mavryk_alpha_test_helpers}Mavryk_alpha_test_helpers}: Protocol testing framework
 - {{!module-Mavryk_baking_alpha}Mavryk_baking_alpha}: Base library for `mavryk-baker/accuser`
 - {{!module-Mavryk_baking_alpha_commands}Mavryk_baking_alpha_commands}: Protocol-specific commands for baking
-- {{!module-Mavryk_client_alpha}Mavryk_client_alpha}: Protocol specific library for `octez-client`
+- {{!module-Mavryk_client_alpha}Mavryk_client_alpha}: Protocol specific library for `mavkit-client`
 - {{!module-Mavryk_dac_alpha}Mavryk_dac_alpha}: Protocol specific library for the Data availability Committee
 - {{!module-Mavryk_dal_alpha}Mavryk_dal_alpha}: Protocol specific library for the Data availability Layer
 - {{!module-Mavryk_layer2_utils_alpha}Mavryk_layer2_utils_alpha}: Protocol specific library for Layer 2 utils

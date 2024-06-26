@@ -3,31 +3,31 @@
 
 (library
  (name tezos_benchmark_020_PsParisC)
- (public_name tezos-benchmark-020-PsParisC)
+ (public_name mavryk-benchmark-020-PsParisC)
  (libraries
-  octez-libs.stdlib
-  octez-libs.base
-  octez-libs.error-monad
-  octez-libs.micheline
+  mavkit-libs.stdlib
+  mavkit-libs.base
+  mavkit-libs.error-monad
+  mavkit-libs.micheline
   tezos-micheline-rewriting
   tezos-benchmark
-  tezos-benchmark-type-inference-020-PsParisC
-  tezos-protocol-020-PsParisC.protocol
-  octez-libs.crypto
-  tezos-protocol-020-PsParisC.parameters
+  mavryk-benchmark-type-inference-020-PsParisC
+  mavryk-protocol-020-PsParisC.protocol
+  mavkit-libs.crypto
+  mavryk-protocol-020-PsParisC.parameters
   hashcons
-  octez-protocol-020-PsParisC-libs.test-helpers
+  mavkit-protocol-020-PsParisC-libs.test-helpers
   prbnmcn-stats)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
-  -open Tezos_stdlib
-  -open Tezos_base
-  -open Tezos_error_monad
-  -open Tezos_micheline
-  -open Tezos_micheline_rewriting
-  -open Tezos_benchmark
-  -open Tezos_benchmark_type_inference_020_PsParisC
-  -open Tezos_protocol_020_PsParisC
-  -open Tezos_020_PsParisC_test_helpers)
+  -open Mavryk_stdlib
+  -open Mavryk_base
+  -open Mavryk_error_monad
+  -open Mavryk_micheline
+  -open Mavryk_micheline_rewriting
+  -open Mavryk_benchmark
+  -open Mavryk_benchmark_type_inference_020_PsParisC
+  -open Mavryk_protocol_020_PsParisC
+  -open Mavryk_020_PsParisC_test_helpers)
  (private_modules kernel rules state_space))

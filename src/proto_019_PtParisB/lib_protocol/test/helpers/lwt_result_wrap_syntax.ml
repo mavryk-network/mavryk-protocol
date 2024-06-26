@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-include Tezos_base.TzPervasives.Lwt_result_syntax
+include Mavryk_base.TzPervasives.Lwt_result_syntax
 
 let wrap m =
   let open Lwt_syntax in

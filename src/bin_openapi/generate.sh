@@ -12,10 +12,10 @@
 cd "$(dirname "$0")"/../.. || exit
 
 # Mavryk binaries.
-tezos_node=./octez-node
-tezos_client=./octez-client
-smart_rollup_node=./octez-smart-rollup-node
-dal_node=./octez-dal-node
+tezos_node=./mavkit-node
+tezos_client=./mavkit-client
+smart_rollup_node=./mavkit-smart-rollup-node
+dal_node=./mavkit-dal-node
 
 # Protocol configuration.
 protocol_hash=PtParisBxoLz5gzMmn3d9WBQNoPSZakgnkMC2VNuQ3KXfUtUQeZ

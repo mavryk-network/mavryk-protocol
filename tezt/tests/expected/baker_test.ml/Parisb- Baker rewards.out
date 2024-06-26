@@ -1,5 +1,5 @@
 
-./octez-client rpc get /chains/main/blocks/head/metadata
+./mavkit-client rpc get /chains/main/blocks/head/metadata
 { "protocol": "PtParisBxoLz5gzMmn3d9WBQNoPSZakgnkMC2VNuQ3KXfUtUQeZ",
   "next_protocol": "PtParisBxoLz5gzMmn3d9WBQNoPSZakgnkMC2VNuQ3KXfUtUQeZ",
   "test_chain_status": { "status": "not_running" }, "max_operations_ttl": 2,

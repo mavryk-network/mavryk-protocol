@@ -19,4 +19,4 @@ oc.build:static-x86_64-linux-binaries:
     EXECUTABLE_FILES: script-inputs/released-executables script-inputs/experimental-executables
   artifacts:
     paths:
-    - octez-binaries/$ARCH/*
+    - mavkit-binaries/$ARCH/*

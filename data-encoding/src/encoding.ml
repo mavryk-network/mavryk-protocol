@@ -890,7 +890,7 @@ let tup10 e10 e9 e8 e7 e6 e5 e4 e3 e2 e1 =
 
 let merge_tups t1 t2 =
   if is_tup t1 && is_tup t2 then raw_merge_tups t1 t2
-  else invalid_arg "Tezos_serial.Encoding.merge_tups"
+  else invalid_arg "Mavryk_serial.Encoding.merge_tups"
 
 let conv3 ty =
   conv (fun (c, b, a) -> (c, (b, a))) (fun (c, (b, a)) -> (c, b, a)) ty

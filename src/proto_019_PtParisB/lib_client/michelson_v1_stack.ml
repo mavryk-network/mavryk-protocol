@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Tezos_micheline
+open Mavryk_micheline
 open Protocol
 open Alpha_context
 
@@ -442,13 +442,13 @@ let value_fe_err opt ~error =
 (* TODO: #6678
    Reuse protocol elaboration functions from the
    Script_ir_translator module instead of duplicating them here. *)
-let parse_mutez node ~error =
-  let mutez_opt =
+let parse_mumav node ~error =
+  let mumav_opt =
     match node with
-    | Micheline.Int (_loc, z) -> Tez.of_mutez (Z.to_int64 z)
+    | Micheline.Int (_loc, z) -> Tez.of_mumav (Z.to_int64 z)
     | _ -> None
   in
-  value_fe_err mutez_opt ~error
+  value_fe_err mumav_opt ~error
 
 let parse_chain_id node ~error =
   match node with
@@ -531,13 +531,13 @@ let parse_unit_test (parsed : string Michelson_v1_parser.parser_result) =
             parse {ut with temp_code = Some c} l
         | "amount" ->
             let* () = check_duplicated ut.temp_optional.amount in
-            let* t = parse_mutez arg ~error:invalid_format in
+            let* t = parse_mumav arg ~error:invalid_format in
             parse
               {ut with temp_optional = {ut.temp_optional with amount = Some t}}
               l
         | "balance" ->
             let* () = check_duplicated ut.temp_optional.balance in
-            let* t = parse_mutez arg ~error:invalid_format in
+            let* t = parse_mumav arg ~error:invalid_format in
             parse
               {ut with temp_optional = {ut.temp_optional with balance = Some t}}
               l

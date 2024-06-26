@@ -144,7 +144,7 @@ let pp_delegate_info ppf info =
         ppf
         "Voting power: %a"
         Tez_repr.pp
-        (Tez_repr.of_mutez_exn p) ;
+        (Tez_repr.of_mumav_exn p) ;
       (match info.current_ballot with
       | None -> ()
       | Some ballot ->

@@ -2,35 +2,35 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_protocol_plugin_020_PsParisC)
- (public_name octez-protocol-020-PsParisC-libs.plugin)
+ (name mavryk_protocol_plugin_020_PsParisC)
+ (public_name mavkit-protocol-020-PsParisC-libs.plugin)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  tezos-protocol-020-PsParisC.protocol
-  octez-protocol-020-PsParisC-libs.smart-rollup)
+  mavkit-libs.base
+  mavryk-protocol-020-PsParisC.protocol
+  mavkit-protocol-020-PsParisC-libs.smart-rollup)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_protocol_020_PsParisC
-  -open Tezos_smart_rollup_020_PsParisC)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_020_PsParisC
+  -open Mavryk_smart_rollup_020_PsParisC)
  (modules (:standard \ Plugin_registerer)))
 
-(documentation (package octez-protocol-020-PsParisC-libs))
+(documentation (package mavkit-protocol-020-PsParisC-libs))
 
 (library
- (name tezos_protocol_plugin_020_PsParisC_registerer)
- (public_name octez-protocol-020-PsParisC-libs.plugin-registerer)
+ (name mavryk_protocol_plugin_020_PsParisC_registerer)
+ (public_name mavkit-protocol-020-PsParisC-libs.plugin-registerer)
  (instrumentation (backend bisect_ppx))
  (libraries
-  octez-libs.base
-  tezos-protocol-020-PsParisC.embedded-protocol
-  octez-protocol-020-PsParisC-libs.plugin
-  octez-shell-libs.validation)
+  mavkit-libs.base
+  mavryk-protocol-020-PsParisC.embedded-protocol
+  mavkit-protocol-020-PsParisC-libs.plugin
+  mavkit-shell-libs.validation)
  (flags
   (:standard)
-  -open Tezos_base.TzPervasives
-  -open Tezos_embedded_protocol_020_PsParisC
-  -open Tezos_protocol_plugin_020_PsParisC
-  -open Tezos_validation)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_embedded_protocol_020_PsParisC
+  -open Mavryk_protocol_plugin_020_PsParisC
+  -open Mavryk_validation)
  (modules Plugin_registerer))

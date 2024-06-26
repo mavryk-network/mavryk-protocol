@@ -39,7 +39,7 @@ let state_hash kind state =
   let open Lwt_syntax in
   let open (val Pvm.of_kind kind) in
   let+ hash = state_hash (Ctxt_wrapper.of_node_pvmstate state) in
-  Sc_rollup_proto_types.State_hash.to_octez hash
+  Sc_rollup_proto_types.State_hash.to_mavkit hash
 
 let initial_state kind =
   let open Lwt_syntax in
@@ -83,7 +83,7 @@ let get_status (node_ctxt : _ Node_context.t) state =
   let is_reveal_enabled =
     constants.sc_rollup.reveal_activation_level
     |> WithExceptions.Option.get ~loc:__LOC__
-    |> Sc_rollup_proto_types.Constants.reveal_activation_level_of_octez
+    |> Sc_rollup_proto_types.Constants.reveal_activation_level_of_mavkit
     |> Protocol.Alpha_context.Sc_rollup.is_reveal_enabled_predicate
   in
   let*! status = PVM.get_status ~is_reveal_enabled state in
@@ -174,7 +174,7 @@ module Wasm_2_0_0 = struct
 end
 
 module Unsafe = struct
-  let apply_patch (kind : Octez_smart_rollup.Kind.t) state
+  let apply_patch (kind : Mavkit_smart_rollup.Kind.t) state
       (patch : Pvm_patches.unsafe_patch) =
     let open Lwt_result_syntax in
     let open (val Pvm.of_kind kind) in

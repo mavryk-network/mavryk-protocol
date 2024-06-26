@@ -42,7 +42,7 @@ let is_refutable_commitment node_ctxt
   let* our_commitment_and_hash =
     Option.filter_map_es
       (fun hash ->
-        let hash = Sc_rollup_proto_types.Commitment_hash.of_octez hash in
+        let hash = Sc_rollup_proto_types.Commitment_hash.of_mavkit hash in
         let+ commitment = Node_context.find_commitment node_ctxt hash in
         Option.map (fun c -> (c, hash)) commitment)
       l2_block.header.commitment_hash
@@ -115,8 +115,8 @@ let process_included_l1_operation (type kind) ~catching_up
       Sc_rollup_publish_result {published_at_level; _} )
     when Node_context.is_operator node_ctxt source ->
       (* Published commitment --------------------------------------------- *)
-      let commitment = Sc_rollup_proto_types.Commitment.to_octez commitment in
-      let commitment_hash = Octez_smart_rollup.Commitment.hash commitment in
+      let commitment = Sc_rollup_proto_types.Commitment.to_mavkit commitment in
+      let commitment_hash = Mavkit_smart_rollup.Commitment.hash commitment in
       let* () =
         Node_context.register_published_commitment
           node_ctxt
@@ -139,7 +139,7 @@ let process_included_l1_operation (type kind) ~catching_up
       let* () =
         Node_context.register_published_commitment
           node_ctxt
-          (Sc_rollup_proto_types.Commitment.to_octez their_commitment)
+          (Sc_rollup_proto_types.Commitment.to_mavkit their_commitment)
           ~first_published_at_level:(Raw_level.to_int32 published_at_level)
           ~level:head.Layer1.level
           ~published_by_us:false
@@ -158,7 +158,7 @@ let process_included_l1_operation (type kind) ~catching_up
       let proto_commitment_hash = commitment_hash in
       let inbox_level = Raw_level.to_int32 inbox_level in
       let commitment_hash =
-        Sc_rollup_proto_types.Commitment_hash.to_octez commitment_hash
+        Sc_rollup_proto_types.Commitment_hash.to_mavkit commitment_hash
       in
       let* inbox_block =
         Node_context.get_l2_block_by_level node_ctxt inbox_level
@@ -168,7 +168,7 @@ let process_included_l1_operation (type kind) ~catching_up
         let our_commitment_hash = inbox_block.header.commitment_hash in
         error_unless
           (Option.equal
-             Octez_smart_rollup.Commitment.Hash.( = )
+             Mavkit_smart_rollup.Commitment.Hash.( = )
              our_commitment_hash
              (Some commitment_hash))
           (Sc_rollup_node_errors.Disagree_with_cemented
@@ -215,7 +215,7 @@ let process_included_l1_operation (type kind) ~catching_up
         Node_context.save_slot_header
           node_ctxt
           ~published_in_block_hash:head.Layer1.hash
-          (Sc_rollup_proto_types.Dal.Slot_header.to_octez slot_header)
+          (Sc_rollup_proto_types.Dal.Slot_header.to_mavkit slot_header)
       in
       return_unit
   (* If the node is in bailout mode and the bond of the operator has

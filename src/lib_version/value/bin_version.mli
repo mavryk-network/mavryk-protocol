@@ -26,11 +26,11 @@
     committer date and the current version.
 
     This string is suitable for binaries to show when e.g. a [--version] flag is given. *)
-val version_string : Tezos_version_parser.t -> string
+val version_string : Mavryk_version_parser.t -> string
 
 (** [version_string version] returns the version string
     containing only the current version and the abbreviated hash. *)
-val simple_version_string : Tezos_version_parser.t -> string
+val simple_version_string : Mavryk_version_parser.t -> string
 
 (** [version_string] applied to the Version of Octez. *)
 val octez_version_string : string

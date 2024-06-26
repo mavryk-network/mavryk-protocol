@@ -27,12 +27,12 @@ module S = struct
   let health_encoding = Data_encoding.(obj1 (req "ready" bool))
 
   let health =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:
         "Returns whether or not the node is ready to answer to requests."
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:health_encoding
-      Tezos_rpc.Path.(open_root / "health" / "ready")
+      Mavryk_rpc.Path.(open_root / "health" / "ready")
 end
 
-let health ctxt = Tezos_rpc.Context.make_call S.health ctxt () () ()
+let health ctxt = Mavryk_rpc.Context.make_call S.health ctxt () () ()

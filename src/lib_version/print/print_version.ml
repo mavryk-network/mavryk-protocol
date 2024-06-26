@@ -6,7 +6,7 @@
 (*****************************************************************************)
 
 open Version
-open Tezos_version_value.Current_git_info
+open Mavryk_version_value.Current_git_info
 
 let print_version version =
   let help_string =
@@ -26,7 +26,7 @@ let print_version version =
   | [|_; "--full"|] | [|_|] -> print_endline (to_string version)
   | [|_; "--full-with-commit"|] ->
       print_endline
-      @@ Tezos_version_value.Bin_version.simple_version_string version
+      @@ Mavryk_version_value.Bin_version.simple_version_string version
   | [|_; "--commit"|] -> print_endline abbreviated_commit_hash
   | [|_; "--json"|] -> print_endline (to_json version abbreviated_commit_hash)
   | [|_; "--help"|] -> print_endline help_string
