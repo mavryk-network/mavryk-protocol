@@ -1,4 +1,4 @@
-injector_server: _build/default/contrib/octez_injector_server/octez_injector_server.exe
+injector_server: _build/default/contrib/mavkit_injector_server/mavkit_injector_server.exe
 dal_echo_kernel: dal_echo_kernel.wasm
 debug_kernel: etherlink/kernel_evm/kernel/tests/resources/debug_kernel.wasm
 failed_migration: etherlink/kernel_evm/kernel/tests/resources/failed_migration.wasm

@@ -333,7 +333,7 @@ let process_l1_operation (type kind) ~catching_up node_ctxt
 let process_l1_block_operations ~catching_up node_ctxt (head : Layer1.header) =
   let open Lwt_result_syntax in
   let* block =
-    Layer1_helpers.fetch_tezos_block node_ctxt.Node_context.l1_ctxt head.hash
+    Layer1_helpers.fetch_mavryk_block node_ctxt.Node_context.l1_ctxt head.hash
   in
   let apply (type kind) accu ~source (operation : kind manager_operation) result
       =

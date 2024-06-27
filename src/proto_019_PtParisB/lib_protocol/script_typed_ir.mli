@@ -1425,7 +1425,7 @@ and ('ty, 'comparable) ty =
   | Signature_t : (signature, yes) ty
   | String_t : (Script_string.t, yes) ty
   | Bytes_t : (bytes, yes) ty
-  | Mutez_t : (Tez.t, yes) ty
+  | Mumav_t : (Tez.t, yes) ty
   | Key_hash_t : (public_key_hash, yes) ty
   | Key_t : (public_key, yes) ty
   | Timestamp_t : (Script_timestamp.t, yes) ty

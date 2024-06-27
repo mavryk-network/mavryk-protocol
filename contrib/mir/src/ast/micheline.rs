@@ -194,7 +194,7 @@ macro_rules! micheline_types {
             Prim::int
                 | Prim::nat
                 | Prim::bool
-                | Prim::mutez
+                | Prim::mumav
                 | Prim::string
                 | Prim::operation
                 | Prim::unit

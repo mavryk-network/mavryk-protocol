@@ -404,7 +404,7 @@ let default_accounts =
         "edsk2q6rzFB35micz8ZauYcUMUFyF9rVPvP3PQXZyuYPSzuEYbSMkG" );
     ]
   in
-  let default_amount = Tez.of_mumav_exn 4_000_000_000_000L in
+  let default_amount = Tez.of_mutez_exn 4_000_000_000_000L in
   let open Account in
   let to_account (pkh, pk, sk) =
     {
@@ -697,7 +697,8 @@ let apply_and_store chain_store ?(synchronous_merge = true) ?policy
           timestamp = block_header.shell.timestamp;
           message = validation.Mavryk_protocol_environment.message;
           max_operations_ttl = validation.max_operations_ttl;
-          last_allowed_fork_level = validation.last_allowed_fork_level;
+          last_finalized_block_level = validation.last_finalized_block_level;
+          last_preserved_block_level = validation.last_preserved_block_level;
         };
       block_metadata = (block_header_metadata, block_metadata_hash);
       ops_metadata;
@@ -725,6 +726,10 @@ let apply_and_store chain_store ?(synchronous_merge = true) ?policy
         let*! () = Block_store.await_merging block_store in
         let* _ = Store.Chain.set_head chain_store b in
         let*! () = Block_store.await_merging block_store in
+        let context_index =
+          Store.context_index (Store.Chain.global_store chain_store)
+        in
+        let*! () = Context_ops.wait_gc_completion context_index in
         (match Block_store.get_merge_status block_store with
         | Merge_failed err -> Assert.fail_msg "%a" pp_print_trace err
         | Running | Not_running -> ()) ;

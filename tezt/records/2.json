@@ -586,7 +586,7 @@
   },
   {
     "file": "src/proto_017_PtNairob/lib_protocol/test/unit/test_tez_repr.ml",
-    "title": "017-PtNairob: Tez_repr.ml (Tez.of_mutez_exn: of negative ints)",
+    "title": "017-PtNairob: Tez_repr.ml (Tez.of_mumav_exn: of negative ints)",
     "tags": [
       "alcotezt",
       "quick",
@@ -716,7 +716,7 @@
   },
   {
     "file": "src/proto_017_PtNairob/lib_protocol/test/integration/michelson/test_ticket_balance_key.ml",
-    "title": "017-PtNairob: ticket balance key (nat mutez)",
+    "title": "017-PtNairob: ticket balance key (nat mumav)",
     "tags": [
       "alcotezt",
       "quick",

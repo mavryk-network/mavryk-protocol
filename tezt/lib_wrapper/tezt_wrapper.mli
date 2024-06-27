@@ -65,10 +65,10 @@ module Uses : sig
   val mavkit_node : t
 
   (** ["./mavkit-client"], with tag ["client"]. *)
-  val octez_client : t
+  val mavkit_client : t
 
   (** ["./mavkit-admin-client"], with tag ["admin_client"]. *)
-  val octez_admin_client : t
+  val mavkit_admin_client : t
 
   (** Register a test that generates:
       {[

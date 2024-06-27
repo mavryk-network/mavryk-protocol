@@ -17,12 +17,12 @@ use std::{
     io::{self, Write},
     process::exit,
 };
-use tezos_smart_rollup_constants::riscv::{
+use mavryk_smart_rollup_constants::riscv::{
     SBI_CONSOLE_PUTCHAR, SBI_FIRMWARE_TEZOS, SBI_SHUTDOWN, SBI_TEZOS_BLAKE2B_HASH256,
     SBI_TEZOS_ED25519_SIGN, SBI_TEZOS_ED25519_VERIFY, SBI_TEZOS_INBOX_NEXT, SBI_TEZOS_META_ADDRESS,
     SBI_TEZOS_META_ORIGINATION_LEVEL,
 };
-use tezos_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
+use mavryk_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
 
 type SBIResult = Result<(), Box<dyn Error>>;
 

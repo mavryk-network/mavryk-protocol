@@ -197,10 +197,10 @@ to some extent. Not all pushable types are tested with `PUSH`, however.
 
 - [add_int-timestamp_00.tzt](add_int-timestamp_00.tzt)
 
-### `ADD: mutez : mutez`
+### `ADD: mumav : mumav`
 
-- [add_mutez-mutez_00.tzt](add_mutez-mutez_00.tzt)
-- [add_mutez-mutez_01.tzt](add_mutez-mutez_01.tzt)
+- [add_mumav-mumav_00.tzt](add_mumav-mumav_00.tzt)
+- [add_mumav-mumav_01.tzt](add_mumav-mumav_01.tzt)
 
 ### `ADD: bls12_381_g1 : bls12_381_g1`
 
@@ -241,12 +241,12 @@ to some extent. Not all pushable types are tested with `PUSH`, however.
 - [compare_keyhash_00.tzt](compare_keyhash_00.tzt)
 - [compare_keyhash_01.tzt](compare_keyhash_01.tzt)
 - [compare_keyhash_02.tzt](compare_keyhash_02.tzt)
-- [compare_mutez_00.tzt](compare_mutez_00.tzt)
-- [compare_mutez_01.tzt](compare_mutez_01.tzt)
-- [compare_mutez_02.tzt](compare_mutez_02.tzt)
-- [compare_mutez_03.tzt](compare_mutez_03.tzt)
-- [compare_mutez_04.tzt](compare_mutez_04.tzt)
-- [compare_mutez_05.tzt](compare_mutez_05.tzt)
+- [compare_mumav_00.tzt](compare_mumav_00.tzt)
+- [compare_mumav_01.tzt](compare_mumav_01.tzt)
+- [compare_mumav_02.tzt](compare_mumav_02.tzt)
+- [compare_mumav_03.tzt](compare_mumav_03.tzt)
+- [compare_mumav_04.tzt](compare_mumav_04.tzt)
+- [compare_mumav_05.tzt](compare_mumav_05.tzt)
 - [compare_nat_00.tzt](compare_nat_00.tzt)
 - [compare_nat_01.tzt](compare_nat_01.tzt)
 - [compare_nat_02.tzt](compare_nat_02.tzt)
@@ -274,13 +274,13 @@ Missing edge cases:
 
 - No comparison of negative integers
 - No comparison for `0 int`
-- No comparison for `0 mutez`
+- No comparison for `0 mumav`
 - No comparison for `0 nat`
 - Only zero- or single-character strings are compared
 
 Duplicate files:
 
-- `compare_mutez_03.tzt` is a duplicate of `compare_mutez_00.tzt`
+- `compare_mumav_03.tzt` is a duplicate of `compare_mumav_00.tzt`
 - `compare_nat_03.tzt` is a duplicate of `compare_nat_00.tzt`
 
 Types `COMPARE` isn't tested for:
@@ -321,22 +321,22 @@ Missing edge cases:
 - No division of zero over zero
 - No division with the result of 1
 
-### `EDIV: mutez : nat`
+### `EDIV: mumav : nat`
 
-- [ediv_mutez-nat_00.tzt](ediv_mutez-nat_00.tzt)
-- [ediv_mutez-nat_01.tzt](ediv_mutez-nat_01.tzt)
-- [ediv_mutez-nat_02.tzt](ediv_mutez-nat_02.tzt)
-- [ediv_mutez-nat_03.tzt](ediv_mutez-nat_03.tzt)
-- [ediv_mutez-nat_04.tzt](ediv_mutez-nat_04.tzt)
-- [ediv_mutez-nat_05.tzt](ediv_mutez-nat_05.tzt)
-- [ediv_mutez-nat_06.tzt](ediv_mutez-nat_06.tzt)
+- [ediv_mumav-nat_00.tzt](ediv_mumav-nat_00.tzt)
+- [ediv_mumav-nat_01.tzt](ediv_mumav-nat_01.tzt)
+- [ediv_mumav-nat_02.tzt](ediv_mumav-nat_02.tzt)
+- [ediv_mumav-nat_03.tzt](ediv_mumav-nat_03.tzt)
+- [ediv_mumav-nat_04.tzt](ediv_mumav-nat_04.tzt)
+- [ediv_mumav-nat_05.tzt](ediv_mumav-nat_05.tzt)
+- [ediv_mumav-nat_06.tzt](ediv_mumav-nat_06.tzt)
 
-### `EDIV: mutez : mutez`
+### `EDIV: mumav : mumav`
 
-- [ediv_mutez-mutez_00.tzt](ediv_mutez-mutez_00.tzt)
-- [ediv_mutez-mutez_01.tzt](ediv_mutez-mutez_01.tzt)
-- [ediv_mutez-mutez_02.tzt](ediv_mutez-mutez_02.tzt)
-- [ediv_mutez-mutez_03.tzt](ediv_mutez-mutez_03.tzt)
+- [ediv_mumav-mumav_00.tzt](ediv_mumav-mumav_00.tzt)
+- [ediv_mumav-mumav_01.tzt](ediv_mumav-mumav_01.tzt)
+- [ediv_mumav-mumav_02.tzt](ediv_mumav-mumav_02.tzt)
+- [ediv_mumav-mumav_03.tzt](ediv_mumav-mumav_03.tzt)
 
 Missing edge cases:
 
@@ -477,19 +477,19 @@ Missing edge cases:
 - No multiplication of two positives
 - No multiplication of negative by positive
 
-### `MUL: mutez : nat`
+### `MUL: mumav : nat`
 
-- [mul_mutez-nat_00.tzt](mul_mutez-nat_00.tzt)
-- [mul_mutez-nat_01.tzt](mul_mutez-nat_01.tzt)
+- [mul_mumav-nat_00.tzt](mul_mumav-nat_00.tzt)
+- [mul_mumav-nat_01.tzt](mul_mumav-nat_01.tzt)
 
 Missing edge cases:
 
 - No multiplication by zero (both from left and right)
 
-### `MUL: nat : mutez`
+### `MUL: nat : mumav`
 
-- [mul_nat-mutez_00.tzt](mul_nat-mutez_00.tzt)
-- [mul_nat-mutez_01.tzt](mul_nat-mutez_01.tzt)
+- [mul_nat-mumav_00.tzt](mul_nat-mumav_00.tzt)
+- [mul_nat-mumav_01.tzt](mul_nat-mumav_01.tzt)
 
 Missing edge cases:
 
@@ -607,10 +607,10 @@ Missing edge cases:
 
 ### `SUB_MUTEZ`
 
-***None***, but there are tests for the deprecated `SUB: mutez : mutez`:
+***None***, but there are tests for the deprecated `SUB: mumav : mumav`:
 
-- [sub_mutez-mutez_00.tzt](sub_mutez-mutez_00.tzt)
-- [sub_mutez-mutez_01.tzt](sub_mutez-mutez_01.tzt)
+- [sub_mumav-mumav_00.tzt](sub_mumav-mumav_00.tzt)
+- [sub_mumav-mumav_01.tzt](sub_mumav-mumav_01.tzt)
 
 ## Boolean operations
 
@@ -943,7 +943,7 @@ Files do not follow naming convention.
 - [packunpack_bytes_00.tzt](packunpack_bytes_00.tzt)
 - [packunpack_int_00.tzt](packunpack_int_00.tzt)
 - [packunpack_keyhash_00.tzt](packunpack_keyhash_00.tzt)
-- [packunpack_mutez_00.tzt](packunpack_mutez_00.tzt)
+- [packunpack_mumav_00.tzt](packunpack_mumav_00.tzt)
 - [packunpack_nat_00.tzt](packunpack_nat_00.tzt)
 - [packunpack_string_00.tzt](packunpack_string_00.tzt)
 - [packunpack_timestamp_00.tzt](packunpack_timestamp_00.tzt)
@@ -1032,7 +1032,7 @@ Among tests on values serialization:
 - [packunpack_bytes_00.tzt](packunpack_bytes_00.tzt)
 - [packunpack_int_00.tzt](packunpack_int_00.tzt)
 - [packunpack_keyhash_00.tzt](packunpack_keyhash_00.tzt)
-- [packunpack_mutez_00.tzt](packunpack_mutez_00.tzt)
+- [packunpack_mumav_00.tzt](packunpack_mumav_00.tzt)
 - [packunpack_nat_00.tzt](packunpack_nat_00.tzt)
 - [packunpack_string_00.tzt](packunpack_string_00.tzt)
 - [packunpack_timestamp_00.tzt](packunpack_timestamp_00.tzt)
@@ -1377,7 +1377,7 @@ Instructions with missing edge cases:
 - `AND nat:nat` x & 0
 - `COMPARE: int : int` with 0
 - `COMPARE: int : int` with negative argument(s)
-- `COMPARE: mutez : mutez` with 0
+- `COMPARE: mumav : mumav` with 0
 - `COMPARE: nat : nat` with 0
 - `COMPARE: string : string` with strings longer than 1 character
 - `CONTRACT` with entrypoints
@@ -1392,8 +1392,8 @@ Instructions with missing edge cases:
 - `EDIV: int : int` with result 1
 - `EDIV: int : int` zero / non-zero
 - `EDIV: int : int` zero / zero
-- `EDIV: mutez : mutez` zero / non-zero
-- `EDIV: mutez : mutez` zero / zero
+- `EDIV: mumav : mumav` zero / non-zero
+- `EDIV: mumav : mumav` zero / zero
 - `IF_CONS` -- check that stack tail is preserved
 - `IF_LEFT` -- check that stack tail is preserved
 - `IF_NONE` -- check that stack tail is preserved
@@ -1409,13 +1409,13 @@ Instructions with missing edge cases:
 - `MUL: int : nat` 0 * x
 - `MUL: int : nat` negative * x
 - `MUL: int : nat` x * 0
-- `MUL: mutez : nat` 0 * x
-- `MUL: mutez : nat` x * 0
+- `MUL: mumav : nat` 0 * x
+- `MUL: mumav : nat` x * 0
 - `MUL: nat : int` 0 * x
 - `MUL: nat : int` x * 0
 - `MUL: nat : int` x * positive
-- `MUL: nat : mutez` 0 * x
-- `MUL: nat : mutez` x * 0
+- `MUL: nat : mumav` 0 * x
+- `MUL: nat : mumav` x * 0
 - `MUL: nat : nat` 0 * x
 - `MUL: nat : nat` x * 0
 - `PACK` standalone tests (without `UNPACK`)

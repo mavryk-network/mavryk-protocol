@@ -50,6 +50,6 @@ let committer_date =
     Generated_git_info.committer_date
   else raw_committer_date
 
-let octez_version = Generated_git_info.git_describe_octez
+let mavkit_version = Generated_git_info.git_describe_mavkit
 
 let etherlink_version = Generated_git_info.git_describe_etherlink

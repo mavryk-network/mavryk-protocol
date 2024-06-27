@@ -59,9 +59,9 @@ types:
       type: z
     - id: denominator
       type: z
-  id_020__psparisc__mutez:
+  id_020__psparisc__mumav:
     seq:
-    - id: id_020__psparisc__mutez
+    - id: id_020__psparisc__mumav
       type: n
   int31:
     seq:
@@ -97,7 +97,7 @@ types:
   issuance_weights:
     seq:
     - id: base_total_issued_per_minute
-      type: id_020__psparisc__mutez
+      type: id_020__psparisc__mumav
     - id: baking_reward_fixed_portion_weight
       type: int31
     - id: baking_reward_bonus_weight
@@ -233,9 +233,9 @@ seq:
 - id: proof_of_work_threshold
   type: s8be
 - id: minimal_stake
-  type: id_020__psparisc__mutez
+  type: id_020__psparisc__mumav
 - id: minimal_frozen_stake
-  type: id_020__psparisc__mutez
+  type: id_020__psparisc__mumav
 - id: vdf_difficulty
   type: s8be
 - id: origination_size
@@ -243,7 +243,7 @@ seq:
 - id: issuance_weights
   type: issuance_weights
 - id: cost_per_byte
-  type: id_020__psparisc__mutez
+  type: id_020__psparisc__mumav
 - id: hard_storage_limit_per_operation
   type: z
 - id: quorum_min
@@ -253,7 +253,7 @@ seq:
 - id: min_proposal_quorum
   type: s4be
 - id: liquidity_baking_subsidy
-  type: id_020__psparisc__mutez
+  type: id_020__psparisc__mumav
 - id: liquidity_baking_toggle_ema_threshold
   type: s4be
 - id: max_operations_time_to_live
@@ -307,7 +307,7 @@ seq:
 - id: smart_rollup_challenge_window_in_blocks
   type: int31
 - id: smart_rollup_stake_amount
-  type: id_020__psparisc__mutez
+  type: id_020__psparisc__mumav
 - id: smart_rollup_commitment_period_in_blocks
   type: int31
 - id: smart_rollup_max_lookahead_in_blocks

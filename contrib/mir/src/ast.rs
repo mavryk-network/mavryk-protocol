@@ -209,7 +209,7 @@ impl<'a> IntoMicheline<'a> for &'_ Type {
             Nat => Micheline::prim0(Prim::nat),
             Int => Micheline::prim0(Prim::int),
             Bool => Micheline::prim0(Prim::bool),
-            Mutez => Micheline::prim0(Prim::mutez),
+            Mutez => Micheline::prim0(Prim::mumav),
             String => Micheline::prim0(Prim::string),
             Unit => Micheline::prim0(Prim::unit),
             Operation => Micheline::prim0(Prim::operation),

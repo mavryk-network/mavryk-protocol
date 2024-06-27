@@ -57,7 +57,7 @@ __pycache__
 /mavkit-dal-node
 /mavkit-dac-*
 /mavkit-binaries
-/mavryk-injector-server
+/mavkit-injector-server
 /octogram
 /simulation-scenario
 /safety-checker

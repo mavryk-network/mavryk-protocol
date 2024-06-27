@@ -262,7 +262,7 @@
   },
   {
     "file": "src/proto_alpha/lib_protocol/test/integration/test_adaptive_issuance_roundtrip.ml",
-    "title": "alpha: adaptive issuance roundtrip (Test unstake 1 mutez then slash: Yes AI, 7% slash)",
+    "title": "alpha: adaptive issuance roundtrip (Test unstake 1 mumav then slash: Yes AI, 7% slash)",
     "tags": [
       "alcotezt",
       "quick",

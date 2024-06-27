@@ -187,8 +187,8 @@ mod tests {
     }
 
     #[test]
-    fn interpret_mutez_push_add() {
-        let ast = parse("{ PUSH mutez 100; PUSH mutez 500; ADD }").unwrap();
+    fn interpret_mumav_push_add() {
+        let ast = parse("{ PUSH mumav 100; PUSH mumav 500; ADD }").unwrap();
         let temp = Arena::new();
         let mut ctx = Ctx::default();
         let ast = ast.typecheck_instruction(&mut ctx, None, &[]).unwrap();
@@ -1130,7 +1130,7 @@ mod tests {
           storage (map string int);
           code {
               AMOUNT;
-              PUSH mutez 5000000;
+              PUSH mumav 5000000;
               COMPARE; GT;
               IF { { UNIT; FAILWITH } } {};
               DUP; DIP { CDR; DUP }; CAR; DUP;
@@ -1174,7 +1174,7 @@ mod multisig_tests {
             pair
                 (pair chain_id address)
                 nat
-                (or (pair mutez address) (or (option key_hash) (pair nat (list key))))'
+                (or (pair mumav address) (or (option key_hash) (pair nat (list key))))'
         $ SELF_ADDRESS='KT1BFATQpdP5xJGErJyk2vfL46dvFanWz87H'
         $ CHAIN_ID='0xf3d48554'
         $ ANTI_REPLAY_COUNTER='111'
@@ -1421,7 +1421,7 @@ mod multisig_tests {
                         (nat %counter) # counter, used to prevent replay attacks
                         (or :action    # payload to sign, represents the requested action
                         (pair :transfer    # transfer tokens
-                            (mutez %amount) # amount to transfer
+                            (mumav %amount) # amount to transfer
                             (contract %dest unit)) # destination to transfer to
                         (or
                             (option %delegate key_hash) # change the delegate to this address

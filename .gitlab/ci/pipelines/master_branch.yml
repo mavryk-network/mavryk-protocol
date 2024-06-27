@@ -88,7 +88,7 @@ oc.build_arm64-released:
     - src/proto_*/parameters/*.json
     - _build/default/src/lib_protocol_compiler/bin/main_native.exe
     - _build/default/tezt/tests/main.exe
-    - _build/default/contrib/octez_injector_server/octez_injector_server.exe
+    - _build/default/contrib/mavkit_injector_server/mavkit_injector_server.exe
     when: on_success
 
 oc.build_arm64-exp-dev-extra:
@@ -119,7 +119,7 @@ oc.build_arm64-exp-dev-extra:
     - src/proto_*/parameters/*.json
     - _build/default/src/lib_protocol_compiler/bin/main_native.exe
     - _build/default/tezt/tests/main.exe
-    - _build/default/contrib/octez_injector_server/octez_injector_server.exe
+    - _build/default/contrib/mavkit_injector_server/mavkit_injector_server.exe
     when: on_success
 
 oc.docker:amd64:

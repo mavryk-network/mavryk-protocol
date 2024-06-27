@@ -79,7 +79,7 @@ module Dal_slots_headers :
 module Protocols : sig
   type level = First_known of int32 | Activation_level of int32
 
-  (** Each element of this type represents information we have about a Tezos
+  (** Each element of this type represents information we have about a Mavryk
       protocol regarding its activation. *)
   type proto_info = {
     level : level;
@@ -110,6 +110,9 @@ module Gc_levels : sig
   include SINGLETON_STORE with type value = levels
 end
 
+(** Level at which context was last split. *)
+module Last_context_split : SINGLETON_STORE with type value := int32
+
 (** History mode of the rollup node. *)
 module History_mode :
   SINGLETON_STORE with type value := Configuration.history_mode
@@ -128,6 +131,7 @@ type +'a store = {
   protocols : 'a Protocols.t;
   irmin_store : 'a Irmin_store.t;
   gc_levels : 'a Gc_levels.t;
+  last_context_split_level : 'a Last_context_split.t;
   history_mode : 'a History_mode.t;
 }
 

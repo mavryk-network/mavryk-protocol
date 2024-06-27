@@ -57,7 +57,7 @@ code { # Stack manipulation
                      DIIP {SWAP};
                      DIP {SWAP};
                      SWAP;
-                     SUB_MUTEZ; ASSERT_SOME;
+                     SUB_MUMAV; ASSERT_SOME;
                      # For a transfer or shield operation, we don't expect an
                      # implicit account in the `bound_data` field.
                      # If one is given, we fail as it might be an invalid

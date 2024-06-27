@@ -1,7 +1,7 @@
 [
   {
     "file": "src/proto_alpha/lib_protocol/test/unit/test_tez_repr.ml",
-    "title": "alpha: Tez_repr.ml (Tez.of_mutez: of non-negative ints)",
+    "title": "alpha: Tez_repr.ml (Tez.of_mumav: of non-negative ints)",
     "tags": [
       "alcotezt",
       "quick",

@@ -207,12 +207,12 @@ let test_slash_monotonous_stake =
     --> next_cycle
     --> loop
           6
-          (op "delegate" (Amount (Tez.of_mutez 1_000_000_000L)) --> next_cycle)
+          (op "delegate" (Amount (Tez.of_mumav 1_000_000_000L)) --> next_cycle)
     --> offending_op "delegate"
-    --> (op "delegate" (Amount (Tez.of_mutez 1_000_000_000L))
+    --> (op "delegate" (Amount (Tez.of_mumav 1_000_000_000L))
         --> loop
               2
-              (op "delegate" (Amount (Tez.of_mutez 1_000_000_000L))
+              (op "delegate" (Amount (Tez.of_mumav 1_000_000_000L))
               -->
               if early_d then
                 make_denunciations ()
@@ -280,7 +280,7 @@ let test_slash_timing =
   --> make_denunciations () --> next_cycle
 
 let test_no_shortcut_for_cheaters =
-  let amount = Amount (Tez.of_mutez 333_000_000_000L) in
+  let amount = Amount (Tez.of_mumav 333_000_000_000L) in
   let consensus_rights_delay =
     Default_parameters.constants_test.consensus_rights_delay
   in
@@ -288,7 +288,7 @@ let test_no_shortcut_for_cheaters =
   --> set S.Adaptive_issuance.autostaking_enable false
   --> activate_ai `Force
   --> begin_test ["delegate"; "bootstrap1"]
-  --> stake "delegate" (Amount (Tez.of_mutez 1_800_000_000_000L))
+  --> stake "delegate" (Amount (Tez.of_mumav 1_800_000_000_000L))
   --> next_cycle --> double_bake "delegate" --> make_denunciations ()
   --> set_baker "bootstrap1" (* exclude_bakers ["delegate"] *)
   --> next_cycle
@@ -306,9 +306,9 @@ let test_no_shortcut_for_cheaters =
          --> check_snapshot_balances "init")
 
 let test_slash_correct_amount_after_stake_from_unstake =
-  let amount_to_unstake = Amount (Tez.of_mutez 200_000_000_000L) in
-  let amount_to_restake = Amount (Tez.of_mutez 100_000_000_000L) in
-  let amount_expected_in_unstake_after_slash = Tez.of_mutez 50_000_000_000L in
+  let amount_to_unstake = Amount (Tez.of_mumav 200_000_000_000L) in
+  let amount_to_restake = Amount (Tez.of_mumav 100_000_000_000L) in
+  let amount_expected_in_unstake_after_slash = Tez.of_mumav 50_000_000_000L in
   let consensus_rights_delay =
     Default_parameters.constants_test.consensus_rights_delay
   in
@@ -316,7 +316,7 @@ let test_slash_correct_amount_after_stake_from_unstake =
   --> set S.Adaptive_issuance.autostaking_enable false
   --> activate_ai `Force
   --> begin_test ["delegate"; "bootstrap1"]
-  --> stake "delegate" (Amount (Tez.of_mutez 1_800_000_000_000L))
+  --> stake "delegate" (Amount (Tez.of_mumav 1_800_000_000_000L))
   --> next_cycle
   --> unstake "delegate" amount_to_unstake
   --> stake "delegate" amount_to_restake
@@ -338,7 +338,7 @@ let test_mini_slash =
   --> set S.Adaptive_issuance.autostaking_enable false
   --> (Tag "Yes AI" --> activate_ai `Force --> begin_test ["delegate"; "baker"]
       |+ Tag "No AI" --> activate_ai `No --> begin_test ["delegate"; "baker"])
-  --> unstake "delegate" (Amount Tez.one_mutez)
+  --> unstake "delegate" (Amount Tez.one_mumav)
   --> set_baker "baker" --> next_cycle
   --> (Tag "5% slash" --> double_bake "delegate" --> make_denunciations ()
       |+ Tag "95% slash" --> next_cycle --> double_attest "delegate"
@@ -358,7 +358,7 @@ let test_slash_rounding =
   --> branch_flag S.Adaptive_issuance.ns_enable
   --> begin_test ["delegate"; "baker"]
   --> set_baker "baker"
-  --> unstake "delegate" (Amount (Tez.of_mutez 2L))
+  --> unstake "delegate" (Amount (Tez.of_mumav 2L))
   --> next_cycle --> double_bake "delegate" --> double_bake "delegate"
   --> make_denunciations () --> wait_n_cycles 7
   --> finalize_unstake "delegate"
@@ -378,7 +378,7 @@ let tests =
          test_no_shortcut_for_cheaters );
        ( "Test stake from unstake reduce initial amount",
          test_slash_correct_amount_after_stake_from_unstake );
-       ("Test unstake 1 mutez then slash", test_mini_slash);
+       ("Test unstake 1 mumav then slash", test_mini_slash);
        ("Test slash rounding", test_slash_rounding);
      ]
 

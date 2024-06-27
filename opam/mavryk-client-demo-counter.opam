@@ -13,13 +13,13 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "mavkit-libs"
-  "mavkit-shell-libs"
-  "mavryk-protocol-demo-counter"
+  "mavkit-libs" { = version }
+  "mavkit-shell-libs" { = version }
+  "mavryk-protocol-demo-counter" { = version }
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Mavryk/Protocol: protocol specific library for `mavryk-client`"
+synopsis: "Mavryk/Protocol: protocol specific library for `mavkit-client`"

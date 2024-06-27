@@ -1977,7 +1977,7 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Atlas: opcodes [ediv_mutez--storage977883604--input389351431]",
+    "title": "Atlas: opcodes [ediv_mumav--storage977883604--input389351431]",
     "tags": [
       "regression",
       "admin_client",

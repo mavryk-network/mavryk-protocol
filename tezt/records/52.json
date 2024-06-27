@@ -209,7 +209,7 @@
   },
   {
     "file": "src/proto_alpha/lib_protocol/test/integration/test_liquidity_baking.ml",
-    "title": "alpha: liquidity baking (liquidity baking LQT balance in origination result is 0 mutez)",
+    "title": "alpha: liquidity baking (liquidity baking LQT balance in origination result is 0 mumav)",
     "tags": [
       "alcotezt",
       "quick",

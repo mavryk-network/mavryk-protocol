@@ -21,7 +21,7 @@ end
 module Partial_tez = struct
   include Q
 
-  let of_tez a = Tez.to_mutez a |> of_int64
+  let of_tez a = Tez.to_mumav a |> of_int64
 
   let to_tez_rem {num; den} =
     let tez, rem = Z.div_rem num den in
@@ -151,7 +151,7 @@ module Frozen_tez = struct
   (* For rewards, distribute equally *)
   let add_tez_to_all_current ~edge tez a =
     let self_portion = Tez.ratio a.self_current (total_current a) in
-    (* Baker's advantage for the mutez *)
+    (* Baker's advantage for the mumav *)
     let self_quantity = Tez.mul_q tez self_portion |> Tez.of_q ~round:`Up in
     let remains = Tez.(tez -! self_quantity) in
     (* Baker's edge. Round up for the baker's advantage again *)
@@ -465,7 +465,7 @@ end
 module Unstaked_finalizable = struct
   (* Slashing might put inaccessible tez in this container: they are represented in the remainder.
      They still count towards the total supply, but are currently owned by noone.
-     At most one mutez per unstaking account per slashed cycle *)
+     At most one mumav per unstaking account per slashed cycle *)
   type t = {map : Tez.t String.Map.t; remainder : Tez.t}
 
   let zero = {map = String.Map.empty; remainder = Tez.zero}

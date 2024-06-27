@@ -4,7 +4,7 @@ Command Line Interface
 
 This document is a prettier output of the documentation produced by
 the command ``man`` of the different Octez binaries. You can obtain similar pages
-using shell commands such as (:ref:`indicating the appropriate protocol <octez_client_protocol>`):
+using shell commands such as (:ref:`indicating the appropriate protocol <mavkit_client_protocol>`):
 
 ::
 

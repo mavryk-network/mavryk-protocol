@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_client_sapling_020_PsParisC)
+ (name mavryk_client_sapling_020_PsParisC)
  (public_name mavkit-protocol-020-PsParisC-libs.client.sapling)
  (instrumentation (backend bisect_ppx))
  (libraries

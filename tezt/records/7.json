@@ -118,7 +118,7 @@
   },
   {
     "file": "src/proto_alpha/lib_protocol/test/integration/michelson/test_ticket_balance_key.ml",
-    "title": "alpha: ticket balance key (nat mutez)",
+    "title": "alpha: ticket balance key (nat mumav)",
     "tags": [
       "alcotezt",
       "quick",

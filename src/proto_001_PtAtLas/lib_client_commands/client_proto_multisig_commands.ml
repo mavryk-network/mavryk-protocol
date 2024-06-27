@@ -74,7 +74,7 @@ let bytes_param ~name ~desc =
   Mavryk_clic.param ~name ~desc Client_proto_args.bytes_parameter
 
 let transfer_options =
-  Mavryk_clic.args10
+  Mavryk_clic.args11
     Client_proto_args.fee_arg
     Client_proto_context_commands.dry_run_switch
     Client_proto_context_commands.verbose_signing_switch
@@ -88,7 +88,7 @@ let transfer_options =
     Client_proto_args.entrypoint_arg
 
 let non_transfer_options =
-  Mavryk_clic.args8
+  Mavryk_clic.args9
     Client_proto_args.fee_arg
     Client_proto_context_commands.dry_run_switch
     Client_proto_context_commands.verbose_signing_switch

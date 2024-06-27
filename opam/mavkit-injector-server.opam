@@ -13,18 +13,26 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "mavkit-libs"
-  "mavkit-injector"
-  "mavkit-shell-libs"
-  "data-encoding" { >= "0.7.1" & < "1.0.0" }
+  "mavkit-libs" { = version }
+  "mavkit-injector" { = version }
+  "mavkit-shell-libs" { = version }
+  "data-encoding" { >= "1.0.1" & < "1.1" }
 ]
 depopts: [
   "mavryk-injector-001-PtAtLas"
+  "mavryk-injector-019-PtParisB"
+  "mavryk-injector-020-PsParisC"
   "mavryk-injector-alpha"
+]
+conflicts: [
+  "mavryk-injector-001-PtAtLas" { != version }
+  "mavryk-injector-019-PtParisB" { != version }
+  "mavryk-injector-020-PsParisC" { != version }
+  "mavryk-injector-alpha" { != version }
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Mavkit injector"
+synopsis: "Octez injector"

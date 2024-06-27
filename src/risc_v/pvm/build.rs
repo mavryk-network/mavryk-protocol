@@ -10,7 +10,7 @@ fn generate_c_headers() {
         .with_language(cbindgen::Language::C)
         .generate()
         .expect("Unable to generate bindings")
-        .write_to_file("octez_risc_v_pvm.h");
+        .write_to_file("mavkit_risc_v_pvm.h");
 }
 
 fn main() {

@@ -1,7 +1,7 @@
 [
   {
-    "file": "src/proto_alpha/lib_sc_rollup_node/test/test_octez_conversions.ml",
-    "title": "alpha: Smart rollup types octez conversions: roundtrip (roundtrip commitment)",
+    "file": "src/proto_alpha/lib_sc_rollup_node/test/test_mavkit_conversions.ml",
+    "title": "alpha: Smart rollup types mavkit conversions: roundtrip (roundtrip commitment)",
     "tags": [
       "alcotezt",
       "slow",
@@ -13,8 +13,8 @@
     }
   },
   {
-    "file": "src/proto_alpha/lib_sc_rollup_node/test/test_octez_conversions.ml",
-    "title": "alpha: Smart rollup types octez conversions: roundtrip (roundtrip refutation)",
+    "file": "src/proto_alpha/lib_sc_rollup_node/test/test_mavkit_conversions.ml",
+    "title": "alpha: Smart rollup types mavkit conversions: roundtrip (roundtrip refutation)",
     "tags": [
       "alcotezt",
       "slow",
@@ -273,8 +273,8 @@
     }
   },
   {
-    "file": "src/proto_001_PtAtLas/lib_sc_rollup_node/test/test_octez_conversions.ml",
-    "title": "001-PtAtLas: Smart rollup types octez conversions: roundtrip (roundtrip dal_slot_history)",
+    "file": "src/proto_001_PtAtLas/lib_sc_rollup_node/test/test_mavkit_conversions.ml",
+    "title": "001-PtAtLas: Smart rollup types mavkit conversions: roundtrip (roundtrip dal_slot_history)",
     "tags": [
       "alcotezt",
       "slow",
@@ -572,8 +572,8 @@
     }
   },
   {
-    "file": "src/proto_017_PtNairob/lib_sc_rollup_node/test/test_octez_conversions.ml",
-    "title": "017-PtNairob: Smart rollup types octez conversions: roundtrip (roundtrip state_hash)",
+    "file": "src/proto_017_PtNairob/lib_sc_rollup_node/test/test_mavkit_conversions.ml",
+    "title": "017-PtNairob: Smart rollup types mavkit conversions: roundtrip (roundtrip state_hash)",
     "tags": [
       "alcotezt",
       "slow",
@@ -585,8 +585,8 @@
     }
   },
   {
-    "file": "src/proto_017_PtNairob/lib_sc_rollup_node/test/test_octez_conversions.ml",
-    "title": "017-PtNairob: Smart rollup types octez conversions: roundtrip (roundtrip dal_slot_header)",
+    "file": "src/proto_017_PtNairob/lib_sc_rollup_node/test/test_mavkit_conversions.ml",
+    "title": "017-PtNairob: Smart rollup types mavkit conversions: roundtrip (roundtrip dal_slot_header)",
     "tags": [
       "alcotezt",
       "slow",

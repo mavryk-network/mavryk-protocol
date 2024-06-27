@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Run Tezos client commands. *)
+(** Run Mavryk client commands. *)
 
 module Time = Mavryk_base.Time.System
 
@@ -34,8 +34,11 @@ type endpoint =
   | Proxy_server of Proxy_server.t  (** A proxy server *)
   | Foreign_endpoint of Endpoint.t  (** A service not managed by Tezt *)
 
+(** Values that can be passed to the client's [--adaptive-issuance-vote] argument *)
+type ai_vote = On | Off | Pass
+
 (** A string representation of an endpoint suitable to be used as a CLI
-    argument (e.g., [http://localhost:5893]). *)
+    argument (e.g., [http://127.0.0.1:5893]). *)
 val string_of_endpoint : ?hostname:bool -> endpoint -> string
 
 (** Values that can be passed to the client's [--media-type] argument *)
@@ -82,7 +85,7 @@ type mockup_sync_mode = Asynchronous | Synchronous
 (** The mode argument of the client's 'normalize data' command *)
 type normalize_mode = Readable | Optimized | Optimized_legacy
 
-(** Tezos client states. *)
+(** Mavryk client states. *)
 type t
 
 (** Get the name of a client (e.g. ["client1"]). *)
@@ -558,6 +561,7 @@ val bake_for :
   ?force:bool ->
   ?context_path:string ->
   ?dal_node_endpoint:string ->
+  ?ai_vote:ai_vote ->
   ?state_recorder:bool ->
   ?expect_failure:bool ->
   t ->
@@ -590,6 +594,7 @@ val bake_for_and_wait :
   ?level_before:int ->
   ?node:Node.t ->
   ?dal_node_endpoint:string ->
+  ?ai_vote:ai_vote ->
   t ->
   unit Lwt.t
 
@@ -610,6 +615,7 @@ val bake_for_and_wait_level :
   ?level_before:int ->
   ?node:Node.t ->
   ?dal_node_endpoint:string ->
+  ?ai_vote:ai_vote ->
   ?state_recorder:bool ->
   t ->
   int Lwt.t
@@ -629,6 +635,7 @@ val spawn_bake_for :
   ?force:bool ->
   ?context_path:string ->
   ?dal_node_endpoint:string ->
+  ?ai_vote:ai_vote ->
   ?state_recorder:bool ->
   t ->
   Process.t
@@ -1735,6 +1742,24 @@ val spawn_typecheck_script :
   t ->
   Process.t
 
+(** Run [mavkit-client run unit tests from ..]*)
+val run_tzt_unit_tests :
+  ?hooks:Process.hooks ->
+  ?protocol_hash:string ->
+  tests:string list ->
+  ?no_base_dir_warnings:bool ->
+  t ->
+  unit Lwt.t
+
+(** Same as [run_tzt_unit_tests], but do not wait for the process to exit. *)
+val spawn_run_tzt_unit_tests :
+  ?hooks:Process.hooks ->
+  ?protocol_hash:string ->
+  tests:string list ->
+  ?no_base_dir_warnings:bool ->
+  t ->
+  Process.t
+
 (** Same as [run_tzip4_view] but does not wait for the process to exit. *)
 val spawn_run_tzip4_view :
   ?hooks:Process.hooks ->
@@ -1837,6 +1862,12 @@ val sign_block : t -> string -> delegate:string -> string Lwt.t
 
 (** Same as [sign_block], but do not wait for the process to exit. *)
 val spawn_sign_block : t -> string -> delegate:string -> Process.t
+
+(** Run [mavkit-client sign bytes <bytes> for <signer>]. *)
+val sign_bytes : signer:string -> data:string -> t -> string Lwt.t
+
+(** Same as [sign_bytes], but do not wait for the process to exit. *)
+val spawn_sign_bytes : signer:string -> data:string -> t -> Process.t
 
 (** Run [mavkit-client sign message <message> for <src>]. *)
 val sign_message : ?branch:string -> t -> string -> src:string -> string Lwt.t
@@ -2601,9 +2632,6 @@ val contract_entrypoint_type :
 (** Same as [contract_entrypoint_type], but do not wait for the process to exit. *)
 val spawn_contract_entrypoint_type :
   entrypoint:string -> contract:string -> t -> Process.t
-
-(** Sign a string of bytes with secret key of the given account. *)
-val sign_bytes : signer:string -> data:string -> t -> string Lwt.t
 
 (** Show a conversion format as used for the [convert*] function
     family *)

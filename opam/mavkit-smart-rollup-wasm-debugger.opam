@@ -13,7 +13,7 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "mavkit-smart-rollup-wasm-debugger-lib"
+  "mavkit-smart-rollup-wasm-debugger-lib" { = version }
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]

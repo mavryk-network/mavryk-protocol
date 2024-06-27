@@ -115,9 +115,9 @@ for control_file in "$myhome"/*control.in; do
   # Configuration files
   #
   if [ -f "${common}/${pg}.conf" ]; then
-    mkdir -p "${staging_dir}/etc/octez"
-    expand_PROTOCOL "${common}/${pg}.conf" > "${staging_dir}/etc/octez/${pg}.conf"
-    echo "/etc/octez/${pg}.conf" > "${staging_dir}/DEBIAN/conffiles"
+    mkdir -p "${staging_dir}/etc/mavkit"
+    expand_PROTOCOL "${common}/${pg}.conf" > "${staging_dir}/etc/mavkit/${pg}.conf"
+    echo "/etc/mavkit/${pg}.conf" > "${staging_dir}/DEBIAN/conffiles"
   fi
 
   # Zcash parameters ships with some packages

@@ -516,7 +516,7 @@ impl<ML: main_memory::MainMemoryLayout, M: backend::Manager> MachineState<ML, M>
 
     /// Perform at most `max` instructions. Returns the number of retired instructions.
     ///
-    /// See `octez_risc_v_pvm::state::Pvm`
+    /// See `mavkit_risc_v_pvm::state::Pvm`
     pub fn step_many<F>(&mut self, max: usize, mut should_continue: F) -> StepManyResult
     where
         F: FnMut(&Self) -> bool,

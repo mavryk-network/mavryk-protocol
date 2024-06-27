@@ -1979,7 +1979,7 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Alpha: opcodes [ediv_mutez--storage977883604--input389351431]",
+    "title": "Alpha: opcodes [ediv_mumav--storage977883604--input389351431]",
     "tags": [
       "regression",
       "admin_client",

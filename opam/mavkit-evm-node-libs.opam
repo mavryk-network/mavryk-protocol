@@ -15,8 +15,16 @@ depends: [
   "ocaml" { >= "4.14" }
   "mavkit-libs"
   "mavkit-smart-rollup-wasm-debugger-plugin"
+  "ocaml-protoc-plugin" { >= "4.5.0" }
+  "caqti-lwt" { >= "2.0.1" }
+  "crunch" { >= "3.3.0" }
+  "re" { >= "1.10.0" }
   "mavkit-version"
+  "lwt-watcher" { = "0.2" }
   "lwt-exit"
+  "caqti"
+  "caqti-driver-sqlite3" { >= "2.0.1" }
+  "mavkit-shell-libs"
   "mavkit-l2-libs"
   "mavkit-smart-rollup-wasm-debugger-lib"
 ]

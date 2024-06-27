@@ -2099,7 +2099,7 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Alpha: opcodes [mutez_to_bls12_381_fr--storage287799761--input485842614]",
+    "title": "Alpha: opcodes [mumav_to_bls12_381_fr--storage287799761--input485842614]",
     "tags": [
       "regression",
       "admin_client",

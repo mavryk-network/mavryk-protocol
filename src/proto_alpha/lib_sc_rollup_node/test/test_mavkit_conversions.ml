@@ -232,11 +232,11 @@ let gen_slot_headers =
   |> fun l ->
   match l with
   | [] -> []
-  | (h : Octez_smart_rollup.Dal.Slot_header.t) :: _ ->
+  | (h : Mavkit_smart_rollup.Dal.Slot_header.t) :: _ ->
       let min_level = h.id.published_level in
       (* smallest level *)
       List.mapi
-        (fun i (h : Octez_smart_rollup.Dal.Slot_header.t) ->
+        (fun i (h : Mavkit_smart_rollup.Dal.Slot_header.t) ->
           (* patch the published level to comply with the invariants *)
           let published_level = Int32.(add min_level (of_int i)) in
           let h = {h with id = {h.id with published_level}} in
@@ -252,7 +252,7 @@ let gen_slot_history =
       (fun (lvl, h) ->
         ( Raw_level.of_int32_exn lvl,
           List.map
-            (Sc_rollup_proto_types.Dal.Slot_header.of_octez ~number_of_slots)
+            (Sc_rollup_proto_types.Dal.Slot_header.of_mavkit ~number_of_slots)
             h ))
       l
   in
@@ -280,7 +280,7 @@ let gen_slot_history_cache =
       (fun (lvl, h) ->
         ( Raw_level.of_int32_exn lvl,
           List.map
-            (Sc_rollup_proto_types.Dal.Slot_header.of_octez ~number_of_slots)
+            (Sc_rollup_proto_types.Dal.Slot_header.of_mavkit ~number_of_slots)
             h ))
       l
   in

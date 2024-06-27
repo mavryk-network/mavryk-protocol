@@ -586,7 +586,7 @@
   },
   {
     "file": "src/proto_017_PtNairob/lib_protocol/test/unit/test_tez_repr.ml",
-    "title": "017-PtNairob: Tez_repr.ml (Tez.to_mutez: basic assertion)",
+    "title": "017-PtNairob: Tez_repr.ml (Tez.to_mumav: basic assertion)",
     "tags": [
       "alcotezt",
       "quick",
@@ -1963,7 +1963,7 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Nairobi: opcodes [ediv_mutez--storage977883604--input389351431]",
+    "title": "Nairobi: opcodes [ediv_mumav--storage977883604--input389351431]",
     "tags": [
       "regression",
       "admin_client",

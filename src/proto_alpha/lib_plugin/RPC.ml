@@ -4292,7 +4292,7 @@ module Delegates = struct
     let delegated_balance =
       RPC_service.get_service
         ~description:
-          "Returns the sum (in mutez) of all balances of all the contracts \
+          "Returns the sum (in mumav) of all balances of all the contracts \
            that delegate to a given delegate. This excludes the delegate's own \
            balance, its frozen deposits and its frozen bonds."
         ~query:RPC_query.empty
@@ -4302,7 +4302,7 @@ module Delegates = struct
     let min_delegated_in_current_cycle =
       RPC_service.get_service
         ~description:
-          "Returns the minimum of delegated tez (in mutez) over the current \
+          "Returns the minimum of delegated tez (in mumav) over the current \
            cycle and the block level where this value was last updated (Level \
            is `None` when decoding values from protocol O)."
         ~query:RPC_query.empty

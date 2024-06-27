@@ -189,7 +189,7 @@ let hash_comparable_data ctxt ty data =
 *)
 let check_dupable_comparable_ty : type a. a comparable_ty -> unit = function
   | Unit_t | Never_t | Int_t | Nat_t | Signature_t | String_t | Bytes_t
-  | Mutez_t | Bool_t | Key_hash_t | Key_t | Timestamp_t | Chain_id_t | Address_t
+  | Mumav_t | Bool_t | Key_hash_t | Key_t | Timestamp_t | Chain_id_t | Address_t
   | Pair_t _ | Or_t _ | Option_t _ ->
       ()
 
@@ -206,7 +206,7 @@ let check_dupable_ty ctxt loc ty =
     | Signature_t -> return_unit
     | String_t -> return_unit
     | Bytes_t -> return_unit
-    | Mutez_t -> return_unit
+    | Mumav_t -> return_unit
     | Key_hash_t -> return_unit
     | Key_t -> return_unit
     | Timestamp_t -> return_unit
@@ -349,8 +349,8 @@ let ty_eq :
       | Bytes_t, _ -> not_equal ()
       | Signature_t, Signature_t -> return Eq
       | Signature_t, _ -> not_equal ()
-      | Mutez_t, Mutez_t -> return Eq
-      | Mutez_t, _ -> not_equal ()
+      | Mumav_t, Mumav_t -> return Eq
+      | Mumav_t, _ -> not_equal ()
       | Timestamp_t, Timestamp_t -> return Eq
       | Timestamp_t, _ -> not_equal ()
       | Address_t, Address_t -> return Eq
@@ -1095,7 +1095,7 @@ let check_packable ~allow_contract loc root =
     | Signature_t -> return_unit
     | String_t -> return_unit
     | Bytes_t -> return_unit
-    | Mutez_t -> return_unit
+    | Mumav_t -> return_unit
     | Key_hash_t -> return_unit
     | Key_t -> return_unit
     | Timestamp_t -> return_unit
@@ -2252,7 +2252,7 @@ let rec parse_data :
   | Bytes_t, expr -> Lwt.return @@ traced_no_lwt @@ parse_bytes ctxt expr
   | Int_t, expr -> Lwt.return @@ traced_no_lwt @@ parse_int ctxt expr
   | Nat_t, expr -> Lwt.return @@ traced_no_lwt @@ parse_nat ctxt expr
-  | Mutez_t, expr -> Lwt.return @@ traced_no_lwt @@ parse_mumav ctxt expr
+  | Mumav_t, expr -> Lwt.return @@ traced_no_lwt @@ parse_mumav ctxt expr
   | Timestamp_t, expr ->
       Lwt.return @@ traced_no_lwt @@ parse_timestamp ctxt expr
   | Key_t, expr -> Lwt.return @@ traced_no_lwt @@ parse_key ctxt expr
@@ -3948,30 +3948,30 @@ and parse_instr :
       typed ctxt loc instr stack
   (* currency operations *)
   | ( Prim (loc, I_ADD, [], annot),
-      Item_t (Mutez_t, (Item_t (Mutez_t, _) as stack)) ) ->
+      Item_t (Mumav_t, (Item_t (Mumav_t, _) as stack)) ) ->
       let*? () = check_var_annot loc annot in
       let instr = {apply = (fun k -> IAdd_tez (loc, k))} in
       typed ctxt loc instr stack
   | ( Prim (loc, I_SUB, [], annot),
-      Item_t (Mutez_t, (Item_t (Mutez_t, _) as stack)) ) ->
+      Item_t (Mumav_t, (Item_t (Mumav_t, _) as stack)) ) ->
       if legacy (* Legacy check introduced in Ithaca. *) then
         let*? () = check_var_annot loc annot in
         let instr = {apply = (fun k -> ISub_tez_legacy (loc, k))} in
         typed ctxt loc instr stack
       else tzfail (Deprecated_instruction I_SUB)
-  | Prim (loc, I_SUB_MUTEZ, [], annot), Item_t (Mutez_t, Item_t (Mutez_t, rest))
+  | Prim (loc, I_SUB_MUMAV, [], annot), Item_t (Mumav_t, Item_t (Mumav_t, rest))
     ->
       let*? () = check_var_annot loc annot in
       let instr = {apply = (fun k -> ISub_tez (loc, k))} in
       let stack = Item_t (option_mumav_t, rest) in
       typed ctxt loc instr stack
-  | Prim (loc, I_MUL, [], annot), Item_t (Mutez_t, Item_t (Nat_t, rest)) ->
+  | Prim (loc, I_MUL, [], annot), Item_t (Mumav_t, Item_t (Nat_t, rest)) ->
       (* no type name check *)
       let*? () = check_var_annot loc annot in
       let instr = {apply = (fun k -> IMul_teznat (loc, k))} in
-      let stack = Item_t (Mutez_t, rest) in
+      let stack = Item_t (Mumav_t, rest) in
       typed ctxt loc instr stack
-  | Prim (loc, I_MUL, [], annot), Item_t (Nat_t, (Item_t (Mutez_t, _) as stack))
+  | Prim (loc, I_MUL, [], annot), Item_t (Nat_t, (Item_t (Mumav_t, _) as stack))
     ->
       (* no type name check *)
       let*? () = check_var_annot loc annot in
@@ -4082,12 +4082,12 @@ and parse_instr :
       let*? () = check_var_annot loc annot in
       let instr = {apply = (fun k -> IMul_nat (loc, k))} in
       typed ctxt loc instr stack
-  | Prim (loc, I_EDIV, [], annot), Item_t (Mutez_t, Item_t (Nat_t, rest)) ->
+  | Prim (loc, I_EDIV, [], annot), Item_t (Mumav_t, Item_t (Nat_t, rest)) ->
       let*? () = check_var_annot loc annot in
       let instr = {apply = (fun k -> IEdiv_teznat (loc, k))} in
       let stack = Item_t (option_pair_mumav_mumav_t, rest) in
       typed ctxt loc instr stack
-  | Prim (loc, I_EDIV, [], annot), Item_t (Mutez_t, Item_t (Mutez_t, rest)) ->
+  | Prim (loc, I_EDIV, [], annot), Item_t (Mumav_t, Item_t (Mumav_t, rest)) ->
       let*? () = check_var_annot loc annot in
       let instr = {apply = (fun k -> IEdiv_tez (loc, k))} in
       let stack = Item_t (option_pair_nat_mumav_t, rest) in
@@ -4296,7 +4296,7 @@ and parse_instr :
       let stack = Item_t (res_ty, rest) in
       typed ctxt loc instr stack
   | ( Prim (loc, (I_TRANSFER_TOKENS as prim), [], annot),
-      Item_t (p, Item_t (Mutez_t, Item_t (Contract_t (cp, _), rest))) ) ->
+      Item_t (p, Item_t (Mumav_t, Item_t (Contract_t (cp, _), rest))) ) ->
       let*? () = Tc_context.check_not_in_view loc ~legacy tc_context prim in
       let*? Eq, ctxt = check_item_ty ctxt p cp loc prim 1 4 in
       let*? () = check_var_annot loc annot in
@@ -4319,7 +4319,7 @@ and parse_instr :
       typed ctxt loc instr stack
   | ( Prim (loc, (I_CREATE_CONTRACT as prim), [(Seq _ as code)], annot),
       Item_t
-        (Option_t (Key_hash_t, _, _), Item_t (Mutez_t, Item_t (ginit, rest))) )
+        (Option_t (Key_hash_t, _, _), Item_t (Mumav_t, Item_t (ginit, rest))) )
     -> (
       let*? () = Tc_context.check_not_in_view ~legacy loc tc_context prim in
       let*? () = check_two_var_annot loc annot in
@@ -4686,7 +4686,7 @@ and parse_instr :
         ( loc,
           (( I_DUP | I_SWAP | I_SOME | I_UNIT | I_PAIR | I_UNPAIR | I_CAR
            | I_CDR | I_CONS | I_CONCAT | I_SLICE | I_MEM | I_UPDATE | I_GET
-           | I_EXEC | I_FAILWITH | I_SIZE | I_ADD | I_SUB | I_SUB_MUTEZ | I_MUL
+           | I_EXEC | I_FAILWITH | I_SIZE | I_ADD | I_SUB | I_SUB_MUMAV | I_MUL
            | I_EDIV | I_OR | I_AND | I_XOR | I_NOT | I_ABS | I_NEG | I_LSL
            | I_LSR | I_COMPARE | I_EQ | I_NEQ | I_LT | I_GT | I_LE | I_GE
            | I_TRANSFER_TOKENS | I_SET_DELEGATE | I_NOW | I_MIN_BLOCK_TIME
@@ -4724,7 +4724,7 @@ and parse_instr :
   (* Stack errors *)
   | ( Prim
         ( loc,
-          (( I_ADD | I_SUB | I_SUB_MUTEZ | I_MUL | I_EDIV | I_AND | I_OR | I_XOR
+          (( I_ADD | I_SUB | I_SUB_MUMAV | I_MUL | I_EDIV | I_AND | I_OR | I_XOR
            | I_LSL | I_LSR | I_CONCAT | I_PAIRING_CHECK ) as name),
           [],
           _ ),
@@ -4771,7 +4771,7 @@ and parse_instr :
   | ( Prim
         ( loc,
           (( I_SWAP | I_PAIR | I_CONS | I_GET | I_MEM | I_EXEC
-           | I_CHECK_SIGNATURE | I_ADD | I_SUB | I_SUB_MUTEZ | I_MUL | I_EDIV
+           | I_CHECK_SIGNATURE | I_ADD | I_SUB | I_SUB_MUMAV | I_MUL | I_EDIV
            | I_AND | I_OR | I_XOR | I_LSL | I_LSR | I_COMPARE | I_PAIRING_CHECK
            | I_TICKET | I_SPLIT_TICKET ) as name),
           _,
@@ -4865,7 +4865,7 @@ and parse_instr :
              I_SOURCE;
              I_SPLIT_TICKET;
              I_SUB;
-             I_SUB_MUTEZ;
+             I_SUB_MUMAV;
              I_SWAP;
              I_TICKET;
              I_TOTAL_VOTING_POWER;
@@ -5644,7 +5644,7 @@ let rec has_lazy_storage : type t tc. (t, tc) ty -> t has_lazy_storage =
   | Signature_t -> False_f
   | String_t -> False_f
   | Bytes_t -> False_f
-  | Mutez_t -> False_f
+  | Mumav_t -> False_f
   | Key_hash_t -> False_f
   | Key_t -> False_f
   | Timestamp_t -> False_f

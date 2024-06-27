@@ -168,6 +168,7 @@ module Handler = struct
           | `Shard_index_out_of_range s ->
               Format.sprintf "Shard_index_out_of_range(%s)" s
           | `Shard_length_mismatch -> "Shard_length_mismatch"
+          | `Prover_SRS_not_loaded -> "Prover_SRS_not_loaded"
         in
         Event.(
           emit__dont_wait__use_with_care
@@ -430,6 +431,14 @@ module Handler = struct
                 } =
             ready_ctxt
           in
+          let head_level = header.shell.level in
+          let*? head_round = Plugin.get_round header.shell.fitness in
+          Dal_metrics.new_layer1_head ~head_level ;
+          Dal_metrics.new_layer1_head_round ~head_round ;
+          let*! () =
+            Event.(
+              emit layer1_node_new_head (head_hash, head_level, head_round))
+          in
           Gossipsub.Worker.Validate_message_hook.set
             (gossipsub_app_messages_validation
                ctxt
@@ -633,12 +642,12 @@ let connect_gossipsub_with_p2p gs_worker transport_layer node_store node_ctxt =
       ^ Printexc.to_string exn
       |> Stdlib.failwith)
 
-let resolve peers =
+let resolve points =
   List.concat_map_es
     (Mavryk_base_unix.P2p_resolve.resolve_addr
        ~default_addr:"::"
        ~default_port:(Configuration_file.default.listen_addr |> snd))
-    peers
+    points
 
 let wait_for_l1_bootstrapped (cctxt : Rpc_context.t) =
   let open Lwt_result_syntax in
@@ -669,7 +678,10 @@ let run ~data_dir configuration_override =
   let* ({
           network_name;
           rpc_addr;
-          peers;
+          (* These are not the cryptographic identities of peers, but the points
+             (IP addresses + ports) of the nodes we want to connect to at
+             startup. *)
+          peers = points;
           endpoint;
           profiles;
           listen_addr;
@@ -687,6 +699,12 @@ let run ~data_dir configuration_override =
         return configuration
   in
   let*! () = Event.(emit configuration_loaded) () in
+  let cctxt = Rpc_context.make endpoint in
+  let* dal_config = fetch_dal_config cctxt in
+  (* Resolve:
+     - [points] from DAL node config file and CLI.
+     - [dal_config.bootstrap_peers] from the L1 network config. *)
+  let* points = resolve (points @ dal_config.bootstrap_peers) in
   (* Create and start a GS worker *)
   let gs_worker =
     let rng =
@@ -706,7 +724,15 @@ let run ~data_dir configuration_override =
 
              Additionally, we set [max_sent_iwant_per_heartbeat = 0]
              so bootstrap nodes do not download any shards via IHave/IWant
-             transfers. *)
+             transfers.
+
+             Also, we set [prune_backoff = 10] so that bootstrap nodes send PX
+             peers quicker. In particular, we want to avoid the following
+             scenario: a peer receives a Prune from the bootstrap node, then
+             disconnects for some reason and reconnects within the backoff
+             period; with a large backoff, its first Graft will be answered with
+             a no PX Prune, and therefore the peer will have to wait for the new
+             backoff timeout to be able to obtain PX peers. *)
           {
             limits with
             max_sent_iwant_per_heartbeat = 0;
@@ -715,12 +741,18 @@ let run ~data_dir configuration_override =
             degree_out = 0;
             degree_optimal = 0;
             degree_score = 0;
+            prune_backoff = Ptime.Span.of_int_s 10;
           }
-      | Operator _ -> limits
+      | Random_observer | Operator _ -> limits
     in
     let gs_worker =
       Gossipsub.Worker.(
-        make ~events_logging:Logging.event rng limits peer_filter_parameters)
+        make
+          ~bootstrap_points:points
+          ~events_logging:Logging.event
+          rng
+          limits
+          peer_filter_parameters)
     in
     Gossipsub.Worker.start [] gs_worker ;
     gs_worker
@@ -737,7 +769,6 @@ let run ~data_dir configuration_override =
       ~network_name
   in
   let* store = Store.init config in
-  let cctxt = Rpc_context.make endpoint in
   let*! metrics_server = Metrics.launch config.metrics_addr in
   let ctxt =
     Node_context.init

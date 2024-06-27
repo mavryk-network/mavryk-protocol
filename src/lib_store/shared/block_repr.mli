@@ -41,16 +41,16 @@ type contents = {
 
 (** The type for a block's [metadata] stored on disk. This
     representation is tightly linked to
-    {!Mavryk_validation.Block_validation.type-result} which also has a
+    {!Tezos_validation.Block_validation.type-result} which also has a
     strong dependency to
-    {!Mavryk_protocol_environment.validation_result}.
+    {!Tezos_protocol_environment.validation_result}.
 
-    Some fields exposed by {!Mavryk_validation.Block_validation.type-result}
+    Some fields exposed by {!Tezos_validation.Block_validation.type-result}
     are unnecessary hence the lack of direct link. *)
 type metadata = {
   message : string option;
   max_operations_ttl : int;
-  last_allowed_fork_level : Int32.t;
+  last_preserved_block_level : Int32.t;
   block_metadata : Bytes.t;
   operations_metadata : Block_validation.operation_metadata list list;
 }
@@ -172,7 +172,7 @@ val message : metadata -> string option
 
 val max_operations_ttl : metadata -> int
 
-val last_allowed_fork_level : metadata -> Int32.t
+val last_preserved_block_level : metadata -> Int32.t
 
 val block_metadata : metadata -> bytes
 

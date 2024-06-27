@@ -39,7 +39,7 @@ module Make_in_memory_context (Context : sig
   type tree
 
   include
-    Mavryk_context_sigs.Context.TEZOS_CONTEXT
+    Mavryk_context_sigs.Context.MAVRYK_CONTEXT
       with type memory_context_tree := tree
        and type tree := tree
        and type value_key = Context_hash.t

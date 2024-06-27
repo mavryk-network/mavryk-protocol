@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_client_019_PtParisB_commands)
+ (name mavryk_client_019_PtParisB_commands)
  (public_name mavkit-protocol-019-PtParisB-libs.client.commands)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -39,7 +39,7 @@
  (modules (:standard \ alpha_commands_registration)))
 
 (library
- (name tezos_client_019_PtParisB_commands_registration)
+ (name mavryk_client_019_PtParisB_commands_registration)
  (public_name mavkit-protocol-019-PtParisB-libs.client.commands-registration)
  (instrumentation (backend bisect_ppx))
  (libraries

@@ -28,7 +28,7 @@ let convert_error trace =
       return
         (Prim
            ( 0,
-             "MutezUnderflow",
+             "MumavUnderflow",
              [
                Int (0, Z.of_int64 @@ Tez_repr.to_mumav a);
                Int (0, Z.of_int64 @@ Tez_repr.to_mumav b);

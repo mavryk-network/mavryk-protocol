@@ -1,7 +1,7 @@
 [
   {
     "file": "src/proto_alpha/lib_protocol/test/unit/test_tez_repr.ml",
-    "title": "alpha: Tez_repr.ml (Tez.of_mutez_exn: of negative ints)",
+    "title": "alpha: Tez_repr.ml (Tez.of_mumav_exn: of negative ints)",
     "tags": [
       "alcotezt",
       "quick",
@@ -500,7 +500,7 @@
   },
   {
     "file": "src/proto_001_PtAtLas/lib_protocol/test/integration/test_liquidity_baking.ml",
-    "title": "001-PtAtLas: liquidity baking (liquidity baking CPMM balance in origination result is 100 mutez)",
+    "title": "001-PtAtLas: liquidity baking (liquidity baking CPMM balance in origination result is 100 mumav)",
     "tags": [
       "alcotezt",
       "quick",

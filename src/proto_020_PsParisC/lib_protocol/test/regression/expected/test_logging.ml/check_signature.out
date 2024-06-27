@@ -3,133 +3,133 @@ trace
   - DUP (interp) @ location: 9
     [ (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
   - DUP (entry) @ location: 9
     [ (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - log/DUP (exit) @ location: 9
       [ (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS")
+              "MAVRYK")
         (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - DUP (entry) @ location: 10
     [ (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS")
+            "MAVRYK")
       (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - log/DIP (exit) @ location: 10
       [ (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS")
+              "MAVRYK")
         (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS")
+              "MAVRYK")
         (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - DIP (entry) @ location: 11
     [ (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS")
+            "MAVRYK")
       (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS")
+            "MAVRYK")
       (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - log/CDR (exit) @ location: 11
       [ (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS")
+              "MAVRYK")
         (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - CDR (entry) @ location: 13
     [ (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS")
+            "MAVRYK")
       (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - log/DUP (exit) @ location: 13
       [ (Pair "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS")
+              "MAVRYK")
         (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - DUP (entry) @ location: 14
     [ (Pair "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS")
+            "MAVRYK")
       (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - log/CAR (exit) @ location: 14
       [ (Pair "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS")
+              "MAVRYK")
         (Pair "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS")
+              "MAVRYK")
         (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - CAR (entry) @ location: 15
     [ (Pair "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS")
+            "MAVRYK")
       (Pair "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS")
+            "MAVRYK")
       (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - log/DIP (exit) @ location: 15
       [ "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
         (Pair "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS")
+              "MAVRYK")
         (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - DIP (entry) @ location: 16
     [ "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
       (Pair "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS")
+            "MAVRYK")
       (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - log/CDR (exit) @ location: 16
       [ (Pair "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS")
+              "MAVRYK")
         (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - CDR (entry) @ location: 18
     [ (Pair "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS")
+            "MAVRYK")
       (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - log/PACK (exit) @ location: 18
-      [ "TEZOS"
+      [ "MAVRYK"
         (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - PACK (entry) @ location: 19
-    [ "TEZOS"
+    [ "MAVRYK"
       (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - log/[halt] (exit) @ location: 19
       [ 0x05010000000554455a4f53
         (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - [halt] (entry) @ location: 17
     [ 0x05010000000554455a4f53
       (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - control: KUndip
     - control: KCons
     - log/[halt] (exit) @ location: 16
@@ -137,94 +137,94 @@ trace
         0x05010000000554455a4f53
         (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - [halt] (entry) @ location: 12
     [ "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
       0x05010000000554455a4f53
       (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - control: KUndip
     - control: KCons
     - log/CAR (exit) @ location: 11
       [ (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS")
+              "MAVRYK")
         "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
         0x05010000000554455a4f53
         (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - CAR (entry) @ location: 20
     [ (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS")
+            "MAVRYK")
       "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
       0x05010000000554455a4f53
       (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - log/CHECK_SIGNATURE (exit) @ location: 20
       [ "[PUBLIC_KEY]"
         "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
         0x05010000000554455a4f53
         (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - CHECK_SIGNATURE (entry) @ location: 21
     [ "[PUBLIC_KEY]"
       "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
       0x05010000000554455a4f53
       (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - log/IF (exit) @ location: 21
       [ True
         (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - IF (entry) @ location: 22
     [ True
       (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - log/[halt] (exit) @ location: 22
       [ (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - [halt] (entry) @ location: 28
     [ (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - control: KCons
     - log/CDR (exit) @ location: 22
       [ (Pair "[PUBLIC_KEY]"
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - CDR (entry) @ location: 28
     [ (Pair "[PUBLIC_KEY]"
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - log/NIL (exit) @ location: 28
       [ (Pair "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - NIL (entry) @ location: 29
     [ (Pair "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - log/PAIR (exit) @ location: 29
       [ {}
         (Pair "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - PAIR (entry) @ location: 31
     [ {}
       (Pair "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - log/[halt] (exit) @ location: 31
       [ (Pair {}
               "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-              "TEZOS") ]
+              "MAVRYK") ]
   - [halt] (entry) @ location: 8
     [ (Pair {}
             "edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1"
-            "TEZOS") ]
+            "MAVRYK") ]
     - control: KNil

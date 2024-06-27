@@ -42,12 +42,12 @@ module Term = struct
     let open Cmdliner in
     let doc =
       Format.sprintf
-        "The directory where the mavkit DAL node will store all its data. \
+        "The directory where the Mavkit DAL node will store all its data. \
          Parent directories are created if necessary."
     in
     Arg.(
       value
-      & opt (some file) None
+      & opt (some string) None
       & info ~docs ~docv:"DIR" ~doc ["data-dir"; "d"])
 
   let rpc_addr =
@@ -55,17 +55,20 @@ module Term = struct
     let default_port = Configuration_file.default.rpc_addr |> snd in
     let doc =
       Format.asprintf
-        "The TCP socket point at which this RPC server of this instance can be \
-         reached."
+        "The TCP address and optionally the port at which the RPC server of \
+         this instance can be reached. The default address is 0.0.0.0. The \
+         default port is 10732."
     in
     Arg.(
       value
       & opt (some (p2p_point_arg ~default_port)) None
-      & info ~docs ~doc ~docv:"ADDR:PORT" ["rpc-addr"])
+      & info ~docs ~doc ~docv:"ADDR[:PORT]" ["rpc-addr"])
 
   let expected_pow =
     let open Cmdliner in
-    let doc = "Expected level of proof-of-work for peers identity." in
+    let doc =
+      "The expected proof-of-work difficulty level for the peers' identity."
+    in
     Arg.(
       value
       & opt (some float) None
@@ -76,27 +79,29 @@ module Term = struct
     let default_port = Configuration_file.default.listen_addr |> snd in
     let doc =
       Format.asprintf
-        "The TCP address and port at which the socket is bound. If \
-         [public_addr] is not set, this is also the address and port at which \
-         this instance can be reached by other P2P nodes."
+        "The TCP address and optionally the port bound by the DAL node. If \
+         --public-addr is not provided, this is also the address and port at \
+         which this instance can be reached by other P2P nodes. The default \
+         address is 0.0.0.0. The default port is 11732."
     in
     Arg.(
       value
       & opt (some (p2p_point_arg ~default_port)) None
-      & info ~docs ~doc ~docv:"ADDR:PORT" ["net-addr"])
+      & info ~docs ~doc ~docv:"ADDR[:PORT]" ["net-addr"])
 
   let public_addr =
     let open Cmdliner in
     let default_port = Configuration_file.default.public_addr |> snd in
     let doc =
       Format.asprintf
-        "The TCP address and port at which this instance can be reached by \
-         other P2P nodes."
+        "The TCP address and optionally the port at which this instance can be \
+         reached by other P2P nodes. The default address is 0.0.0.0. The \
+         default port is 11732."
     in
     Arg.(
       value
       & opt (some (p2p_point_arg ~default_port)) None
-      & info ~docs ~doc ~docv:"ADDR:PORT" ["public-addr"])
+      & info ~docs ~doc ~docv:"ADDR[:PORT]" ["public-addr"])
 
   let endpoint_arg =
     let open Cmdliner in
@@ -109,16 +114,20 @@ module Term = struct
 
   let endpoint =
     let open Cmdliner in
-    let doc = "The Mavryk node that the DAL node should connect to." in
+    let doc =
+      "The endpoint (an URI) of the Mavryk node that the DAL node should \
+       connect to. The default endpoint is 'http://localhost:8732'."
+    in
     Arg.(
       value
       & opt (some endpoint_arg) None
-      & info ~docs ~doc ~docv:"[ADDR:PORT]" ["endpoint"])
+      & info ~docs ~doc ~docv:"URI" ["endpoint"])
 
   let operator_profile_printer fmt = function
     | Types.Attester pkh ->
         Format.fprintf fmt "%a" Signature.Public_key_hash.pp pkh
     | Producer {slot_index} -> Format.fprintf fmt "%d" slot_index
+    | Observer {slot_index} -> Format.fprintf fmt "%d" slot_index
 
   let attester_profile_arg =
     let open Cmdliner in
@@ -135,7 +144,7 @@ module Term = struct
       let error () =
         Format.kasprintf
           (fun s -> Error (`Msg s))
-          "Unrecognized profile for producer (expected nonnegative integer, \
+          "Unrecognized profile for producer (expected non-negative integer, \
            got %s)"
           string
       in
@@ -143,6 +152,23 @@ module Term = struct
       | None -> error ()
       | Some i when i < 0 -> error ()
       | Some slot_index -> Types.Producer {slot_index} |> Result.ok
+    in
+    Arg.conv (decoder, operator_profile_printer)
+
+  let observer_profile_arg =
+    let open Cmdliner in
+    let decoder string =
+      let error () =
+        Format.kasprintf
+          (fun s -> Error (`Msg s))
+          "Unrecognized profile for observer (expected nonnegative integer, \
+           got %s)"
+          string
+      in
+      match int_of_string_opt string with
+      | None -> error ()
+      | Some i when i < 0 -> error ()
+      | Some slot_index -> Types.Observer {slot_index} |> Result.ok
     in
     Arg.conv (decoder, operator_profile_printer)
 
@@ -154,7 +180,7 @@ module Term = struct
     Arg.(
       value
       & opt (list attester_profile_arg) []
-      & info ~docs ~doc ~docv:"[PKH]" ["attester-profiles"])
+      & info ~docs ~doc ~docv:"PKH1,PKH2,..." ["attester-profiles"])
 
   let producer_profile =
     let open Cmdliner in
@@ -162,13 +188,21 @@ module Term = struct
     Arg.(
       value
       & opt (list producer_profile_arg) []
-      & info ~docs ~doc ~docv:"[slot index]" ["producer-profiles"])
+      & info ~docs ~doc ~docv:"INDEX1,INDEX2,..." ["producer-profiles"])
+
+  let observer_profile =
+    let open Cmdliner in
+    let doc = "The Mavkit DAL node observer profiles for given slot indexes." in
+    Arg.(
+      value
+      & opt (list observer_profile_arg) []
+      & info ~docs ~doc ~docv:"INDEX1,INDEX2,..." ["observer-profiles"])
 
   let bootstrap_profile =
     let open Cmdliner in
     let doc =
       "The Mavkit DAL node bootstrap node profile. Note that a bootstrap node \
-       cannot also be an attester/slot producer"
+       cannot also be an attester or a slot producer"
     in
     Arg.(value & flag & info ~docs ~doc ["bootstrap-profile"])
 
@@ -176,8 +210,8 @@ module Term = struct
     let open Cmdliner in
     let default_list = Configuration_file.default.peers in
     let doc =
-      "An additional peer list to expand the bootstrap peers from \
-       dal_config.bootstrap_peers."
+      "An additional peer list to expand the bootstrap peers from the Mavkit \
+       node's configuration parameter dal_config.bootstrap_peers."
     in
     Arg.(
       value
@@ -186,18 +220,15 @@ module Term = struct
 
   let metrics_addr =
     let open Cmdliner in
-    let doc = "Address on which to provide metrics over HTTP." in
+    let doc =
+      "The TCP address and optionally the port of the node's metrics server. \
+       The default address is 0.0.0.0. The default port is 11733."
+    in
     let default_port = Configuration_file.default.metrics_addr |> snd in
     Arg.(
       value
       & opt (some (p2p_point_arg ~default_port)) None
-      & info
-          ~docs
-          ~doc
-          ~docv:
-            "ADDR:PORT or :PORT (by default ADDR is localhost and PORT is \
-             11733)"
-          ["metrics-addr"])
+      & info ~docs ~doc ~docv:"ADDR[:PORT]" ["metrics-addr"])
 
   let history_mode =
     let open Cmdliner in
@@ -243,7 +274,7 @@ end
 
 module Run = struct
   let description =
-    [`S "DESCRIPTION"; `P "This command allows to run a DAL node."]
+    [`S "DESCRIPTION"; `P "This command runs an Mavkit DAL node."]
 
   let man = description
 
@@ -270,9 +301,12 @@ module Config = struct
       [
         `S "DESCRIPTION";
         `P
-          "This commands creates a configuration file with the default \
-           parameters and the one provided on the command-line. This \
-           configuration is then used by the run command.";
+          "This commands creates a configuration file with the parameters \
+           provided on the command-line, if no configuration file exists \
+           already in the specified or default location. Otherwise, the \
+           command-line parameters override the existing ones, and old \
+           parameters are lost. This configuration is then used by the run \
+           command.";
       ]
 
     let info =
@@ -330,21 +364,16 @@ let make ~run =
           history_mode;
         }
     in
-    match (bootstrap_flag, attesters @ producers) with
+    match (bootstrap_flag, attesters @ producers @ observers) with
     | false, [] -> run None
     | true, [] -> run @@ Some Types.Bootstrap
     | false, operator_profiles -> run @@ Some (Operator operator_profiles)
     | true, _ :: _ ->
         `Error
-          (false, "A bootstrap node cannot also be an attester/slot producer.")
+          ( false,
+            "A bootstrap node cannot also be an attester or a slot producer." )
   in
-  let default =
-    Cmdliner.Term.(
-      ret
-        (const (fun _ _ _ _ _ -> `Help (`Pager, None))
-        $ Term.data_dir $ Term.rpc_addr $ Term.expected_pow $ Term.net_addr
-        $ Term.endpoint))
-  in
+  let default = Cmdliner.Term.(ret (const (`Help (`Pager, None)))) in
   let info =
     let version = Mavryk_version_value.Bin_version.mavkit_version_string in
     Cmdliner.Cmd.info ~doc:"The Mavkit DAL node" ~version "mavkit-dal-node"

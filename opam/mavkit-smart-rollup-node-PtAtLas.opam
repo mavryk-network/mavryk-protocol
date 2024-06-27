@@ -13,24 +13,23 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "mavkit-libs"
-  "mavkit-shell-libs"
-  "mavkit-protocol-001-PtAtLas-libs"
-  "mavryk-protocol-001-PtAtLas"
-  "mavryk-dal-node-services"
-  "mavryk-dal-node-lib"
-  "mavryk-dac-lib"
-  "mavryk-dac-client-lib"
-  "mavkit-l2-libs"
-  "mavkit-crawler"
-  "data-encoding" { >= "0.7.1" & < "1.0.0" }
-  "irmin-pack" { >= "3.7.2" & < "3.8.0" }
-  "irmin" { >= "3.7.2" & < "3.8.0" }
+  "mavkit-libs" { = version }
+  "mavkit-shell-libs" { = version }
+  "mavkit-protocol-001-PtAtLas-libs" { = version }
+  "mavryk-protocol-001-PtAtLas" { = version }
+  "mavryk-dal-node-services" { = version }
+  "mavryk-dal-node-lib" { = version }
+  "mavryk-dac-lib" { = version }
+  "mavryk-dac-client-lib" { = version }
+  "mavkit-l2-libs" { = version }
+  "mavkit-crawler" { = version }
+  "data-encoding" { >= "1.0.1" & < "1.1" }
+  "mavkit-internal-libs" { = version }
   "aches" { >= "1.0.0" }
   "aches-lwt" { >= "1.0.0" }
-  "mavkit-injector"
-  "mavkit-smart-rollup-node-lib"
-  "mavkit-version"
+  "mavkit-injector" { = version }
+  "mavkit-smart-rollup-node-lib" { = version }
+  "mavkit-version" { = version }
 ]
 conflicts: [
   "checkseum" { = "0.5.0" }

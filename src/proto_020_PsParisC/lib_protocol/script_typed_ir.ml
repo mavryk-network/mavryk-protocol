@@ -1299,7 +1299,7 @@ and ('ty, 'comparable) ty =
   | Signature_t : (signature, yes) ty
   | String_t : (Script_string.t, yes) ty
   | Bytes_t : (bytes, yes) ty
-  | Mutez_t : (Tez.t, yes) ty
+  | Mumav_t : (Tez.t, yes) ty
   | Key_hash_t : (public_key_hash, yes) ty
   | Key_t : (public_key, yes) ty
   | Timestamp_t : (Script_timestamp.t, yes) ty
@@ -1835,7 +1835,7 @@ let ty_metadata : type a ac. (a, ac) ty -> a ty_metadata = function
   | Signature_t -> signature_metadata
   | String_t -> string_metadata
   | Bytes_t -> bytes_metadata
-  | Mutez_t -> mumav_metadata
+  | Mumav_t -> mumav_metadata
   | Bool_t -> bool_metadata
   | Key_hash_t -> key_hash_metadata
   | Key_t -> key_metadata
@@ -1873,7 +1873,7 @@ let is_comparable : type v c. (v, c) ty -> c dbool = function
   | Signature_t -> Yes
   | String_t -> Yes
   | Bytes_t -> Yes
-  | Mutez_t -> Yes
+  | Mumav_t -> Yes
   | Bool_t -> Yes
   | Key_hash_t -> Yes
   | Key_t -> Yes
@@ -1924,7 +1924,7 @@ let string_t = String_t
 
 let bytes_t = Bytes_t
 
-let mumav_t = Mutez_t
+let mumav_t = Mumav_t
 
 let key_hash_t = Key_hash_t
 
@@ -2300,7 +2300,7 @@ let ty_traverse =
    fun f accu ty continue ->
     let accu = f.apply accu ty in
     match ty with
-    | Unit_t | Int_t | Nat_t | Signature_t | String_t | Bytes_t | Mutez_t
+    | Unit_t | Int_t | Nat_t | Signature_t | String_t | Bytes_t | Mumav_t
     | Key_hash_t | Key_t | Timestamp_t | Address_t | Bool_t
     | Sapling_transaction_t _ | Sapling_transaction_deprecated_t _
     | Sapling_state_t _ | Operation_t | Chain_id_t | Never_t | Bls12_381_g1_t
@@ -2371,7 +2371,7 @@ let value_traverse (type t tc) (ty : (t, tc) ty) (x : t) init f =
               (on_list [@ocaml.tailcall]) ty' accu xs)
     in
     match ty with
-    | Unit_t | Int_t | Nat_t | Signature_t | String_t | Bytes_t | Mutez_t
+    | Unit_t | Int_t | Nat_t | Signature_t | String_t | Bytes_t | Mumav_t
     | Key_hash_t | Key_t | Timestamp_t | Address_t | Bool_t
     | Sapling_transaction_t _ | Sapling_transaction_deprecated_t _
     | Sapling_state_t _ | Operation_t | Chain_id_t | Never_t | Bls12_381_g1_t

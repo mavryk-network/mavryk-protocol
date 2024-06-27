@@ -55,11 +55,16 @@ let get_head_level_opt node_ctxt =
   let+ res = Node_context.last_processed_head_opt node_ctxt in
   Option.map (fun Sc_rollup_block.{header = {level; _}; _} -> level) res
 
-let get_proto_plugin_of_level node_ctxt level =
-  let open Lwt_result_syntax in
-  let* proto = Node_context.protocol_of_level node_ctxt level in
-  let*? plugin = Protocol_plugins.proto_plugin_for_protocol proto.protocol in
-  return plugin
+module Root_directory = Make_directory (struct
+  include Rollup_node_services.Root
+
+  type context = Node_context.rw
+
+  type subcontext = Node_context.ro
+
+  let context_of_prefix node_ctxt () =
+    Lwt_result.return (Node_context.readonly node_ctxt)
+end)
 
 module Global_directory = Make_directory (struct
   include Rollup_node_services.Global
@@ -293,10 +298,14 @@ let () =
   Local_directory.register0 Rollup_node_services.Local.gc_info
   @@ fun node_ctxt () () ->
   let open Lwt_result_syntax in
-  let+ {last_gc_level; first_available_level} =
+  let* {last_gc_level; first_available_level} =
     Node_context.get_gc_levels node_ctxt
+  and* last_context_split_level =
+    Node_context.get_last_context_split_level node_ctxt
   in
-  Rollup_node_services.{last_gc_level; first_available_level}
+  return
+    Rollup_node_services.
+      {last_gc_level; first_available_level; last_context_split_level}
 
 let () =
   Local_directory.register0 Rollup_node_services.Local.injection
@@ -589,31 +598,50 @@ let () =
   generate_openapi dir proto
 
 let directory node_ctxt =
+  let dir = top_directory node_ctxt in
+  build_protocol_directories node_ctxt ;
   let path =
     Mavryk_rpc.Path.(
       open_root / "global" / "block" /: Rollup_node_services.Arg.block_id)
   in
-  Mavryk_rpc.Directory.register_dynamic_directory
-    ~descr:"Dynamic protocol specific RPC directory for the rollup node"
-    (top_directory node_ctxt)
-    path
-    (fun ((), block_id) ->
-      let open Lwt_syntax in
-      let+ dir =
-        let open Lwt_result_syntax in
-        let* level =
-          Block_directory_helpers.block_level_of_id node_ctxt block_id
+  let dir =
+    Mavryk_rpc.Directory.register_dynamic_directory
+      ~descr:"Dynamic protocol specific RPC directory for the rollup node"
+      dir
+      path
+      (fun ((), block_id) ->
+        let open Lwt_syntax in
+        let+ dir =
+          let open Lwt_result_syntax in
+          let* level =
+            Block_directory_helpers.block_level_of_id node_ctxt block_id
+          in
+          let* () = Node_context.check_level_available node_ctxt level in
+          let* proto = Node_context.protocol_of_level node_ctxt level in
+          let*? block_directory, _, _ =
+            get_proto_dir ~protocol:proto.protocol node_ctxt
+          in
+          return block_directory
         in
-        let* () = Node_context.check_level_available node_ctxt level in
-        let+ (module Plugin) = get_proto_plugin_of_level node_ctxt level in
-        Plugin.RPC_directory.block_directory node_ctxt
-      in
-      match dir with
-      | Ok dir -> dir
-      | Error e ->
-          Format.kasprintf
-            Stdlib.failwith
-            "Could not load block directory for block %s: %a"
-            (Rollup_node_services.Arg.construct_block_id block_id)
-            pp_print_trace
-            e)
+        match dir with
+        | Ok dir -> dir
+        | Error e ->
+            Format.kasprintf
+              Stdlib.failwith
+              "Could not load block directory for block %s: %a"
+              (Rollup_node_services.Arg.construct_block_id block_id)
+              pp_print_trace
+              e)
+  in
+  add_describe dir
+
+let generate_openapi ?protocol cctxt =
+  let open Lwt_result_syntax in
+  let protocol =
+    Option.value_f protocol ~default:Protocol_plugins.last_registered
+  in
+  let* node_ctxt =
+    Node_context_loader.Internal_for_tests.openapi_context cctxt protocol
+  in
+  let _, dir = build_protocol_directory node_ctxt protocol in
+  generate_openapi dir protocol

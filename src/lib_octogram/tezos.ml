@@ -1703,7 +1703,7 @@ module Start_rollup_node = struct
         (Agent_state.http_client state)
         args.path_rollup_node
     in
-    let l1_endpoint = octez_endpoint state args.endpoint in
+    let l1_endpoint = mavkit_endpoint state args.endpoint in
     let rollup_node =
       Sc_rollup_node.(
         create_with_endpoint

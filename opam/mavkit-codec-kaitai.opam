@@ -13,15 +13,17 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "data-encoding" { >= "0.7.1" & < "1.0.0" }
-  "kaitai-of-data-encoding"
-  "kaitai"
+  "data-encoding" { >= "1.0.1" & < "1.1" }
+  "kaitai-of-data-encoding" { = version }
+  "kaitai" { = version }
   "mavkit-libs"
   "mavkit-shell-libs"
   "mavkit-version"
 ]
 depopts: [
   "mavkit-protocol-001-PtAtLas-libs"
+  "mavkit-protocol-019-PtParisB-libs"
+  "mavkit-protocol-020-PsParisC-libs"
   "mavkit-protocol-alpha-libs"
 ]
 build: [

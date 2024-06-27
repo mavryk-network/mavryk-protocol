@@ -34,7 +34,7 @@ The five periods are as follows:
   At the end of a **proposal period**, if participation reaches a
   :ref:`proposal quorum <proposal_quorum>`, the proposal with most support is
   selected and we move to an **exploration period**. Note that support is
-  measured in the cumulated staking power (expressed in mutez) that delegates supporting the
+  measured in the cumulated staking power (expressed in mumav) that delegates supporting the
   proposal have. E.g., a proposal supported by a single delegate with 600,000 tz of staking power
   has more support than a proposal supported by two delegates with 100,000 tz
   each of staking power.
@@ -105,7 +105,7 @@ Voting Power
 ------------
 
 When supporting a proposal or casting a Yea, Nay, or Pass ballot, each delegate
-has a voting power equal to its *stake*. More precisely, the voting power of a delegate during a voting period is its :ref:`staking balance <active_stake_paris>`, measured in *mutez*, sampled at the beginning of the period. (Note that this is opposed to validator selection for consensus, which is based on the active stake, and sampled at the end of a previous cycle.)
+has a voting power equal to its *stake*. More precisely, the voting power of a delegate during a voting period is its :ref:`staking balance <active_stake_paris>`, measured in *mumav*, sampled at the beginning of the period. (Note that this is opposed to validator selection for consensus, which is based on the active stake, and sampled at the end of a previous cycle.)
 
 
 Super-majority and Quorum
@@ -284,7 +284,7 @@ in the following samples::
   Current proposal: PsNa6jTtsRfbGaNSoYXNTNM5A7c3Lji22Yf2ZhpFUjQFC17iZVp
 
 It should be noted that the ballot number 2,400,000 ṁ above is the stake counted in
-mutez (displayed in tez).
+mumav (displayed in tez).
 The proposal has a total stake of 2,400,000 ṁ, which may come from a single ballot
 from a delegate having a staking balance of 2,400,000 ṁ or it may come from multiple ballots from
 delegates with a combined stake of 2,400,000 ṁ.

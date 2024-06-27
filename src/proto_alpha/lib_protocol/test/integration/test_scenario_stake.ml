@@ -46,7 +46,7 @@ let init_staker_delegate_or_external =
          --> add_account_with_funds
                "staker"
                ~funder:"delegate"
-               (Amount (Tez.of_mutez 2_000_000_000_000L))
+               (Amount (Tez.of_mumav 2_000_000_000_000L))
          --> set_delegate "staker" (Some "delegate"))
   --> wait_delegate_parameters_activation
 
@@ -111,9 +111,9 @@ let double_roundtrip =
    that the detailed balance of the staker at the end is identical to
    its balance before the stake operation. *)
 let status_quo_rountrip =
-  let full_amount = Tez.of_mutez 10_000_000L in
-  let amount_1 = Tez.of_mutez 2_999_999L in
-  let amount_2 = Tez.of_mutez 7_000_001L in
+  let full_amount = Tez.of_mumav 10_000_000L in
+  let amount_1 = Tez.of_mumav 2_999_999L in
+  let amount_2 = Tez.of_mumav 7_000_001L in
   init_staker_delegate_or_external
   --> snapshot_balances "init" ["staker"]
   --> stake "staker" (Amount full_amount)
@@ -130,7 +130,7 @@ let status_quo_rountrip =
 (* Test that a baker can stake from unstaked frozen funds.
    The most recent unstakes are prioritized when staking. *)
 let shorter_roundtrip_for_baker =
-  let unstake_amount = Amount (Tez.of_mutez 222_000_000_000L) in
+  let unstake_amount = Amount (Tez.of_mumav 222_000_000_000L) in
   let consensus_rights_delay =
     Default_parameters.constants_mainnet.consensus_rights_delay
     (* mainnet value, = 2 *)
@@ -143,16 +143,16 @@ let shorter_roundtrip_for_baker =
   --> set S.consensus_rights_delay consensus_rights_delay
   --> activate_ai `Force
   --> begin_test ["delegate"; "faucet"]
-  --> stake "delegate" (Amount (Tez.of_mutez 1_800_000_000_000L))
+  --> stake "delegate" (Amount (Tez.of_mumav 1_800_000_000_000L))
   --> set_delegate_params "delegate" init_params
   --> add_account_with_funds
         "staker1"
         ~funder:"faucet"
-        (Amount (Tez.of_mutez 200_000_000_000L))
+        (Amount (Tez.of_mumav 200_000_000_000L))
   --> add_account_with_funds
         "staker2"
         ~funder:"faucet"
-        (Amount (Tez.of_mutez 200_000_000_000L))
+        (Amount (Tez.of_mumav 200_000_000_000L))
   --> wait_delegate_parameters_activation
   --> set_delegate "staker1" (Some "delegate")
   --> set_delegate "staker2" (Some "delegate")
@@ -179,49 +179,49 @@ let shorter_roundtrip_for_baker =
   --> check_balance_field "delegate" `Unstaked_finalizable Tez.zero
   --> (Tag "stake from unstake one container"
        --> (Tag "one stake"
-            --> stake "delegate" (Amount (Tez.of_mutez 111_000_000_000L))
+            --> stake "delegate" (Amount (Tez.of_mumav 111_000_000_000L))
            |+ Tag "two stakes"
-              --> stake "delegate" (Amount (Tez.of_mutez 100_000_000_000L))
-              --> stake "delegate" (Amount (Tez.of_mutez 11_000_000_000L)))
+              --> stake "delegate" (Amount (Tez.of_mumav 100_000_000_000L))
+              --> stake "delegate" (Amount (Tez.of_mumav 11_000_000_000L)))
        --> check_balance_field
              "delegate"
              `Unstaked_frozen_total
-             (Tez.of_mutez 333_000_000_000L)
+             (Tez.of_mumav 333_000_000_000L)
        (* We only removed unstake from the most recent unstake: we should
           expect the first unstake request to finalize with its full amount on the next cycle *)
        --> next_cycle
        --> check_balance_field
              "delegate"
              `Unstaked_finalizable
-             (Tez.of_mutez 222_000_000_000L)
+             (Tez.of_mumav 222_000_000_000L)
        --> check_balance_field
              "delegate"
              `Unstaked_frozen_total
-             (Tez.of_mutez 111_000_000_000L)
+             (Tez.of_mumav 111_000_000_000L)
       |+ Tag "stake from unstake two containers"
-         --> stake "delegate" (Amount (Tez.of_mutez 333_000_000_000L))
+         --> stake "delegate" (Amount (Tez.of_mumav 333_000_000_000L))
          --> check_balance_field
                "delegate"
                `Unstaked_frozen_total
-               (Tez.of_mutez 111_000_000_000L)
+               (Tez.of_mumav 111_000_000_000L)
          (* We should have removed all the unstake from the most recent container.
             The rest will be finalizable next cycle. *)
          --> next_cycle
          --> check_balance_field
                "delegate"
                `Unstaked_finalizable
-               (Tez.of_mutez 111_000_000_000L)
+               (Tez.of_mumav 111_000_000_000L)
          --> check_balance_field "delegate" `Unstaked_frozen_total Tez.zero
       |+ Tag "stake from all unstaked + liquid"
-         --> stake "delegate" (Amount (Tez.of_mutez 555_000_000_000L))
+         --> stake "delegate" (Amount (Tez.of_mumav 555_000_000_000L))
          (* Nothing remains unstaked *)
          --> check_balance_field "delegate" `Unstaked_frozen_total Tez.zero
          --> check_balance_field "delegate" `Unstaked_finalizable Tez.zero)
 
 (* Test three different ways to finalize unstake requests:
    - finalize_unstake operation
-   - stake operation (of 1 mutez)
-   - unstake operation (of 1 mutez)
+   - stake operation (of 1 mumav)
+   - unstake operation (of 1 mumav)
 
    Check that the finalizable unstaked balance is non-zero before, and
    becomes zero after the finalization. *)
@@ -234,8 +234,8 @@ let scenario_finalize =
   --> assert_failure
         (check_balance_field "staker" `Unstaked_finalizable Tez.zero)
   --> (Tag "finalize with finalize" --> finalize_unstake "staker"
-      |+ Tag "finalize with stake" --> stake "staker" (Amount Tez.one_mutez)
-      |+ Tag "finalize with unstake" --> unstake "staker" (Amount Tez.one_mutez)
+      |+ Tag "finalize with stake" --> stake "staker" (Amount Tez.one_mumav)
+      |+ Tag "finalize with unstake" --> unstake "staker" (Amount Tez.one_mumav)
       )
   --> check_balance_field "staker" `Unstaked_finalizable Tez.zero
 
@@ -251,7 +251,7 @@ let scenario_not_finalize =
         (check_balance_field "staker" `Unstaked_finalizable Tez.zero)
   --> snapshot_balances "not finalize" ["staker"]
   --> (Tag "no finalize with unstake if staked = 0"
-      --> unstake "staker" (Amount Tez.one_mutez))
+      --> unstake "staker" (Amount Tez.one_mumav))
   --> assert_failure
         (check_balance_field "staker" `Unstaked_finalizable Tez.zero)
   --> check_snapshot_balances "not finalize"
@@ -281,16 +281,16 @@ let full_balance_in_finalizable =
   --> add_account_with_funds
         "dummy"
         ~funder:"staker"
-        (Amount (Tez.of_mutez 10_000_000L))
+        (Amount (Tez.of_mumav 10_000_000L))
   --> stake "staker" All_but_one --> next_cycle --> unstake "staker" All
   --> wait_n_cycles_f (unstake_wait ++ 2)
-  (* At this point, almost all the balance (but one mutez) of the stake is in finalizable *)
+  (* At this point, almost all the balance (but one mumav) of the stake is in finalizable *)
   (* Staking is possible, but not transfer *)
   --> assert_failure
-        (transfer "staker" "dummy" (Amount (Tez.of_mutez 10_000_000L)))
-  --> stake "staker" (Amount (Tez.of_mutez 10_000_000L))
+        (transfer "staker" "dummy" (Amount (Tez.of_mumav 10_000_000L)))
+  --> stake "staker" (Amount (Tez.of_mumav 10_000_000L))
   (* After the stake, transfer is possible again because the funds were finalized *)
-  --> transfer "staker" "dummy" (Amount (Tez.of_mutez 10_000_000L))
+  --> transfer "staker" "dummy" (Amount (Tez.of_mumav 10_000_000L))
 
 (* Stress test: what happens if someone were to stake and unstake every cycle? *)
 let odd_behavior =
@@ -315,7 +315,7 @@ let change_delegate =
   --> add_account_with_funds
         "staker"
         ~funder:"delegate1"
-        (Amount (Tez.of_mutez 2_000_000_000_000L))
+        (Amount (Tez.of_mumav 2_000_000_000_000L))
   --> snapshot_balances "init" ["staker"]
   --> set_delegate "staker" (Some "delegate1")
   --> wait_delegate_parameters_activation --> stake "staker" Half
@@ -360,11 +360,11 @@ let unset_delegate =
   --> add_account_with_funds
         "staker"
         ~funder:"delegate"
-        (Amount (Tez.of_mutez 2_000_000_000_000L))
+        (Amount (Tez.of_mumav 2_000_000_000_000L))
   --> add_account_with_funds
         "dummy"
         ~funder:"delegate"
-        (Amount (Tez.of_mutez 2_000_000L))
+        (Amount (Tez.of_mumav 2_000_000L))
   --> set_delegate "staker" (Some "delegate")
   --> wait_delegate_parameters_activation --> stake "staker" Half
   --> unstake "staker" All --> next_cycle --> set_delegate "staker" None
@@ -386,7 +386,7 @@ let forbid_costaking =
   let no_costake_params =
     {limit_of_staking_over_baking = Q.zero; edge_of_baking_over_staking = Q.one}
   in
-  let amount = Amount (Tez.of_mutez 1_000_000L) in
+  let amount = Amount (Tez.of_mumav 1_000_000L) in
   (* init constants *)
   (Tag "default protocol constants" --> init_constants ()
   |+ Tag "small delegate parameters delay"
@@ -402,7 +402,7 @@ let forbid_costaking =
   --> add_account_with_funds
         "staker"
         ~funder:"delegate"
-        (Amount (Tez.of_mutez 2_000_000_000_000L))
+        (Amount (Tez.of_mumav 2_000_000_000_000L))
   --> set_delegate "staker" (Some "delegate")
   --> wait_cycle_until (`And (`AI_activation, `delegate_parameters_activation))
   (* try stake in normal conditions *)
@@ -453,16 +453,16 @@ let test_deactivation =
   --> set S.Adaptive_issuance.autostaking_enable false
   --> activate_ai `Force
   --> begin_test ["delegate"; "faucet"]
-  --> stake "delegate" (Amount (Tez.of_mutez 1_800_000_000_000L))
+  --> stake "delegate" (Amount (Tez.of_mumav 1_800_000_000_000L))
   --> set_delegate_params "delegate" init_params
   --> add_account_with_funds
         "staker1"
         ~funder:"faucet"
-        (Amount (Tez.of_mutez 200_000_000_000L))
+        (Amount (Tez.of_mumav 200_000_000_000L))
   --> add_account_with_funds
         "staker2"
         ~funder:"faucet"
-        (Amount (Tez.of_mutez 200_000_000_000L))
+        (Amount (Tez.of_mumav 200_000_000_000L))
   --> wait_delegate_parameters_activation
   --> set_delegate "staker1" (Some "delegate")
   --> set_delegate "staker2" (Some "delegate")
@@ -479,8 +479,8 @@ let test_deactivation =
   (* ...But not in the following cycle *)
   --> assert_failure ~loc:__LOC__ (next_block_with_baker "delegate")
   (* The stakers still have stake, and can still stake/unstake *)
-  --> check_balance_field "staker1" `Staked (Tez.of_mutez 100_000_000_000L)
-  --> check_balance_field "staker2" `Staked (Tez.of_mutez 100_000_000_000L)
+  --> check_balance_field "staker1" `Staked (Tez.of_mumav 100_000_000_000L)
+  --> check_balance_field "staker2" `Staked (Tez.of_mumav 100_000_000_000L)
   --> assert_success ~loc:__LOC__ (stake "staker1" Half)
   --> assert_success
         ~loc:__LOC__
@@ -497,8 +497,8 @@ let test_deactivation =
   --> assert_failure ~loc:__LOC__ (fail_if_deactivated "delegate")
   --> next_cycle
   (* The stakers still have stake, and can still stake/unstake *)
-  --> check_balance_field "staker1" `Staked (Tez.of_mutez 100_000_000_000L)
-  --> check_balance_field "staker2" `Staked (Tez.of_mutez 100_000_000_000L)
+  --> check_balance_field "staker1" `Staked (Tez.of_mumav 100_000_000_000L)
+  --> check_balance_field "staker2" `Staked (Tez.of_mumav 100_000_000_000L)
   --> assert_success ~loc:__LOC__ (stake "staker1" Half)
   --> assert_success
         ~loc:__LOC__
@@ -507,7 +507,7 @@ let test_deactivation =
   --> next_cycle
   (* We now reactivate the delegate *)
   --> set_delegate "delegate" (Some "delegate")
-  --> stake "delegate" (Amount (Tez.of_mutez 2_000_000_000_000L))
+  --> stake "delegate" (Amount (Tez.of_mumav 2_000_000_000_000L))
   (* It cannot bake right away *)
   --> assert_failure ~loc:__LOC__ (next_block_with_baker "delegate")
   --> wait_n_cycles_f (fun (_, state) ->
@@ -520,7 +520,7 @@ let test_deactivation =
   --> exec_unit (fun (_, state) ->
           let dlgt = State.find_account "delegate" state in
           let total = Frozen_tez.total_current dlgt.frozen_deposits in
-          Assert.equal_tez ~loc:__LOC__ total (Tez.of_mutez 2_200_000_000_000L))
+          Assert.equal_tez ~loc:__LOC__ total (Tez.of_mumav 2_200_000_000_000L))
 
 let tests =
   tests_of_scenarios

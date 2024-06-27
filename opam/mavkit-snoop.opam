@@ -13,14 +13,14 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "mavkit-libs"
-  "mavryk-benchmark"
-  "mavryk-benchmark-examples"
-  "mavkit-shell-libs"
-  "mavryk-benchmarks-proto-alpha"
+  "mavkit-libs" { = version }
+  "mavryk-benchmark" { = version }
+  "mavryk-benchmark-examples" { = version }
+  "mavkit-shell-libs" { = version }
+  "mavryk-benchmarks-proto-alpha" { = version }
   "pyml" { >= "20220905" }
   "prbnmcn-stats" { = "0.0.6" }
-  "mavkit-version"
+  "mavkit-version" { = version }
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]

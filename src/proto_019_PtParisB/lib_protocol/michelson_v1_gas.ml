@@ -543,7 +543,7 @@ module Cost_of = struct
         | String_t -> (apply [@tailcall]) Gas.(acc +@ compare_string x y) k
         | Signature_t -> (apply [@tailcall]) Gas.(acc +@ compare_signature) k
         | Bytes_t -> (apply [@tailcall]) Gas.(acc +@ compare_bytes x y) k
-        | Mutez_t -> (apply [@tailcall]) Gas.(acc +@ compare_mumav) k
+        | Mumav_t -> (apply [@tailcall]) Gas.(acc +@ compare_mumav) k
         | Int_t -> (apply [@tailcall]) Gas.(acc +@ compare_int x y) k
         | Nat_t -> (apply [@tailcall]) Gas.(acc +@ compare_nat x y) k
         | Key_hash_t -> (apply [@tailcall]) Gas.(acc +@ compare_key_hash) k

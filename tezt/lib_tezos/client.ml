@@ -76,6 +76,10 @@ type stresstest_contract_parameters = {
   invocation_gas_limit : int;
 }
 
+type ai_vote = On | Off | Pass
+
+let ai_vote_to_string = function On -> "on" | Off -> "off" | Pass -> "pass"
+
 let name t = t.name
 
 let base_dir t = t.base_dir
@@ -135,8 +139,8 @@ let address ?(hostname = false) ?from peer =
   | Some endpoint ->
       Runner.address ~hostname ?from:(runner endpoint) (runner peer)
 
-let create_with_mode ?runner ?(path = Constant.mavkit_client)
-    ?(admin_path = Constant.mavkit_admin_client) ?name
+let create_with_mode ?runner ?(path = Uses.path Constant.mavkit_client)
+    ?(admin_path = Uses.path Constant.mavkit_admin_client) ?name
     ?(color = Log.Color.FG.blue) ?base_dir mode =
   let name = match name with None -> fresh_name () | Some name -> name in
   let base_dir =
@@ -184,7 +188,7 @@ let endpoint_arg ?(endpoint : endpoint option) client =
   (* pass [?endpoint] first: it has precedence over client.mode *)
   match either endpoint (mode_to_endpoint client.mode) with
   | None -> []
-  | Some e -> ["--endpoint"; string_of_endpoint ~hostname:true e]
+  | Some e -> ["--endpoint"; string_of_endpoint e]
 
 let media_type_arg client =
   match client with
@@ -762,7 +766,8 @@ let empty_mempool_file ?(filename = "mempool.json") () =
 let spawn_bake_for ?endpoint ?protocol ?(keys = [Constant.bootstrap1.alias])
     ?minimal_fees ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte
     ?(minimal_timestamp = true) ?mempool ?(ignore_node_mempool = false) ?count
-    ?force ?context_path ?dal_node_endpoint ?(state_recorder = false) client =
+    ?force ?context_path ?dal_node_endpoint ?ai_vote ?(state_recorder = false)
+    client =
   spawn_command
     ?endpoint
     client
@@ -784,12 +789,13 @@ let spawn_bake_for ?endpoint ?protocol ?(keys = [Constant.bootstrap1.alias])
     @ (match force with None | Some false -> [] | Some true -> ["--force"])
     @ optional_arg "context" Fun.id context_path
     @ optional_arg "dal-node" Fun.id dal_node_endpoint
+    @ optional_arg "adaptive-issuance-vote" ai_vote_to_string ai_vote
     @ optional_switch "record_state" state_recorder)
 
 let bake_for ?endpoint ?protocol ?keys ?minimal_fees
     ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte ?minimal_timestamp
     ?mempool ?ignore_node_mempool ?count ?force ?context_path ?dal_node_endpoint
-    ?state_recorder ?expect_failure client =
+    ?ai_vote ?state_recorder ?expect_failure client =
   spawn_bake_for
     ?endpoint
     ?keys
@@ -804,6 +810,7 @@ let bake_for ?endpoint ?protocol ?keys ?minimal_fees
     ?context_path
     ?protocol
     ?dal_node_endpoint
+    ?ai_vote
     ?state_recorder
     client
   |> Process.check ?expect_failure
@@ -811,7 +818,7 @@ let bake_for ?endpoint ?protocol ?keys ?minimal_fees
 let bake_for_and_wait_level ?endpoint ?protocol ?keys ?minimal_fees
     ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte ?minimal_timestamp
     ?mempool ?ignore_node_mempool ?count ?force ?context_path ?level_before
-    ?node ?dal_node_endpoint ?state_recorder client =
+    ?node ?dal_node_endpoint ?ai_vote ?state_recorder client =
   let node =
     match node with
     | Some n -> n
@@ -842,6 +849,7 @@ let bake_for_and_wait_level ?endpoint ?protocol ?keys ?minimal_fees
       ?force
       ?context_path
       ?dal_node_endpoint
+      ?ai_vote
       ?state_recorder
       client
   in
@@ -850,7 +858,7 @@ let bake_for_and_wait_level ?endpoint ?protocol ?keys ?minimal_fees
 let bake_for_and_wait ?endpoint ?protocol ?keys ?minimal_fees
     ?minimal_nanomav_per_gas_unit ?minimal_nanomav_per_byte ?minimal_timestamp
     ?mempool ?ignore_node_mempool ?count ?force ?context_path ?level_before
-    ?node ?dal_node_endpoint client =
+    ?node ?dal_node_endpoint ?ai_vote client =
   let* (_level : int) =
     bake_for_and_wait_level
       ?endpoint
@@ -868,6 +876,7 @@ let bake_for_and_wait ?endpoint ?protocol ?keys ?minimal_fees
       ?level_before
       ?node
       ?dal_node_endpoint
+      ?ai_vote
       client
   in
   unit
@@ -909,7 +918,7 @@ let spawn_tenderbake_action_for ~tenderbake_action ?endpoint ?protocol
   let use_legacy_attestation_name =
     match protocol with
     | None -> false
-    | Some protocol -> Protocol.(number protocol < 001)
+    | Some protocol -> Protocol.(number protocol < 018)
   in
   spawn_command
     ?endpoint
@@ -2233,6 +2242,22 @@ let typecheck_script ?hooks ?protocol_hash ~scripts ?no_base_dir_warnings
     client
   |> Process.check
 
+let spawn_run_tzt_unit_tests ?hooks ?protocol_hash ~tests ?no_base_dir_warnings
+    client =
+  spawn_command ?hooks ?protocol_hash ?no_base_dir_warnings client
+  @@ ["run"; "unit"; "tests"; "from"]
+  @ tests
+
+let run_tzt_unit_tests ?hooks ?protocol_hash ~tests ?no_base_dir_warnings client
+    =
+  spawn_run_tzt_unit_tests
+    ?hooks
+    ?protocol_hash
+    ~tests
+    ?no_base_dir_warnings
+    client
+  |> Process.check
+
 let spawn_run_tzip4_view ?hooks ?source ?payer ?gas ?unparsing_mode
     ?other_contracts ?extra_big_maps ~entrypoint ~contract ?input
     ?(unlimited_gas = false) client =
@@ -3045,10 +3070,12 @@ let contract_entrypoint_type ~entrypoint ~contract client =
   spawn_contract_entrypoint_type ~entrypoint ~contract client
   |> Process.check_and_read_stdout
 
+let spawn_sign_bytes ~signer ~data client =
+  spawn_command client ["sign"; "bytes"; data; "for"; signer]
+
 let sign_bytes ~signer ~data client =
   let* output =
-    spawn_command client ["sign"; "bytes"; data; "for"; signer]
-    |> Process.check_and_read_stdout
+    spawn_sign_bytes ~signer ~data client |> Process.check_and_read_stdout
   in
   match output =~* rex "Signature: ([a-zA-Z0-9]+)" with
   | Some signature -> Lwt.return signature

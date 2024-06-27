@@ -84,7 +84,7 @@ module Get_delegates = struct
     type t = Blinded_public_key_hash.t
 
     let fold ctxt ~order ~init ~f =
-      fold ctxt ~order ~init ~f:(fun c t acc -> f c (Tez_repr.to_mutez t) acc)
+      fold ctxt ~order ~init ~f:(fun c t acc -> f c (Tez_repr.to_mumav t) acc)
   end
 
   module Delegate = struct

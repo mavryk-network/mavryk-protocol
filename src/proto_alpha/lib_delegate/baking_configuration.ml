@@ -147,6 +147,7 @@ let default_config =
     state_recorder = default_state_recorder_config;
     extra_operations = default_extra_operations;
     dal_node_endpoint = None;
+    pre_emptive_forge_time = default_pre_emptive_forge_time;
   }
 
 let make ?(minimal_fees = default_fees_config.minimal_fees)

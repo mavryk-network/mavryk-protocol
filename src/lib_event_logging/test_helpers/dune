@@ -11,13 +11,16 @@
   mavkit-libs.error-monad
   mavkit-libs.event-logging
   mavkit-libs.test-helpers
+  tezt.core
   mavkit-alcotezt)
  (js_of_ocaml)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
+  -open Mavryk_lwt_result_stdlib
   -open Mavryk_error_monad
   -open Mavryk_error_monad.TzLwtreslib
   -open Mavryk_event_logging
   -open Mavryk_test_helpers
+  -open Tezt_core
   -open Mavkit_alcotezt))

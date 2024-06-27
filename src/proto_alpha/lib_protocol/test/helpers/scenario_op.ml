@@ -264,7 +264,7 @@ let double_bake_op delegate_names (block, state) =
           Adaptive_issuance_helpers.unstake
             (B block)
             delegate.contract
-            Tez.one_mutez
+            Tez.one_mumav
         in
         let* forked_block1 =
           Block.bake ~policy:(By_account delegate.pkh) block

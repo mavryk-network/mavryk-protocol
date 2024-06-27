@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_baking_019_PtParisB)
+ (name mavryk_baking_019_PtParisB)
  (public_name mavkit-protocol-019-PtParisB-libs.baking)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -52,7 +52,7 @@
  (modules (:standard \ Baking_commands Baking_commands_registration)))
 
 (library
- (name tezos_baking_019_PtParisB_commands)
+ (name mavryk_baking_019_PtParisB_commands)
  (public_name mavkit-protocol-019-PtParisB-libs.baking-commands)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -83,7 +83,7 @@
  (modules Baking_commands))
 
 (library
- (name tezos_baking_019_PtParisB_commands_registration)
+ (name mavryk_baking_019_PtParisB_commands_registration)
  (public_name mavkit-protocol-019-PtParisB-libs.baking-commands.registration)
  (instrumentation (backend bisect_ppx))
  (libraries

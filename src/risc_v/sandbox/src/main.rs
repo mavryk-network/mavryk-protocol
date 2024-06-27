@@ -10,7 +10,7 @@ use risc_v_interpreter::{
 use rvemu::emulator::Emulator;
 use std::{error::Error, path::Path};
 use tezos_crypto_rs::hash::ContractKt1Hash;
-use tezos_smart_rollup_encoding::{
+use mavryk_smart_rollup_encoding::{
     michelson::MichelsonUnit, public_key_hash::PublicKeyHash, smart_rollup::SmartRollupAddress,
 };
 

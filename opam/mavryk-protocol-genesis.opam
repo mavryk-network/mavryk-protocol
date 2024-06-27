@@ -13,8 +13,8 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "mavkit-proto-libs"
-  "mavkit-shell-libs"
+  "mavkit-proto-libs" { = version }
+  "mavkit-shell-libs" { = version }
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]

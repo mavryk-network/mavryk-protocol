@@ -67,11 +67,11 @@ operations included in newly received blocks, whose validation is
 triggered by the :ref:`block validator<block_validator>`, in order to
 localize validation rules as needed. The resulting concrete API is
 specified by the :package-api:`Protocol
-<mavkit-proto-libs/Mavryk_protocol_environment/V11/module-type-T/Updater/module-type-PROTOCOL/index.html>`
+<mavkit-proto-libs/Mavryk_protocol_environment/V12/module-type-T/Updater/module-type-PROTOCOL/index.html>`
 module in the :doc:`protocol
-environment<../shell/protocol_environment>` ``V11``, and it is
+environment<../shell/protocol_environment>` ``V12``, and it is
 implemented by this protocol in the
-:package-api:`Main<mavryk-protocol-alpha/Mavryk_raw_protocol_alpha/Main/index.html>`
+:package-api:`Main<tezos-protocol-alpha/Mavryk_raw_protocol_alpha/Main/index.html>`
 module.
 
 The rest of this document is organized as follows: we first describe
@@ -299,7 +299,7 @@ share several common fields:
 
 - ``source``: the public key's hash of the *source* account of the
   manager operation -- that is, the *manager*.
-- ``fee``: the amount of mav paid to the baker which decides to
+- ``fee``: the amount of tez paid to the baker which decides to
   include this operation;
 - ``counter``: the manager account's counter, incremented each time
   this account executes a manager operation, to prevent

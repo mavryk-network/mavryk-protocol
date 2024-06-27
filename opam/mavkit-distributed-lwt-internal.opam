@@ -14,7 +14,7 @@ depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
   "base-unix"
-  "mavkit-distributed-internal"
+  "mavkit-distributed-internal" { = version }
   "lwt" { >= "5.7.0" }
   "logs"
 ]

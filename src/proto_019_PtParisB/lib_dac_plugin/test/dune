@@ -12,7 +12,7 @@
   mavkit-libs.base-test-helpers
   mavkit-protocol-019-PtParisB-libs.test-helpers
   mavryk-dac-lib
-  tezos_dac_node_lib
+  mavryk_dac_node_lib
   mavkit-alcotezt)
  (library_flags (:standard -linkall))
  (flags

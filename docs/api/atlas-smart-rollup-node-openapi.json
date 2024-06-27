@@ -1835,7 +1835,7 @@
                   "SPLIT_TICKET", "chest_key", "bls12_381_g2", "EDIV",
                   "LOOP", "bytes", "TICKET", "LE", "PAIRING_CHECK",
                   "MIN_BLOCK_TIME", "OR", "contract", "GET_AND_UPDATE",
-                  "mutez", "sapling_state", "NONE", "IF_LEFT", "GET", "NOW",
+                  "mumav", "sapling_state", "NONE", "IF_LEFT", "GET", "NOW",
                   "TRANSFER_TOKENS", "LOOP_LEFT", "CONTRACT",
                   "TICKET_DEPRECATED", "VIEW", "EMPTY_SET", "XOR", "never",
                   "READ_TICKET", "EQ", "GE", "MEM", "SENDER", "DROP",

@@ -4,4 +4,4 @@ include: .gitlab/ci/jobs/test/tezt-flaky.yml
 tezt-flaky:
   extends:
     - .tezt-flaky
-    - .rules__octez_changes_manual
+    - .rules__mavkit_changes_manual

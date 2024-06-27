@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_019_PtParisB_mockup_simulator)
+ (name mavryk_019_PtParisB_mockup_simulator)
  (public_name mavkit-protocol-019-PtParisB-libs.bakings.mockup-simulator)
  (libraries
   mavkit-libs.base

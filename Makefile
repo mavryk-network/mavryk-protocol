@@ -106,8 +106,8 @@ all:
 release:
 	@$(MAKE) build PROFILE=release MAVKIT_EXECUTABLES?="$(RELEASED_EXECUTABLES)"
 
-.PHONY: octez
-octez:
+.PHONY: mavkit
+mavkit:
 	@$(MAKE) build PROFILE=release OCTEZ_EXECUTABLES?="$(OCTEZ_ONLY_EXECUTABLES)"
 
 .PHONY: experimental-release

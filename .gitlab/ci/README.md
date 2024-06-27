@@ -23,9 +23,9 @@ around the CI.
    prefix `oc.unit`.
  - If there is no such common prefix, or if it is not descriptive, an
    arbitrary but descriptive name can be used. Example: the file
-   `test/install_octez.yml` defines a set of jobs where the shortest
+   `test/install_mavkit.yml` defines a set of jobs where the shortest
    common name-prefix is the non-descriptive `oc.`, and so a more
-   descriptive name `test/install_octez.yml` is used.
+   descriptive name `test/install_mavkit.yml` is used.
 
 # Hidden jobs (templates)
 

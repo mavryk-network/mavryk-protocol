@@ -188,7 +188,7 @@ type prim =
   | A_Int
   | A_Nat
   | A_Timestamp
-  | A_Mutez
+  | A_Mumav
   | A_Key_hash
   | A_Key
   | A_List
@@ -524,7 +524,7 @@ let string_of_prim prim =
   | A_Int -> "A_Int"
   | A_Nat -> "A_Nat"
   | A_Timestamp -> "A_Timestamp"
-  | A_Mutez -> "A_Mutez"
+  | A_Mumav -> "A_Mumav"
   | A_Key_hash -> "A_Key_hash"
   | A_Key -> "A_Key"
   | A_List -> "A_List"
@@ -570,6 +570,6 @@ let kind (x : prim) =
       Type_kind
   (* Holes in programs and data. *)
   (* Annotations. *)
-  | A_Int | A_Nat | A_Timestamp | A_Mutez | A_Key_hash | A_Key | A_List | A_Set
+  | A_Int | A_Nat | A_Timestamp | A_Mumav | A_Key_hash | A_Key | A_List | A_Set
   | A_Map | A_Lambda ->
       Annot_kind

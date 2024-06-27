@@ -28,7 +28,7 @@ This sequence of operations was run:
           code { CAR ;
                  CONTRACT (list (ticket string)) ;
                  ASSERT_SOME ;
-                 PUSH mutez 0 ;
+                 PUSH mumav 0 ;
                  NIL (ticket string) ;
                  PUSH nat 1 ;
                  PUSH string "Ticket" ;
@@ -174,7 +174,7 @@ Runtime error in contract [CONTRACT_HASH]:
   03:   code { CAR ;
   04:          CONTRACT (list (ticket string)) ;
   05:          ASSERT_SOME ;
-  06:          PUSH mutez 0 ;
+  06:          PUSH mumav 0 ;
   07:          NIL (ticket string) ;
   08:          PUSH nat 1 ;
   09:          PUSH string "Ticket" ;

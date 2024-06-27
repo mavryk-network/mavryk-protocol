@@ -34,7 +34,7 @@ extern {
         "input" => Tok::Noun(TztPrim(TzP::input)),
         "output" => Tok::Noun(TztPrim(TzP::output)),
         "failed" => Tok::Noun(TztPrim(TzP::Failed)),
-        "mutezOverflow" => Tok::Noun(TztPrim(TzP::MutezOverflow)),
+        "mumavOverflow" => Tok::Noun(TztPrim(TzP::MutezOverflow)),
         "generalOverflow" => Tok::Noun(TztPrim(TzP::GeneralOverflow)),
         "StaticError" => Tok::Noun(TztPrim(TzP::StaticError)),
         "amount" => Tok::Noun(TztPrim(TzP::amount)),
@@ -147,7 +147,7 @@ tztStack : Vec<(Micheline<'a>, Micheline<'a>)> = {
   "{" <s:tztStackEltSeq> "}" => s
 }
 
-mutezAmount : i64 =
+mumavAmount : i64 =
   <n:number> =>? i64::try_from(&n)
     .map_err(|_| ParserError::LexerError(LexerError::NumericLiteral(n.to_string())).into() );
 
@@ -158,12 +158,12 @@ tztEntity : TztEntity<'a> = {
   "input" <s:tztStack> => Input(s),
   "output" <s:tztStack> => Output(TztSuccess(s)),
   "output" "(" "failed" <v:Micheline> ")" => Output(TztError(InterpreterError(FailedWith(v)))),
-  "output" "(" "mutezOverflow" <a1:mutezAmount> <a2:mutezAmount> ")" => Output(TztError(InterpreterError(MutezOverflow(a1, a2)))),
+  "output" "(" "mumavOverflow" <a1:mumavAmount> <a2:mumavAmount> ")" => Output(TztError(InterpreterError(MutezOverflow(a1, a2)))),
   "output" "(" "generalOverflow" <a1:number> <a2:number> ")" => Output(TztError(InterpreterError(GeneralOverflow(a1, a2)))),
   "output" "(" "StaticError" <s:string> ")" => Output(TztError(TypecheckerError(Some(s)))),
   "output" "(" "StaticError" "_"  ")" => Output(TztError(TypecheckerError(None))),
-  "amount" <m:mutezAmount> => TztEntity::Amount(m),
-  "balance" <m:mutezAmount> => TztEntity::Balance(m),
+  "amount" <m:mumavAmount> => TztEntity::Amount(m),
+  "balance" <m:mumavAmount> => TztEntity::Balance(m),
   "chain_id" <Micheline> => TztEntity::ChainId(<>),
   "parameter" <Micheline> => TztEntity::Parameter(<>),
   "self" <Micheline> => TztEntity::SelfAddr(<>),

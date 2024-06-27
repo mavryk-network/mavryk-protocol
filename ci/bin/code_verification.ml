@@ -197,7 +197,7 @@ let jobs_unit_tests ~job_build_x86_64_release ~job_build_x86_64_exp_dev_extra
        dependencies failed. Moreover, the ordering serves no purpose
        on scheduled pipelines, so we might even remove them for that
        [pipeline_type]. *)
-    make_rules ~changes:changeset_octez ~dependent:true pipeline_type
+    make_rules ~changes:changeset_mavkit ~dependent:true pipeline_type
   in
   let job_unit_test ~__POS__ ?(image = Images.runtime_build_dependencies)
       ?timeout ?parallel_vector ~arch ~name ?(enable_coverage = true)
@@ -351,7 +351,7 @@ let jobs_unit_tests ~job_build_x86_64_release ~job_build_x86_64_exp_dev_extra
     oc_unit_protocol_compiles;
   ]
 
-type install_octez_distribution = Ubuntu_focal | Ubuntu_jammy | Fedora_37
+type install_mavkit_distribution = Ubuntu_focal | Ubuntu_jammy | Fedora_37
 
 let image_of_distribution = function
   | Ubuntu_focal -> Images.ubuntu_focal
@@ -496,7 +496,7 @@ let jobs pipeline_type =
   let job_docker_rust_toolchain =
     job_docker_rust_toolchain
       ~__POS__
-      ~rules:(make_rules ~changes:changeset_octez_or_kernels ~manual:true ())
+      ~rules:(make_rules ~changes:changeset_mavkit_or_kernels ~manual:true ())
       ~dependencies:dependencies_needs_trigger
       ()
     |> job_external_split
@@ -528,7 +528,7 @@ let jobs pipeline_type =
       ~arch:Amd64
       ~dependencies:dependencies_needs_trigger
       ~release:true
-      ~rules:(make_rules ~changes:changeset_octez ())
+      ~rules:(make_rules ~changes:changeset_mavkit ())
       ()
     |> job_external_split
   in
@@ -541,7 +541,7 @@ let jobs pipeline_type =
       ~arch:Amd64
       ~dependencies:dependencies_needs_trigger
       ~release:false
-      ~rules:(make_rules ~changes:changeset_octez ())
+      ~rules:(make_rules ~changes:changeset_mavkit ())
       ()
     |> job_external_split
   in
@@ -563,7 +563,7 @@ let jobs pipeline_type =
              of pipelines. So we start this job as early as possible,
              without waiting for sanity_ci. *)
         ~dependencies:dependencies_needs_trigger
-        ~rules:(make_rules ~changes:changeset_octez ())
+        ~rules:(make_rules ~changes:changeset_mavkit ())
         ()
       |> job_external_split
     in
@@ -605,7 +605,7 @@ let jobs pipeline_type =
         ~stage:Stages.build
         ~dependencies:(Dependent [Artifacts job_docker_rust_toolchain])
         ~rules:
-          (make_rules ~changes:changeset_octez_or_kernels ~dependent:true ())
+          (make_rules ~changes:changeset_mavkit_or_kernels ~dependent:true ())
         [
           "make -f kernels.mk build";
           "make -f etherlink.mk evm_kernel.wasm";
@@ -650,7 +650,7 @@ let jobs pipeline_type =
              ~source_version:true
              ~eval_opam:true
              [])
-        ~rules:(make_rules ~changes:changeset_octez ())
+        ~rules:(make_rules ~changes:changeset_mavkit ())
         [
           "dune exec scripts/ci/update_records/update.exe -- --log-file \
            tezt-fetch-records.log --from \
@@ -756,7 +756,7 @@ let jobs pipeline_type =
       ~schedule_extended_test:(fun () -> Staged [])
   in
   let test =
-    (* check that ksy files are still up-to-date with octez *)
+    (* check that ksy files are still up-to-date with mavkit *)
     let job_kaitai_checks : tezos_job =
       job
         ~__POS__
@@ -868,7 +868,7 @@ let jobs pipeline_type =
         ~stage:Stages.test
         ~retry:2
         ~dependencies:dependencies_needs_trigger
-        ~rules:(make_rules ~changes:changeset_octez ())
+        ~rules:(make_rules ~changes:changeset_mavkit ())
         ~before_script:(before_script ~source_version:true ~eval_opam:true [])
         [
           (* checks that all deps of opam packages are already installed *)
@@ -906,7 +906,7 @@ let jobs pipeline_type =
         ~name:"oc.integration:compiler-rejections"
         ~stage:Stages.test
         ~image:Images.runtime_build_dependencies
-        ~rules:(make_rules ~changes:changeset_octez ())
+        ~rules:(make_rules ~changes:changeset_mavkit ())
         ~dependencies:
           (Dependent
              [Job job_build_x86_64_release; Job job_build_x86_64_exp_dev_extra])
@@ -921,7 +921,7 @@ let jobs pipeline_type =
         ~stage:Stages.test
         ~image:Images.runtime_build_dependencies
         ~dependencies:dependencies_needs_trigger
-        ~rules:(make_rules ~changes:changeset_octez ())
+        ~rules:(make_rules ~changes:changeset_mavkit ())
         ~before_script:
           (before_script ~eval_opam:true ["cd scripts/gen-genesis"])
         ["dune build gen_genesis.exe"]
@@ -948,21 +948,21 @@ let jobs pipeline_type =
     let job_oc_script_test_release_versions : tezos_job =
       job
         ~__POS__
-        ~name:"oc.script:test_octez_release_versions"
+        ~name:"oc.script:test_mavkit_release_versions"
         ~stage:Stages.test
         ~image:Images.runtime_build_dependencies
         ~dependencies:
           (Dependent
              [Job job_build_x86_64_release; Job job_build_x86_64_exp_dev_extra])
           (* Since the above dependencies are only for ordering, we do not set [dependent] *)
-        ~rules:(make_rules ~changes:changeset_octez ())
+        ~rules:(make_rules ~changes:changeset_mavkit ())
         ~before_script:
           (before_script
              ~take_ownership:true
              ~source_version:true
              ~eval_opam:true
              [])
-        ["./scripts/test_octez_release_version.sh"]
+        ["./scripts/test_mavkit_release_version.sh"]
       |> job_external_split
     in
     let job_oc_script_b58_prefix =
@@ -1007,11 +1007,11 @@ let jobs pipeline_type =
       |> job_external_split
     in
     (* The set of installation test jobs *)
-    let jobs_install_octez : tezos_job list =
+    let jobs_install_mavkit : tezos_job list =
       let changeset_install_jobs =
         ["docs/introduction/install*.sh"; "docs/introduction/compile*.sh"]
       in
-      let install_octez_rules =
+      let install_mavkit_rules =
         make_rules ~changes:changeset_install_jobs ~manual:true ()
       in
       let job_install_bin ~__POS__ ~name ?allow_failure ?(rc = false)
@@ -1031,7 +1031,7 @@ let jobs pipeline_type =
           ~name
           ~image:(image_of_distribution distribution)
           ~dependencies:dependencies_needs_trigger
-          ~rules:install_octez_rules
+          ~rules:install_mavkit_rules
           ~stage:Stages.test
           [script]
       in
@@ -1056,7 +1056,7 @@ let jobs pipeline_type =
           ~name
           ~image
           ~dependencies:dependencies_needs_trigger
-          ~rules:install_octez_rules
+          ~rules:install_mavkit_rules
           ~stage:Stages.test
           [sf "./docs/introduction/compile-sources.sh %s %s" project branch]
       in
@@ -1117,7 +1117,7 @@ let jobs pipeline_type =
           ~project:"${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH:-tezos/tezos}"
           ~branch:"${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-master}";
       ]
-      |> jobs_external_split ~path:"test/install_octez"
+      |> jobs_external_split ~path:"test/install_mavkit"
     in
     [
       job_kaitai_checks;
@@ -1133,7 +1133,7 @@ let jobs pipeline_type =
       job_oc_script_b58_prefix;
       job_oc_test_liquidity_baking_scripts;
     ]
-    @ jobs_unit @ jobs_install_octez
+    @ jobs_unit @ jobs_install_mavkit
     @
     match pipeline_type with
     | Before_merging ->

@@ -10,7 +10,7 @@
 open Manifest
 open Externals
 open Internals
-open Product_octez
+open Product_mavkit
 
 include Product (struct
   let name = "client-libs"
@@ -57,7 +57,7 @@ let _kaitai_of_data_encoding_test =
     ~bisect_ppx:No
     ~inline_tests:ppx_expect
 
-let _octez_codec_kaitai =
+let _mavkit_codec_kaitai =
   public_exe
     "mavkit-codec-kaitai"
     ~path:"client-libs/bin_codec_kaitai"
@@ -71,15 +71,15 @@ let _octez_codec_kaitai =
          data_encoding |> open_;
          kaitai_of_data_encoding;
          kaitai;
-         octez_base |> open_ ~m:"TzPervasives";
-         octez_base_unix;
-         octez_client_base_unix |> open_;
-         octez_client_base |> open_;
-         octez_clic;
-         octez_stdlib_unix |> open_;
-         octez_event_logging |> open_;
-         octez_signer_services;
-         octez_version_value;
+         mavkit_base |> open_ ~m:"TzPervasives";
+         mavkit_base_unix;
+         mavkit_client_base_unix |> open_;
+         mavkit_client_base |> open_;
+         mavkit_clic;
+         mavkit_stdlib_unix |> open_;
+         mavkit_event_logging |> open_;
+         mavkit_signer_services;
+         mavkit_version_value;
        ]
       @ Protocol.all_optionally
       @@ [

@@ -2039,7 +2039,7 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Nairobi: opcodes [ediv_mutez--storage977883604--input635398196]",
+    "title": "Nairobi: opcodes [ediv_mumav--storage977883604--input635398196]",
     "tags": [
       "regression",
       "admin_client",

@@ -45,7 +45,7 @@ type release_tag_pipeline_type =
     If [test] is true (default is [false]), then the Docker images are
     built of the [Test] type and are published to the GitLab registry
     instead of Docker hub. *)
-let octez_jobs ?(test = false) release_tag_pipeline_type =
+let mavkit_jobs ?(test = false) release_tag_pipeline_type =
   let job_docker_amd64 =
     job_docker_build ~__POS__ ~arch:Amd64 (if test then Test else Release)
   in
@@ -74,7 +74,7 @@ let octez_jobs ?(test = false) release_tag_pipeline_type =
       ~dependencies
       ~name:"gitlab:release"
       [
-        "./scripts/ci/restrict_export_to_octez_source.sh";
+        "./scripts/ci/restrict_export_to_mavkit_source.sh";
         "./scripts/ci/gitlab-release.sh";
       ]
   in

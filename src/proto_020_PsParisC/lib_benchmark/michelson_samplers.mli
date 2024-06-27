@@ -68,7 +68,7 @@ type type_name =
   | `TSignature
   | `TString
   | `TBytes
-  | `TMutez
+  | `TMumav
   | `TKey_hash
   | `TKey
   | `TTimestamp
@@ -154,7 +154,7 @@ module Internal_for_tests : sig
     | `TLambda
     | `TList
     | `TMap
-    | `TMutez
+    | `TMumav
     | `TNat
     | `TOperation
     | `TOption

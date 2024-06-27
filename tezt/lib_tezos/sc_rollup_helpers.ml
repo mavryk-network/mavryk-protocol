@@ -44,6 +44,8 @@ let replace_variables string =
 
 let hooks = Mavryk_regression.hooks_custom ~replace_variables ()
 
+let rpc_hooks = Mavryk_regression.rpc_hooks
+
 let hex_encode (input : string) : string =
   match Hex.of_string input with `Hex s -> s
 
@@ -135,7 +137,6 @@ let prepare_installer_kernel_with_arbitrary_file ?runner ~preimages_dir ?config
     base ^ "-installer.hex"
   in
   let output = Temp.file installer in
-  let installee = (project_root // base_installee // installee) ^ ".wasm" in
   let setup_file_args =
     match config with
     | Some config ->
@@ -166,7 +167,7 @@ let prepare_installer_kernel_with_arbitrary_file ?runner ~preimages_dir ?config
     Process.spawn
       ?runner
       ~name:installer
-      (project_root // "smart-rollup-installer")
+      (project_root // Uses.path Constant.smart_rollup_installer)
       ([
          "get-reveal-installer";
          "--upgrade-to";
@@ -234,6 +235,9 @@ let setup_l1 ?timestamp ?bootstrap_smart_rollups ?bootstrap_contracts
        make_bool_parameter "smart_rollup_private_enable" whitelist_enable
       else [])
     @ [(["smart_rollup_arith_pvm_enable"], `Bool true)]
+    @
+    if riscv_pvm_enable then [(["smart_rollup_riscv_pvm_enable"], `Bool true)]
+    else []
   in
   let base = Either.right (protocol, None) in
   let* parameter_file =
@@ -258,8 +262,8 @@ let setup_l1 ?timestamp ?bootstrap_smart_rollups ?bootstrap_contracts
 (** This helper injects an SC rollup origination via mavkit-client. Then it
     bakes to include the origination in a block. It returns the address of the
     originated rollup *)
-let originate_sc_rollup ?hooks ?(burn_cap = Tez.(of_int 9999999)) ?whitelist
-    ?(alias = "rollup") ?(src = Constant.bootstrap1.alias) ~kind
+let originate_sc_rollup ?keys ?hooks ?(burn_cap = Tez.(of_int 9999999))
+    ?whitelist ?(alias = "rollup") ?(src = Constant.bootstrap1.alias) ~kind
     ?(parameters_ty = "string") ?(boot_sector = default_boot_sector_of ~kind)
     client =
   let* sc_rollup =
@@ -275,7 +279,7 @@ let originate_sc_rollup ?hooks ?(burn_cap = Tez.(of_int 9999999)) ?whitelist
         ~boot_sector
         client)
   in
-  let* () = Client.bake_for_and_wait client in
+  let* () = Client.bake_for_and_wait ?keys client in
   return sc_rollup
 
 (* Configuration of a rollup node
@@ -283,10 +287,10 @@ let originate_sc_rollup ?hooks ?(burn_cap = Tez.(of_int 9999999)) ?whitelist
 
    A rollup node has a configuration file that must be initialized.
 *)
-let setup_rollup ~protocol ~kind ?hooks ?alias ?(mode = Sc_rollup_node.Operator)
+let setup_rollup ~kind ?hooks ?alias ?(mode = Sc_rollup_node.Operator)
     ?boot_sector ?(parameters_ty = "string") ?(src = Constant.bootstrap1.alias)
     ?operator ?operators ?data_dir ?rollup_node_name ?whitelist ?sc_rollup
-    mavryk_node mavryk_client =
+    ?allow_degraded mavryk_node mavryk_client =
   let* sc_rollup =
     match sc_rollup with
     | Some sc_rollup -> return sc_rollup
@@ -310,9 +314,9 @@ let setup_rollup ~protocol ~kind ?hooks ?alias ?(mode = Sc_rollup_node.Operator)
       ?default_operator:operator
       ?operators
       ?name:rollup_node_name
+      ?allow_degraded
   in
-  let rollup_client = Sc_rollup_client.create ~protocol sc_rollup_node in
-  return (sc_rollup_node, rollup_client, sc_rollup)
+  return (sc_rollup_node, sc_rollup)
 
 let originate_forward_smart_contract ?(src = Constant.bootstrap1.alias) client
     protocol =
@@ -354,16 +358,11 @@ let genesis_commitment ~sc_rollup mavryk_client =
   let genesis_commitment_hash =
     JSON.(genesis_info |-> "commitment_hash" |> as_string)
   in
-  let* commitment_opt =
-    Client.RPC.call ~hooks mavryk_client
-    @@ RPC.get_chain_block_context_smart_rollups_smart_rollup_commitment
-         ~sc_rollup
-         ~hash:genesis_commitment_hash
-         ()
-  in
-  match commitment_opt with
-  | None -> failwith "genesis commitment have been removed"
-  | Some commitment -> return commitment
+  Client.RPC.call ~hooks mavryk_client
+  @@ RPC.get_chain_block_context_smart_rollups_smart_rollup_commitment
+       ~sc_rollup
+       ~hash:genesis_commitment_hash
+       ()
 
 let call_rpc ~smart_rollup_node ~service =
   let open Runnable.Syntax in
@@ -376,19 +375,17 @@ let call_rpc ~smart_rollup_node ~service =
 type bootstrap_smart_rollup_setup = {
   bootstrap_smart_rollup : Protocol.bootstrap_smart_rollup;
   smart_rollup_node_data_dir : string;
-  smart_rollup_node_extra_args : string list;
+  smart_rollup_node_extra_args : Sc_rollup_node.argument list;
 }
 
 let setup_bootstrap_smart_rollup ?(name = "smart-rollup") ~address
-    ?(parameters_ty = "string") ?whitelist ?base_installee ~installee ?config ()
-    =
+    ?(parameters_ty = "string") ?whitelist ~installee ?config () =
   (* Create a temporary directory to store the preimages. *)
   let smart_rollup_node_data_dir = Temp.dir (name ^ "-data-dir") in
 
   (* Create the installer boot sector. *)
   let* {boot_sector; output = boot_sector_file; _} =
     prepare_installer_kernel
-      ?base_installee
       ~preimages_dir:(Filename.concat smart_rollup_node_data_dir "wasm_2_0_0")
       ?config
       installee
@@ -408,7 +405,7 @@ let setup_bootstrap_smart_rollup ?(name = "smart-rollup") ~address
     {
       bootstrap_smart_rollup;
       smart_rollup_node_data_dir;
-      smart_rollup_node_extra_args = ["--boot-sector-file"; boot_sector_file];
+      smart_rollup_node_extra_args = [Boot_sector_file boot_sector_file];
     }
 
 (* Refutation game scenarios
@@ -539,14 +536,13 @@ let get_sc_rollup_constants client =
     }
 
 let forged_commitment ?(compressed_state = Constant.sc_rollup_compressed_state)
-    ?(number_of_ticks = 1) ~inbox_level ~predecessor () :
-    Sc_rollup_rpc.commitment =
-  {compressed_state; inbox_level; predecessor; number_of_ticks}
+    ?(number_of_ticks = 1) ~inbox_level ~predecessor () =
+  RPC.{compressed_state; inbox_level; predecessor; number_of_ticks}
 
 let publish_commitment ?(src = Constant.bootstrap1.public_key_hash) ~commitment
     client sc_rollup =
   let ({compressed_state; inbox_level; predecessor; number_of_ticks}
-        : Sc_rollup_rpc.commitment) =
+        : RPC.smart_rollup_commitment) =
     commitment
   in
   Client.Sc_rollup.publish_commitment
@@ -769,9 +765,7 @@ let wait_for_publish_commitment node =
 (** Wait for the rollup node to detect a timeout *)
 let wait_for_timeout_detected sc_node =
   Sc_rollup_node.wait_for sc_node "smart_rollup_node_timeout_detected.v0"
-  @@ fun json ->
-  let other = JSON.(json |> as_string) in
-  Some other
+  @@ fun json -> Some (JSON.as_string json)
 
 (** Wait for the rollup node to compute a dissection *)
 let wait_for_computed_dissection sc_node =
@@ -813,9 +807,8 @@ let prioritize_refute_operations sc_rollup_node =
     (update "refute"
     @@ put
          ( "minimal-nanomav-per-gas-unit",
-           JSON.annotate
-             ~origin:"higher-priority"
-             (`A [`String "200"; `String "1"]) ))
+           annotate ~origin:"higher-priority" (`A [`String "200"; `String "1"])
+         ))
     config
 
 let send_text_messages ?(format = `Raw) ?hooks ?src client msgs =
@@ -875,8 +868,8 @@ let test_refutation_scenario_aux ~(mode : Sc_rollup_node.mode) ~kind
       reset_honest_on;
       bad_reveal_at;
       priority;
-      allow_degraded;
-    } protocol sc_rollup_node _sc_client1 sc_rollup_address node client =
+      allow_degraded : _;
+    } protocol sc_rollup_node sc_rollup_address node client =
   let bootstrap1_key = Constant.bootstrap1.public_key_hash in
   let loser_keys =
     List.mapi
@@ -948,12 +941,7 @@ let test_refutation_scenario_aux ~(mode : Sc_rollup_node.mode) ~kind
     if priority = `Priority_honest then
       prioritize_refute_operations sc_rollup_node ;
     let* () =
-      Sc_rollup_node.run
-        ~event_level:`Debug
-        ~allow_degraded
-        sc_rollup_node
-        sc_rollup_address
-        []
+      Sc_rollup_node.run ~event_level:`Debug sc_rollup_node sc_rollup_address []
     in
     return
       [
@@ -967,7 +955,7 @@ let test_refutation_scenario_aux ~(mode : Sc_rollup_node.mode) ~kind
   let loser_sc_rollup_nodes =
     let i = ref 0 in
     List.map2
-      (fun default_operator _ ->
+      (fun default_operator loser_mode ->
         incr i ;
         let rollup_node_name = "loser" ^ string_of_int !i in
         Sc_rollup_node.create
@@ -975,28 +963,23 @@ let test_refutation_scenario_aux ~(mode : Sc_rollup_node.mode) ~kind
           node
           ~base_dir:(Client.base_dir client)
           ~default_operator
-          ~name:rollup_node_name)
+          ~name:rollup_node_name
+          ~loser_mode
+          ~allow_degraded)
       loser_keys
       loser_modes
   in
   let* gather_promises = run_honest_node sc_rollup_node
   and* () =
-    Lwt_list.iter_p (fun (loser_mode, loser_sc_rollup_node) ->
+    Lwt_list.iter_p
+      (fun loser_sc_rollup_node ->
         let* _ =
-          Sc_rollup_node.config_init
-            ~loser_mode
-            loser_sc_rollup_node
-            sc_rollup_address
+          Sc_rollup_node.config_init loser_sc_rollup_node sc_rollup_address
         in
         if priority = `Priority_loser then
           prioritize_refute_operations loser_sc_rollup_node ;
-        Sc_rollup_node.run
-          loser_sc_rollup_node
-          ~loser_mode
-          ~allow_degraded
-          sc_rollup_address
-          [])
-    @@ List.combine loser_modes loser_sc_rollup_nodes
+        Sc_rollup_node.run loser_sc_rollup_node sc_rollup_address [])
+      loser_sc_rollup_nodes
   in
 
   let restart_promise =
@@ -1179,3 +1162,34 @@ let wait_for_injecting_event ?(tags = []) ?count node =
 let injecting_refute_event _mavryk_node rollup_node =
   let* _injected = wait_for_injecting_event ~tags:["refute"] rollup_node in
   unit
+
+type transaction = {
+  destination : string;
+  entrypoint : string option;
+  parameters : JSON.u;
+  parameters_ty : JSON.u option;
+}
+
+let json_of_output_tx_batch txs =
+  let json_of_transaction {destination; entrypoint; parameters; parameters_ty} =
+    `O
+      (List.filter_map
+         Fun.id
+         [
+           Some ("destination", `String destination);
+           Some ("parameters", parameters);
+           Option.map (fun v -> ("entrypoint", `String v)) entrypoint;
+           Option.map (fun ty -> ("parameters_ty", ty)) parameters_ty;
+         ])
+  in
+  let transactions_json = List.map json_of_transaction txs in
+  let parameters_ty =
+    match txs with [] -> None | hd :: _ -> hd.parameters_ty
+  in
+  `O
+    [
+      ("transactions", `A transactions_json);
+      ( "kind",
+        `String
+          (match parameters_ty with Some _ -> "typed" | None -> "untyped") );
+    ]

@@ -59,7 +59,7 @@ let init_with_stakers () =
     --> wait_n_cycles 4
   in
   let add_staker name delegate amount staked_amount =
-    add_account_with_funds name ~funder:delegate (Amount (Tez.of_mutez amount))
+    add_account_with_funds name ~funder:delegate (Amount (Tez.of_mumav amount))
     --> set_delegate name (Some delegate)
     --> stake name staked_amount
   in

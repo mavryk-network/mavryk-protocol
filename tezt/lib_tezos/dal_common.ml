@@ -29,6 +29,7 @@ module Cryptobox = Mavryk_crypto_dal.Cryptobox
 module Parameters = struct
   type t = {
     feature_enabled : bool;
+    incentives_enabled : bool;
     cryptobox : Cryptobox.parameters;
     number_of_slots : int;
     attestation_lag : int;
@@ -58,8 +59,13 @@ module Parameters = struct
       |> Option.value ~default:1
     in
     let feature_enabled = JSON.(json |-> "feature_enable" |> as_bool) in
+    let incentives_enabled =
+      JSON.(json |-> "incentives_enable" |> as_bool_opt)
+      |> Option.value ~default:false
+    in
     {
       feature_enabled;
+      incentives_enabled;
       cryptobox =
         Cryptobox.Verifier.
           {number_of_shards; redundancy_factor; slot_size; page_size};
@@ -577,7 +583,8 @@ module Commitment = struct
         function
         | `Slot_wrong_size str ->
             Test.fail "Dal_common.dummy_commitment failed: %s" str
-        | `Invalid_degree_strictly_less_than_expected _ as commit_error ->
+        | ( `Invalid_degree_strictly_less_than_expected _
+          | `Prover_SRS_not_loaded ) as commit_error ->
             Test.fail "%s" (Cryptobox.string_of_commit_error commit_error))
       cryptobox message =
     let parameters = Cryptobox.Verifier.parameters cryptobox in

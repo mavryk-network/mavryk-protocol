@@ -12,7 +12,7 @@ oc.unified_coverage:
     # We do not run this job when margebot triggers the
     # pipeline. Instead, the coverage traces are downloaded in the
     # master pipeline and the report is computed there.
-    - .rules__octez_changes_and_not_margebot
+    - .rules__mavkit_changes_and_not_margebot
   variables:
     # This inhibites the Makefile's opam version check, which this
     # job's opam-less image cannot pass.

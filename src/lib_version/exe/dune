@@ -9,7 +9,7 @@
  (modules get_git_info))
 
 (executable
- (name mavryk_print_version)
+ (name mavkit_print_version)
  (public_name mavkit-version)
  (package mavkit-version)
  (libraries
@@ -25,7 +25,7 @@
   -open Mavryk_version_value
   -open Mavryk_version
   -open Mavkit_version_print)
- (modules mavryk_print_version))
+ (modules mavkit_print_version))
 
 (executable
  (name etherlink_print_version)

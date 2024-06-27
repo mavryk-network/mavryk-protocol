@@ -38,7 +38,7 @@ mavkit-proxy-server
 mavkit-signer
 mavkit-smart-rollup-node*
 mavkit-smart-rollup-client-*
-mavryk-injector-server
+mavkit-injector-server
 octogram
 
 scripts/opam-test-all.sh.DONE

@@ -74,11 +74,11 @@ let () =
     ~uses:
       [
         Constant.mavkit_node;
-        Constant.octez_client;
-        Constant.octez_dal_node;
-        Constant.octez_dac_node;
-        Constant.octez_smart_rollup_node;
-        Constant.octez_evm_node;
+        Constant.mavkit_client;
+        Constant.mavkit_dal_node;
+        Constant.mavkit_dac_node;
+        Constant.mavkit_smart_rollup_node;
+        Constant.mavkit_evm_node;
         Constant.WASM.evm_kernel;
       ]
   @@ fun () ->

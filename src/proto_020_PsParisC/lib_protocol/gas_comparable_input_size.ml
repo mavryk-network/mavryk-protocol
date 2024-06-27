@@ -112,7 +112,7 @@ let rec size_of_comparable_value :
    | Nat_t -> integer v
    | String_t -> script_string v
    | Bytes_t -> bytes v
-   | Mutez_t -> mumav v
+   | Mumav_t -> mumav v
    | Bool_t -> bool v
    | Key_hash_t -> key_hash v
    | Timestamp_t -> timestamp v

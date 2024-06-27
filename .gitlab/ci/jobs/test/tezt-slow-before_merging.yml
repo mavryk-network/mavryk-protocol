@@ -3,4 +3,4 @@ include: .gitlab/ci/jobs/test/tezt-slow.yml
 tezt-slow:
   extends:
     - .tezt-slow
-    - .rules__octez_changes_manual
+    - .rules__mavkit_changes_manual

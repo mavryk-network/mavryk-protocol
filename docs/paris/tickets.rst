@@ -80,16 +80,16 @@ Once a ticket has been constructed by a smart contract, it may be transferred to
     # Stack: option (contract (ticket string)) :: S
     ASSERT_SOME ;
     # Stack: contract (ticket string) :: S
-    PUSH mutez 0 ;
-    # Stack: mutez :: contract (ticket string) :: S
+    PUSH mumav 0 ;
+    # Stack: mumav :: contract (ticket string) :: S
     PUSH nat 10 ;
-    # Stack: nat :: mutez :: contract (ticket string) :: S
+    # Stack: nat :: mumav :: contract (ticket string) :: S
     PUSH string "some ticket" ;
-    # Stack: string :: nat :: mutez :: contract (ticket string) :: S
+    # Stack: string :: nat :: mumav :: contract (ticket string) :: S
     TICKET ;
-    # Stack: option (ticket string) :: mutez :: contract (ticket string) :: S
+    # Stack: option (ticket string) :: mumav :: contract (ticket string) :: S
     ASSERT_SOME ;
-    # Stack: ticket string :: mutez :: contract (ticket string) :: S
+    # Stack: ticket string :: mumav :: contract (ticket string) :: S
     TRANSFER_TOKENS ;
     # Stack: operation :: S
 

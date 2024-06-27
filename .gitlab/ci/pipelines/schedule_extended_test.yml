@@ -43,7 +43,7 @@ include:
   - .gitlab/ci/jobs/test/oc.integration:compiler-rejections-scheduled_extended_test.yml
   - .gitlab/ci/jobs/test/oc.script:snapshot_alpha_and_link-scheduled_extended_test.yml
   - .gitlab/ci/jobs/test/oc.script:test-gen-genesis-scheduled_extended_test.yml
-  - .gitlab/ci/jobs/test/oc.script:test_octez_release_versions-scheduled_extended_test.yml
+  - .gitlab/ci/jobs/test/oc.script:test_mavkit_release_versions-scheduled_extended_test.yml
   - .gitlab/ci/jobs/test/oc.script:b58_prefix-scheduled_extended_test.yml
   - .gitlab/ci/jobs/test/oc.test-liquidity-baking-scripts-scheduled_extended_test.yml
   - .gitlab/ci/jobs/test/tezt.yml

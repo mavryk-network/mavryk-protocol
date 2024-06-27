@@ -11,7 +11,7 @@ type t = Protocol.Alpha_context.Tez.t
 
 val zero : t
 
-val one_mutez : t
+val one_mumav : t
 
 val one_cent : t
 
@@ -19,7 +19,7 @@ val fifty_cents : t
 
 val one : t
 
-(* Same as max_mutez *)
+(* Same as max_mumav *)
 val max_tez : t
 
 val equal : t -> t -> bool
@@ -43,10 +43,10 @@ val ( *! ) : t -> int64 -> t
 
 val ( /! ) : t -> int64 -> t
 
-val to_mutez : t -> int64
+val to_mumav : t -> int64
 
-(* Is actually of_mutez_exn *)
-val of_mutez : int64 -> t
+(* Is actually of_mumav_exn *)
+val of_mumav : int64 -> t
 
 val min : t -> t -> t
 
@@ -84,6 +84,6 @@ module Ez_tez : sig
 
   (** [quantity_to_tez max qty] returns a tez value corresponding to the given
       [qty]. If [qty] is [All], then returns [max]. If [qty] is [All_but_one],
-      returns [max - one_mutez]. *)
+      returns [max - one_mumav]. *)
   val quantity_to_tez : t -> tez_quantity -> t
 end

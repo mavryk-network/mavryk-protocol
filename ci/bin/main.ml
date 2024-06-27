@@ -76,24 +76,24 @@ let job_dummy : job =
    manually in .yml, but will eventually be generated. *)
 let () =
   (* Matches Octez release tags, e.g. [mavkit-v1.2.3] or [mavkit-v1.2.3-rc4]. *)
-  let octez_release_tag_re = "/^mavkit-v\\d+\\.\\d+(?:\\-rc\\d+)?$/" in
+  let mavkit_release_tag_re = "/^mavkit-v\\d+\\.\\d+(?:\\-rc\\d+)?$/" in
   (* Matches Octez beta release tags, e.g. [mavkit-v1.2.3-beta5]. *)
-  let octez_beta_release_tag_re = "/^mavkit-v\\d+\\.\\d+\\-beta\\d*$/" in
+  let mavkit_beta_release_tag_re = "/^mavkit-v\\d+\\.\\d+\\-beta\\d*$/" in
   (* Matches Etherlink release tags, e.g. [etherlink-v1.2.3] or [etherlink-v1.2.3-rc4]. *)
   let etherlink_release_tag_re = "/^etherlink-v\\d+\\.\\d+(?:\\-rc\\d+)?$/" in
   let open Rules in
   let open Pipeline in
   (* Matches either Octez release tags or Octez beta release tags,
      e.g. [mavkit-v1.2.3], [mavkit-v1.2.3-rc4] or [mavkit-v1.2.3-beta5]. *)
-  let has_any_octez_release_tag =
+  let has_any_mavkit_release_tag =
     If.(
-      has_tag_match octez_release_tag_re
-      || has_tag_match octez_beta_release_tag_re)
+      has_tag_match mavkit_release_tag_re
+      || has_tag_match mavkit_beta_release_tag_re)
   in
   let has_non_release_tag =
     If.(
       Predefined_vars.ci_commit_tag != null
-      && (not has_any_octez_release_tag)
+      && (not has_any_mavkit_release_tag)
       && not (has_tag_match etherlink_release_tag_re))
   in
   register
@@ -101,11 +101,11 @@ let () =
     If.(on_tezos_namespace && merge_request)
     ~jobs:(Code_verification.jobs Before_merging) ;
   register
-    "octez_latest_release"
+    "mavkit_latest_release"
     ~jobs:(Octez_latest_release.jobs ())
     If.(on_tezos_namespace && push && on_branch "latest-release") ;
   register
-    "octez_latest_release_test"
+    "mavkit_latest_release_test"
     If.(not_on_tezos_namespace && push && on_branch "latest-release-test")
     ~jobs:(Octez_latest_release.jobs ~test:true ()) ;
   register
@@ -113,17 +113,17 @@ let () =
     If.(on_tezos_namespace && push && on_branch "master")
     ~jobs:Master_branch.jobs ;
   register
-    "octez_release_tag"
-    If.(on_tezos_namespace && push && has_tag_match octez_release_tag_re)
-    ~jobs:(Release_tag.octez_jobs Release_tag) ;
+    "mavkit_release_tag"
+    If.(on_tezos_namespace && push && has_tag_match mavkit_release_tag_re)
+    ~jobs:(Release_tag.mavkit_jobs Release_tag) ;
   register
-    "octez_beta_release_tag"
-    If.(on_tezos_namespace && push && has_tag_match octez_beta_release_tag_re)
-    ~jobs:(Release_tag.octez_jobs Beta_release_tag) ;
+    "mavkit_beta_release_tag"
+    If.(on_tezos_namespace && push && has_tag_match mavkit_beta_release_tag_re)
+    ~jobs:(Release_tag.mavkit_jobs Beta_release_tag) ;
   register
-    "octez_release_tag_test"
-    If.(not_on_tezos_namespace && push && has_any_octez_release_tag)
-    ~jobs:(Release_tag.octez_jobs ~test:true Release_tag) ;
+    "mavkit_release_tag_test"
+    If.(not_on_tezos_namespace && push && has_any_mavkit_release_tag)
+    ~jobs:(Release_tag.mavkit_jobs ~test:true Release_tag) ;
   (* To test this type of release, push a tag to a fork of [tezos/tezos]
      e.g. [nomadic-labs/tezos] project. *)
   register
@@ -133,11 +133,11 @@ let () =
   register
     "non_release_tag"
     If.(on_tezos_namespace && push && has_non_release_tag)
-    ~jobs:(Release_tag.octez_jobs Non_release_tag) ;
+    ~jobs:(Release_tag.mavkit_jobs Non_release_tag) ;
   register
     "non_release_tag_test"
     If.(not_on_tezos_namespace && push && has_non_release_tag)
-    ~jobs:(Release_tag.octez_jobs ~test:true Non_release_tag) ;
+    ~jobs:(Release_tag.mavkit_jobs ~test:true Non_release_tag) ;
   register
     "schedule_extended_test"
     schedule_extended_tests

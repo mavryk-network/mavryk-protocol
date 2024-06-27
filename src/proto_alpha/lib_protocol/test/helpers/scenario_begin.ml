@@ -88,7 +88,7 @@ let activate_ai mode =
 let init_constants ?(default = Test) ?(reward_per_block = 0L)
     ?(deactivate_dynamic = false) ?blocks_per_cycle
     ?delegate_parameters_activation_delay () =
-  let base_total_issued_per_minute = Tez.of_mutez reward_per_block in
+  let base_total_issued_per_minute = Tez.of_mumav reward_per_block in
   start ~constants:default
   --> (* default for tests: 12 *)
   set_opt S.blocks_per_cycle blocks_per_cycle
@@ -127,7 +127,7 @@ let begin_test ?(burn_rewards = false) ?(force_attest_all = false)
       let n = List.length delegates_name_list in
       let* block, delegates = Context.init_with_constants_n constants n in
       let*? init_level = Context.get_level (B block) in
-      let init_staked = Tez.of_mutez 200_000_000_000L in
+      let init_staked = Tez.of_mumav 200_000_000_000L in
       let*? account_map =
         List.fold_left2
           ~when_different_lengths:[Inconsistent_number_of_bootstrap_accounts]

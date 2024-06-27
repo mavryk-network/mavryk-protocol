@@ -14,7 +14,7 @@
     Subject: Test versions parser
  *)
 
-let octez_legal_versions =
+let mavkit_legal_versions =
   [
     ( "mavkit-10.93",
       {
@@ -142,9 +142,9 @@ let () =
   Test.register
     ~__FILE__
     ~title:"Version: Test Octez versions parser"
-    ~tags:["version"; "octez"]
+    ~tags:["version"; "mavkit"]
   @@ fun () ->
-  ( Fun.flip List.iter octez_legal_versions @@ fun (x, e) ->
+  ( Fun.flip List.iter mavkit_legal_versions @@ fun (x, e) ->
     Check.(
       (Some e = parse_version x)
         version_typ

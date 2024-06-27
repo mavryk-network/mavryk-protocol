@@ -301,7 +301,7 @@
   },
   {
     "file": "src/proto_001_PtAtLas/lib_protocol/test/unit/test_tez_repr.ml",
-    "title": "001-PtAtLas: Tez_repr.ml (Tez.of_mutez: of negative ints)",
+    "title": "001-PtAtLas: Tez_repr.ml (Tez.of_mumav: of negative ints)",
     "tags": [
       "alcotezt",
       "quick",
@@ -2077,7 +2077,7 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Atlas: opcodes [mutez_to_bls12_381_fr--storage287799761--input485842614]",
+    "title": "Atlas: opcodes [mumav_to_bls12_381_fr--storage287799761--input485842614]",
     "tags": [
       "regression",
       "admin_client",

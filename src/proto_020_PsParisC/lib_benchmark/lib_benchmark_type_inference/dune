@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_benchmark_type_inference_020_PsParisC)
+ (name mavryk_benchmark_type_inference_020_PsParisC)
  (public_name mavryk-benchmark-type-inference-020-PsParisC)
  (instrumentation (backend bisect_ppx))
  (libraries

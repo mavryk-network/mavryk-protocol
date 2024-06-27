@@ -107,30 +107,30 @@ const safe_get = (array, cycle) => {
  * @property {function(number):bigRat} reward_coeff - Returns the
  * reward coefficient corresponding to the given cycle.
  * @property {function(number):bigRat} baking_reward_fixed_portion - Returns the
- * baking reward fixed portion corresponding to the given cycle, in mutez.
+ * baking reward fixed portion corresponding to the given cycle, in mumav.
  * @property {function(number):bigRat} baking_reward_bonus_per_slot - Returns the
- * baking reward bonus per slot corresponding to the given cycle, in mutez.
+ * baking reward bonus per slot corresponding to the given cycle, in mumav.
  * @property {function(number):bigRat} attestation_reward_per_slot - Returns the
- * attestation reward per slot corresponding to the given cycle, in mutez.
+ * attestation reward per slot corresponding to the given cycle, in mumav.
  * @property {function(number):bigRat} seed_nonce_revelation_tip - Returns the
- * seed nonce revelation tip corresponding to the given cycle, in mutez.
+ * seed nonce revelation tip corresponding to the given cycle, in mumav.
  * @property {function(number):bigRat} vdf_revelation_tip - Returns the
- * vdf revelation tip corresponding to the given cycle, in mutez.
+ * vdf revelation tip corresponding to the given cycle, in mumav.
  * @property {function(number):bigRat} current_yearly_rate_value - Returns the
  * current yearly rate corresponding to the given cycle.
  * @property {function(number, number):null} set_staked_ratio_at - Takes a cycle and
  * a ratio as arguments. Sets the frozen balance by applying the ratio to the total supply
  * of the given cycle. The ratio is clipped between 0 and 1.
  * @property {function(number):bigInt} total_supply - Takes a cycle and
- * returns the total supply (in mutez) available on the chain
+ * returns the total supply (in mumav) available on the chain
  * @property {function(number):bigInt} total_delegated_balance - Takes a cycle and
- * returns returns the total delegated amount (in mutez) on the chain
+ * returns returns the total delegated amount (in mumav) on the chain
  * @property {function(number):bigInt} total_staked_balance - Takes a cycle and
- * returns the total stake (in mutez) frozen on the chain.
+ * returns the total stake (in mumav) frozen on the chain.
  * @property {function(number):number} issuance_per_block - Takes a cycle and
- * returns the issuance per block (in mutez) for this cycle.
+ * returns the issuance per block (in mumav) for this cycle.
  * @property {function(number):number} issuance_per_cycle - Takes a cycle and
- * returns the issuance (in mutez) for this cycle.
+ * returns the issuance (in mumav) for this cycle.
  */
 
 /**
@@ -649,16 +649,16 @@ export class Simulator {
  * @property {function(number):BakingPower} baking_power -
  * @property {function(number):DelegateInfo} delegate_info -
  * @property {function(number, number):null} set_own_spendable_balance - Takes a cycle and an amount
- * (in mutez) as arguments, and sets the delegate's own spendable delegated balance to this value
+ * (in mumav) as arguments, and sets the delegate's own spendable delegated balance to this value
  * for the given cycle.
  * @property {function(number, number):null} set_third_party_delegated_balance - Takes a cycle and an amount
- * (in mutez) as arguments, and sets the delegate's third party delegated balance to this value for the given
+ * (in mumav) as arguments, and sets the delegate's third party delegated balance to this value for the given
  * cycle.
  * @property {function(number, number):null} set_own_staked_balance - Takes a cycle and an amount
- * (in mutez) as arguments, and sets the delegate's own staked balance to this value for the given
+ * (in mumav) as arguments, and sets the delegate's own staked balance to this value for the given
  * cycle.
  * @property {function(number, number):null} set_third_party_staked_balance - Takes a cycle and an amount
- * (in mutez) as arguments, and sets the delegate's third party staked balance to this value for the given
+ * (in mumav) as arguments, and sets the delegate's third party staked balance to this value for the given
  * cycle.
  * @property {function(number):boolean} is_activated - Takes a cycle as argument
  * and returns true if the delegate is activated for this cycle, false otherwise.

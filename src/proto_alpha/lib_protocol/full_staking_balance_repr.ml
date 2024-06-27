@@ -200,8 +200,8 @@ let own_ratio
   if Tez_repr.(staked_frozen = zero) then (1L, 1L)
   else if Tez_repr.(own_frozen = zero) then (0L, 1L)
   else
-    let own_frozen = Tez_repr.to_mutez own_frozen in
-    let staked_frozen = Tez_repr.to_mutez staked_frozen in
+    let own_frozen = Tez_repr.to_mumav own_frozen in
+    let staked_frozen = Tez_repr.to_mumav staked_frozen in
     (own_frozen, Int64.add own_frozen staked_frozen)
 
 let has_minimal_frozen_stake ~minimal_frozen_stake full_staking_balance =

@@ -3,9 +3,9 @@ meta:
   endian: be
 doc: ! 'Encoding id: 019-PtParisB.tez'
 types:
-  id_019__ptparisb__mutez:
+  id_019__ptparisb__mumav:
     seq:
-    - id: id_019__ptparisb__mutez
+    - id: id_019__ptparisb__mumav
       type: n
   n:
     seq:
@@ -20,5 +20,5 @@ types:
     - id: payload
       type: b7be
 seq:
-- id: id_019__ptparisb__mutez
-  type: id_019__ptparisb__mutez
+- id: id_019__ptparisb__mumav
+  type: id_019__ptparisb__mumav

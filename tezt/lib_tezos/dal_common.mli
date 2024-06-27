@@ -29,6 +29,7 @@ module Cryptobox = Mavryk_crypto_dal.Cryptobox
 module Parameters : sig
   type t = {
     feature_enabled : bool;
+    incentives_enabled : bool;
     cryptobox : Cryptobox.parameters;
     number_of_slots : int;
     attestation_lag : int;
@@ -185,7 +186,7 @@ module RPC : sig
   val get_profiles : unit -> profiles RPC_core.t
 
   (** Call RPC "GET /commitments/<commitment>/headers" to get the headers and
-        statuses know about the given commitment. The resulting list can be filtered by a
+        statuses known about the given commitment. The resulting list can be filtered by a
         given header publication level and slot index. *)
   val get_commitment_headers :
     ?slot_level:int ->
@@ -264,6 +265,7 @@ module Commitment : sig
     ?on_error:
       ([ `Invalid_degree_strictly_less_than_expected of
          (int, int) Cryptobox.error_container
+       | `Prover_SRS_not_loaded
        | `Slot_wrong_size of Helpers.slot ] ->
       Cryptobox.commitment * Cryptobox.commitment_proof) ->
     Cryptobox.t ->

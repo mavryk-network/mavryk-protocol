@@ -151,12 +151,12 @@ Runtime error in contract KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi:
   04:        IF_LEFT
   05:          {
   06:            PUSH nat 922337203685477580700 ;
-  07:            PUSH mutez 10 ;
+  07:            PUSH mumav 10 ;
   08:            MUL ; # FAILURE
   09:            DROP
   10:          }
   11:          {
-  12:            PUSH mutez 10 ;
+  12:            PUSH mumav 10 ;
   13:            PUSH nat 922337203685477580700 ;
   14:            MUL ; # FAILURE
   15:            DROP
@@ -191,12 +191,12 @@ Runtime error in contract KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi:
   04:        IF_LEFT
   05:          {
   06:            PUSH nat 922337203685477580700 ;
-  07:            PUSH mutez 10 ;
+  07:            PUSH mumav 10 ;
   08:            MUL ; # FAILURE
   09:            DROP
   10:          }
   11:          {
-  12:            PUSH mutez 10 ;
+  12:            PUSH mumav 10 ;
   13:            PUSH nat 922337203685477580700 ;
   14:            MUL ; # FAILURE
   15:            DROP

@@ -54,7 +54,7 @@ type mode =
 
 type history_mode = Archive | Full
 
-(** Octez smart rollup node command-line arguments. *)
+(** mavkit smart rollup node command-line arguments. *)
 type argument =
   | Data_dir of string
   | Rpc_addr of string
@@ -85,7 +85,7 @@ val string_of_history_mode : history_mode -> string
 
 (** Create a smart contract rollup node.
 
-    A smart contract rollup node is associated to a tezos node
+    A smart contract rollup node is associated to a mavryk node
     passed as argument.
 
     The standard output and standard error output of the sc node will
@@ -108,6 +108,10 @@ val string_of_history_mode : history_mode -> string
     so if you do not call [config_init] or generate the configuration file
     through some other means, your sc node will not listen.
 
+    [history_mode] is [full] by default to make the rollup runs the
+    GC, and the [gc_frequency] is [1] by default to make it runs on
+    every occasion during tests.
+
 *)
 val create :
   ?runner:Runner.t ->
@@ -117,11 +121,18 @@ val create :
   ?data_dir:string ->
   base_dir:string ->
   ?event_pipe:string ->
+  ?metrics_addr:string ->
+  ?metrics_port:int ->
   ?rpc_host:string ->
   ?rpc_port:int ->
   ?operators:(purpose * string) list ->
   ?default_operator:string ->
   ?dal_node:Dal_node.t ->
+  ?loser_mode:string ->
+  ?allow_degraded:bool ->
+  ?gc_frequency:int ->
+  ?history_mode:history_mode ->
+  ?password_file:string ->
   mode ->
   Node.t ->
   t
@@ -135,11 +146,18 @@ val create_with_endpoint :
   ?data_dir:string ->
   base_dir:string ->
   ?event_pipe:string ->
+  ?metrics_addr:string ->
+  ?metrics_port:int ->
   ?rpc_host:string ->
   ?rpc_port:int ->
   ?operators:(purpose * string) list ->
   ?default_operator:string ->
   ?dal_node:Dal_node.t ->
+  ?loser_mode:string ->
+  ?allow_degraded:bool ->
+  ?gc_frequency:int ->
+  ?history_mode:history_mode ->
+  ?password_file:string ->
   mode ->
   Client.endpoint ->
   t
@@ -169,6 +187,9 @@ val data_dir : t -> string
 (** Get the base-dir of an sc node *)
 val base_dir : t -> string
 
+(** Get the metrics address and port of a node. *)
+val metrics : t -> string * int
+
 val string_of_purpose : purpose -> string
 
 (** Wait until an sc node terminates and check its status.
@@ -182,7 +203,7 @@ val string_of_purpose : purpose -> string
 val check_error : ?exit_code:int -> ?msg:Base.rex -> t -> unit Lwt.t
 
 (** [run ?event_level ?event_sections_levels ?loser_mode ?allow_degraded
-    ?gc_frequency ?history_mode ?wait_ready node rollup_address arguments ]
+    ?wait_ready node rollup_address arguments ]
     launches the given smart contract rollup node for the rollup at
     [rollup_address] with the given extra arguments. [event_level] and
     [event_sections_levels] allow to select which events we want the node to
@@ -190,37 +211,19 @@ val check_error : ?exit_code:int -> ?msg:Base.rex -> t -> unit Lwt.t
     to use the legacy [run] command of the node (which requires a config file to
     exist). If [wait_ready] is [false], tezt does not wait for the node to be
     ready. If [restart] is [true], it will stop and restart the node if it is
-    already running. [gc_frequency] is [1] by default to make the rollup GC on
-    every occasion during tests. *)
+    already running.  *)
 val run :
   ?legacy:bool ->
   ?restart:bool ->
   ?mode:mode ->
   ?event_level:Daemon.Level.default_level ->
   ?event_sections_levels:(string * Daemon.Level.level) list ->
-  ?loser_mode:string ->
-  ?allow_degraded:bool ->
-  ?gc_frequency:int ->
-  ?history_mode:history_mode ->
   ?wait_ready:bool ->
   ?password_file:string ->
   t ->
   string ->
-  string list ->
+  argument list ->
   unit Lwt.t
-
-(** [spawn_run ?loser_mode ?allow_degraded node ?gc_frequency ?history_mode
-    rollup_address arguments] is a lightweight version of {!run} that spawns a
-    process. *)
-val spawn_run :
-  ?loser_mode:string ->
-  ?allow_degraded:bool ->
-  ?gc_frequency:int ->
-  ?history_mode:history_mode ->
-  t ->
-  string ->
-  string list ->
-  Process.t
 
 (** Wait until a node terminates and return its status. If the node is not
    running, make the test fail. *)
@@ -241,26 +244,12 @@ val kill : t -> unit Lwt.t
 (** Initialize the rollup node configuration file with
     [mavkit-sc-rollup-node-alpha config init].  Returns the name of the resulting
     configuration file. *)
-val config_init :
-  t ->
-  ?force:bool ->
-  ?loser_mode:string ->
-  ?gc_frequency:int ->
-  ?history_mode:history_mode ->
-  string ->
-  string Lwt.t
+val config_init : ?force:bool -> t -> string -> string Lwt.t
 
 (** Initialize the rollup node configuration file with
     [mavkit-sc-rollup-node-alpha config init] and return the corresponding
     process. *)
-val spawn_config_init :
-  t ->
-  ?force:bool ->
-  ?loser_mode:string ->
-  ?gc_frequency:int ->
-  ?history_mode:history_mode ->
-  string ->
-  Process.t
+val spawn_config_init : ?force:bool -> t -> string -> Process.t
 
 module Config_file : sig
   (** Sc node configuration files. *)
@@ -288,7 +277,7 @@ end
 val wait_for_ready : t -> unit Lwt.t
 
 (** Wait until the layer 1 of the sc node is synchronized with some
-   given tezos level.
+   given mavryk level.
 
    More precisely, wait until a [new_head] event with a large enough
    level occurs.  If such an event already occurred, return
@@ -325,7 +314,7 @@ val wait_for : ?where:string -> t -> string -> (JSON.t -> 'a option) -> 'a Lwt.t
 (** Add a callback to be called whenever the daemon emits an event. *)
 val on_event : t -> (event -> unit) -> unit
 
-(** Stops the rollup node and restart it, connected to another Tezos Layer 1
+(** Stops the rollup node and restart it, connected to another Mavryk Layer 1
     node. *)
 val change_node_and_restart :
   ?event_level:Daemon.Level.default_level -> t -> string -> Node.t -> unit Lwt.t

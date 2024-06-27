@@ -6,7 +6,7 @@ code {
      } ;
 input {
         Stack_elt (option key_hash) None ;
-        Stack_elt mutez 12 ;
+        Stack_elt mumav 12 ;
         Stack_elt unit Unit
       } ;
 output {

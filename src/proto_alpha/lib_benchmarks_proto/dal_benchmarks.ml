@@ -74,7 +74,7 @@ module Publish_commitment : Benchmark.S = struct
          {slot_index; commitment; commitment_proof}
 
   let make_bench rng_state (config : config) () : workload Generator.benchmark =
-    let open Lwt_result_syntax in
+    let open Lwt_result_wrap_syntax in
     let bench_promise =
       let dal =
         {Default_parameters.constants_mainnet.dal with feature_enable = true}

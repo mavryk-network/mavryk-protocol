@@ -14,7 +14,7 @@ include Product (struct
   let name = "tooling"
 end)
 
-let _octez_tooling =
+let _mavkit_tooling =
   public_lib
     "mavryk-tooling"
     ~path:"src/tooling"
@@ -42,7 +42,7 @@ let _node_wrapper =
     ~modules:["node_wrapper"]
     ~bisect_ppx:No
 
-let octez_tooling_opam_file_format =
+let mavkit_tooling_opam_file_format =
   private_lib
     "opam_file_format"
     ~opam:"mavryk-tooling"
@@ -50,13 +50,13 @@ let octez_tooling_opam_file_format =
     ~deps:[unix]
     ~dune:Dune.[ocamllex "opamLexer"; ocamlyacc "opamBaseParser"]
 
-let _octez_tooling_opam_lint =
+let _mavkit_tooling_opam_lint =
   test
     "opam_lint"
     ~alias:""
     ~path:"src/tooling/opam-lint"
     ~opam:"mavryk-tooling"
-    ~deps:[octez_tooling_opam_file_format; unix]
+    ~deps:[mavkit_tooling_opam_file_format; unix]
 
 let _git_gas_diff =
   public_exe

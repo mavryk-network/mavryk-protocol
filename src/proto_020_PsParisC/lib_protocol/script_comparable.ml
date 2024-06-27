@@ -50,7 +50,7 @@ let compare_comparable : type a. a comparable_ty -> a -> a -> int =
     | Signature_t, x, y -> (apply [@tailcall]) (Script_signature.compare x y) k
     | String_t, x, y -> (apply [@tailcall]) (Script_string.compare x y) k
     | Bool_t, x, y -> (apply [@tailcall]) (Compare.Bool.compare x y) k
-    | Mutez_t, x, y -> (apply [@tailcall]) (Tez.compare x y) k
+    | Mumav_t, x, y -> (apply [@tailcall]) (Tez.compare x y) k
     | Key_hash_t, x, y ->
         (apply [@tailcall]) (Signature.Public_key_hash.compare x y) k
     | Key_t, x, y -> (apply [@tailcall]) (Signature.Public_key.compare x y) k

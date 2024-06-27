@@ -1,6 +1,6 @@
 use std::collections::LinkedList;
 use tezos_crypto_rs::hash::{BlockHash, ContractKt1Hash};
-use tezos_smart_rollup_encoding::{
+use mavryk_smart_rollup_encoding::{
     inbox::{InboxMessage, InfoPerLevel, InternalInboxMessage, Transfer},
     michelson,
     public_key_hash::PublicKeyHash,

@@ -403,7 +403,7 @@ module S = struct
   let estimated_shared_pending_slashed_amount =
     RPC_service.get_service
       ~description:
-        "Returns the estimated shared pending slashed amount (in mutez) of a \
+        "Returns the estimated shared pending slashed amount (in mumav) of a \
          given delegate."
       ~query:RPC_query.empty
       ~output:Tez.encoding

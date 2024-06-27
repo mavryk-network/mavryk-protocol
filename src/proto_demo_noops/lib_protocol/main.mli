@@ -23,6 +23,6 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos Protocol Implementation - Protocol Signature Instance *)
+(** Mavryk Protocol Implementation - Protocol Signature Instance *)
 
 include Updater.PROTOCOL with type block_header_data = string

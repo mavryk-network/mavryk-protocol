@@ -1,7 +1,7 @@
 [
   {
     "file": "src/proto_alpha/lib_protocol/test/unit/test_tez_repr.ml",
-    "title": "alpha: Tez_repr.ml (Tez.to_mutez: basic assertion)",
+    "title": "alpha: Tez_repr.ml (Tez.to_mumav: basic assertion)",
     "tags": [
       "alcotezt",
       "quick",
@@ -262,7 +262,7 @@
   },
   {
     "file": "src/proto_alpha/lib_protocol/test/integration/test_adaptive_issuance_roundtrip.ml",
-    "title": "alpha: adaptive issuance roundtrip (Test unstake 1 mutez then slash: No AI, 7% slash)",
+    "title": "alpha: adaptive issuance roundtrip (Test unstake 1 mumav then slash: No AI, 7% slash)",
     "tags": [
       "alcotezt",
       "quick",

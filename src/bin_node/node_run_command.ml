@@ -107,11 +107,19 @@ module Event = struct
     declare_3
       ~section
       ~name:"starting_local_rpc_server"
-      ~msg:"starting RPC server on {host}:{port} (acl = {acl_policy})"
+      ~msg:"starting local RPC server on {host}:{port} (acl = {acl_policy})"
       ~level:Notice
       ("host", Data_encoding.string)
       ("port", Data_encoding.uint16)
       ("acl_policy", Data_encoding.string)
+
+  let starting_internal_rpc_server =
+    declare_0
+      ~section
+      ~name:"starting_internal_rpc_server"
+      ~msg:"starting internal RPC server"
+      ~level:Info
+      ()
 
   let starting_metrics_server =
     declare_2
@@ -126,7 +134,7 @@ module Event = struct
     declare_3
       ~section
       ~name:"starting_node"
-      ~msg:"starting the Mavryk node {version} ({git_info})"
+      ~msg:"starting the Mavkit node {version} ({git_info})"
       ~level:Notice
       ("chain", Distributed_db_version.Name.encoding)
       ~pp2:Mavryk_version.Version.pp_simple
@@ -363,9 +371,15 @@ module Metrics_server = Prometheus_app.Cohttp (Cohttp_lwt_unix.Server)
 
 type port = int
 
-type single_server_kind = Local of Conduit_lwt_unix.server * port
+type socket_file = string
 
-let extract_mode = function Local (mode, _) -> mode
+type single_server_kind =
+  | Process of socket_file
+  | Local of Conduit_lwt_unix.server * port
+
+let extract_mode = function
+  | Process socket_file -> `Unix_domain_socket (`File socket_file)
+  | Local (mode, _) -> mode
 
 (* Add default accepted CORS headers *)
 let sanitize_cors_headers ~default headers =
@@ -383,6 +397,9 @@ let launch_rpc_server (config : Config_file.t) dir rpc_server_kind addr =
   let* acl =
     (* Also emits events depending on server kind *)
     match rpc_server_kind with
+    | Process _ ->
+        let*! () = Event.(emit starting_internal_rpc_server) () in
+        return_none
     | Local (mode, port) ->
         let*! acl_policy = RPC_server.Acl.resolve_domain_names rpc_config.acl in
         let acl =
@@ -445,16 +462,22 @@ let launch_rpc_server (config : Config_file.t) dir rpc_server_kind addr =
       (* FIXME: https://gitlab.com/tezos/tezos/-/issues/1312
          This exception seems to be unreachable.
       *)
-      | Unix.Unix_error (Unix.EADDRINUSE, "bind", "") -> (
+      | Unix.Unix_error (Unix.EADDRINUSE, "bind", "") as exn -> (
           match rpc_server_kind with
+          | Process _ -> fail_with_exn exn
           | Local (_, port) -> tzfail (RPC_Port_already_in_use [(addr, port)]))
       | exn -> fail_with_exn exn)
 
 (* Describes the kind of servers that can be handled by the node.
    - Local_rpc_server: RPC server is run by the node itself
      (this may block the node in case of heavy RPC load),
+   - External_rpc_server: RPC server is spawned as an external
+     process,
    - No_server: the node is not responding to any RPC. *)
-type rpc_server_kind = Local_rpc_server of RPC_server.server list | No_server
+type rpc_server_kind =
+  | Local_rpc_server of RPC_server.server list
+  | External_rpc_server of (RPC_server.server * Rpc_process_worker.t) list
+  | No_server
 
 (* Initializes an RPC server handled by the node main process. *)
 let init_local_rpc_server (config : Config_file.t) dir =
@@ -546,20 +569,20 @@ let init_external_rpc_server config node_version dir internal_events =
                   }
                 in
                 let rpc_process =
-                  Octez_rpc_process.Rpc_process_worker.create
+                  Mavkit_rpc_process.Rpc_process_worker.create
                     ~comm_socket_path
                     config
                     node_version
                     internal_events
                 in
                 let* () =
-                  Octez_rpc_process.Rpc_process_worker.start rpc_process
+                  Mavkit_rpc_process.Rpc_process_worker.start rpc_process
                 in
                 return (local_rpc_server, rpc_process))
               addrs)
       config.rpc.external_listen_addrs
   in
-  return (Local_rpc_server servers)
+  return (External_rpc_server rpc_servers)
 
 let metrics_serve metrics_addrs =
   let open Lwt_result_syntax in
@@ -598,7 +621,7 @@ let init_zcash () =
          "Failed to initialize Zcash parameters: %s"
          (Printexc.to_string exn))
 
-let init_rpc (config : Config_file.t) (node : Node.t) _internal_events =
+let init_rpc (config : Config_file.t) (node : Node.t) internal_events =
   let open Lwt_result_syntax in
   (* Start local RPC server (handled by the node main process) only
      when at least one local listen addr is given. *)
@@ -631,7 +654,7 @@ let init_rpc (config : Config_file.t) (node : Node.t) _internal_events =
          processed by the rpc_process itself. *)
       init_external_rpc_server config node_version dir internal_events
   in
-  return [rpc_server]
+  return (local_rpc_server :: [rpc_server])
 
 let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
     ?ignore_testchain_warning ~singleprocess ~force_history_mode_switch
@@ -722,6 +745,18 @@ let run ?verbosity ?sandbox ?target ?(cli_warnings = [])
         List.iter_s
           (function
             | No_server -> Lwt.return_unit
+            | External_rpc_server rpc_servers ->
+                List.iter_p
+                  (fun (local_server, rpc_process) ->
+                    (* Stop the RPC_process first to avoid requests to
+                       be forwarded to the note with a RPC_server that
+                       is down. *)
+                    let*! () =
+                      Mavkit_rpc_process.Rpc_process_worker.stop rpc_process
+                    in
+                    let*! () = RPC_server.shutdown local_server in
+                    Lwt.return_unit)
+                  rpc_servers
             | Local_rpc_server rpc_server ->
                 List.iter_p RPC_server.shutdown rpc_server)
           rpc_servers)

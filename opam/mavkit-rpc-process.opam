@@ -13,9 +13,9 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "mavkit-libs"
-  "mavkit-shell-libs"
-  "mavkit-node-config"
+  "mavkit-libs" { = version }
+  "mavkit-shell-libs" { = version }
+  "mavkit-node-config" { = version }
   "lwt" { >= "5.7.0" }
   "lwt-exit"
   "prometheus-app" { >= "1.2" }

@@ -40,7 +40,7 @@ const ASSUMED_TX_ENCODED_SIZE: usize = 150;
 // 4 mumav per byte.
 //
 // The fee for injection on L1 is composed of the following
-// (at default minimal nanotez per gas / default minimal fee):
+// (at default minimal nanomav per gas / default minimal fee):
 // - base cost for 'add smart rollup message': 259 mumav
 // - cost per new message (tx chunk): 5 mumav
 // - cost per additional byte: 1 mumav

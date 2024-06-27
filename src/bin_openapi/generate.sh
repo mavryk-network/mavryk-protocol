@@ -13,7 +13,7 @@ cd "$(dirname "$0")"/../.. || exit
 
 # Mavryk binaries.
 tezos_node=./mavkit-node
-tezos_client=./mavkit-client
+mavryk_client=./mavkit-client
 smart_rollup_node=./mavkit-smart-rollup-node
 dal_node=./mavkit-dal-node
 

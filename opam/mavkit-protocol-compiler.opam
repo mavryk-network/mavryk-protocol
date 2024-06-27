@@ -13,12 +13,12 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "mavkit-libs"
-  "mavkit-proto-libs"
+  "mavkit-libs" { = version }
+  "mavkit-proto-libs" { = version }
   "lwt" { >= "5.7.0" }
   "ocp-ocamlres" { >= "0.4" }
   "base-unix"
-  "mavkit-version"
+  "mavkit-version" { = version }
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]

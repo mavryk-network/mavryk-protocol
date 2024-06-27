@@ -15,10 +15,16 @@ depends: [
   "ocaml" { >= "4.14" }
   "tezt" { with-test & >= "4.0.0" & < "5.0.0" }
   "mavkit-libs" {with-test}
-  "mavkit-alcotezt" {with-test}
   "mavryk-protocol-001-PtAtLas" {with-test}
   "mavkit-protocol-001-PtAtLas-libs" {with-test}
-  "mavkit-smart-rollup-node-PtAtLas" {with-test}
+  "mavkit-smart-rollup-node-Proxford" {with-test}
+  "mavkit-alcotezt" {with-test}
+  "mavryk-protocol-019-PtParisB" {with-test}
+  "mavkit-protocol-019-PtParisB-libs" {with-test}
+  "mavkit-smart-rollup-node-PtParisB" {with-test}
+  "mavryk-protocol-020-PsParisC" {with-test}
+  "mavkit-protocol-020-PsParisC-libs" {with-test}
+  "mavkit-smart-rollup-node-PsParisC" {with-test}
   "mavryk-protocol-alpha" {with-test}
   "mavkit-protocol-alpha-libs" {with-test}
   "mavkit-smart-rollup-node-alpha" {with-test}

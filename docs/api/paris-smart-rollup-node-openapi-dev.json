@@ -1863,7 +1863,7 @@
                 [ "SHA256", "GT", "RIGHT", "SAPLING_EMPTY_STATE", "False",
                   "RENAME", "CAST", "tx_rollup_l2_address", "PACK", "BYTES",
                   "timestamp", "bls12_381_g2", "Pair", "IF_LEFT", "contract",
-                  "mutez", "storage", "PAIR", "view", "UNPACK", "ADD",
+                  "mumav", "storage", "PAIR", "view", "UNPACK", "ADD",
                   "DROP", "big_map", "MUL", "NAT", "SELF", "CONTRACT", "CDR",
                   "SAPLING_VERIFY_UPDATE", "pair", "LSL", "int", "operation",
                   "SHA512", "CREATE_ACCOUNT", "BLAKE2B", "SPLIT_TICKET",

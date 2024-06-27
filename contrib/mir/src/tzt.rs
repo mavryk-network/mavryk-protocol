@@ -331,7 +331,7 @@ impl fmt::Display for ErrorExpectation<'_> {
 pub enum InterpreterErrorExpectation<'a> {
     /// GeneralOverflow error, which can happen with bit-shift arithmetic.
     GeneralOverflow(BigInt, BigInt),
-    /// MutezOverflow error, which can happen with mutez arithmetic.
+    /// MutezOverflow error, which can happen with mumav arithmetic.
     MutezOverflow(i64, i64),
     /// FailedWith error, which happens when execution reaches `FAILWITH`
     /// instruction.

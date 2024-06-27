@@ -28,23 +28,23 @@ let jobs =
       ~rules:[job_rule ~when_:Always ()]
       ()
   in
-  let rules_octez_docker_changes_or_master =
+  let rules_mavkit_docker_changes_or_master =
     [
       job_rule ~if_:Rules.on_master ~when_:Always ();
-      job_rule ~changes:changeset_octez_docker_changes_or_master ();
+      job_rule ~changes:changeset_mavkit_docker_changes_or_master ();
     ]
   in
   let job_docker_amd64_experimental : tezos_job =
     job_docker_build
       ~__POS__
-      ~rules:rules_octez_docker_changes_or_master
+      ~rules:rules_mavkit_docker_changes_or_master
       ~arch:Amd64
       Experimental
   in
   let job_docker_arm64_experimental : tezos_job =
     job_docker_build
       ~__POS__
-      ~rules:rules_octez_docker_changes_or_master
+      ~rules:rules_mavkit_docker_changes_or_master
       ~arch:Arm64
       Experimental
   in
@@ -122,7 +122,7 @@ let jobs =
              {|chmod 400 ~/.ssh/id_ed25519|};
            ])
       ~interruptible:false
-      ~rules:[job_rule ~changes:changeset_octez_docs ~when_:On_success ()]
+      ~rules:[job_rule ~changes:changeset_mavkit_docs ~when_:On_success ()]
       ["./scripts/ci/doc_publish.sh"]
   in
   (* Smart Rollup: Kernel SDK

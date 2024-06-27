@@ -764,7 +764,7 @@ let test_live_blocks store_dir =
             (fun acc ->
               Alpha_utils.Account.account_to_bootstrap
                 ( acc,
-                  Protocol.Alpha_context.Tez.of_mutez_exn 100_000_000_000L,
+                  Protocol.Alpha_context.Tez.of_mumav_exn 100_000_000_000L,
                   None ))
             accounts;
       }

@@ -8,7 +8,7 @@
     - .image_template__runtime_build_test_dependencies
     - .tags_template__build
     - .needs__trigger
-    - .rules__octez_docs_changes
+    - .rules__mavkit_docs_changes
   stage: doc
   before_script:
     - eval $(opam env)

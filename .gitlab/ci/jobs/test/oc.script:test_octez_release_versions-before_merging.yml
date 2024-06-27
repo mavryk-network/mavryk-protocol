@@ -1,7 +1,7 @@
 # This file was automatically generated, do not edit.
 # Edit file ci/bin/main.ml instead.
 
-oc.script:test_octez_release_versions:
+oc.script:test_mavkit_release_versions:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: test
   tags:
@@ -25,4 +25,4 @@ oc.script:test_octez_release_versions:
   - . ./scripts/version.sh
   - eval $(opam env)
   script:
-  - ./scripts/test_octez_release_version.sh
+  - ./scripts/test_mavkit_release_version.sh

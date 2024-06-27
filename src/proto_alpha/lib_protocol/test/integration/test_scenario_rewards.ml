@@ -90,28 +90,28 @@ let test_wait_rewards_with_ai =
          --> add_account_with_funds
                "staker1"
                ~funder:"faucet"
-               (Amount (Tez.of_mutez 2_000_000_000L))
+               (Amount (Tez.of_mumav 2_000_000_000L))
          --> set_delegate "staker1" (Some "delegate")
-         --> stake "staker1" (Amount (Tez.of_mutez 444_000_111L))
+         --> stake "staker1" (Amount (Tez.of_mumav 444_000_111L))
          --> (Empty
              |+ Tag "two stakers"
                 --> add_account_with_funds
                       "staker2"
                       ~funder:"faucet"
-                      (Amount (Tez.of_mutez 2_000_000_000L))
+                      (Amount (Tez.of_mumav 2_000_000_000L))
                 --> set_delegate "staker2" (Some "delegate")
-                --> stake "staker2" (Amount (Tez.of_mutez 333_001_987L))
+                --> stake "staker2" (Amount (Tez.of_mumav 333_001_987L))
                 --> (Empty
                     |+ Tag "three stakers! ha ha ha"
                        (* This staker overstakes *)
                        --> add_account_with_funds
                              "staker3"
                              ~funder:"faucet"
-                             (Amount (Tez.of_mutez 1_800_000_000_000L))
+                             (Amount (Tez.of_mumav 1_800_000_000_000L))
                        --> set_delegate "staker3" (Some "delegate")
                        --> stake
                              "staker3"
-                             (Amount (Tez.of_mutez 1_799_123_456_788L))
+                             (Amount (Tez.of_mumav 1_799_123_456_788L))
                        --> exec_unit (fun (_, state) ->
                                let src = State.find_account "delegate" state in
                                let self_frozen =
@@ -150,9 +150,9 @@ let test_wait_rewards_with_ai_staker_variation =
   --> add_account_with_funds
         "staker"
         ~funder:"faucet"
-        (Amount (Tez.of_mutez 20_000_000_000L))
+        (Amount (Tez.of_mumav 20_000_000_000L))
   --> set_delegate "staker" (Some "delegate")
-  --> stake "staker" (Amount (Tez.of_mutez 12_444_000_111L))
+  --> stake "staker" (Amount (Tez.of_mumav 12_444_000_111L))
   --> set_baker "delegate"
   (* Regular rewards *)
   --> wait_n_cycles 7
@@ -201,7 +201,7 @@ let test_ai_curve_activation_time =
     Tests that the curve is decreasing wrt stake ratio. *)
 let test_static_decreasing =
   let rate_var_lag = Default_parameters.constants_test.consensus_rights_delay in
-  let delta = Amount (Tez.of_mutez 20_000_000_000L) in
+  let delta = Amount (Tez.of_mumav 20_000_000_000L) in
   let q_almost_equal x y =
     let rat = Q.div x y in
     (* ~ inverse square root of total supply *)
@@ -238,8 +238,8 @@ let test_static_decreasing =
   --> begin_test ~burn_rewards:true ["delegate"]
   --> next_block --> wait_ai_activation
   (* We stake about 50% of the total supply *)
-  --> stake "delegate" (Amount (Tez.of_mutez 1_800_000_000_000L))
-  --> stake "__bootstrap__" (Amount (Tez.of_mutez 1_800_000_000_000L))
+  --> stake "delegate" (Amount (Tez.of_mumav 1_800_000_000_000L))
+  --> stake "__bootstrap__" (Amount (Tez.of_mumav 1_800_000_000_000L))
   --> (Tag "increase stake, decrease rate" --> next_cycle
        --> loop rate_var_lag (stake "delegate" delta --> next_cycle)
        --> loop 10 cycle_stake
@@ -256,7 +256,7 @@ let test_static_timing =
   let consensus_rights_delay (_block, state) =
     state.State.constants.consensus_rights_delay
   in
-  let delta = Amount (Tez.of_mutez 20_000_000_000L) in
+  let delta = Amount (Tez.of_mumav 20_000_000_000L) in
   let q_almost_equal x y =
     let rat = Q.div x y in
     (* ~ inverse square root of total supply *)
@@ -281,8 +281,8 @@ let test_static_timing =
   --> activate_ai `Force
   --> begin_test ~burn_rewards:true ["delegate"]
   (* We stake about 50% of the total supply *)
-  --> stake "delegate" (Amount (Tez.of_mutez 1_800_000_000_000L))
-  --> stake "__bootstrap__" (Amount (Tez.of_mutez 1_800_000_000_000L))
+  --> stake "delegate" (Amount (Tez.of_mumav 1_800_000_000_000L))
+  --> stake "__bootstrap__" (Amount (Tez.of_mumav 1_800_000_000_000L))
   --> wait_n_cycles_f (fun x -> consensus_rights_delay x + 1)
   --> save_current_rate
   --> (Tag "increase stake" --> stake "delegate" delta

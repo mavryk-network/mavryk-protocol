@@ -14,7 +14,7 @@ type t = {
 }
 
 let default_data_dir =
-  Filename.concat (Sys.getenv "HOME") ".mavryk-injector-server"
+  Filename.concat (Sys.getenv "HOME") ".mavkit-injector-server"
 
 let relative_filename data_dir = Filename.concat data_dir "config.json"
 

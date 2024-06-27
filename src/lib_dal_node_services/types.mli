@@ -25,7 +25,7 @@
 
 module Cryptobox = Mavryk_crypto_dal.Cryptobox
 
-(** A Tezos level. *)
+(** A Mavryk level. *)
 type level = int32
 
 (** An index of a DAL slot header. *)
@@ -127,6 +127,23 @@ module Peer : sig
   module Map : Map.S with type key = t
 end
 
+(** A point is made of an IP address and a port. Only the worker knows about
+    the notion. The automaton only sees peers (i.e. cryptographic identities of
+    nodes). *)
+module Point : sig
+  type t = P2p_point.Id.t
+
+  include PRINTABLE with type t := t
+
+  include ENCODABLE with type t := t
+
+  include COMPARABLE with type t := t
+
+  module Set : Set.S with type elt = t
+
+  module Map : Map.S with type key = t
+end
+
 module Span : sig
   type t = Ptime.Span.t
 
@@ -204,13 +221,12 @@ type header_status =
     (** The slot header was included in an L1 block but was not selected as
           the slot header for that slot index. *)
   | `Unseen_or_not_finalized
-    (** The slot header was not seen in a *final* L1 block. For instance, this
-          could happen if the RPC `PATCH /commitments/<commitment>` was called
-          but the corresponding slot header was never included into a block; or
-          the slot header was included in a non-final (ie not agreed upon)
-          block. This means that the publish operation was not sent (yet) to L1,
-          or sent but not included (yet) in a block, or included in a not (yet)
-          final block. *)
+    (** The slot header was not seen in a *final* L1 block. This could only
+        happen if the RPC `PATCH /commitments/<commitment>` was called but the
+        corresponding slot header was not included in a final block. In turn,
+        this means that the publish operation was not sent (yet) to L1, or sent
+        but not included (yet) in a block, or included in a not (yet) final
+        block. *)
   ]
 
 (** Profiles that operate on shards/slots. *)
@@ -220,6 +236,11 @@ type operator_profile =
             Used by bakers to attest availability of their assigned shards. *)
   | Producer of {slot_index : int}
       (** [Producer {slot_index}] produces/publishes slot for slot index [slot_index]. *)
+  | Observer of {slot_index : int}
+      (** [Observer {slot_index}] observes slot for slot index
+          [slot_index]: collects the shards corresponding to some slot
+          index, reconstructs slots when enough shards are seen, and
+          republishes missing shards. *)
 
 (** List of operator profiles. It may contain dupicates as it represents profiles
       provided by the user in unprocessed form. *)
@@ -232,10 +253,12 @@ type operator_profiles = operator_profile list
       that the DAL node would operate in. *)
 type profiles =
   | Bootstrap
-      (** The bootstrap profile facilitates peer discovery in the DAL network.
-            Note that bootstrap nodes are incompatible with attester/producer profiles
-            as bootstrap nodes are expected to connect to all the meshes with degree 0. *)
+      (** The bootstrap profile facilitates peer discovery in the DAL
+      network.  Note that bootstrap nodes are incompatible with
+      attester/producer/observer profiles as bootstrap nodes are
+      expected to connect to all the meshes with degree 0. *)
   | Operator of operator_profiles
+  | Random_observer
 
 (* Merge the two sets of profiles. In case of incompatibility (that is, case
    [Bootstrap] vs the other kinds), the profiles from [higher_prio] take
@@ -255,6 +278,8 @@ type slot_header = {
 type with_proof = {with_proof : bool}
 
 val slot_id_query : (level option * shard_index option) Resto.Query.t
+
+val slot_query : < padding : char > Resto.Query.t
 
 val wait_query : < wait : bool > Resto.Query.t
 

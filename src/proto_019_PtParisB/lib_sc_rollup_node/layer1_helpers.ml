@@ -38,9 +38,9 @@ let extract_header = function
   | _ ->
       invalid_arg ("Internal error: Block is not of protocol " ^ Protocol.name)
 
-let fetch_tezos_block l1_ctxt hash =
+let fetch_mavryk_block l1_ctxt hash =
   let open Lwt_result_syntax in
-  let+ block = Layer1.fetch_tezos_block fetch extract_header l1_ctxt hash in
+  let+ block = Layer1.fetch_mavryk_block fetch extract_header l1_ctxt hash in
   match block with
   | Block block -> block
   | _ ->
@@ -51,7 +51,7 @@ let fetch_tezos_block l1_ctxt hash =
         hash
         Protocol.name
 
-let prefetch_tezos_blocks = Layer1.prefetch_tezos_blocks fetch extract_header
+let prefetch_mavryk_blocks = Layer1.prefetch_mavryk_blocks fetch extract_header
 
 let get_last_cemented_commitment (cctxt : #Client_context.full) rollup_address :
     Node_context.lcc tzresult Lwt.t =
@@ -203,7 +203,7 @@ let get_boot_sector block_hash (node_ctxt : _ Node_context.t) =
   let open Alpha_context in
   let open Lwt_result_syntax in
   let exception Found_boot_sector of string in
-  let* block = fetch_tezos_block node_ctxt.l1_ctxt block_hash in
+  let* block = fetch_mavryk_block node_ctxt.l1_ctxt block_hash in
   let missing_boot_sector () =
     failwith "Boot sector not found in Tezos block %a" Block_hash.pp block_hash
   in

@@ -267,4 +267,4 @@ let get_commitment cctxt rollup_address commitment_hash =
       rollup_address
       commitment_hash
   in
-  Sc_rollup_proto_types.Commitment.to_octez commitment
+  Sc_rollup_proto_types.Commitment.to_mavkit commitment

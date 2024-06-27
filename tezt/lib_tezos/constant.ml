@@ -25,11 +25,14 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-let mavkit_client = "./mavkit-client"
+(* Some constants such as [mavkit_client] are automatically added to [~uses],
+   so they have to be defined in the wrapper library.
+   [Constant] merely provides an alias. *)
+let mavkit_client = Uses.mavkit_client
 
-let mavkit_admin_client = "./mavkit-admin-client"
+let mavkit_admin_client = Uses.mavkit_admin_client
 
-let mavkit_node = "./mavkit-node"
+let mavkit_node = Uses.mavkit_node
 
 let mavkit_proxy_server =
   Uses.make ~tag:"proxy_server" ~path:"./mavkit-proxy-server"
@@ -125,6 +128,16 @@ let released_executables = "./script-inputs/released-executables"
 (* We use the [experimental-executables] script input as source of
    experimental executable binaries to test. *)
 let experimental_executables = "./script-inputs/experimental-executables"
+
+(** Default hostname to use for endpoints when no specific one is required. *)
+let default_host =
+  (* The value of [default_host] is set to ["127.0.0.1"] because the
+     alternatives have the following drawbacks :
+     - Using ["localhost"] leads to an extra consumption of RAM
+       (https://gitlab.com/tezos/tezos/-/issues/6789).
+     - There are or were some problems with IPv6 on GCP.
+  *)
+  "127.0.0.1"
 
 (** Key pair used to activate a protocol from genesis with [--network sandbox].
     The public key is hard-coded in the node. *)

@@ -2,7 +2,7 @@
   extends:
     - .default_settings_template
     - .image_template__runtime_build_dependencies
-    - .rules__octez_changes
+    - .rules__mavkit_changes
   needs:
     - "oc.build_x86_64-released"
     - "oc.build_x86_64-exp-dev-extra"

@@ -272,37 +272,6 @@ let rec wait_next_event ~timeout loop_state =
       return_some (New_forge_event event)
   | `Timeout e -> return_some (Timeout e)
 
-(** From the current [state], the function returns an optional
-    association pair, which consists of the next round timestamp and its
-    round. *)
-let compute_next_round_time state =
-  let open Baking_state in
-  let proposal =
-    match state.level_state.attestable_payload with
-    | None -> state.level_state.latest_proposal
-    | Some {proposal; _} -> proposal
-  in
-  if Baking_state.is_first_block_in_protocol proposal then None
-  else
-    match state.level_state.next_level_proposed_round with
-    | Some _proposed_round ->
-        (* TODO? do something, if we don't, we won't be able to
-           repropose a block at next level. *)
-        None
-    | None -> (
-        let predecessor_timestamp = proposal.predecessor.shell.timestamp in
-        let predecessor_round = proposal.predecessor.round in
-        let next_round = Round.succ state.round_state.current_round in
-        match
-          timestamp_of_round
-            state
-            ~predecessor_timestamp
-            ~predecessor_round
-            ~round:next_round
-        with
-        | Ok timestamp -> Some (timestamp, next_round)
-        | _ -> assert false)
-
 let rec first_own_round_in_range delegate_slots ~committee_size ~included_min
     ~excluded_max =
   if included_min >= excluded_max then None

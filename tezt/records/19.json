@@ -209,7 +209,7 @@
   },
   {
     "file": "src/proto_alpha/lib_protocol/test/integration/test_liquidity_baking.ml",
-    "title": "alpha: liquidity baking (liquidity baking CPMM balance in origination result is 100 mutez)",
+    "title": "alpha: liquidity baking (liquidity baking CPMM balance in origination result is 100 mumav)",
     "tags": [
       "alcotezt",
       "quick",
@@ -2011,7 +2011,7 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Nairobi: opcodes [mutez_to_bls12_381_fr--storage287799761--input485842614]",
+    "title": "Nairobi: opcodes [mumav_to_bls12_381_fr--storage287799761--input485842614]",
     "tags": [
       "regression",
       "admin_client",

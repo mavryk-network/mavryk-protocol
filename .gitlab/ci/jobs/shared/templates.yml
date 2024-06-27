@@ -44,8 +44,8 @@
   needs: [oc.docker:rust-toolchain]
   dependencies: [oc.docker:rust-toolchain]
 
-# Only if octez source code has changed
-.rules__octez_changes:
+# Only if mavkit source code has changed
+.rules__mavkit_changes:
   rules:
     - changes:
         - src/**/*
@@ -57,8 +57,8 @@
         - tzt_reference_test_suite/**/*
       when: on_success
 
-# Add as a manual job if octez source code has changed
-.rules__octez_changes_manual:
+# Add as a manual job if mavkit source code has changed
+.rules__mavkit_changes_manual:
   rules:
     - changes:
         - src/**/*
@@ -71,9 +71,9 @@
       when: manual
       allow_failure: true
 
-# Only if octez source code has changed, if the images has changed or
+# Only if mavkit source code has changed, if the images has changed or
 # if kernels.mk changed.
-.rules__octez_changes_or_kernels:
+.rules__mavkit_changes_or_kernels:
   rules:
     - changes:
         - images/**/*
@@ -89,9 +89,9 @@
         - tzt_reference_test_suite/**/*
       when: on_success
 
-# Only if octez source code has changed and Marge Bot is not the
+# Only if mavkit source code has changed and Marge Bot is not the
 # trigger
-.rules__octez_changes_and_not_margebot:
+.rules__mavkit_changes_and_not_margebot:
   rules:
     - if: '$GITLAB_USER_LOGIN == "nomadic-margebot"'
       when: never
@@ -106,8 +106,8 @@
       when: on_success
 
 # Only if documentation has changed
-# NB: maintain in sync with .rules__octez_docs_changes_manual!
-.rules__octez_docs_changes:
+# NB: maintain in sync with .rules__mavkit_docs_changes_manual!
+.rules__mavkit_docs_changes:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"'
       when: always
@@ -129,8 +129,8 @@
       when: on_success
 
 # Manual if documentation has changed
-# NB: maintain in sync with .rules__octez_docs_changes!
-.rules__octez_docs_changes_manual:
+# NB: maintain in sync with .rules__mavkit_docs_changes!
+.rules__mavkit_docs_changes_manual:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"'
       when: always
@@ -196,7 +196,7 @@
     - .default_settings_template
     - .image_template__rust_toolchain
     - .needs__rust_toolchain
-    - .rules__octez_changes_or_kernels
+    - .rules__mavkit_changes_or_kernels
   variables:
     CC: clang
     CARGO_HOME: $CI_PROJECT_DIR/cargo

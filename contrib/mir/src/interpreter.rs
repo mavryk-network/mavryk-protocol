@@ -33,11 +33,11 @@ pub enum InterpretError<'a> {
     /// Interpreter ran out of gas.
     #[error(transparent)]
     OutOfGas(#[from] OutOfGas),
-    /// When performing mutez arithmetic, an overflow occurred.
-    #[error("mutez overflow")]
+    /// When performing mumav arithmetic, an overflow occurred.
+    #[error("mumav overflow")]
     MutezOverflow,
-    /// During a type conversion, a negative mutez was found.
-    #[error("negative mutez")]
+    /// During a type conversion, a negative mumav was found.
+    #[error("negative mumav")]
     NegativeMutez,
     /// Interpreter reached a `FAILWITH` instruction.
     #[error("failed with: {1:?} of type {0:?}")]
@@ -1372,14 +1372,14 @@ fn interpret_one<'a>(
         }
         I::TransferTokens => {
             let param = pop!();
-            let mutez_amount = pop!(V::Mutez);
+            let mumav_amount = pop!(V::Mutez);
             let contract_address = pop!(V::Contract);
             let counter = ctx.operation_counter();
             ctx.gas.consume(interpret_cost::TRANSFER_TOKENS)?;
             stack.push(V::new_operation(
                 Operation::TransferTokens(TransferTokens {
                     param,
-                    amount: mutez_amount,
+                    amount: mumav_amount,
                     destination_address: contract_address,
                 }),
                 counter,
@@ -1924,7 +1924,7 @@ mod interpreter_tests {
     }
 
     #[test]
-    fn test_add_mutez() {
+    fn test_add_mumav() {
         let mut stack = stk![V::Mutez(2i64.pow(62)), V::Mutez(20)];
         let mut ctx = Ctx::default();
         assert!(interpret_one(&Add(overloads::Add::MutezMutez), &mut ctx, &mut stack).is_ok());
@@ -6373,7 +6373,7 @@ mod interpreter_tests {
     }
 
     #[test]
-    fn test_sub_mutez() {
+    fn test_sub_mumav() {
         fn test(v1: i64, v2: i64, res: Option<i64>) {
             let mut stack = stk![V::Mutez(v2), V::Mutez(v1)];
             let ctx = &mut Ctx::default();

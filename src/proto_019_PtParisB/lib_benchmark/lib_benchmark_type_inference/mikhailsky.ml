@@ -125,7 +125,7 @@ let rec map_var f (x : Type.Base.t) =
   | Bytes_t -> prim T_bytes [] []
   | Key_hash_t -> prim T_key_hash [] []
   | Timestamp_t -> prim T_timestamp [] []
-  | Mutez_t -> prim T_mumav [] []
+  | Mumav_t -> prim T_mumav [] []
   | Key_t -> prim T_key [] []
   | Option_t ty ->
       let mty = map_var f ty in
@@ -382,7 +382,7 @@ module Data = struct
 
   let mumav (tz : Protocol.Alpha_context.Tez.t) =
     let i = Protocol.Alpha_context.Tez.to_mumav tz in
-    prim A_Mutez [int (Z.of_int64 i)] []
+    prim A_Mumav [int (Z.of_int64 i)] []
 
   let key_hash kh =
     let b =

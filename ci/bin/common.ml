@@ -292,8 +292,8 @@ let enable_kernels =
 
 (** {2 Changesets} *)
 
-(* Only if octez source code has changed *)
-let changeset_octez =
+(* Only if mavkit source code has changed *)
+let changeset_mavkit =
   [
     "src/**/*";
     "etherlink/**/*";
@@ -304,14 +304,14 @@ let changeset_octez =
     "tzt_reference_test_suite/**/*";
   ]
 
-(* Only if octez source code has changed, if the images has changed or
+(* Only if mavkit source code has changed, if the images has changed or
    if kernels.mk changed. *)
-let changeset_octez_or_kernels =
+let changeset_mavkit_or_kernels =
   ["images/**/*"; "scripts/ci/**/*"; "kernels.mk"; "etherlink.mk"]
-  @ changeset_octez
+  @ changeset_mavkit
 
 (* Only if documentation has changed *)
-let changeset_octez_docs =
+let changeset_mavkit_docs =
   [
     "scripts/**/*/";
     "script-inputs/**/*/";
@@ -326,7 +326,7 @@ let changeset_octez_docs =
     ".gitlab-ci.yml";
   ]
 
-let changeset_octez_docker_changes_or_master =
+let changeset_mavkit_docker_changes_or_master =
   [
     "scripts/**/*";
     "script-inputs/**/*";
@@ -788,7 +788,7 @@ let job_build_dynamic_binaries ?rules ~__POS__ ~arch ?(release = false)
             "src/bin_tps_evaluation/main_tps_evaluation.exe";
             "src/bin_octogram/octogram_main.exe";
             "tezt/tests/main.exe";
-            "contrib/octez_injector_server/octez_injector_server.exe";
+            "contrib/mavkit_injector_server/mavkit_injector_server.exe";
           ]
     | false, Arm64 ->
         Some
@@ -815,7 +815,7 @@ let job_build_dynamic_binaries ?rules ~__POS__ ~arch ?(release = false)
         "src/proto_*/parameters/*.json";
         "_build/default/src/lib_protocol_compiler/bin/main_native.exe";
         "_build/default/tezt/tests/main.exe";
-        "_build/default/contrib/octez_injector_server/octez_injector_server.exe";
+        "_build/default/contrib/mavkit_injector_server/mavkit_injector_server.exe";
       ]
   in
   let job =

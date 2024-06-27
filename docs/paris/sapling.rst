@@ -270,7 +270,7 @@ Example contracts
 Shielded tez
 ^^^^^^^^^^^^
 
-An example contract implementing a shielded pool of tokens with a 1 to 1 conversion rate to mutez is available in the tests of the protocol at
+An example contract implementing a shielded pool of tokens with a 1 to 1 conversion rate to mumav is available in the tests of the protocol at
 :src:`src/proto_019_PtParisB/lib_protocol/test/integration/michelson/contracts/sapling_contract.tz`.
 
 Simple Voting Contract

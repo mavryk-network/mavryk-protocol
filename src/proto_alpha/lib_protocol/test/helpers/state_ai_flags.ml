@@ -90,7 +90,7 @@ module Autostake = struct
       optimal
       op
       Tez.pp
-      (Tez_helpers.of_mutez amount)
+      (Tez_helpers.of_mumav amount)
 
   let apply_autostake ~name ~old_cycle
       ({
@@ -145,7 +145,7 @@ module Autostake = struct
           current_liquid_delegated +! current_frozen
           +! current_unstaked_frozen_delegated
           +! current_unstaked_final_delegated
-          |> to_mutez |> Z.of_int64)
+          |> to_mumav |> Z.of_int64)
       in
       let optimal =
         Tez.of_z
@@ -154,7 +154,7 @@ module Autostake = struct
              (Z.of_int (state.constants.limit_of_delegation_over_baking + 1)))
       in
       let autostaked =
-        Int64.(sub (Tez.to_mutez optimal) (Tez.to_mutez current_frozen))
+        Int64.(sub (Tez.to_mumav optimal) (Tez.to_mumav current_frozen))
       in
       let state = State.apply_unslashable (Cycle.succ old_cycle) name state in
       let state = State.apply_finalize name state in
@@ -163,7 +163,7 @@ module Autostake = struct
         if autostaked > 0L then (
           log_model_autostake ~optimal name pkh old_cycle "stake" autostaked ;
           State.apply_stake
-            Tez.(min liquid (of_mutez autostaked))
+            Tez.(min liquid (of_mumav autostaked))
             (Cycle.succ old_cycle)
             name
             state)
@@ -177,7 +177,7 @@ module Autostake = struct
             (Int64.neg autostaked) ;
           State.apply_unstake
             (Cycle.succ old_cycle)
-            (Tez_helpers.of_mutez Int64.(neg autostaked))
+            (Tez_helpers.of_mumav Int64.(neg autostaked))
             name
             state)
         else (

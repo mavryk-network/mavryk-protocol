@@ -394,8 +394,8 @@ fn parse_ty_with_entrypoints(
         App(bool, [], _) => Type::Bool,
         App(bool, ..) => unexpected()?,
 
-        App(mutez, [], _) => Type::Mutez,
-        App(mutez, ..) => unexpected()?,
+        App(mumav, [], _) => Type::Mutez,
+        App(mumav, ..) => unexpected()?,
 
         App(string, [], _) => Type::String,
         App(string, ..) => unexpected()?,
@@ -2966,7 +2966,7 @@ mod typecheck_tests {
         assert!(ctx.gas.milligas() < Gas::default().milligas());
     }
 
-    mod sub_mutez {
+    mod sub_mumav {
         use super::*;
 
         #[test]
@@ -3029,7 +3029,7 @@ mod typecheck_tests {
     }
 
     #[test]
-    fn test_add_mutez_mutez() {
+    fn test_add_mumav_mumav() {
         let mut stack = tc_stk![Type::Mutez, Type::Mutez];
         let expected_stack = tc_stk![Type::Mutez];
         let mut ctx = Ctx::default();

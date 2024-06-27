@@ -14,26 +14,26 @@ depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
   "ppx_expect"
-  "mavkit-libs"
-  "mavryk-protocol-001-PtAtLas"
-  "mavkit-shell-libs"
+  "mavkit-libs" { = version }
+  "mavryk-protocol-001-PtAtLas" { = version }
+  "mavkit-shell-libs" { = version }
   "uri" { >= "3.1.0" }
   "qcheck-alcotest" { >= "0.20" }
-  "mavkit-proto-libs"
-  "mavkit-version"
-  "mavryk-dal-node-services"
+  "mavkit-proto-libs" { = version }
+  "mavkit-version" { = version }
+  "mavryk-dal-node-services" { = version }
   "lwt-canceler" { >= "0.3" & < "0.4" }
   "lwt-exit"
-  "data-encoding" { >= "0.7.1" & < "1.0.0" }
-  "mavkit-protocol-compiler"
-  "mavryk-dal-node-lib"
-  "mavryk-dac-lib"
-  "mavryk-dac-client-lib"
-  "mavkit-injector"
-  "mavkit-l2-libs"
-  "tezt" { with-test & >= "4.0.0" & < "5.0.0" }
-  "mavkit-alcotezt" {with-test}
-  "mavryk-dac-node-lib" {with-test}
+  "data-encoding" { >= "1.0.1" & < "1.1" }
+  "tezt" { >= "4.0.0" & < "5.0.0" }
+  "mavkit-protocol-compiler" { = version }
+  "mavryk-dal-node-lib" { = version }
+  "mavryk-dac-lib" { = version }
+  "mavryk-dac-client-lib" { = version }
+  "mavkit-injector" { = version }
+  "mavkit-l2-libs" { = version }
+  "mavkit-alcotezt" { with-test & = version }
+  "mavryk-dac-node-lib" { with-test & = version }
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]

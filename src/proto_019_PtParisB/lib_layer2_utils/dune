@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_layer2_utils_019_PtParisB)
+ (name mavryk_layer2_utils_019_PtParisB)
  (public_name mavkit-protocol-019-PtParisB-libs.layer2-utils)
  (instrumentation (backend bisect_ppx))
  (libraries

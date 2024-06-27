@@ -31,7 +31,7 @@
 (package (name mavkit-evm-node-libs))
 (package (name mavkit-evm-node-tests)(allow_empty))
 (package (name mavkit-injector))
-(package (name mavryk-injector-server))
+(package (name mavkit-injector-server))
 (package (name mavkit-internal-libs))
 (package (name mavkit-l2-libs))
 (package (name mavkit-libs))

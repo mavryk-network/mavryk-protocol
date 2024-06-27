@@ -578,7 +578,7 @@ let lookup_default_vote_file_path (cctxt : Protocol_client_context.full) =
 type baking_mode = Local of {local_data_dir_path : string} | Remote
 
 let baker_args =
-  Mavryk_clic.args12
+  Mavryk_clic.args13
     pidfile_arg
     minimal_fees_arg
     minimal_nanomav_per_gas_unit_arg
@@ -591,6 +591,7 @@ let baker_args =
     operations_arg
     endpoint_arg
     state_recorder_switch_arg
+    pre_emptive_forge_time_arg
 
 let run_baker
     ( pidfile,

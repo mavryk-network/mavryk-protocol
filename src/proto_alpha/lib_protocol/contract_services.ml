@@ -307,7 +307,7 @@ module S = struct
   let estimated_own_pending_slashed_amount =
     RPC_service.get_service
       ~description:
-        "Returns the estimated own pending slashed amount (in mutez) of a \
+        "Returns the estimated own pending slashed amount (in mumav) of a \
          given contract."
       ~query:RPC_query.empty
       ~output:Tez.encoding

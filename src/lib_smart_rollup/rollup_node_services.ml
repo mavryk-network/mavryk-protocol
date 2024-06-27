@@ -85,7 +85,11 @@ type message_status =
       published_at_level : int32;
     }
 
-type gc_info = {last_gc_level : int32; first_available_level : int32}
+type gc_info = {
+  last_gc_level : int32;
+  first_available_level : int32;
+  last_context_split_level : int32 option;
+}
 
 type sync_result =
   | Synchronized

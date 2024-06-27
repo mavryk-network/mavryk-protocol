@@ -10,7 +10,7 @@
 open Manifest
 open Externals
 open Internals
-open Product_octez
+open Product_mavkit
 
 include Product (struct
   let name = "etherlink"
@@ -26,50 +26,50 @@ let tezt_etherlink =
       [
         tezt_wrapper |> open_ |> open_ ~m:"Base";
         tezt_performance_regression |> open_;
-        octez_crypto;
+        mavkit_crypto;
         tezt_tezos |> open_;
       ]
     ~release_status:Unreleased
 
 (* Container of the registered sublibraries of [mavkit-evm-node] *)
-let registered_octez_evm_node_libs = Sub_lib.make_container ()
+let registered_mavkit_evm_node_libs = Sub_lib.make_container ()
 
 (* Registers a sub-library in the [mavkit-evm-node] package. *)
-let octez_evm_node_lib =
+let mavkit_evm_node_lib =
   Sub_lib.sub_lib
     ~package_synopsis:"Octez EVM node libraries"
-    ~container:registered_octez_evm_node_libs
+    ~container:registered_mavkit_evm_node_libs
     ~package:"mavkit-evm-node-libs"
 
 let evm_node_config =
-  octez_evm_node_lib
+  mavkit_evm_node_lib
     "evm_node_config"
     ~path:"etherlink/bin_node/config"
     ~synopsis:"Configuration for the EVM node"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_rpc_http |> open_;
-        octez_rpc_http_server;
-        octez_stdlib_unix |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_rpc_http |> open_;
+        mavkit_rpc_http_server;
+        mavkit_stdlib_unix |> open_;
       ]
 
 let evm_node_lib_prod_encoding =
-  octez_evm_node_lib
+  mavkit_evm_node_lib
     "evm_node_lib_prod_encoding"
     ~path:"etherlink/bin_node/lib_prod/encodings"
     ~synopsis:
       "EVM encodings for the EVM node and plugin for the WASM Debugger [prod \
        version]"
     ~deps:
-      [octez_base |> open_ ~m:"TzPervasives"; octez_scoru_wasm_debugger_plugin]
+      [mavkit_base |> open_ ~m:"TzPervasives"; mavkit_scoru_wasm_debugger_plugin]
 
 let _evm_node_sequencer_protobuf =
   let protobuf_rules =
     Dune.[protobuf_rule "narwhal"; protobuf_rule "exporter"]
   in
-  octez_evm_node_lib
+  mavkit_evm_node_lib
     "evm_node_sequencer_protobuf"
     ~path:"etherlink/bin_node/lib_sequencer_protobuf"
     ~synopsis:
@@ -79,11 +79,11 @@ let _evm_node_sequencer_protobuf =
     ~dune:protobuf_rules
 
 let evm_node_migrations =
-  octez_evm_node_lib
+  mavkit_evm_node_lib
     "evm_node_migrations"
     ~path:"etherlink/bin_node/migrations"
     ~synopsis:"SQL migrations for the EVM node store"
-    ~deps:[octez_base |> open_ ~m:"TzPervasives"; caqti_lwt; crunch; re]
+    ~deps:[mavkit_base |> open_ ~m:"TzPervasives"; caqti_lwt; crunch; re]
     ~dune:
       Dune.
         [
@@ -110,7 +110,7 @@ let evm_node_migrations =
         ]
 
 let evm_node_lib_prod =
-  octez_evm_node_lib
+  mavkit_evm_node_lib
     "evm_node_lib_prod"
     ~path:"etherlink/bin_node/lib_prod"
     ~synopsis:
@@ -118,13 +118,13 @@ let evm_node_lib_prod =
        rollup [prod version]"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_rpc_http |> open_;
-        octez_rpc_http_server;
-        octez_workers |> open_;
-        octez_rpc_http_client_unix;
-        octez_version_value;
-        octez_stdlib_unix |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_rpc_http |> open_;
+        mavkit_rpc_http_server;
+        mavkit_workers |> open_;
+        mavkit_rpc_http_client_unix;
+        mavkit_version_value;
+        mavkit_stdlib_unix |> open_;
         evm_node_lib_prod_encoding |> open_;
         lwt_watcher;
         lwt_exit;
@@ -132,31 +132,31 @@ let evm_node_lib_prod =
         caqti_lwt;
         caqti_lwt_unix;
         caqti_sqlite;
-        octez_client_base |> open_;
+        mavkit_client_base |> open_;
         evm_node_config |> open_;
-        octez_context_sigs;
-        octez_context_disk;
-        octez_context_encoding;
-        octez_scoru_wasm;
-        octez_scoru_wasm_helpers |> open_;
-        octez_scoru_wasm_debugger_lib |> open_;
-        octez_layer2_store |> open_;
-        octez_smart_rollup_lib |> open_;
+        mavkit_context_sigs;
+        mavkit_context_disk;
+        mavkit_context_encoding;
+        mavkit_scoru_wasm;
+        mavkit_scoru_wasm_helpers |> open_;
+        mavkit_scoru_wasm_debugger_lib |> open_;
+        mavkit_layer2_store |> open_;
+        mavkit_smart_rollup_lib |> open_;
         evm_node_migrations;
       ]
 
 let evm_node_lib_dev_encoding =
-  octez_evm_node_lib
+  mavkit_evm_node_lib
     "evm_node_lib_dev_encoding"
     ~path:"etherlink/bin_node/lib_dev/encodings"
     ~synopsis:
       "EVM encodings for the EVM node and plugin for the WASM Debugger [dev \
        version]"
     ~deps:
-      [octez_base |> open_ ~m:"TzPervasives"; octez_scoru_wasm_debugger_plugin]
+      [mavkit_base |> open_ ~m:"TzPervasives"; mavkit_scoru_wasm_debugger_plugin]
 
 let evm_node_lib_dev =
-  octez_evm_node_lib
+  mavkit_evm_node_lib
     "evm_node_lib_dev"
     ~path:"etherlink/bin_node/lib_dev"
     ~synopsis:
@@ -164,13 +164,13 @@ let evm_node_lib_dev =
        rollup [dev version]"
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_rpc_http |> open_;
-        octez_rpc_http_server;
-        octez_workers |> open_;
-        octez_rpc_http_client_unix;
-        octez_version_value;
-        octez_stdlib_unix |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_rpc_http |> open_;
+        mavkit_rpc_http_server;
+        mavkit_workers |> open_;
+        mavkit_rpc_http_client_unix;
+        mavkit_version_value;
+        mavkit_stdlib_unix |> open_;
         evm_node_lib_dev_encoding |> open_;
         lwt_watcher;
         lwt_exit;
@@ -178,20 +178,20 @@ let evm_node_lib_dev =
         caqti_lwt;
         caqti_lwt_unix;
         caqti_sqlite;
-        octez_client_base |> open_;
+        mavkit_client_base |> open_;
         evm_node_config |> open_;
-        octez_context_sigs;
-        octez_context_disk;
-        octez_context_encoding;
-        octez_scoru_wasm;
-        octez_scoru_wasm_helpers |> open_;
-        octez_scoru_wasm_debugger_lib |> open_;
-        octez_layer2_store |> open_;
-        octez_smart_rollup_lib |> open_;
+        mavkit_context_sigs;
+        mavkit_context_disk;
+        mavkit_context_encoding;
+        mavkit_scoru_wasm;
+        mavkit_scoru_wasm_helpers |> open_;
+        mavkit_scoru_wasm_debugger_lib |> open_;
+        mavkit_layer2_store |> open_;
+        mavkit_smart_rollup_lib |> open_;
         evm_node_migrations;
       ]
 
-let _octez_evm_node_tests =
+let _mavkit_evm_node_tests =
   tezt
     ["test_rlp"; "test_ethbloom"]
     ~path:"etherlink/bin_node/test"
@@ -200,10 +200,10 @@ let _octez_evm_node_tests =
     ~with_macos_security_framework:true
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_base_test_helpers |> open_;
-        octez_test_helpers |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_base_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
         qcheck_alcotest;
         alcotezt;
         evm_node_lib_prod;
@@ -218,7 +218,7 @@ let _tezt_etherlink =
     ~synopsis:"Tezt integration tests for Etherlink"
     ~deps:
       [
-        octez_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
         tezt_wrapper |> open_ |> open_ ~m:"Base";
         tezt_tezos |> open_ |> open_ ~m:"Runnable.Syntax";
         tezt_etherlink |> open_;
@@ -243,15 +243,15 @@ let _evm_node =
     ~with_macos_security_framework:true
     ~deps:
       [
-        octez_base |> open_ ~m:"TzPervasives";
-        octez_base_unix;
-        octez_stdlib_unix |> open_;
-        octez_clic;
-        octez_rpc_http |> open_;
-        octez_rpc_http_server;
-        octez_version_value;
-        octez_client_base |> open_;
-        octez_client_base_unix |> open_;
+        mavkit_base |> open_ ~m:"TzPervasives";
+        mavkit_base_unix;
+        mavkit_stdlib_unix |> open_;
+        mavkit_clic;
+        mavkit_rpc_http |> open_;
+        mavkit_rpc_http_server;
+        mavkit_version_value;
+        mavkit_client_base |> open_;
+        mavkit_client_base_unix |> open_;
         evm_node_lib_prod;
         evm_node_lib_dev;
         evm_node_config |> open_;
@@ -268,7 +268,7 @@ let _tezt_testnet_scenarios =
     ~static:false
     ~deps:
       [
-        octez_test_helpers |> open_;
+        mavkit_test_helpers |> open_;
         tezt_wrapper |> open_ |> open_ ~m:"Base";
         tezt_tezos |> open_ |> open_ ~m:"Runnable.Syntax";
         tezt_etherlink |> open_;

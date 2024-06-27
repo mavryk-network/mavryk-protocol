@@ -97,7 +97,7 @@ defprim! {
     CONTRACT, ISNAT, CAST, RENAME, bool,
     contract, int, key, key_hash, lambda, list,
     map, big_map, nat, option, or, pair,
-    set, signature, string, bytes, mutez,
+    set, signature, string, bytes, mumav,
     timestamp, unit, operation, address, SLICE,
     DIG, DUG, EMPTY_BIG_MAP, APPLY, chain_id,
     CHAIN_ID, LEVEL, SELF_ADDRESS, never, NEVER,

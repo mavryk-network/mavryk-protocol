@@ -13,14 +13,19 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "mavkit-libs"
-  "mavkit-shell-libs"
-  "mavkit-l2-libs"
-  "mavkit-smart-rollup-node-lib"
-  "mavkit-smart-rollup-node-PtAtLas"
+  "mavkit-libs" { = version }
+  "mavkit-shell-libs" { = version }
+  "mavkit-l2-libs" { = version }
+  "mavkit-smart-rollup-node-lib" { = version }
+  "mavkit-smart-rollup-node-PtAtLas" { = version }
+  "mavkit-smart-rollup-node-PtParisB" { = version }
+  "mavkit-smart-rollup-node-PsParisC" { = version }
 ]
 depopts: [
   "mavkit-smart-rollup-node-alpha"
+]
+conflicts: [
+  "mavkit-smart-rollup-node-alpha" { != version }
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]

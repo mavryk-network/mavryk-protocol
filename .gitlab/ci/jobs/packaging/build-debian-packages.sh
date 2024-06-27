@@ -24,15 +24,15 @@ eval "$(opam env)"
 make all
 
 # Prepare the packaging by copying all the freshly compiled binaries
-mkdir -p scripts/packaging/octez/binaries
-mkdir -p scripts/packaging/octez/zcash-params
-cp mavkit-* scripts/packaging/octez/binaries/
+mkdir -p scripts/packaging/mavkit/binaries
+mkdir -p scripts/packaging/mavkit/zcash-params
+cp mavkit-* scripts/packaging/mavkit/binaries/
 
 # Copy the zcash parametes to be packaged
-cp -a _opam/share/zcash-params scripts/packaging/octez/
+cp -a _opam/share/zcash-params scripts/packaging/mavkit/
 
 # Build the debian packages
-cd scripts/packaging/octez/
+cd scripts/packaging/mavkit/
 DEB_BUILD_OPTIONS=noautodbgsym dpkg-buildpackage -b --no-sign -sa
 
 # Move the debian package to be packed as artifacts

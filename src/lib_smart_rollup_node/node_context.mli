@@ -29,7 +29,10 @@
 
 type lcc = Store.Lcc.lcc = {commitment : Commitment.Hash.t; level : int32}
 
-type genesis_info = {level : int32; commitment_hash : Commitment.Hash.t}
+type genesis_info = Metadata.genesis_info = {
+  level : int32;
+  commitment_hash : Commitment.Hash.t;
+}
 
 (** Abstract type for store to force access through this module. *)
 type 'a store constraint 'a = [< `Read | `Write > `Read]
@@ -70,7 +73,7 @@ type current_protocol = {
       (** Protocol supported by this rollup node (represented as a protocol
           level). *)
   constants : Rollup_constants.protocol_constants;
-      (** Protocol constants retrieved from the Mavryk node. *)
+      (** Protocol constants retrieved from the Tezos node. *)
 }
 
 type last_whitelist_update = {message_index : int; outbox_level : Int32.t}
@@ -113,8 +116,7 @@ type 'a t = {
   lockfile : Lwt_unix.file_descr;
       (** A lock file acquired when the node starts. *)
   store : 'a store;  (** The store for the persistent storage. *)
-  context : 'a Context.index;
-      (** The persistent context for the rollup node. *)
+  context : 'a Context.t;  (** The persistent context for the rollup node. *)
   lcc : ('a, lcc) Reference.t;
       (** Last cemented commitment on L1 (independently of synchronized status
           of rollup node) and its level. *)
@@ -182,30 +184,8 @@ val check_op_in_whitelist_or_bailout_mode :
 *)
 val get_fee_parameter : _ t -> Operation_kind.t -> Injector_common.fee_parameter
 
-(** [init cctxt ~data_dir mode l1_ctxt genesis_info protocol configuration]
-    initializes the rollup representation. The rollup origination level and kind
-    are fetched via an RPC call to the layer1 node that [cctxt] uses for RPC
-    requests.
-*)
-val init :
-  #Client_context.full ->
-  data_dir:string ->
-  irmin_cache_size:int ->
-  index_buffer_size:int ->
-  ?log_kernel_debug_file:string ->
-  ?last_whitelist_update:Z.t * Int32.t ->
-  'a Store_sigs.mode ->
-  Layer1.t ->
-  genesis_info ->
-  lcc:lcc ->
-  lpc:Commitment.t option ->
-  Kind.t ->
-  current_protocol ->
-  Configuration.t ->
-  'a t tzresult Lwt.t
-
-(** Closes the store, context and Layer 1 monitor. *)
-val close : _ t -> unit tzresult Lwt.t
+(** The path for the lockfile used when starting and running the node. *)
+val global_lockfile_path : data_dir:string -> string
 
 (** The path for the lockfile used in block processing. *)
 val processing_lockfile_path : data_dir:string -> string
@@ -229,6 +209,10 @@ val readonly : _ t -> ro
 type 'a delayed_write = ('a, rw) Delayed_write_monad.t
 
 (** {2 Abstraction over store} *)
+
+(** [get_history_mode t] returns the current history mode for the rollup
+    node. *)
+val get_history_mode : _ t -> Configuration.history_mode tzresult Lwt.t
 
 (** {3 Layer 2 blocks} *)
 
@@ -568,6 +552,10 @@ val get_gc_levels : _ t -> Store.Gc_levels.levels tzresult Lwt.t
     [level] is before the first non garbage collected level. *)
 val check_level_available : _ t -> int32 -> unit tzresult Lwt.t
 
+val get_last_context_split_level : _ t -> int32 option tzresult Lwt.t
+
+val save_context_split_level : rw -> int32 -> unit tzresult Lwt.t
+
 (** {2 Helpers} *)
 
 (** [make_kernel_logger event ?log_kernel_debug_file logs_dir] returns two
@@ -592,18 +580,11 @@ val is_synchronized : _ t -> bool
 val wait_synchronized : _ t -> unit Lwt.t
 
 module Internal_for_tests : sig
-  (** Create a node context which really stores data on disk but does not
-      connect to any layer 1 node. It is meant to be used in unit tests for the
-      rollup node functions. *)
-  val create_node_context :
-    #Client_context.full ->
-    current_protocol ->
-    data_dir:string ->
-    Kind.t ->
-    Store_sigs.rw t tzresult Lwt.t
+  val write_protocols_in_store :
+    [> `Write] store -> Store.Protocols.value -> unit tzresult Lwt.t
 
   (** Extract the underlying store from the node context. This function is
-      unsafe to use outside of tests as it breaks the abstraction barrier
-      provided by the [Node_context]. *)
+           unsafe to use outside of tests as it breaks the abstraction barrier
+           provided by the [Node_context]. *)
   val unsafe_get_store : 'a t -> 'a Store.t
 end

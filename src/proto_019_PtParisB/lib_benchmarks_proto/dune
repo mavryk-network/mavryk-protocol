@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_benchmarks_proto_019_PtParisB)
+ (name mavryk_benchmarks_proto_019_PtParisB)
  (public_name mavryk-benchmarks-proto-019-PtParisB)
  (instrumentation (backend bisect_ppx))
  (libraries

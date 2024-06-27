@@ -783,7 +783,7 @@
   },
   {
     "file": "src/proto_017_PtNairob/lib_protocol/test/integration/test_liquidity_baking.ml",
-    "title": "017-PtNairob: liquidity baking (liquidity baking CPMM balance in origination result is 100 mutez)",
+    "title": "017-PtNairob: liquidity baking (liquidity baking CPMM balance in origination result is 100 mumav)",
     "tags": [
       "alcotezt",
       "quick",
@@ -1968,7 +1968,7 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Atlas: opcodes [ediv_mutez--storage977883604--input734264738]",
+    "title": "Atlas: opcodes [ediv_mumav--storage977883604--input734264738]",
     "tags": [
       "regression",
       "admin_client",

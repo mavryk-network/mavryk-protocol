@@ -18,7 +18,7 @@
    "module Name = struct let name = \"019-PtParisB\" end\ninclude Mavryk_protocol_environment.V12.Make(Name)()\n")))
 
 (library
- (name tezos_raw_protocol_019_PtParisB)
+ (name mavryk_raw_protocol_019_PtParisB)
  (public_name mavryk-protocol-019-PtParisB.protocol.raw)
  (instrumentation (backend bisect_ppx))
  (libraries
@@ -901,7 +901,7 @@
     (run %{bin:mavkit-protocol-compiler.mavkit-protocol-packer} %{src_dir})))))
 
 (library
- (name tezos_embedded_protocol_019_PtParisB)
+ (name mavryk_embedded_protocol_019_PtParisB)
  (public_name mavryk-protocol-019-PtParisB.embedded-protocol)
  (instrumentation (backend bisect_ppx))
  (libraries

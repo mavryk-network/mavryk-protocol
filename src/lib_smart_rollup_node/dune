@@ -13,6 +13,7 @@
   mavkit-shell-libs.client-base
   mavkit-shell-libs.client-base-unix
   cohttp-lwt-unix
+  mavryk-openapi
   mavkit-node-config
   prometheus-app
   camlzip

@@ -55,31 +55,31 @@ let ( /! ) t1 t2 =
   | Error _ -> Pervasives.failwith "dividing tez"
 
 let of_int x =
-  match Tez.of_mutez (Int64.mul (Int64.of_int x) 1_000_000L) with
+  match Tez.of_mumav (Int64.mul (Int64.of_int x) 1_000_000L) with
   | None -> invalid_arg "tez_of_int"
   | Some x -> x
 
-let of_mutez x =
-  match Tez.of_mutez x with None -> invalid_arg "tez_of_mutez" | Some x -> x
+let of_mumav x =
+  match Tez.of_mumav x with None -> invalid_arg "tez_of_mumav" | Some x -> x
 
-let to_mutez = Tez.to_mutez
+let to_mumav = Tez.to_mumav
 
-(* Should be the same as Tez.max_mutez *)
+(* Should be the same as Tez.max_mumav *)
 let max_tez =
-  match Tez.of_mutez Int64.max_int with None -> assert false | Some p -> p
+  match Tez.of_mumav Int64.max_int with None -> assert false | Some p -> p
 
-let of_z a = Z.to_int64 a |> Tez.of_mutez_exn
+let of_z a = Z.to_int64 a |> Tez.of_mumav_exn
 
 let of_q ~round Q.{num; den} =
   (match round with `Up -> Z.cdiv num den | `Down -> Z.div num den) |> of_z
 
-let to_z a = to_mutez a |> Z.of_int64
+let to_z a = to_mumav a |> Z.of_int64
 
 let ratio num den =
-  Q.make (Z.of_int64 (to_mutez num)) (Z.of_int64 (to_mutez den))
+  Q.make (Z.of_int64 (to_mumav num)) (Z.of_int64 (to_mumav den))
 
 let mul_q tez portion =
-  let tez_z = to_mutez tez |> Z.of_int64 in
+  let tez_z = to_mumav tez |> Z.of_int64 in
   Q.(mul portion ~$$tez_z)
 
 module Compare = Tez
@@ -111,7 +111,7 @@ module Ez_tez = struct
     match qty with
     | Nothing -> zero
     | All -> all
-    | All_but_one -> if equal all zero then zero else all -! one_mutez
+    | All_but_one -> if equal all zero then zero else all -! one_mumav
     | Half -> all /! 2L
     | Max_tez -> max_tez
     | Amount a -> a

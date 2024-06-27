@@ -19,6 +19,7 @@ depends: [
   "mavryk-protocol-demo-noops" {with-test}
   "mavkit-alcotezt" {with-test}
   "mavkit-version" {with-test}
+  "qcheck-alcotest" { with-test & >= "0.20" }
 ]
 build: [
   ["rm" "-r" "vendors" "contrib"]

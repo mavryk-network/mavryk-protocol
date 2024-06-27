@@ -1991,7 +1991,7 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Nairobi: opcodes [ediv_mutez--storage977883604--input147133089]",
+    "title": "Nairobi: opcodes [ediv_mumav--storage977883604--input147133089]",
     "tags": [
       "regression",
       "admin_client",
@@ -2006,7 +2006,7 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Alpha: opcodes [ediv_mutez--storage977883604--input147133089]",
+    "title": "Alpha: opcodes [ediv_mumav--storage977883604--input147133089]",
     "tags": [
       "regression",
       "admin_client",

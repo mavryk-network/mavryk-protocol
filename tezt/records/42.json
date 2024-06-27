@@ -1955,7 +1955,7 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Atlas: opcodes [ediv_mutez--storage977883604--input215785357]",
+    "title": "Atlas: opcodes [ediv_mumav--storage977883604--input215785357]",
     "tags": [
       "regression",
       "admin_client",
@@ -1970,7 +1970,7 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Alpha: opcodes [ediv_mutez--storage977883604--input993071382]",
+    "title": "Alpha: opcodes [ediv_mumav--storage977883604--input993071382]",
     "tags": [
       "regression",
       "admin_client",

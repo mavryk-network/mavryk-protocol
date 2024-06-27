@@ -85,7 +85,7 @@ To update from sources::
 
 If you are using Docker instead, use the ``v19.1`` Docker images of Octez.
 
-You can also install Octez using Opam by running ``opam install octez``.
+You can also install Octez using Opam by running ``opam install mavkit``.
 
 It is now also possible to download experimental Debian and Redhat packages on the `release page <https://gitlab.com/tezos/tezos/-/releases/v19.1>`_  and in the `package registry <https://gitlab.com/tezos/tezos/-/packages>`_.
 

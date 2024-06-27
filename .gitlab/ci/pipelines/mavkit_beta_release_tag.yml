@@ -204,5 +204,5 @@ gitlab:release:
   - oc.build:rpm:amd64
   interruptible: false
   script:
-  - ./scripts/ci/restrict_export_to_octez_source.sh
+  - ./scripts/ci/restrict_export_to_mavkit_source.sh
   - ./scripts/ci/gitlab-release.sh

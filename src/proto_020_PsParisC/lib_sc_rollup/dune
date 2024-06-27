@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_smart_rollup_020_PsParisC)
+ (name mavryk_smart_rollup_020_PsParisC)
  (public_name mavkit-protocol-020-PsParisC-libs.smart-rollup)
  (instrumentation (backend bisect_ppx))
  (libraries

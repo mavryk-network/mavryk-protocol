@@ -2057,7 +2057,7 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Atlas: opcodes [mutez_to_bls12_381_fr--storage151303925--input216277421]",
+    "title": "Atlas: opcodes [mumav_to_bls12_381_fr--storage151303925--input216277421]",
     "tags": [
       "regression",
       "admin_client",

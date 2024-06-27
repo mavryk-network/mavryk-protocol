@@ -33,10 +33,10 @@ val version_string : Mavryk_version_parser.t -> string
 val simple_version_string : Mavryk_version_parser.t -> string
 
 (** [version_string] applied to the Version of Octez. *)
-val octez_version_string : string
+val mavkit_version_string : string
 
 (** [simple_version_string] applied to the Version of Octez. *)
-val octez_simple_version_string : string
+val mavkit_simple_version_string : string
 
 (** [version_string] applied to the Version of Etherlink. *)
 val etherlink_version_string : string

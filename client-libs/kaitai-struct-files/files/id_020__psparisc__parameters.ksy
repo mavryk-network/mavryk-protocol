@@ -83,7 +83,7 @@ types:
       if: (delegate_tag == bool::true)
       doc: A Ed25519, Secp256k1, P256, or BLS public key hash
     - id: amount
-      type: id_020__psparisc__mutez
+      type: id_020__psparisc__mumav
     - id: script
       type: id_020__psparisc__scripted__contracts
     - id: hash_tag
@@ -157,8 +157,8 @@ types:
       size: 20
       doc: blinded__public__key__hash
     - id: commitments_elt_field1
-      type: id_020__psparisc__mutez
-      doc: id_020__psparisc__mutez
+      type: id_020__psparisc__mumav
+      doc: id_020__psparisc__mumav
   dal_parametric:
     seq:
     - id: feature_enable
@@ -187,9 +187,9 @@ types:
       type: z
     - id: denominator
       type: z
-  id_020__psparisc__mutez:
+  id_020__psparisc__mumav:
     seq:
-    - id: id_020__psparisc__mutez
+    - id: id_020__psparisc__mumav
       type: n
   id_020__psparisc__scripted__contracts:
     seq:
@@ -231,7 +231,7 @@ types:
   issuance_weights:
     seq:
     - id: base_total_issued_per_minute
-      type: id_020__psparisc__mutez
+      type: id_020__psparisc__mumav
     - id: baking_reward_fixed_portion_weight
       type: int31
     - id: baking_reward_bonus_weight
@@ -303,8 +303,8 @@ types:
 
         signature__public_key'
     - id: public_key_known_field1
-      type: id_020__psparisc__mutez
-      doc: id_020__psparisc__mutez
+      type: id_020__psparisc__mumav
+      doc: id_020__psparisc__mumav
   public_key_known_with_consensus_key:
     seq:
     - id: public_key_known_with_consensus_key_field0
@@ -314,8 +314,8 @@ types:
 
         signature__public_key'
     - id: public_key_known_with_consensus_key_field1
-      type: id_020__psparisc__mutez
-      doc: id_020__psparisc__mutez
+      type: id_020__psparisc__mumav
+      doc: id_020__psparisc__mumav
     - id: public_key_known_with_consensus_key_field2
       type: public_key
       doc: ! 'A Ed25519, Secp256k1, or P256 public key
@@ -331,8 +331,8 @@ types:
 
         signature__public_key'
     - id: public_key_known_with_delegate_field1
-      type: id_020__psparisc__mutez
-      doc: id_020__psparisc__mutez
+      type: id_020__psparisc__mumav
+      doc: id_020__psparisc__mumav
     - id: public_key_known_with_delegate_field2
       type: public_key_hash
       doc: ! 'A Ed25519, Secp256k1, P256, or BLS public key hash
@@ -348,8 +348,8 @@ types:
 
         signature__public_key_hash'
     - id: public_key_unknown_field1
-      type: id_020__psparisc__mutez
-      doc: id_020__psparisc__mutez
+      type: id_020__psparisc__mumav
+      doc: id_020__psparisc__mumav
   public_key_unknown_with_delegate:
     seq:
     - id: public_key_unknown_with_delegate_field0
@@ -359,8 +359,8 @@ types:
 
         signature__public_key_hash'
     - id: public_key_unknown_with_delegate_field1
-      type: id_020__psparisc__mutez
-      doc: id_020__psparisc__mutez
+      type: id_020__psparisc__mumav
+      doc: id_020__psparisc__mumav
     - id: public_key_unknown_with_delegate_field2
       type: public_key_hash
       doc: ! 'A Ed25519, Secp256k1, P256, or BLS public key hash
@@ -483,9 +483,9 @@ seq:
 - id: proof_of_work_threshold
   type: s8be
 - id: minimal_stake
-  type: id_020__psparisc__mutez
+  type: id_020__psparisc__mumav
 - id: minimal_frozen_stake
-  type: id_020__psparisc__mutez
+  type: id_020__psparisc__mumav
 - id: vdf_difficulty
   type: s8be
 - id: origination_size
@@ -493,7 +493,7 @@ seq:
 - id: issuance_weights
   type: issuance_weights
 - id: cost_per_byte
-  type: id_020__psparisc__mutez
+  type: id_020__psparisc__mumav
 - id: hard_storage_limit_per_operation
   type: z
 - id: quorum_min
@@ -503,7 +503,7 @@ seq:
 - id: min_proposal_quorum
   type: s4be
 - id: liquidity_baking_subsidy
-  type: id_020__psparisc__mutez
+  type: id_020__psparisc__mumav
 - id: liquidity_baking_toggle_ema_threshold
   type: s4be
 - id: max_operations_time_to_live
@@ -557,7 +557,7 @@ seq:
 - id: smart_rollup_challenge_window_in_blocks
   type: int31
 - id: smart_rollup_stake_amount
-  type: id_020__psparisc__mutez
+  type: id_020__psparisc__mumav
 - id: smart_rollup_commitment_period_in_blocks
   type: int31
 - id: smart_rollup_max_lookahead_in_blocks

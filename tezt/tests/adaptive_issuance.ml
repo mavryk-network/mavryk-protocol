@@ -411,7 +411,7 @@ type bu_check = {
   msg : string;
 }
 
-(* some values might be slightly different (+-[margin] mutez) because of roundings and
+(* some values might be slightly different (+-[margin] mumav) because of roundings and
    randomness in baking rights that may affect the overall rewards coming from
    previous blocks, to avoid flakiness we test the "rounded range" of those
    values *)
@@ -1369,7 +1369,7 @@ let test_staking =
   Log.info "Balance change = %s" (Tez.to_string Tez.(balance2 - balance)) ;
   (* spendable balance should have increased from the finalized unstaked tokens
      (minus the fees associated to the finalize_unstake call) *)
-  assert (Tez.(balance2 - balance > of_mutez_int 999999000)) ;
+  assert (Tez.(balance2 - balance > of_mumav_int 999999000)) ;
 
   let* unstaked_finalizable_balance =
     Client.RPC.call client_1

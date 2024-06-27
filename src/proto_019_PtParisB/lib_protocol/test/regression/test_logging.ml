@@ -312,7 +312,7 @@ let () =
         ~storage:
           "Pair \
            \"edsigu6Ue4mQgPC5aCFqqjitU9pCs5VErXrfPTAZffyJepccGzDEEBExtuPjGuMc2ZRSTBUDR7tJMLVTeJzZn7p9jN9inh4ooV1\" \
-           \"TEZOS\""
+           \"MAVRYK\""
         "check_signature";
       transaction ~parameter:"Pair 1 4 2 Unit" ~storage:"Unit" "comb-get";
       transaction ~parameter:"Unit" ~storage:"Pair 1 4 2 Unit" "comb-set";

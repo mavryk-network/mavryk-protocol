@@ -44,7 +44,7 @@
                  DIP { { COMPARE ; LT @not_enough } } ;
                  SWAP ;
                  IF { PUSH string "Not enough funds" ; FAILWITH }
-                    { SUB_MUTEZ @new_balance ;
+                    { SUB_MUMAV @new_balance ;
                       { IF_NONE { { UNIT ; FAILWITH } } {} } ;
                       DIP { DUP ; DIP { SWAP } } ;
                       DUP ;

@@ -13,11 +13,12 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "mavkit-libs"
-  "mavkit-protocol-alpha-libs"
-  "mavkit-l2-libs"
-  "mavkit-version"
-  "mavkit-smart-rollup-wasm-debugger-plugin"
+  "mavkit-libs" { = version }
+  "mavkit-protocol-alpha-libs" { = version }
+  "cohttp-lwt-unix" { >= "5.2.0" }
+  "mavkit-l2-libs" { = version }
+  "mavkit-version" { = version }
+  "mavkit-smart-rollup-wasm-debugger-plugin" { = version }
   "lambda-term" { >= "3.3.1" }
 ]
 build: [

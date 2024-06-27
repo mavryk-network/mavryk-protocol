@@ -2100,7 +2100,7 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Nairobi: opcodes [bls12_381_fr_to_mutez--storage680650890--input229402968]",
+    "title": "Nairobi: opcodes [bls12_381_fr_to_mumav--storage680650890--input229402968]",
     "tags": [
       "regression",
       "admin_client",

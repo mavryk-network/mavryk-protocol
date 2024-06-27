@@ -2,7 +2,7 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezos_benchmark_020_PsParisC)
+ (name mavryk_benchmark_020_PsParisC)
  (public_name mavryk-benchmark-020-PsParisC)
  (libraries
   mavkit-libs.stdlib

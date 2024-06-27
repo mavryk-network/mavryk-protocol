@@ -2,6 +2,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-use tezos_smart_rollup::kernel_entry;
+use mavryk_smart_rollup::kernel_entry;
 
 kernel_entry!(jstz_kernel::entry);

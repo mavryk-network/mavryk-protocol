@@ -288,13 +288,13 @@ curl -s 'http://[HOST]:[PORT]/chains/main/mempool/monitor_operations?validated=t
 
 ./mavkit-client rpc get /chains/main/mempool/filter
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "1000", "1" ],
+  "minimal_nanomav_per_byte": [ "1000", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 10000000 }
 
 ./mavkit-client rpc get '/chains/main/mempool/filter?include_default=true'
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "1000", "1" ],
+  "minimal_nanomav_per_byte": [ "1000", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 10000000 }
 
@@ -307,7 +307,7 @@ curl -s 'http://[HOST]:[PORT]/chains/main/mempool/monitor_operations?validated=t
     "2",
     "3"
   ],
-  "minimal_nanotez_per_byte": [
+  "minimal_nanomav_per_byte": [
     "4",
     "5"
   ],
@@ -319,72 +319,72 @@ curl -s 'http://[HOST]:[PORT]/chains/main/mempool/monitor_operations?validated=t
   "max_total_bytes": 9
 }'
 { "minimal_fees": "1", "minimal_nanomav_per_gas_unit": [ "2", "3" ],
-  "minimal_nanotez_per_byte": [ "4", "5" ],
+  "minimal_nanomav_per_byte": [ "4", "5" ],
   "replace_by_fee_factor": [ "6", "7" ], "max_operations": 8,
   "max_total_bytes": 9 }
 
 ./mavkit-client rpc get /chains/main/mempool/filter
 { "minimal_fees": "1", "minimal_nanomav_per_gas_unit": [ "2", "3" ],
-  "minimal_nanotez_per_byte": [ "4", "5" ],
+  "minimal_nanomav_per_byte": [ "4", "5" ],
   "replace_by_fee_factor": [ "6", "7" ], "max_operations": 8,
   "max_total_bytes": 9 }
 
 ./mavkit-client rpc get '/chains/main/mempool/filter?include_default=true'
 { "minimal_fees": "1", "minimal_nanomav_per_gas_unit": [ "2", "3" ],
-  "minimal_nanotez_per_byte": [ "4", "5" ],
+  "minimal_nanomav_per_byte": [ "4", "5" ],
   "replace_by_fee_factor": [ "6", "7" ], "max_operations": 8,
   "max_total_bytes": 9 }
 
 ./mavkit-client rpc get '/chains/main/mempool/filter?include_default=false'
 { "minimal_fees": "1", "minimal_nanomav_per_gas_unit": [ "2", "3" ],
-  "minimal_nanotez_per_byte": [ "4", "5" ],
+  "minimal_nanomav_per_byte": [ "4", "5" ],
   "replace_by_fee_factor": [ "6", "7" ], "max_operations": 8,
   "max_total_bytes": 9 }
 
 ./mavkit-client rpc post /chains/main/mempool/filter with '{
   "minimal_fees": "25",
-  "minimal_nanotez_per_byte": [
+  "minimal_nanomav_per_byte": [
     "1050",
     "1"
   ],
   "max_operations": 2000
 }'
 { "minimal_fees": "25", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "1050", "1" ],
+  "minimal_nanomav_per_byte": [ "1050", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 2000,
   "max_total_bytes": 10000000 }
 
 ./mavkit-client rpc get /chains/main/mempool/filter
 { "minimal_fees": "25", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "1050", "1" ],
+  "minimal_nanomav_per_byte": [ "1050", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 2000,
   "max_total_bytes": 10000000 }
 
 ./mavkit-client rpc get '/chains/main/mempool/filter?include_default=true'
 { "minimal_fees": "25", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "1050", "1" ],
+  "minimal_nanomav_per_byte": [ "1050", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 2000,
   "max_total_bytes": 10000000 }
 
 ./mavkit-client rpc get '/chains/main/mempool/filter?include_default=false'
-{ "minimal_fees": "25", "minimal_nanotez_per_byte": [ "1050", "1" ],
+{ "minimal_fees": "25", "minimal_nanomav_per_byte": [ "1050", "1" ],
   "max_operations": 2000 }
 
 ./mavkit-client rpc post /chains/main/mempool/filter with '{}'
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "1000", "1" ],
+  "minimal_nanomav_per_byte": [ "1000", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 10000000 }
 
 ./mavkit-client rpc get /chains/main/mempool/filter
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "1000", "1" ],
+  "minimal_nanomav_per_byte": [ "1000", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 10000000 }
 
 ./mavkit-client rpc get '/chains/main/mempool/filter?include_default=true'
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "1000", "1" ],
+  "minimal_nanomav_per_byte": [ "1000", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 10000000 }
 
@@ -398,19 +398,19 @@ curl -s 'http://[HOST]:[PORT]/chains/main/mempool/monitor_operations?validated=t
   ]
 }'
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "0" ],
-  "minimal_nanotez_per_byte": [ "1000", "1" ],
+  "minimal_nanomav_per_byte": [ "1000", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 10000000 }
 
 ./mavkit-client rpc get /chains/main/mempool/filter
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "0" ],
-  "minimal_nanotez_per_byte": [ "1000", "1" ],
+  "minimal_nanomav_per_byte": [ "1000", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 10000000 }
 
 ./mavkit-client rpc get '/chains/main/mempool/filter?include_default=true'
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "0" ],
-  "minimal_nanotez_per_byte": [ "1000", "1" ],
+  "minimal_nanomav_per_byte": [ "1000", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 10000000 }
 
@@ -422,7 +422,7 @@ curl -s 'http://[HOST]:[PORT]/chains/main/mempool/monitor_operations?validated=t
     "100",
     "1"
   ],
-  "minimal_nanotez_per_byte": [
+  "minimal_nanomav_per_byte": [
     "4611686018427387903",
     "1"
   ],
@@ -430,24 +430,24 @@ curl -s 'http://[HOST]:[PORT]/chains/main/mempool/monitor_operations?validated=t
   "max_total_bytes": 0
 }'
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
 ./mavkit-client rpc get /chains/main/mempool/filter
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
 ./mavkit-client rpc get '/chains/main/mempool/filter?include_default=true'
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
 ./mavkit-client rpc get '/chains/main/mempool/filter?include_default=false'
-{ "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+{ "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "max_total_bytes": 0 }
 
 ./mavkit-client rpc post /chains/main/mempool/filter with '{
@@ -456,7 +456,7 @@ curl -s 'http://[HOST]:[PORT]/chains/main/mempool/monitor_operations?validated=t
     "1050",
     "1"
   ],
-  "minimal_nanotez_per_byte": [
+  "minimal_nanomav_per_byte": [
     "7",
     "5"
   ],
@@ -469,13 +469,13 @@ curl -s 'http://[HOST]:[PORT]/chains/main/mempool/monitor_operations?validated=t
   "invalid_field_name": 100
 }'
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
 ./mavkit-client rpc get /chains/main/mempool/filter
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
@@ -483,13 +483,13 @@ curl -s 'http://[HOST]:[PORT]/chains/main/mempool/monitor_operations?validated=t
   "minimal_fees": "true"
 }'
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
 ./mavkit-client rpc get /chains/main/mempool/filter
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
@@ -497,13 +497,13 @@ curl -s 'http://[HOST]:[PORT]/chains/main/mempool/monitor_operations?validated=t
   "max_operations": "1000"
 }'
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
 ./mavkit-client rpc get /chains/main/mempool/filter
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
@@ -513,13 +513,13 @@ curl -s 'http://[HOST]:[PORT]/chains/main/mempool/monitor_operations?validated=t
   ]
 }'
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
 ./mavkit-client rpc get /chains/main/mempool/filter
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
@@ -531,13 +531,13 @@ curl -s 'http://[HOST]:[PORT]/chains/main/mempool/monitor_operations?validated=t
   ]
 }'
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
 ./mavkit-client rpc get /chains/main/mempool/filter
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
@@ -545,13 +545,13 @@ curl -s 'http://[HOST]:[PORT]/chains/main/mempool/monitor_operations?validated=t
   "minimal_fees": "-1"
 }'
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
 ./mavkit-client rpc get /chains/main/mempool/filter
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
@@ -559,12 +559,12 @@ curl -s 'http://[HOST]:[PORT]/chains/main/mempool/monitor_operations?validated=t
   "max_operations": -1
 }'
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }
 
 ./mavkit-client rpc get /chains/main/mempool/filter
 { "minimal_fees": "100", "minimal_nanomav_per_gas_unit": [ "100", "1" ],
-  "minimal_nanotez_per_byte": [ "4611686018427387903", "1" ],
+  "minimal_nanomav_per_byte": [ "4611686018427387903", "1" ],
   "replace_by_fee_factor": [ "21", "20" ], "max_operations": 10000,
   "max_total_bytes": 0 }

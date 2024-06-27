@@ -179,14 +179,6 @@ val get_chain_block_helper_round :
 val get_chain_block_context_liquidity_baking_cpmm_address :
   ?chain:string -> ?block:string -> unit -> string t
 
-(** RPC: [GET /chains/<chain>/blocks/<block>/context/protocol_treasury/buffer_address]
-
-    [chain] defaults to ["main"].
-    [block] defaults to ["head"].
-*)
-val get_chain_block_context_protocol_treasury_buffer_address :
-  ?chain:string -> ?block:string -> unit -> string t
-
 (** RPC: [GET /network/peers] *)
 val get_network_peers : (string * JSON.t) list t
 
@@ -949,9 +941,23 @@ val get_chain_block_context_smart_rollups_all :
 val get_chain_block_context_smart_rollups_smart_rollup_staker_games :
   ?chain:string -> ?block:string -> staker:string -> string -> unit -> JSON.t t
 
+(** this type is smaller than the actual encoding and can be enhance
+    on need. *)
+type smart_rollup_inbox = {
+  old_levels_messages : string;
+      (** latest inbox hash. backpointer, and index are not kept from
+          the real encoding. *)
+  level : int;
+  current_messages_hash : string option;
+      (** current_messages_hash is only known in the protocol, and
+          does not exists in the rollup node hence the option.  *)
+}
+
+val smart_rollup_inbox_from_json : JSON.t -> smart_rollup_inbox
+
 (** RPC: [GET chains/<chain>/blocks/<block>/context/smart_rollups/all/inbox] *)
 val get_chain_block_context_smart_rollups_all_inbox :
-  ?chain:string -> ?block:string -> unit -> JSON.t t
+  ?chain:string -> ?block:string -> unit -> smart_rollup_inbox t
 
 (** RPC: [GET chains/<chain>/blocks/<block>/context/smart_rollups/smart_rollup/<smart_rollup_address>/genesis_info] *)
 val get_chain_block_context_smart_rollups_smart_rollup_genesis_info :
@@ -961,6 +967,17 @@ val get_chain_block_context_smart_rollups_smart_rollup_genesis_info :
 val get_chain_block_context_smart_rollups_smart_rollup_last_cemented_commitment_hash_with_level :
   ?chain:string -> ?block:string -> string -> JSON.t t
 
+type smart_rollup_commitment = {
+  compressed_state : string;
+  inbox_level : int;
+  predecessor : string;
+  number_of_ticks : int;
+}
+
+(** [smart_rollup_commitment_from_json json] parses a commitment from
+    its JSON representation. *)
+val smart_rollup_commitment_from_json : JSON.t -> smart_rollup_commitment
+
 (** RPC: [GET chains/<chain>/blocks/<block>/context/smart_rollups/smart_rollup/<smart_rollup_address>/commitment/<hash>] *)
 val get_chain_block_context_smart_rollups_smart_rollup_commitment :
   ?chain:string ->
@@ -968,7 +985,7 @@ val get_chain_block_context_smart_rollups_smart_rollup_commitment :
   sc_rollup:string ->
   hash:string ->
   unit ->
-  Sc_rollup_rpc.commitment option t
+  smart_rollup_commitment t
 
 (** RPC: [GET: chains/<chain>/blocks/<block>/context/smart_rollups/smart_rollup/<smart_rollup_address>/staker/<staker>/staked_on_commitment] *)
 val get_chain_block_context_smart_rollups_smart_rollup_staker_staked_on_commitment :

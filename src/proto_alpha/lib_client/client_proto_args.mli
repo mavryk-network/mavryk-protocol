@@ -70,7 +70,7 @@ val minimal_fees_arg : (Tez.t, full) Mavryk_clic.arg
 
 val minimal_nanomav_per_gas_unit_arg : (Q.t, full) Mavryk_clic.arg
 
-val minimal_nanotez_per_byte_arg : (Q.t, full) Mavryk_clic.arg
+val minimal_nanomav_per_byte_arg : (Q.t, full) Mavryk_clic.arg
 
 val replace_by_fees_arg : (bool, full) Mavryk_clic.arg
 

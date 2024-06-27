@@ -13,13 +13,13 @@ license: "MIT"
 depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
-  "mavkit-libs"
-  "mavryk-micheline-rewriting"
-  "mavryk-benchmark"
-  "mavryk-benchmark-type-inference-alpha"
-  "mavryk-protocol-alpha"
+  "mavkit-libs" { = version }
+  "mavryk-micheline-rewriting" { = version }
+  "mavryk-benchmark" { = version }
+  "mavryk-benchmark-type-inference-alpha" { = version }
+  "mavryk-protocol-alpha" { = version }
   "hashcons"
-  "mavkit-protocol-alpha-libs"
+  "mavkit-protocol-alpha-libs" { = version }
   "prbnmcn-stats" { = "0.0.6" }
 ]
 build: [

@@ -85,19 +85,20 @@ let callback_entrypoint_arg =
     string_parameter
 
 let contract_call_options =
-  Mavryk_clic.args9
+  Mavryk_clic.args10
     tez_amount_arg
     fee_arg
     Client_proto_context_commands.dry_run_switch
     Client_proto_context_commands.verbose_signing_switch
     gas_limit_arg
+    safety_guard_arg
     storage_limit_arg
     counter_arg
     no_print_source_flag
     fee_parameter_args
 
 let contract_view_options =
-  Mavryk_clic.args10
+  Mavryk_clic.args11
     callback_entrypoint_arg
     tez_amount_arg
     fee_arg
