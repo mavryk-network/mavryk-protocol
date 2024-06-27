@@ -905,7 +905,7 @@
   },
   {
     "file": "src/lib_shell/test/test_consensus_heuristic.ml",
-    "title": "tezos-shell: consensus heuristic (job on next consensus_3)",
+    "title": "mavryk-shell: consensus heuristic (job on next consensus_3)",
     "tags": [
       "alcotezt",
       "quick"

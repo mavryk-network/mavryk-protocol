@@ -11,7 +11,7 @@ depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
   "mavkit-libs"
-  "tezt-tezos"
+  "tezt-mavryk"
   "ppx_import" {with-test}
   "ppx_deriving" {with-test}
   "tezt" { with-test & >= "4.0.0" & < "5.0.0" }

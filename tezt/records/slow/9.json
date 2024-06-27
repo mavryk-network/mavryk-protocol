@@ -980,7 +980,7 @@
   },
   {
     "file": "src/lib_rpc_http/test/test_rpc_http.ml",
-    "title": "tezos-rpc-http: qcheck (default policy parses and is of correct type)",
+    "title": "mavryk-rpc-http: qcheck (default policy parses and is of correct type)",
     "tags": [
       "alcotezt",
       "slow"
@@ -1052,7 +1052,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (from_layout produces valid empty subcaches)",
+    "title": "mavryk-shell-context: cache (from_layout produces valid empty subcaches)",
     "tags": [
       "alcotezt",
       "slow"
@@ -1064,7 +1064,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (load_cache correctly restores in-memory caches (`Lazy mode))",
+    "title": "mavryk-shell-context: cache (load_cache correctly restores in-memory caches (`Lazy mode))",
     "tags": [
       "alcotezt",
       "slow"

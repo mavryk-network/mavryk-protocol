@@ -1,4 +1,4 @@
-open Octez_risc_v_pvm
+open Mavkit_risc_v_pvm
 
 let add_test () =
   let res = Main.add 5 6 in

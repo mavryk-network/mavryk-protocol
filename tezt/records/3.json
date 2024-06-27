@@ -869,7 +869,7 @@
   },
   {
     "file": "src/lib_signer_backends/unix/test/test_crouching.ml",
-    "title": "tezos-signer-backends: ledger-names (print_example)",
+    "title": "mavryk-signer-backends: ledger-names (print_example)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1044,7 +1044,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test_shell_context/test_proxy_context.ml",
-    "title": "tezos-shell-proxy-context: proxy_context (length)",
+    "title": "mavryk-shell-proxy-context: proxy_context (length)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1584,7 +1584,7 @@
   },
   {
     "file": "src/lib_benchmark/test/test_sparse_vec.ml",
-    "title": "tezos-benchmark: sparse_vec (neq1)",
+    "title": "mavryk-benchmark: sparse_vec (neq1)",
     "tags": [
       "alcotezt",
       "quick"

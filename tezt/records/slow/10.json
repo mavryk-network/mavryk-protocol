@@ -992,7 +992,7 @@
   },
   {
     "file": "src/lib_rpc_http/test/test_rpc_http.ml",
-    "title": "tezos-rpc-http: qcheck (put_policy preserves existing entries.)",
+    "title": "mavryk-rpc-http: qcheck (put_policy preserves existing entries.)",
     "tags": [
       "alcotezt",
       "slow"
@@ -1064,7 +1064,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (future_cache_expectation does not change not full cache)",
+    "title": "mavryk-shell-context: cache (future_cache_expectation does not change not full cache)",
     "tags": [
       "alcotezt",
       "slow"
@@ -1076,7 +1076,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (load_cache correctly restores in-memory caches (`Load mode))",
+    "title": "mavryk-shell-context: cache (load_cache correctly restores in-memory caches (`Load mode))",
     "tags": [
       "alcotezt",
       "slow"

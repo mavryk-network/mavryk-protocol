@@ -78,7 +78,7 @@ e.g. ``mavkit-baker-<protocol codename> run with local node
 "per_block_votes.json"``, or placed in a default location:
 ``per_block_votes.json`` in the current working directory **or** in
 the client data directory
-(e.g. ``~/.tezos-client/per_block_votes.json``); the former location
+(e.g. ``~/.mavryk-client/per_block_votes.json``); the former location
 takes precedence. The content of the JSON file will be repeatedly
 submitted on each baked block, where ``per_block_votes.json`` contains
 just ``{"liquidity_baking_toggle_vote": "pass"}`` (to abstain),

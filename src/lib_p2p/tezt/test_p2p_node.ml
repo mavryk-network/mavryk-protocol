@@ -95,7 +95,7 @@ let wrap addr n f =
 
 let () =
   Test.register
-    ~title:"tezos-p2p: p2p-node (propagation-tzresult)"
+    ~title:"mavryk-p2p: p2p-node (propagation-tzresult)"
     ~tags:["p2p"; Tag.flaky]
     ~__FILE__
   @@ fun () ->

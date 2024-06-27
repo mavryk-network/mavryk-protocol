@@ -30,7 +30,7 @@
    Subject:      Tests for the Sapling client and protocol
 *)
 
-open Tezt_tezos
+open Tezt_mavryk
 
 let sapling_contract_path ?(script = "sapling_contract.tz") protocol =
   sf

@@ -73,7 +73,7 @@ val tezt_risc_v_sandbox : Manifest.target
 
 val tezt_performance_regression : Manifest.target
 
-val tezt_tezos : Manifest.target
+val tezt_mavryk : Manifest.target
 
 val tezt_tx_kernel : Manifest.target
 

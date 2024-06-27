@@ -5,7 +5,7 @@
  (names test_uf test_inference)
  (libraries
   mavkit-libs.micheline
-  tezos-micheline-rewriting
+  mavryk-micheline-rewriting
   mavryk-benchmark-type-inference-020-PsParisC
   mavryk-protocol-020-PsParisC.protocol
   mavkit-libs.error-monad

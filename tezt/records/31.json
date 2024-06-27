@@ -907,7 +907,7 @@
   },
   {
     "file": "src/lib_shell/test/test_synchronisation_heuristic.ml",
-    "title": "tezos-shell: synchronisation heuristic  (test bp activate)",
+    "title": "mavryk-shell: synchronisation heuristic  (test bp activate)",
     "tags": [
       "alcotezt",
       "quick"

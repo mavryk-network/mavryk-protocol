@@ -908,7 +908,7 @@
   },
   {
     "file": "src/lib_shell/test/test_consensus_heuristic.ml",
-    "title": "tezos-shell: consensus heuristic (job age limit twice)",
+    "title": "mavryk-shell: consensus heuristic (job age limit twice)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1586,7 +1586,7 @@
   },
   {
     "file": "src/lib_benchmark/test/test_sparse_vec.ml",
-    "title": "tezos-benchmark: sparse_vec (refl)",
+    "title": "mavryk-benchmark: sparse_vec (refl)",
     "tags": [
       "alcotezt",
       "quick"

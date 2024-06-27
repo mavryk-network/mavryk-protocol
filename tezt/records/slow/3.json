@@ -1065,7 +1065,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (an uninitialised cache is unusable)",
+    "title": "mavryk-shell-context: cache (an uninitialised cache is unusable)",
     "tags": [
       "alcotezt",
       "slow"
@@ -1077,7 +1077,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (inserted entries are in the cache (with find))",
+    "title": "mavryk-shell-context: cache (inserted entries are in the cache (with find))",
     "tags": [
       "alcotezt",
       "slow"
@@ -1089,7 +1089,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (load_cache fails if builder fails (`Load mode))",
+    "title": "mavryk-shell-context: cache (load_cache fails if builder fails (`Load mode))",
     "tags": [
       "alcotezt",
       "slow"

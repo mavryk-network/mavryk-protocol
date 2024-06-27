@@ -9,8 +9,8 @@
   mavkit-libs.base
   mavkit-libs.error-monad
   mavkit-libs.micheline
-  tezos-micheline-rewriting
-  tezos-benchmark
+  mavryk-micheline-rewriting
+  mavryk-benchmark
   mavryk-benchmark-type-inference-019-PtParisB
   mavryk-protocol-019-PtParisB.protocol
   mavkit-libs.crypto

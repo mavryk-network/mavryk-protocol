@@ -33,7 +33,7 @@
 (** This modules implement tests related to the manager operations replacement
     in the mempool when precheck is activated *)
 
-open Tezt_tezos
+open Tezt_mavryk
 
 (* TODO: https://gitlab.com/tezos/tezos/-/issues/2208
    Factorize the Memchecks and Helpers modules and the node_client and

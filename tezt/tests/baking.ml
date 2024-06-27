@@ -163,8 +163,8 @@ let unsigned_operation_to_json op =
 
 type state = {
   protocol : Protocol_hash.t;
-  sandbox_client : Tezt_tezos.Client.t;
-  sandbox_node : Tezt_tezos.Node.t;
+  sandbox_client : Tezt_mavryk.Client.t;
+  sandbox_node : Tezt_mavryk.Node.t;
   counters : (Account.key, int) Hashtbl.t;
 }
 
@@ -517,8 +517,8 @@ let wrong_branch_operation_dismissal =
   in
   let* current_mempool = Mempool.get_mempool client in
   Check.(
-    (current_mempool <> Tezt_tezos.Mempool.empty)
-      Tezt_tezos.Mempool.typ
+    (current_mempool <> Tezt_mavryk.Mempool.empty)
+      Tezt_mavryk.Mempool.typ
       ~error_msg:"unexpected empty mempool") ;
   Log.info "Wait a bit in order to propose on a different round." ;
   let* () = Lwt_unix.sleep (float minimal_block_delay) in
@@ -527,8 +527,8 @@ let wrong_branch_operation_dismissal =
   Log.info "Checking that the transfer is dismissed from the current mempool." ;
   let* current_mempool = Mempool.get_mempool client in
   Check.(
-    (current_mempool = Tezt_tezos.Mempool.empty)
-      Tezt_tezos.Mempool.typ
+    (current_mempool = Tezt_mavryk.Mempool.empty)
+      Tezt_mavryk.Mempool.typ
       ~error_msg:"unexpected non-empty mempool") ;
   Log.info "Checking that the transfer is not included in the current head." ;
   check_op_not_in_baked_block client oph

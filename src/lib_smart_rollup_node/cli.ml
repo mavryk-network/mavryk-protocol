@@ -29,6 +29,12 @@ let force_switch : (bool, Client_context.full) Mavryk_clic.arg =
     ~doc:"Overwrites the configuration file when it exists."
     ()
 
+let import_force_switch : (bool, Client_context.full) Mavryk_clic.arg =
+  Mavryk_clic.switch
+    ~long:"force"
+    ~doc:"Import into an already populated data dir."
+    ()
+
 let sc_rollup_address_param x =
   Smart_rollup_alias.Address.param
     ~name:"smart-rollup-address"
@@ -50,9 +56,11 @@ let operator_param next =
     Format.asprintf
       "Public key hash, or alias, of a smart rollup node operator. An operator \
        can be specialized to a particular purpose by prefixing its key or \
-       alias by said purpose, e.g. operating:alias_of_my_operator. The \
+       alias by said purpose, e.g. operating:<alias_of_my_operator>. The \
        possible purposes are: @[<h>%a@]."
-      (Format.pp_print_list Purpose.pp_ex_purpose)
+      (Format.pp_print_list
+         ~pp_sep:(fun fmt () -> Format.pp_print_string fmt ", ")
+         Purpose.pp_ex_purpose)
       Purpose.all
   in
   let parse_default cctxt s =
@@ -118,6 +126,18 @@ let dal_node_endpoint_arg =
           downloads slots. When not provided, the rollup node will not support \
           the DAL. In production, a DAL node must be provided if DAL is \
           enabled and used in the rollup.")
+    (Mavryk_clic.parameter (fun (_cctxt : Client_context.full) s ->
+         Lwt.return_ok (Uri.of_string s)))
+
+let pre_images_endpoint_arg =
+  Mavryk_clic.arg
+    ~long:"pre-images-endpoint"
+    ~placeholder:"url"
+    ~doc:
+      (Format.sprintf
+         "The address of a service which provides pre-images for the rollup. \
+          Missing pre-images will be downloaded remotely if they are not \
+          already present on disk.")
     (Mavryk_clic.parameter (fun (_cctxt : Client_context.full) s ->
          Lwt.return_ok (Uri.of_string s)))
 

@@ -857,7 +857,7 @@
   },
   {
     "file": "src/lib_shell/test/test_protocol_validator.ml",
-    "title": "tezos-shell: test validator (fetching_protocol)",
+    "title": "mavryk-shell: test validator (fetching_protocol)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1004,7 +1004,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_mem_context.ml",
-    "title": "tezos-shell-context: mem_context (fold_keys)",
+    "title": "mavryk-shell-context: mem_context (fold_keys)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1568,7 +1568,7 @@
   },
   {
     "file": "src/lib_benchmark/test/test_measure.ml",
-    "title": "tezos-benchmark: measure (parse_config does not fail)",
+    "title": "mavryk-benchmark: measure (parse_config does not fail)",
     "tags": [
       "alcotezt",
       "quick"

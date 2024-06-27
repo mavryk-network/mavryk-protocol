@@ -405,7 +405,7 @@ module Fixture = struct
       else Lwt.return @@ untar src dst
     in
     let node = Node.create output in
-    let* () = Tezt_tezos.Node.upgrade_storage node in
+    let* () = Tezt_mavryk.Node.upgrade_storage node in
     Lwt_result.return output
 end
 

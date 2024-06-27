@@ -6,12 +6,12 @@
  (package tezt-etherlink)
  (libraries
   mavkit-libs.tezt-wrapper
-  tezt-tezos.tezt-performance-regression
+  tezt-mavryk.tezt-performance-regression
   mavkit-libs.crypto
-  tezt-tezos)
+  tezt-mavryk)
  (flags
   (:standard)
   -open Tezt_wrapper
   -open Tezt_wrapper.Base
   -open Tezt_mavryk_tezt_performance_regression
-  -open Tezt_tezos))
+  -open Tezt_mavryk))

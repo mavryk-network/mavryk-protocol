@@ -201,22 +201,22 @@ val commit :
   t ->
   polynomial ->
   ( commitment,
-  [> `Invalid_degree_strictly_less_than_expected of (int, int) error_container
-  | `Prover_SRS_not_loaded ] )
-Result.t
+    [> `Invalid_degree_strictly_less_than_expected of (int, int) error_container
+    | `Prover_SRS_not_loaded ] )
+  Result.t
 
 (** [pp_commit_error fmt error] pretty-prints the error returned by {!val:commit}. *)
 val pp_commit_error :
-Format.formatter ->
-[< `Invalid_degree_strictly_less_than_expected of (int, int) error_container
-| `Prover_SRS_not_loaded ] ->
-unit
+  Format.formatter ->
+  [< `Invalid_degree_strictly_less_than_expected of (int, int) error_container
+  | `Prover_SRS_not_loaded ] ->
+  unit
 
 (** [string_of_commit_error error] returns an error string message for [error]. *)
 val string_of_commit_error :
-[< `Invalid_degree_strictly_less_than_expected of (int, int) error_container
-| `Prover_SRS_not_loaded ] ->
-string
+  [< `Invalid_degree_strictly_less_than_expected of (int, int) error_container
+  | `Prover_SRS_not_loaded ] ->
+  string
 
 (** A portion of the data represented by a polynomial. *)
 type share

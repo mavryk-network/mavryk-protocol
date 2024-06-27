@@ -5,7 +5,7 @@ This is a package containing some libraries related to the Tezos 020-PsParisC pr
 It contains the following libraries:
 
 - {{!module-Mavryk_020_PsParisC_test_helpers}Mavryk_020_PsParisC_test_helpers}: Protocol testing framework
-- {{!module-Mavryk_baking_020_PsParisC}Mavryk_baking_020_PsParisC}: Base library for `tezos-baker/accuser`
+- {{!module-Mavryk_baking_020_PsParisC}Mavryk_baking_020_PsParisC}: Base library for `mavryk-baker/accuser`
 - {{!module-Mavryk_baking_020_PsParisC_commands}Mavryk_baking_020_PsParisC_commands}: Protocol-specific commands for baking
 - {{!module-Mavryk_client_020_PsParisC}Mavryk_client_020_PsParisC}: Protocol specific library for `mavkit-client`
 - {{!module-Mavryk_dac_020_PsParisC}Mavryk_dac_020_PsParisC}: Protocol specific library for the Data availability Committee

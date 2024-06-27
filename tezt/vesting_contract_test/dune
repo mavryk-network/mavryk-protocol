@@ -5,7 +5,7 @@
  (name main)
  (libraries
   tezt
-  tezt-tezos
+  tezt-mavryk
   mavkit-libs.stdlib
   mavkit-libs.test-helpers
   mavkit-libs.micheline
@@ -18,4 +18,4 @@
   (:standard)
   -open Tezt
   -open Tezt.Base
-  -open Tezt_tezos))
+  -open Tezt_mavryk))

@@ -5,8 +5,8 @@
  (name main)
  (libraries
   tezt
-  tezt-tezos
-  tezt-tezos.tezt-performance-regression
+  tezt-mavryk
+  tezt-mavryk.tezt-performance-regression
   mavkit-libs.lwt-result-stdlib
   mavkit-protocol-alpha-libs.test-helpers
   mavkit-libs.micheline
@@ -24,8 +24,8 @@
   (:standard)
   -open Tezt
   -open Tezt.Base
-  -open Tezt_tezos
-  -open Tezt_tezos.Runnable.Syntax
+  -open Tezt_mavryk
+  -open Tezt_mavryk.Runnable.Syntax
   -open Tezt_mavryk_tezt_performance_regression
   -open Mavryk_lwt_result_stdlib
   -open Mavryk_event_logging

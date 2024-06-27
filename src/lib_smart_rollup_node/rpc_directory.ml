@@ -341,7 +341,7 @@ let commitment_level_of_inbox_level (node_ctxt : _ Node_context.t) inbox_level =
   in
   Option.map
     (fun last_published_commitment ->
-      (* TODO: https://gitlab.com/tezos/tezos/-/issues/6246
+      (* TODO: https://gitlab.com/mavryk/mavryk/-/issues/6246
          fix and test last_published_inbox_level in RPC dir. *)
       let last_published = last_published_commitment.Commitment.inbox_level in
       let open Int32 in

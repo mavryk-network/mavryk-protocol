@@ -917,7 +917,7 @@
   },
   {
     "file": "src/lib_shell/test/test_consensus_heuristic.ml",
-    "title": "tezos-shell: consensus heuristic sync (create_state_bad_expected)",
+    "title": "mavryk-shell: consensus heuristic sync (create_state_bad_expected)",
     "tags": [
       "alcotezt",
       "quick"

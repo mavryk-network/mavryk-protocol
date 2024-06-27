@@ -20,7 +20,7 @@ depends: [
   "aches" { >= "1.0.0" }
   "prometheus" { >= "1.2" }
   "tezt" { >= "4.0.0" & < "5.0.0" }
-  "tezt-tezos" { with-test & = version }
+  "tezt-mavryk" { with-test & = version }
   "mavkit-alcotezt" { with-test & = version }
   "astring" {with-test}
   "mavkit-proto-libs" { = version }

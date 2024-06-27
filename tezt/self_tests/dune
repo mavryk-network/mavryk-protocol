@@ -7,7 +7,7 @@
  (libraries
   tezt.core
   tezt
-  tezt-tezos)
+  tezt-mavryk)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
@@ -15,7 +15,7 @@
   -open Tezt_core.Base
   -open Tezt
   -open Tezt.Base
-  -open Tezt_tezos)
+  -open Tezt_mavryk)
  (modules test_michelson_script test_daemon))
 
 (executable
@@ -28,7 +28,7 @@
 
 (rule
  (alias runtest)
- (package tezt-tezos)
+ (package tezt-mavryk)
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
 

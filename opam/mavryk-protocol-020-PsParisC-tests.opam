@@ -22,7 +22,7 @@ depends: [
   "mavryk-benchmark-020-PsParisC" {with-test}
   "mavryk-benchmark-type-inference-020-PsParisC" {with-test}
   "qcheck-alcotest" { with-test & >= "0.20" }
-  "tezt-tezos" {with-test}
+  "tezt-mavryk" {with-test}
   "mavkit-shell-libs" {with-test}
   "mavkit-proto-libs" {with-test}
   "mavkit-l2-libs" {with-test}

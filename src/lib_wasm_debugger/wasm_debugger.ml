@@ -54,6 +54,20 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
     Repl_helpers.trap_exn (fun () ->
         Mavryk_webassembly_interpreter.Import.link module_)
 
+  let set_durable_value tree key value =
+    let open Lwt_syntax in
+    let open Mavryk_scoru_wasm.Durable in
+    let* durable_storage = Wasm.wrap_as_durable_storage tree in
+    let durable = Mavryk_scoru_wasm.Durable.of_storage_exn durable_storage in
+    let key = key_of_string_exn key in
+    let* durable = set_value_exn durable key value in
+    let durable_storage = Mavryk_scoru_wasm.Durable.to_storage durable in
+    let wrapped_tree = Durable_storage.to_tree_exn durable_storage in
+    Wasm.Tree_encoding_runner.encode
+      Mavryk_tree_encoding.(scope ["durable"] wrapped_tree)
+      wrapped_tree
+      tree
+
   let handle_installer_config_instr durable
       Mavkit_smart_rollup.Installer_config.(Set {value; to_}) =
     let open Mavryk_scoru_wasm.Durable in

@@ -6,12 +6,12 @@
  (package tezt-tx-kernel)
  (libraries
   tezt
-  tezt-tezos
+  tezt-mavryk
   mavryk-protocol-alpha.protocol
   mavkit-libs.crypto)
  (flags
   (:standard)
   -open Tezt
   -open Tezt.Base
-  -open Tezt_tezos
-  -open Tezt_tezos.Runnable.Syntax))
+  -open Tezt_mavryk
+  -open Tezt_mavryk.Runnable.Syntax))

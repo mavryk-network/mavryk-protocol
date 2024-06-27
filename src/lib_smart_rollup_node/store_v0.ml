@@ -35,7 +35,7 @@ let version = Store_version.V0
 
 module Irmin_store = struct
   module IStore = Irmin_store.Make (struct
-    let name = "Mavryk smart rollup node"
+    let name = "Tezos smart rollup node"
   end)
 
   include IStore
@@ -182,7 +182,7 @@ module Commitments_published_at_level = struct
   include
     Indexed_store.Make_indexable
       (struct
-        let name = "commitments"
+        let name = "commitments_published_at_level"
       end)
       (Make_hash_index_key (Mavkit_smart_rollup.Commitment.Hash))
       (Indexed_store.Make_index_value (Indexed_store.Make_fixed_encodable (struct
@@ -214,7 +214,7 @@ end)
 module Levels_to_hashes =
   Indexed_store.Make_indexable
     (struct
-      let name = "mavryk_levels"
+      let name = "Mavryk_levels"
     end)
     (Indexed_store.Make_index_key (struct
       type t = int32

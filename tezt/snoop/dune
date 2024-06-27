@@ -5,7 +5,7 @@
  (name main)
  (libraries
   tezt
-  tezt-tezos)
+  tezt-mavryk)
  (link_flags
   (:standard)
   (:include %{workspace_root}/macos-link-flags.sexp))
@@ -13,4 +13,4 @@
   (:standard)
   -open Tezt
   -open Tezt.Base
-  -open Tezt_tezos))
+  -open Tezt_mavryk))

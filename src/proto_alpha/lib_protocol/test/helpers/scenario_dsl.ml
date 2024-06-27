@@ -68,7 +68,7 @@ let rec run_scenario :
         let* result = action input in
         run_scenario next result
 
-type test_closure = string * bool * (Tezt_tezos.Protocol.t -> unit Lwt.t)
+type test_closure = string * bool * (Tezt_mavryk.Protocol.t -> unit Lwt.t)
 
 let unfolded_to_test :
     (unit, unit) single_scenario * string list * bool -> test_closure =
@@ -95,7 +95,7 @@ let unfolded_to_test :
 let register_test ~__FILE__ ~tags ((title, is_slow, test) : test_closure) : unit
     =
   let tags = if is_slow then Mavryk_test_helpers.Tag.slow :: tags else tags in
-  Tezt_tezos.Protocol.(
+  Tezt_mavryk.Protocol.(
     register_test
       ~__FILE__
       ~title

@@ -5,7 +5,7 @@ This is a package containing some libraries related to the Tezos 019-PtParisB pr
 It contains the following libraries:
 
 - {{!module-Mavryk_019_PtParisB_test_helpers}Mavryk_019_PtParisB_test_helpers}: Protocol testing framework
-- {{!module-Mavryk_baking_019_PtParisB}Mavryk_baking_019_PtParisB}: Base library for `tezos-baker/accuser`
+- {{!module-Mavryk_baking_019_PtParisB}Mavryk_baking_019_PtParisB}: Base library for `mavryk-baker/accuser`
 - {{!module-Mavryk_baking_019_PtParisB_commands}Mavryk_baking_019_PtParisB_commands}: Protocol-specific commands for baking
 - {{!module-Mavryk_client_019_PtParisB}Mavryk_client_019_PtParisB}: Protocol specific library for `mavkit-client`
 - {{!module-Mavryk_dac_019_PtParisB}Mavryk_dac_019_PtParisB}: Protocol specific library for the Data availability Committee

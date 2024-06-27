@@ -13,7 +13,7 @@
   mavkit-protocol-020-PsParisC-libs.test-helpers
   mavkit-libs.base-test-helpers
   mavkit-protocol-020-PsParisC-libs.client
-  tezos-benchmark
+  mavryk-benchmark
   mavkit-libs.micheline
   mavryk-benchmark-020-PsParisC
   mavryk-benchmark-type-inference-020-PsParisC

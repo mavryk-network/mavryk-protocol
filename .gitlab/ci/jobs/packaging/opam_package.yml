@@ -3905,7 +3905,7 @@ opam:mavryk-proxy-server-config:
     when: always
   retry: 2
 
-opam:tezt-tezos:
+opam:tezt-mavryk:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -3956,7 +3956,7 @@ opam:tezt-tezos:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: tezt-tezos
+    package: tezt-mavryk
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log

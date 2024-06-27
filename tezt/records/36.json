@@ -882,7 +882,7 @@
   },
   {
     "file": "src/lib_shell/test/test_synchronisation_heuristic.ml",
-    "title": "tezos-shell: synchronisation heuristic  (test is bootstrapped)",
+    "title": "mavryk-shell: synchronisation heuristic  (test is bootstrapped)",
     "tags": [
       "alcotezt",
       "quick"

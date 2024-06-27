@@ -228,7 +228,7 @@ let process_head plugin (node_ctxt : _ Node_context.t) ~predecessor
   | Some commitment ->
       let*! () =
         Commitment_event.new_commitment
-          (Octez_smart_rollup.Commitment.hash commitment)
+          (Mavkit_smart_rollup.Commitment.hash commitment)
           commitment.inbox_level
       in
       let* commitment_hash =

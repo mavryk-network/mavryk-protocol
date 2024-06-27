@@ -858,7 +858,7 @@
   },
   {
     "file": "src/lib_shell/test/test_synchronisation_heuristic.ml",
-    "title": "tezos-shell: synchronisation heuristic sync (Crowbar counterexample 1)",
+    "title": "mavryk-shell: synchronisation heuristic sync (Crowbar counterexample 1)",
     "tags": [
       "alcotezt",
       "quick"

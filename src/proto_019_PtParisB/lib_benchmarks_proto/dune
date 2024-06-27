@@ -12,7 +12,7 @@
   mavkit-libs.error-monad
   mavryk-protocol-019-PtParisB.parameters
   mavkit-libs.lazy-containers
-  tezos-benchmark
+  mavryk-benchmark
   mavryk-benchmark-019-PtParisB
   mavryk-benchmark-type-inference-019-PtParisB
   mavryk-protocol-019-PtParisB.protocol
@@ -20,7 +20,7 @@
   mavkit-shell-libs.shell-benchmarks
   mavkit-libs.micheline
   mavkit-protocol-019-PtParisB-libs.test-helpers
-  mavkit-libs.tezos-sapling
+  mavkit-libs.mavryk-sapling
   mavkit-protocol-019-PtParisB-libs.client
   mavkit-protocol-019-PtParisB-libs.plugin
   mavkit-proto-libs.protocol-environment)

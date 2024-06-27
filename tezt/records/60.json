@@ -893,7 +893,7 @@
   },
   {
     "file": "src/lib_shell/test/test_consensus_heuristic.ml",
-    "title": "tezos-shell: consensus heuristic (job on all consensus_2)",
+    "title": "mavryk-shell: consensus heuristic (job on all consensus_2)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1583,7 +1583,7 @@
   },
   {
     "file": "src/lib_benchmark/test/test_sparse_vec.ml",
-    "title": "tezos-benchmark: sparse_vec (sub1)",
+    "title": "mavryk-benchmark: sparse_vec (sub1)",
     "tags": [
       "alcotezt",
       "quick"

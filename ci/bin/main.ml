@@ -102,12 +102,12 @@ let () =
     ~jobs:(Code_verification.jobs Before_merging) ;
   register
     "mavkit_latest_release"
-    ~jobs:(Octez_latest_release.jobs ())
+    ~jobs:(Mavkit_latest_release.jobs ())
     If.(on_tezos_namespace && push && on_branch "latest-release") ;
   register
     "mavkit_latest_release_test"
     If.(not_on_tezos_namespace && push && on_branch "latest-release-test")
-    ~jobs:(Octez_latest_release.jobs ~test:true ()) ;
+    ~jobs:(Mavkit_latest_release.jobs ~test:true ()) ;
   register
     "master_branch"
     If.(on_tezos_namespace && push && on_branch "master")

@@ -454,7 +454,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (future_cache_expectation repeats the past)",
+    "title": "mavryk-shell-context: cache (future_cache_expectation repeats the past)",
     "tags": [
       "alcotezt",
       "slow"
@@ -466,7 +466,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (after sync, cache nonce are set)",
+    "title": "mavryk-shell-context: cache (after sync, cache nonce are set)",
     "tags": [
       "alcotezt",
       "slow"
@@ -478,7 +478,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (load_cache fails if builder fails (`Lazy mode))",
+    "title": "mavryk-shell-context: cache (load_cache fails if builder fails (`Lazy mode))",
     "tags": [
       "alcotezt",
       "slow"

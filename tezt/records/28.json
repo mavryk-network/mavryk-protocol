@@ -856,7 +856,7 @@
   },
   {
     "file": "src/lib_shell/test/test_synchronisation_heuristic.ml",
-    "title": "tezos-shell: synchronisation heuristic sync (Threshold is two, one peer in the past)",
+    "title": "mavryk-shell: synchronisation heuristic sync (Threshold is two, one peer in the past)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1003,7 +1003,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_mem_context.ml",
-    "title": "tezos-shell-context: mem_context (continuation)",
+    "title": "mavryk-shell-context: mem_context (continuation)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1555,7 +1555,7 @@
   },
   {
     "file": "src/lib_benchmark/test/test_costlang.ml",
-    "title": "tezos-benchmark: costlang (eval2)",
+    "title": "mavryk-benchmark: costlang (eval2)",
     "tags": [
       "alcotezt",
       "quick"

@@ -5,7 +5,7 @@
  (name testnet_experiment_tools)
  (libraries
   tezt
-  tezt-tezos
+  tezt-mavryk
   mavkit-shell-libs.client-base-unix
   mavkit-node-config
   mavkit-libs.base

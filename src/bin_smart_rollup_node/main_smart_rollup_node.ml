@@ -54,6 +54,7 @@ let config_init_command =
        dal_node_endpoint_arg
        dac_observer_endpoint_arg
        dac_timeout_arg
+       pre_images_endpoint_arg
        injector_retention_period_arg
        injector_attempts_arg
        injection_ttl_arg
@@ -82,6 +83,7 @@ let config_init_command =
            dal_node_endpoint,
            dac_observer_endpoint,
            dac_timeout,
+           pre_images_endpoint,
            injector_retention_period,
            injector_attempts,
            injection_ttl,
@@ -109,6 +111,7 @@ let config_init_command =
           ~dal_node_endpoint
           ~dac_observer_endpoint
           ~dac_timeout
+          ~pre_images_endpoint
           ~injector_retention_period
           ~injector_attempts
           ~injection_ttl
@@ -212,6 +215,7 @@ let legacy_run_command =
           ~dal_node_endpoint
           ~dac_observer_endpoint
           ~dac_timeout
+          ~pre_images_endpoint
           ~injector_retention_period
           ~injector_attempts
           ~injection_ttl
@@ -319,6 +323,7 @@ let run_command =
           ~dal_node_endpoint
           ~dac_observer_endpoint
           ~dac_timeout
+          ~pre_images_endpoint
           ~injector_retention_period
           ~injector_attempts
           ~injection_ttl
@@ -462,8 +467,54 @@ let import_snapshot =
     (prefixes ["snapshot"; "import"] @@ Cli.snapshot_file_param @@ stop)
     (fun (data_dir, no_checks, force) snapshot_file cctxt ->
       let open Lwt_result_syntax in
-      let* snapshot_file = Snapshots.export ~data_dir ~dest in
-      let*! () = cctxt#message "Snapshot exported to %s@." snapshot_file in
+      let* () =
+        Snapshots.import cctxt ~no_checks ~force ~data_dir ~snapshot_file
+      in
+      let*! () = cctxt#message "Snapshot successfully imported@." in
+      return_unit)
+
+let snapshot_info =
+  let open Mavryk_clic in
+  command
+    ~group
+    ~desc:"Display information about a snapshot file."
+    no_options
+    (prefixes ["snapshot"; "info"] @@ Cli.snapshot_file_param @@ stop)
+    (fun () snapshot_file cctxt ->
+      let open Lwt_result_syntax in
+      let ( {Snapshot_utils.history_mode; address; head_level; last_commitment},
+            compressed ) =
+        Snapshots.info ~snapshot_file
+      in
+      let*! () =
+        cctxt#message
+          "@[<v 0>Valid smart rollup node snapshot.@,\
+           Format:          %scompressed@,\
+           History mode:    %s@,\
+           Rollup address:  %a@,\
+           Head level:      %ld@,\
+           Last commitment: %a@]"
+          (match compressed with `Compressed -> "" | `Uncompressed -> "un")
+          (Configuration.string_of_history_mode history_mode)
+          Address.pp
+          address
+          head_level
+          Commitment.Hash.pp
+          last_commitment
+      in
+      return_unit)
+
+let openapi_command =
+  let open Mavryk_clic in
+  let open Lwt_result_syntax in
+  command
+    ~group
+    ~desc:"Generate OpenAPI specification."
+    (args1 Cli.protocol_hash_arg)
+    (prefixes ["generate"; "openapi"] @@ stop)
+    (fun protocol cctxt ->
+      let* openapi_json = Rpc_directory.generate_openapi ?protocol cctxt in
+      let*! () = cctxt#message "%a" Data_encoding.Json.pp openapi_json in
       return_unit)
 
 let sc_rollup_commands () =
@@ -474,7 +525,11 @@ let sc_rollup_commands () =
     protocols_command;
     dump_metrics;
     dump_durable_storage;
-    export_snapshot;
+    export_snapshot_auto_name;
+    export_snapshot_named;
+    import_snapshot;
+    snapshot_info;
+    openapi_command;
   ]
   @ Repair.commands
 

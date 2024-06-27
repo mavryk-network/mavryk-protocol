@@ -906,7 +906,7 @@
   },
   {
     "file": "src/lib_shell/test/test_consensus_heuristic.ml",
-    "title": "tezos-shell: consensus heuristic (job return need more canddidates)",
+    "title": "mavryk-shell: consensus heuristic (job return need more canddidates)",
     "tags": [
       "alcotezt",
       "quick"

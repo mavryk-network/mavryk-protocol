@@ -858,7 +858,7 @@
   },
   {
     "file": "src/lib_shell/test/test_node.ml",
-    "title": "tezos-shell: test node (node_initialization_events)",
+    "title": "mavryk-shell: test node (node_initialization_events)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1005,7 +1005,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_mem_context.ml",
-    "title": "tezos-shell-context: mem_context (fold order)",
+    "title": "mavryk-shell-context: mem_context (fold order)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1557,7 +1557,7 @@
   },
   {
     "file": "src/lib_benchmark/test/test_costlang.ml",
-    "title": "tezos-benchmark: costlang (pp2)",
+    "title": "mavryk-benchmark: costlang (pp2)",
     "tags": [
       "alcotezt",
       "quick"

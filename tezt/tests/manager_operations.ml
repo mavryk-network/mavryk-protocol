@@ -30,7 +30,7 @@
    Subject:      Tests that covers differents cases of manager operations
 *)
 
-open Tezt_tezos
+open Tezt_mavryk
 open Lwt.Infix
 
 (** A node with an associated client (with endpoint this node).  *)

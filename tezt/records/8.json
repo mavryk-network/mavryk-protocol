@@ -899,7 +899,7 @@
   },
   {
     "file": "src/lib_shell/test/test_consensus_heuristic.ml",
-    "title": "tezos-shell: consensus heuristic sync (job return hash)",
+    "title": "mavryk-shell: consensus heuristic sync (job return hash)",
     "tags": [
       "alcotezt",
       "quick"

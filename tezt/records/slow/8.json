@@ -1005,7 +1005,7 @@
   },
   {
     "file": "src/lib_rpc_http/test/test_rpc_http.ml",
-    "title": "tezos-rpc-http: qcheck (Encoding and decoding an ACL is an identity function.)",
+    "title": "mavryk-rpc-http: qcheck (Encoding and decoding an ACL is an identity function.)",
     "tags": [
       "alcotezt",
       "slow"
@@ -1089,7 +1089,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (from_layout fails on negative sizes)",
+    "title": "mavryk-shell-context: cache (from_layout fails on negative sizes)",
     "tags": [
       "alcotezt",
       "slow"
@@ -1101,7 +1101,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (list keys returns all entries)",
+    "title": "mavryk-shell-context: cache (list keys returns all entries)",
     "tags": [
       "alcotezt",
       "slow"

@@ -844,7 +844,7 @@
   },
   {
     "file": "src/lib_shell/test/test_synchronisation_heuristic.ml",
-    "title": "tezos-shell: synchronisation heuristic sync (Threshold is one, update in the present)",
+    "title": "mavryk-shell: synchronisation heuristic sync (Threshold is one, update in the present)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1543,7 +1543,7 @@
   },
   {
     "file": "src/lib_benchmark/test/test_costlang.ml",
-    "title": "tezos-benchmark: costlang (arg_names_1)",
+    "title": "mavryk-benchmark: costlang (arg_names_1)",
     "tags": [
       "alcotezt",
       "quick"

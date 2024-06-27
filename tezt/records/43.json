@@ -844,7 +844,7 @@
   },
   {
     "file": "src/lib_shell/test/test_synchronisation_heuristic.ml",
-    "title": "tezos-shell: synchronisation heuristic sync (Threshold is two)",
+    "title": "mavryk-shell: synchronisation heuristic sync (Threshold is two)",
     "tags": [
       "alcotezt",
       "quick"
@@ -991,7 +991,7 @@
   },
   {
     "file": "src/lib_rpc_http/test/test_rpc_http.ml",
-    "title": "tezos-rpc-http: test_matching_with_name_resolving (make sure addresses match well with domain name resolving)",
+    "title": "mavryk-rpc-http: test_matching_with_name_resolving (make sure addresses match well with domain name resolving)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1555,7 +1555,7 @@
   },
   {
     "file": "src/lib_benchmark/test/test_costlang.ml",
-    "title": "tezos-benchmark: costlang (arg_names_4)",
+    "title": "mavryk-benchmark: costlang (arg_names_4)",
     "tags": [
       "alcotezt",
       "quick"

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* Entrypoint for a program that converts a Mavryk API description (JSON)
+(* Entrypoint for a program that converts a Tezos API description (JSON)
    into an OpenAPI 3 specification (JSON as well). *)
 
 let fail x = Printf.ksprintf failwith x
@@ -95,7 +95,7 @@ let rec convert_element (element : Json_schema.element) : Openapi.Schema.t =
            Function [is_null] catches both those cases.
 
            FIXME: #3484
-           Remove this encoding of [null] from Mavkit
+           Remove this encoding of [null] from Octez
         *)
         let is_null e =
           let open Json_schema in
@@ -359,12 +359,12 @@ let convert_endpoint (endpoint : Api.service Api.endpoint) :
   let env = merge_env_list [env_1; env_2; env_3; env_4; env_5] in
   (env, endpoint)
 
-let convert_api version (endpoints : Api.service Api.endpoint list) : Openapi.t
-    =
+let convert_api ~title ~description version
+    (endpoints : Api.service Api.endpoint list) : Openapi.t =
   let envs, endpoints = List.map convert_endpoint endpoints |> List.split in
   Openapi.make
-    ~title:"Mavkit RPC"
-    ~description:"The RPC API served by the Mavkit node."
+    ~title
+    ~description
     ~version
     ~definitions:(String_map.bindings (merge_env_list envs))
     endpoints

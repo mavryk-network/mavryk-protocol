@@ -16,7 +16,7 @@ depends: [
   "mavkit-shell-libs" { = version }
   "mavkit-libs" { = version }
   "tezt" { >= "4.0.0" & < "5.0.0" }
-  "tezt-tezos" { = version }
+  "tezt-mavryk" { = version }
   "jingoo"
   "dmap"
   "yaml" { >= "3.1.0" }

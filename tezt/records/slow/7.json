@@ -1065,7 +1065,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (key_of_identifier uses given identifier)",
+    "title": "mavryk-shell-context: cache (key_of_identifier uses given identifier)",
     "tags": [
       "alcotezt",
       "slow"
@@ -1077,7 +1077,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (from_cache with same domain copies)",
+    "title": "mavryk-shell-context: cache (from_cache with same domain copies)",
     "tags": [
       "alcotezt",
       "slow"

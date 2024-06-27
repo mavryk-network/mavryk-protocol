@@ -881,7 +881,7 @@
   },
   {
     "file": "src/lib_shell/test/test_protocol_validator.ml",
-    "title": "tezos-shell: test validator (pushing_validator_protocol)",
+    "title": "mavryk-shell: test validator (pushing_validator_protocol)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1040,7 +1040,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_mem_context.ml",
-    "title": "tezos-shell-context: mem_context (replay)",
+    "title": "mavryk-shell-context: mem_context (replay)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1580,7 +1580,7 @@
   },
   {
     "file": "src/lib_benchmark/test/test_probe.ml",
-    "title": "tezos-benchmark: probe (probing bench)",
+    "title": "mavryk-benchmark: probe (probing bench)",
     "tags": [
       "alcotezt",
       "quick"

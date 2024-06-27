@@ -896,7 +896,7 @@
   },
   {
     "file": "src/lib_shell/test/test_consensus_heuristic.ml",
-    "title": "tezos-shell: consensus heuristic sync (job failed)",
+    "title": "mavryk-shell: consensus heuristic sync (job failed)",
     "tags": [
       "alcotezt",
       "quick"

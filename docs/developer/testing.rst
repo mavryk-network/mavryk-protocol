@@ -169,7 +169,7 @@ Example tests:
 References:
  - :doc:`Section in Mavryk Developer Documentation on Tezt <tezt>`
  - `General API documentation <https://nomadic-labs.gitlab.io/tezt/>`__
- - :package-api:`Mavkit-specific API documentation <tezt-tezos/Tezt_tezos/index.html>`
+ - :package-api:`Mavkit-specific API documentation <tezt-mavryk/Tezt_mavryk/index.html>`
 
 .. _long_tezt_section:
 

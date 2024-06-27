@@ -898,7 +898,7 @@
   },
   {
     "file": "src/lib_shell/test/test_consensus_heuristic.ml",
-    "title": "tezos-shell: consensus heuristic sync (worker canceled)",
+    "title": "mavryk-shell: consensus heuristic sync (worker canceled)",
     "tags": [
       "alcotezt",
       "quick"

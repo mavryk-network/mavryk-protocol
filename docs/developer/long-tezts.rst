@@ -219,7 +219,7 @@ Configuring and Running Tezt Long Tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For more information about how to use the configuration file, please refer
-to the `Long test module API <https://protocol.mavryk.org/api/odoc/_html/tezt-tezos/Tezt_mavryk_tezt_performance_regression/>`__.
+to the `Long test module API <https://protocol.mavryk.org/api/odoc/_html/tezt-mavryk/Tezt_mavryk_tezt_performance_regression/>`__.
 
 A predefined configuration has already been shipped in :src:`tezt/lib_performance_regression/local-sandbox/tezt_config.json`.
 It allows to use the InfluxDB and Grafana instances set up by the

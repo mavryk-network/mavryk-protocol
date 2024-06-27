@@ -37,7 +37,7 @@
 *)
 
 open Tezt
-open Tezt_tezos
+open Tezt_mavryk
 open Mavryk_crypto
 module Node_config = Mavkit_node_config.Config_file
 
@@ -95,17 +95,17 @@ let protocol_alpha_parameters_template =
 
 let network_activation_parameters_templates protocol_hash =
   match protocol_hash with
-  | Tezt_tezos.Protocol.ParisB ->
+  | Tezt_mavryk.Protocol.ParisB ->
       Some
         (Filename.concat
            network_parameters_templates_dir
            "proto_019_PtParisB_mainnet.json")
-  | Tezt_tezos.Protocol.ParisC ->
+  | Tezt_mavryk.Protocol.ParisC ->
       Some
         (Filename.concat
            network_parameters_templates_dir
            "proto_020_PsParisC_mainnet.json")
-  | Tezt_tezos.Protocol.Alpha ->
+  | Tezt_mavryk.Protocol.Alpha ->
       (* Fetching the network parameters from the src/proto_alpha directory,
          to be sure that we are in synch with current protocl parameters. *)
       Some protocol_alpha_parameters_template
@@ -320,7 +320,7 @@ module Local = struct
         activation_parameters_filename
     in
     let* _filename =
-      Tezt_tezos.Protocol.write_parameter_file
+      Tezt_mavryk.Protocol.write_parameter_file
         ~bootstrap_accounts
         ~base:(Either.Left activation_parameters_filename)
         ~output_file:output_parameters_filename

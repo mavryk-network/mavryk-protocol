@@ -55,7 +55,7 @@ let commands = Commands.commands ()
 
 let home = try Sys.getenv "HOME" with Not_found -> "/tmp"
 
-let default_base_dir = Filename.concat home ".tezos-client"
+let default_base_dir = Filename.concat home ".mavryk-client"
 
 let base_dir_arg =
   let open Mavryk_clic in

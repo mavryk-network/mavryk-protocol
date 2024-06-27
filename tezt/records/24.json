@@ -869,7 +869,7 @@
   },
   {
     "file": "src/lib_signer_backends/test/test_encrypted.ml",
-    "title": "tezos-signer-backends: encrypted (aggregate_vectors_decrypt)",
+    "title": "mavryk-signer-backends: encrypted (aggregate_vectors_decrypt)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1041,7 +1041,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test_shell_context/test_proxy_context.ml",
-    "title": "tezos-shell-proxy-context: proxy_context (find)",
+    "title": "mavryk-shell-proxy-context: proxy_context (find)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1581,7 +1581,7 @@
   },
   {
     "file": "src/lib_benchmark/test/test_sparse_vec.ml",
-    "title": "tezos-benchmark: sparse_vec (add3)",
+    "title": "mavryk-benchmark: sparse_vec (add3)",
     "tags": [
       "alcotezt",
       "quick"

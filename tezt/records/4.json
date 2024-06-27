@@ -1058,7 +1058,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test_shell_context/test_proxy_context.ml",
-    "title": "tezos-shell-proxy-context: proxy_context (memtree)",
+    "title": "mavryk-shell-proxy-context: proxy_context (memtree)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1586,7 +1586,7 @@
   },
   {
     "file": "src/lib_benchmark/test/test_sparse_vec.ml",
-    "title": "tezos-benchmark: sparse_vec (of_list3)",
+    "title": "mavryk-benchmark: sparse_vec (of_list3)",
     "tags": [
       "alcotezt",
       "quick"

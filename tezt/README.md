@@ -3,13 +3,13 @@
 This directory contains a test suite for Mavkit (an implementation of the Tezos blockchain) based on Tezt. Tezt is a
 generic test framework that is used for writing tests in OCaml.
 
-The directory includes the sources of the Tezt framework, its extension with specific support for Tezos (called Tezt-Tezos), and a whole test suite.
+The directory includes the sources of the Tezt framework, its extension with specific support for Mavryk (called Tezt-Mavryk), and a whole test suite.
 
 ## API Documentation
 
 The user manual of the testsuite is available online at <https://protocol.mavryk.org/developer/tezt.html>.
 
-The APIs of the `tezt` and `tezt-tezos` libraries are documented in the
+The APIs of the `tezt` and `tezt-mavryk` libraries are documented in the
 interface files (suffix `mli`). Both APIs are also available online at
 <https://protocol.mavryk.org/api/api-inline.html>.
 
@@ -20,7 +20,7 @@ This directory contains the following subdirectories:
 - `lib` defines an OCaml library named `tezt` which contains the test
   framework. It is independent from Mavkit and from the Tezos protocols.
 
-- `lib_tezos` defines another OCaml library named `tezt-tezos` which
+- `lib_tezos` defines another OCaml library named `tezt-mavryk` which
   is specific to Mavkit, complementing the above with Mavkit-specific
   features.
 
@@ -72,11 +72,11 @@ This directory contains the following subdirectories:
 
 Tezt is implemented in the [OCaml
 language](https://ocaml.org). Currently, the project ensures that
-libraries `tezt` and `tezt-tezos` do not depend on any library of
+libraries `tezt` and `tezt-mavryk` do not depend on any library of
 `Tezos`. The motto of the library is to provide an **extensive** but
 **simple** test framework for Tezos.
 
-An important feature of `tezt-tezos` is the possibility to catch `events`
+An important feature of `tezt-mavryk` is the possibility to catch `events`
 emitted by the node. This allows fine-grained tests. In particular, as
 much as possible, a test in this testsuite should avoid the use of timeouts
 and instead, should rely on `events` if possible.

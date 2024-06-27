@@ -2,11 +2,11 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name tezt_tezos)
- (public_name tezt-tezos)
+ (name tezt_mavryk)
+ (public_name tezt-mavryk)
  (libraries
   mavkit-libs.tezt-wrapper
-  tezt-tezos.tezt-performance-regression
+  tezt-mavryk.tezt-performance-regression
   uri
   hex
   mavkit-libs.crypto-dal

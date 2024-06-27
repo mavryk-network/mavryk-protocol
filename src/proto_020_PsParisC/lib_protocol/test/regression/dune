@@ -7,7 +7,7 @@
  (libraries
   tezt.core
   mavkit-libs.base
-  tezt-tezos
+  tezt-mavryk
   mavryk-protocol-020-PsParisC.protocol
   mavkit-protocol-020-PsParisC-libs.client
   mavkit-protocol-020-PsParisC-libs.plugin
@@ -19,7 +19,7 @@
   -open Tezt_core
   -open Tezt_core.Base
   -open Mavryk_base.TzPervasives
-  -open Tezt_tezos
+  -open Tezt_mavryk
   -open Mavryk_protocol_020_PsParisC
   -open Mavryk_client_020_PsParisC
   -open Mavryk_protocol_plugin_020_PsParisC

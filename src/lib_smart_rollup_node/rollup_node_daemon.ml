@@ -156,6 +156,7 @@ let process_unseen_head ({node_ctxt; _} as state) ~catching_up ~predecessor
       head
       ctxt
   in
+  let* () = maybe_split_context node_ctxt commitment_hash head.level in
   let* () =
     unless (catching_up && Option.is_none commitment_hash) @@ fun () ->
     Plugin.Inbox.same_as_layer_1 node_ctxt head.hash inbox
@@ -176,7 +177,7 @@ let process_unseen_head ({node_ctxt; _} as state) ~catching_up ~predecessor
         predecessor = predecessor.hash;
         commitment_hash;
         previous_commitment_hash;
-        context = context_hash;
+        context = Smart_rollup_context_hash.of_context_hash context_hash;
         inbox_witness;
         inbox_hash;
       }
@@ -321,7 +322,7 @@ let on_layer_1_head ({node_ctxt; _} as state) (head : Layer1.header) =
     Node_context.get_mavryk_reorg_for_new_head node_ctxt old_head stripped_head
   in
   let*? reorg = report_missing_data reorg in
-  (* TODO: https://gitlab.com/tezos/tezos/-/issues/3348
+  (* TODO: https://gitlab.com/mavryk/mavryk/-/issues/3348
      Rollback state information on reorganization, i.e. for
      reorg.old_chain. *)
   let*! () = Daemon_event.processing_heads_iteration reorg.new_chain in
@@ -418,7 +419,7 @@ let install_finalizer state =
   let* () = Publisher.shutdown () in
   let* () = message "Shutting down Refutation Coordinator@." in
   let* () = Refutation_coordinator.shutdown () in
-  let* (_ : unit tzresult) = Node_context.close state.node_ctxt in
+  let* (_ : unit tzresult) = Node_context_loader.close state.node_ctxt in
   let* () = Event.shutdown_node exit_status in
   Mavryk_base_unix.Internal_event_unix.close ()
 
@@ -684,7 +685,7 @@ module Internal_for_tests = struct
           predecessor = predecessor.hash;
           commitment_hash;
           previous_commitment_hash;
-          context = context_hash;
+          context = Smart_rollup_context_hash.of_context_hash context_hash;
           inbox_witness;
           inbox_hash;
         }
@@ -714,6 +715,9 @@ let run ~data_dir ~irmin_cache_size ~index_buffer_size ?log_kernel_debug_file
   let* () =
     Mavryk_base_unix.Internal_event_unix.enable_default_daily_logs_at
       ~daily_logs_path:Filename.Infix.(data_dir // "daily_logs")
+  in
+  let cctxt =
+    Layer_1.client_context_with_timeout cctxt configuration.l1_rpc_timeout
   in
   Random.self_init () (* Initialize random state (for reconnection delays) *) ;
   let*! () = Event.starting_node () in
@@ -784,7 +788,7 @@ let run ~data_dir ~irmin_cache_size ~index_buffer_size ?log_kernel_debug_file
     }
   in
   let* node_ctxt =
-    Node_context.init
+    Node_context_loader.init
       cctxt
       ~data_dir
       ~irmin_cache_size

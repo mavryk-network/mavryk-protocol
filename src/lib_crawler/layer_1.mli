@@ -27,7 +27,9 @@
 (** This module allow to follow the layer 1 chain by subscribing to the head
     monitoring RPC offered by the Mavryk node, reconnecting, etc. *)
 
-type error += Cannot_find_predecessor of Block_hash.t
+type error +=
+  | Cannot_find_predecessor of Block_hash.t
+  | Http_connection_error of (Cohttp.Code.status_code * string)
 
 (** The type of layer 1 followers. *)
 type t
@@ -48,7 +50,7 @@ val start :
   t Lwt.t
 
 (** [create ~name ~reconnection_delay ?protocols cctxt] creates a Layer 1
-    context without connecting to a Tezos node. Use {!connect} to connect to
+    context without connecting to a Mavryk node. Use {!connect} to connect to
     start monitoring heads. If [protocols] is provided, only heads of these
     protocols will be monitored. *)
 val create :
@@ -126,6 +128,13 @@ val get_mavryk_reorg_for_new_head :
   [`Head of Block_hash.t * int32 | `Level of int32] ->
   Block_hash.t * int32 ->
   (Block_hash.t * int32) Reorg.t tzresult Lwt.t
+
+(** [client_context_with_timeout ctxt timeout] creates a client context where
+    RPCs will be made with timeout [timeout] seconds. Calls that timeout will
+    resolve with an error [RPC_timeout] which will trigger a reconnection in
+    {!iter_heads}.  *)
+val client_context_with_timeout :
+  #Client_context.full -> float -> Client_context.full
 
 (**/**)
 

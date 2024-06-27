@@ -1065,7 +1065,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (clear preserves layout and removes entries)",
+    "title": "mavryk-shell-context: cache (clear preserves layout and removes entries)",
     "tags": [
       "alcotezt",
       "slow"
@@ -1077,7 +1077,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (inserted entries are in the cache (with lookup))",
+    "title": "mavryk-shell-context: cache (inserted entries are in the cache (with lookup))",
     "tags": [
       "alcotezt",
       "slow"
@@ -1089,7 +1089,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (update with none removes mapping)",
+    "title": "mavryk-shell-context: cache (update with none removes mapping)",
     "tags": [
       "alcotezt",
       "slow"

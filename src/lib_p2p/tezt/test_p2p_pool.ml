@@ -715,7 +715,7 @@ let init_logs =
 
 let register ?(tags = []) ?(clients = 10) title f =
   Test.register
-    ~title:(sf "tezos-p2p: p2p-connection-pool (%s)" title)
+    ~title:(sf "mavryk-p2p: p2p-connection-pool (%s)" title)
     ~tags:("p2p" :: tags)
     ~__FILE__
   @@ fun () ->

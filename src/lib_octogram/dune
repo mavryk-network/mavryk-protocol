@@ -9,7 +9,7 @@
   mavkit-shell-libs.shell-services
   mavkit-libs.rpc-http-client-unix
   tezt
-  tezt-tezos
+  tezt-mavryk
   jingoo
   dmap)
  (flags
@@ -18,5 +18,5 @@
   -open Mavryk_rpc_http_client_unix
   -open Tezt
   -open Tezt.Base
-  -open Tezt_tezos
-  -open Tezt_tezos.Runnable.Syntax))
+  -open Tezt_mavryk
+  -open Tezt_mavryk.Runnable.Syntax))

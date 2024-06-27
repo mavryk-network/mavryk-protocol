@@ -856,7 +856,7 @@
   },
   {
     "file": "src/lib_shell/test/test_synchronisation_heuristic.ml",
-    "title": "tezos-shell: synchronisation heuristic sync (Threshold is two, one peer in the past twice)",
+    "title": "mavryk-shell: synchronisation heuristic sync (Threshold is two, one peer in the past twice)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1015,7 +1015,7 @@
   },
   {
     "file": "src/lib_rpc_http/test/test_rpc_http.ml",
-    "title": "tezos-rpc-http: test_media_type_pp_parse (Media_type.Command_line.pp/parse)",
+    "title": "mavryk-rpc-http: test_media_type_pp_parse (Media_type.Command_line.pp/parse)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1555,7 +1555,7 @@
   },
   {
     "file": "src/lib_benchmark/test/test_costlang.ml",
-    "title": "tezos-benchmark: costlang (eval1)",
+    "title": "mavryk-benchmark: costlang (eval1)",
     "tags": [
       "alcotezt",
       "quick"

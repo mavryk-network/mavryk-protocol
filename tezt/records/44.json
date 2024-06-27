@@ -856,7 +856,7 @@
   },
   {
     "file": "src/lib_shell/test/test_synchronisation_heuristic.ml",
-    "title": "tezos-shell: synchronisation heuristic sync (Threshold is one, update in the past)",
+    "title": "mavryk-shell: synchronisation heuristic sync (Threshold is one, update in the past)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1543,7 +1543,7 @@
   },
   {
     "file": "src/lib_benchmark/test/test_benchmark_helpers.ml",
-    "title": "tezos-benchmark: benchmark_helpers (raise exception when file is missing)",
+    "title": "mavryk-benchmark: benchmark_helpers (raise exception when file is missing)",
     "tags": [
       "alcotezt",
       "quick"

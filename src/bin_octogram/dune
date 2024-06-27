@@ -8,7 +8,7 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt
-  tezt-tezos
+  tezt-mavryk
   octogram
   yaml)
  (link_flags
@@ -18,5 +18,5 @@
   (:standard)
   -open Tezt
   -open Tezt.Base
-  -open Tezt_tezos
-  -open Tezt_tezos.Runnable.Syntax))
+  -open Tezt_mavryk
+  -open Tezt_mavryk.Runnable.Syntax))

@@ -1041,7 +1041,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (compatible_layout validates correctly)",
+    "title": "mavryk-shell-context: cache (compatible_layout validates correctly)",
     "tags": [
       "alcotezt",
       "slow"
@@ -1053,7 +1053,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (key rank returns valid rank)",
+    "title": "mavryk-shell-context: cache (key rank returns valid rank)",
     "tags": [
       "alcotezt",
       "slow"

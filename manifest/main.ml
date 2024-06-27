@@ -88,7 +88,7 @@ let () =
       tezt_wrapper |> open_ |> open_ ~m:"Base";
       str;
       bls12_381;
-      tezt_tezos |> open_ |> open_ ~m:"Runnable.Syntax";
+      tezt_mavryk |> open_ |> open_ ~m:"Runnable.Syntax";
       Mavkit.tezt_risc_v_sandbox;
       tezt_tx_kernel;
       data_encoding;

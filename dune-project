@@ -118,7 +118,7 @@
 (package (name mavryk_internal_irmin_tests)(allow_empty))
 (package (name tezt-etherlink)(allow_empty))
 (package (name tezt-risc-v-sandbox)(allow_empty))
-(package (name tezt-tezos))
+(package (name tezt-mavryk))
 (package (name tezt-tx-kernel)(allow_empty))
 ; This file was automatically generated, do not edit.
 ; Edit file manifest/main.ml instead.

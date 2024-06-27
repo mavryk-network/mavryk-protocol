@@ -15,8 +15,8 @@ depends: [
   "ocaml" { >= "4.14" }
   "mavkit-libs" { = version }
   "mavkit-shell-libs" { = version }
-  "tezos-dac-lib" { = version }
-  "tezos-dac-node-lib" { = version }
+  "mavryk-dac-lib" { = version }
+  "mavryk-dac-node-lib" { = version }
   "mavkit-l2-libs" { = version }
   "mavkit-internal-libs" { = version }
   "mavkit-protocol-018-Proxford-libs" { = version }

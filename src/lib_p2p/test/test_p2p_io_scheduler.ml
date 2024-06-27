@@ -243,7 +243,7 @@ let wrap n f =
 
 let () =
   let addr = Node.default_ipv6_addr in
-  let port = Some (Tezt_tezos.Port.fresh ()) in
+  let port = Some (Tezt_mavryk.Port.fresh ()) in
   let max_download_speed = 1048576 in
   let max_upload_speed = 262144 in
   (* 1 << 14 = 16kB *)

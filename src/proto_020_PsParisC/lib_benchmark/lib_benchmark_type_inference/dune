@@ -10,7 +10,7 @@
   mavkit-libs.error-monad
   mavkit-libs.crypto
   mavkit-libs.micheline
-  tezos-micheline-rewriting
+  mavryk-micheline-rewriting
   mavryk-protocol-020-PsParisC.protocol
   hashcons)
  (flags

@@ -917,7 +917,7 @@
   },
   {
     "file": "src/lib_shell/test/test_consensus_heuristic.ml",
-    "title": "tezos-shell: consensus heuristic (job return no consensus)",
+    "title": "mavryk-shell: consensus heuristic (job return no consensus)",
     "tags": [
       "alcotezt",
       "quick"

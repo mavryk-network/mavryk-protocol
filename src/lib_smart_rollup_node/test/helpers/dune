@@ -25,7 +25,7 @@
  (flags
   (:standard)
   -open Mavryk_base.TzPervasives
-  -open Mavryk_base.TzPervasives.Error_monad.Legacy_monad_globals
+  -open Mavryk_base.TzPervasives.Error_monad
   -open Mavryk_test_helpers
   -open Mavkit_alcotezt
   -open Mavryk_client_base_unix
@@ -35,5 +35,5 @@
 
 (rule
  (action
-  (progn 
-    (write-file void_for_linking-mavkit_smart_rollup_node_alpha.empty ""))))
+  (progn
+   (write-file void_for_linking-mavkit_smart_rollup_node_alpha.empty ""))))

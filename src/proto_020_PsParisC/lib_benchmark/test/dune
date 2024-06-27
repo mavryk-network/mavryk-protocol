@@ -10,9 +10,9 @@
  (libraries
   mavkit-libs.base
   mavkit-libs.micheline
-  tezos-micheline-rewriting
+  mavryk-micheline-rewriting
   mavryk-protocol-020-PsParisC.protocol
-  tezos-benchmark
+  mavryk-benchmark
   mavryk-benchmark-type-inference-020-PsParisC
   mavryk-benchmark-020-PsParisC
   mavkit-protocol-020-PsParisC-libs.test-helpers

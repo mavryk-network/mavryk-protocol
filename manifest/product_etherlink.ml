@@ -27,7 +27,7 @@ let tezt_etherlink =
         tezt_wrapper |> open_ |> open_ ~m:"Base";
         tezt_performance_regression |> open_;
         mavkit_crypto;
-        tezt_tezos |> open_;
+        tezt_mavryk |> open_;
       ]
     ~release_status:Unreleased
 
@@ -220,7 +220,7 @@ let _tezt_etherlink =
       [
         mavkit_test_helpers |> open_;
         tezt_wrapper |> open_ |> open_ ~m:"Base";
-        tezt_tezos |> open_ |> open_ ~m:"Runnable.Syntax";
+        tezt_mavryk |> open_ |> open_ ~m:"Runnable.Syntax";
         tezt_etherlink |> open_;
         Protocol.(main alpha);
       ]
@@ -270,6 +270,6 @@ let _tezt_testnet_scenarios =
       [
         mavkit_test_helpers |> open_;
         tezt_wrapper |> open_ |> open_ ~m:"Base";
-        tezt_tezos |> open_ |> open_ ~m:"Runnable.Syntax";
+        tezt_mavryk |> open_ |> open_ ~m:"Runnable.Syntax";
         tezt_etherlink |> open_;
       ]

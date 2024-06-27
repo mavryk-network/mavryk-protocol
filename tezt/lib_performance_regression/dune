@@ -3,7 +3,7 @@
 
 (library
  (name tezt_mavryk_tezt_performance_regression)
- (public_name tezt-tezos.tezt-performance-regression)
+ (public_name tezt-mavryk.tezt-performance-regression)
  (libraries
   mavkit-libs.tezt-wrapper
   uri

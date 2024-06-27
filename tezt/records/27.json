@@ -857,7 +857,7 @@
   },
   {
     "file": "src/lib_shell/test/test_synchronisation_heuristic.ml",
-    "title": "tezos-shell: synchronisation heuristic sync (Threshold negative)",
+    "title": "mavryk-shell: synchronisation heuristic sync (Threshold negative)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1004,7 +1004,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_mem_context.ml",
-    "title": "tezos-shell-context: mem_context (domain1)",
+    "title": "mavryk-shell-context: mem_context (domain1)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1556,7 +1556,7 @@
   },
   {
     "file": "src/lib_benchmark/test/test_costlang.ml",
-    "title": "tezos-benchmark: costlang (eval_to_linear_comb_fail)",
+    "title": "mavryk-benchmark: costlang (eval_to_linear_comb_fail)",
     "tags": [
       "alcotezt",
       "quick"

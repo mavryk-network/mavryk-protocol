@@ -13,7 +13,7 @@
   mavkit-protocol-019-PtParisB-libs.test-helpers
   mavkit-libs.base-test-helpers
   mavkit-protocol-019-PtParisB-libs.client
-  tezos-benchmark
+  mavryk-benchmark
   mavkit-libs.micheline
   mavryk-benchmark-019-PtParisB
   mavryk-benchmark-type-inference-019-PtParisB

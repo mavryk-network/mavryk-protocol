@@ -14,7 +14,7 @@ depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
   "mavkit-libs"
-  "tezt-tezos"
+  "tezt-mavryk"
   "tezt-etherlink" { = version }
 ]
 build: [

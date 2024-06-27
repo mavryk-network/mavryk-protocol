@@ -1053,7 +1053,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (invalid cache indices produce failures)",
+    "title": "mavryk-shell-context: cache (invalid cache indices produce failures)",
     "tags": [
       "alcotezt",
       "slow"
@@ -1065,7 +1065,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (compatible_layout invalidates correctly)",
+    "title": "mavryk-shell-context: cache (compatible_layout invalidates correctly)",
     "tags": [
       "alcotezt",
       "slow"
@@ -1077,7 +1077,7 @@
   },
   {
     "file": "src/lib_protocol_environment/test/test_cache.ml",
-    "title": "tezos-shell-context: cache (update with some value changes mapping)",
+    "title": "mavryk-shell-context: cache (update with some value changes mapping)",
     "tags": [
       "alcotezt",
       "slow"

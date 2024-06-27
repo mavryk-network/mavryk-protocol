@@ -30,7 +30,7 @@
    Subject:      Tests for the ZK Rollup client and protocol
 *)
 
-open Tezt_tezos
+open Tezt_mavryk
 
 (* Number of operations in each private batch *)
 let batch_size = 2

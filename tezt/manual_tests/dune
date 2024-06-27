@@ -6,7 +6,7 @@
  (libraries
   mavkit-libs.test-helpers
   mavkit-libs.tezt-wrapper
-  tezt-tezos
+  tezt-mavryk
   yes_wallet_lib)
  (link_flags
   (:standard)
@@ -16,4 +16,4 @@
   -open Mavryk_test_helpers
   -open Tezt_wrapper
   -open Tezt_wrapper.Base
-  -open Tezt_tezos))
+  -open Tezt_mavryk))

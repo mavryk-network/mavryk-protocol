@@ -23,7 +23,7 @@
   mavkit-libs.event-logging-test-helpers
   mavkit-shell-libs.p2p_test_common
   mavkit-libs.mavryk-p2p-services
-  tezt-tezos
+  tezt-mavryk
   tezt
   mavkit-alcotezt
   astring)

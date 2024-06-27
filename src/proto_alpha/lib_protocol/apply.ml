@@ -2625,7 +2625,7 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
       in
       let backtracking_ctxt = ctxt in
       let*! result =
-        let liquidity_baking_subsidy =
+        let*? liquidity_baking_subsidy =
           Delegate.Rewards.liquidity_baking_subsidy ctxt
         in
         (* credit liquidity baking subsidy to CPMM contract *)

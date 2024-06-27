@@ -7,7 +7,7 @@
  (libraries
   tezt.core
   mavkit-libs.base
-  tezt-tezos
+  tezt-mavryk
   mavryk-protocol-alpha.protocol
   mavkit-protocol-alpha-libs.client
   mavkit-protocol-alpha-libs.plugin
@@ -19,7 +19,7 @@
   -open Tezt_core
   -open Tezt_core.Base
   -open Mavryk_base.TzPervasives
-  -open Tezt_tezos
+  -open Tezt_mavryk
   -open Mavryk_protocol_alpha
   -open Mavryk_client_alpha
   -open Mavryk_protocol_plugin_alpha

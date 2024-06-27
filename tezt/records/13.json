@@ -897,7 +897,7 @@
   },
   {
     "file": "src/lib_shell/test/test_consensus_heuristic.ml",
-    "title": "tezos-shell: consensus heuristic sync (job protected)",
+    "title": "mavryk-shell: consensus heuristic sync (job protected)",
     "tags": [
       "alcotezt",
       "quick"

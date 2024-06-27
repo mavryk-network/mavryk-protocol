@@ -54,6 +54,31 @@ let post_commitment :
     ~output:Cryptobox.Commitment.encoding
     Mavryk_rpc.Path.(open_root / "commitments")
 
+let post_slot :
+    < meth : [`POST]
+    ; input : string
+    ; output : Cryptobox.commitment * Cryptobox.commitment_proof
+    ; prefix : unit
+    ; params : unit
+    ; query : < padding : char > >
+    service =
+  Mavryk_rpc.Service.post_service
+    ~description:
+      "Post a slot to the DAL node, computes its commitment and commitment \
+       proof, then computes the correspoding shards with their proof. The \
+       result of this RPC can be directly used to publish a slot header."
+    ~query:Types.slot_query
+      (* With [Data_encoding.string], the body of the HTTP request contains
+         two length prefixes: one for the full body, and one for the string.
+         Using [Variable.string] instead fixes this. *)
+    ~input:Data_encoding.Variable.string
+    ~output:
+      Data_encoding.(
+        obj2
+          (req "commitment" Cryptobox.Commitment.encoding)
+          (req "commitment_proof" Cryptobox.Commitment_proof.encoding))
+    Mavryk_rpc.Path.(open_root / "slot")
+
 let patch_commitment :
     < meth : [`PATCH]
     ; input : slot_id
