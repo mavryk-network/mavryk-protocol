@@ -227,7 +227,7 @@ depends: [
   "tar-unix" {= "2.6.0"}
   "terminal" {= "0.2.2"}
   "tezos-rust-libs" {= "1.6"}
-  "mavryk-sapling-parameters" {= "1.1.0"}
+  "tezos-sapling-parameters" {= "1.1.0"}
   "tezt" {= "4.0.0"}
   "time_now" {= "v0.16.0"}
   "tls" {= "0.17.3"}

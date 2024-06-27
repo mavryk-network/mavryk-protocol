@@ -296,7 +296,7 @@ let tezos_rust_lib =
   opam_only ~can_vendor:false "tezos-rust-libs" V.(exactly "1.6")
 
 let tezos_sapling_parameters =
-  opam_only ~can_vendor:false "mavryk-sapling-parameters" V.(at_least "1.1.0")
+  opam_only ~can_vendor:false "tezos-sapling-parameters" V.(at_least "1.1.0")
 
 let tls_lwt = external_lib "tls-lwt" V.(at_least "0.16.0")
 
