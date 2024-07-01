@@ -19,10 +19,10 @@ use nom::branch::alt;
 use nom::bytes::complete::tag;
 use nom::combinator::map;
 use nom::sequence::preceded;
-use mavryk_data_encoding::enc::BinWriter;
-use mavryk_data_encoding::encoding::HasEncoding;
-use mavryk_data_encoding::nom::NomReader;
-use mavryk_data_encoding::nom::NomResult;
+use tezos_data_encoding::enc::BinWriter;
+use tezos_data_encoding::encoding::HasEncoding;
+use tezos_data_encoding::nom::NomReader;
+use tezos_data_encoding::nom::NomResult;
 use mavryk_smart_rollup_encoding::dac::certificate::Certificate;
 use mavryk_smart_rollup_encoding::dac::certificate::V0Certificate;
 
@@ -91,8 +91,8 @@ mod test {
     use super::*;
     use crypto::hash::BlsSignature;
     use proptest::prelude::*;
-    use mavryk_data_encoding::enc::BinWriter;
-    use mavryk_data_encoding::nom::NomReader;
+    use tezos_data_encoding::enc::BinWriter;
+    use tezos_data_encoding::nom::NomReader;
     use mavryk_smart_rollup_encoding::dac::make_preimage_hash;
     use mavryk_smart_rollup_encoding::dac::PreimageHash;
     use mavryk_smart_rollup_encoding::testing::make_witnesses;

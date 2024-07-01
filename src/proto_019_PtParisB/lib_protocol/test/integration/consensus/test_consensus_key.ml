@@ -73,7 +73,7 @@ let check_delegate_staking_invariant blk delegate_pkh =
       self_staking_balance
       delegated_contracts
   in
-  Assert.equal_tez ~loc:__LOC__ delegate_staking_balance delegators_stake
+  Assert.equal_mav ~loc:__LOC__ delegate_staking_balance delegators_stake
 
 let update_consensus_key blk delegate public_key =
   let open Lwt_result_syntax in
@@ -123,7 +123,7 @@ let drain_delegate ~policy blk consensus_key delegate destination
   let* final_balance =
     Context.Contract.balance (B blk') (Contract.Implicit delegate)
   in
-  Assert.equal_tez ~loc:__LOC__ final_balance expected_final_balance
+  Assert.equal_mav ~loc:__LOC__ final_balance expected_final_balance
 
 let get_first_2_accounts_contracts (a1, a2) =
   ((a1, Context.Contract.pkh a1), (a2, Context.Contract.pkh a2))

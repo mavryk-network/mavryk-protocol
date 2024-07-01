@@ -204,6 +204,21 @@ let get_chain_block_context_liquidity_baking_cpmm_address ?(chain = "main")
     ]
     JSON.as_string
 
+let get_chain_block_context_protocol_treasury_buffer_address ?(chain = "main")
+    ?(block = "head") () =
+  make
+    GET
+    [
+      "chains";
+      chain;
+      "blocks";
+      block;
+      "context";
+      "protocol_treasury";
+      "buffer_address";
+    ]
+    JSON.as_string
+
 let get_network_points =
   make GET ["network"; "points"] @@ fun json ->
   JSON.(json |> as_list |> List.map @@ fun p -> (p |=> 0 |> as_string, p |=> 1))

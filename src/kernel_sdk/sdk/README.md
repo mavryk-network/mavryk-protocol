@@ -59,9 +59,9 @@ export CC=clang
 | `alloc`         | ✅       |                                     | Enables methods/types requiring `alloc` crate |
 | `panic-hook`    | ✅       |                                     | Print panics to debug log and abort           |
 | `dlmalloc`      | ✅       |                                     | Enables `dlmalloc` as default allocator       |
-| `crypto`        | ✅       | `mavryk_crypto_rs`                   | Integration with `mavryk_crypto_rs` types      |
-| `bls`           | ✅       | `mavryk_crypto_rs/bls`               | Dac Certificate signature verification        |
-| `data-encoding` | ✅       | `mavryk_data_encoding`               | Integration with `mavryk_data_encoding` traits |
+| `crypto`        | ✅       | `tezos_crypto_rs`                   | Integration with `tezos_crypto_rs` types      |
+| `bls`           | ✅       | `tezos_crypto_rs/bls`               | Dac Certificate signature verification        |
+| `data-encoding` | ✅       | `tezos_data_encoding`               | Integration with `tezos_data_encoding` traits |
 | `testing`       | ❌       | `crypto`, `mavryk_smart_rollup_mock` | Enables `MockHost` for writing tests          |
 
 ## Usage
@@ -80,8 +80,8 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 mavryk-smart-rollup = "0.2.2"
-mavryk_data_encoding = "0.5"
-mavryk_crypto_rs = { version = "0.5", default-features = false }
+tezos_data_encoding = "0.5"
+tezos_crypto_rs = { version = "0.5", default-features = false }
 nom = "7.1"
 
 [dev-dependencies]

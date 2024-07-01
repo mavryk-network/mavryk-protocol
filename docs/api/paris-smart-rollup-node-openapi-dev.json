@@ -2,7 +2,7 @@
   "info":
     { "title": "Smart Rollup Node RPCs",
       "description":
-        "Smart Rollup Node RPC API for protocol PtParisBxoLz5gzMmn3d9WBQNoPSZakgnkMC2VNuQ3KXfUtUQeZ",
+        "Smart Rollup Node RPC API for protocol PsH6pEknnnM3rwWnLc8mQ2JMLtJoDXfs7bfQW3LebUMsB6LciGx",
       "version": "Octez 0.0+dev (4fe3cc43)" },
   "paths":
     { "/describe":

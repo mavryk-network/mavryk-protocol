@@ -51,7 +51,7 @@ pub fn gen_ed25519_keys() -> (PublicKeyEd25519, SecretKeyEd25519) {
     let mut seed = [0; 32];
     rand::thread_rng().fill_bytes(&mut seed);
 
-    let seed = mavryk_crypto_rs::hash::SeedEd25519(seed.to_vec());
+    let seed = tezos_crypto_rs::hash::SeedEd25519(seed.to_vec());
 
     seed.keypair().unwrap()
 }

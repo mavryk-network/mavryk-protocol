@@ -21,7 +21,7 @@
   -open Mavryk_protocol_020_PsParisC
   -open Mavryk_test_helpers
   -open Mavryk_smart_rollup_layer2_020_PsParisC
-  -open mavkit_smart_rollup_node_PsParisC
+  -open Mavkit_smart_rollup_node_PsParisC
   -open Mavkit_alcotezt)
  (modules serialized_proofs test_mavkit_conversions))
 

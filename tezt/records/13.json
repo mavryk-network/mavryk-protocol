@@ -2758,7 +2758,7 @@
       "import",
       "node",
       "snapshot",
-      "tezos2"
+      "mavryk2"
     ],
     "successful_runs": {
       "total_time": "45202244",

@@ -9,7 +9,7 @@ use evm_execution::account_storage::AccountStorageError;
 use evm_execution::{DurableStorageError, EthereumError};
 use primitive_types::U256;
 use rlp::DecoderError;
-use mavryk_data_encoding::enc::BinError;
+use tezos_data_encoding::enc::BinError;
 use mavryk_ethereum::tx_common::SigError;
 use mavryk_smart_rollup_encoding::entrypoint::EntrypointError;
 use mavryk_smart_rollup_encoding::michelson::ticket::TicketError;

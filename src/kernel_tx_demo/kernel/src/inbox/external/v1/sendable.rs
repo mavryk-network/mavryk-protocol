@@ -6,9 +6,9 @@
 
 use super::{Operation, ToBytesError};
 use crypto::hash::SecretKeyEd25519;
-use mavryk_crypto_rs::blake2b::digest_256;
-use mavryk_data_encoding::enc::{self, BinError, BinWriter};
-use mavryk_data_encoding::encoding::{Encoding, HasEncoding};
+use tezos_crypto_rs::blake2b::digest_256;
+use tezos_data_encoding::enc::{self, BinError, BinWriter};
+use tezos_data_encoding::encoding::{Encoding, HasEncoding};
 
 #[derive(Debug, PartialEq)]
 /// A batch of operations, for serialization as an external inbox message.
@@ -66,7 +66,7 @@ mod test {
 
     use proptest::collection;
     use proptest::prelude::*;
-    use mavryk_data_encoding::enc::BinWriter;
+    use tezos_data_encoding::enc::BinWriter;
 
     use super::Batch;
     use crate::inbox::v1::Operation;

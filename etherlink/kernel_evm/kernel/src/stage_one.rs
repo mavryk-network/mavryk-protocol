@@ -11,7 +11,7 @@ use crate::inbox::{read_proxy_inbox, read_sequencer_inbox};
 use crate::inbox::{ProxyInboxContent, StageOneStatus};
 use anyhow::Ok;
 use std::ops::Add;
-use mavryk_crypto_rs::hash::ContractKt1Hash;
+use tezos_crypto_rs::hash::ContractKt1Hash;
 use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup_encoding::public_key::PublicKey;
 use mavryk_smart_rollup_host::metadata::RAW_ROLLUP_ADDRESS_SIZE;
@@ -126,8 +126,8 @@ pub fn fetch<Host: Runtime>(
 #[cfg(test)]
 mod tests {
     use primitive_types::U256;
-    use mavryk_crypto_rs::hash::HashTrait;
-    use mavryk_data_encoding::types::Bytes;
+    use tezos_crypto_rs::hash::HashTrait;
+    use tezos_data_encoding::types::Bytes;
     use mavryk_smart_rollup::{
         michelson::{
             ticket::FA2_1Ticket, MichelsonBytes, MichelsonOption, MichelsonOr,

@@ -101,8 +101,8 @@ let new_context_with_rollup () =
   let+@ rollup, genesis_hash, ctxt = new_sc_rollup ctxt in
   (ctxt, rollup, genesis_hash)
 
-let equal_tez ~loc =
-  Assert.equal ~loc Tez_repr.( = ) "Tez aren't equal" Tez_repr.pp
+let equal_mav ~loc =
+  Assert.equal ~loc Tez_repr.( = ) "Mav aren't equal" Tez_repr.pp
 
 let assert_not_exist ~loc ~pp comp_lwt =
   let open Lwt_result_syntax in
@@ -114,7 +114,7 @@ let assert_balance_changed op ctxt ctxt' account amount =
   let*@ _, balance = Token.Internal_for_tests.balance ctxt account in
   let*@ _, balance' = Token.Internal_for_tests.balance ctxt' account in
   let*?@ balance_op_amount = op balance amount in
-  equal_tez balance' ~loc:__LOC__ balance_op_amount
+  equal_mav balance' ~loc:__LOC__ balance_op_amount
 
 let assert_balance_increased ctxt ctxt' account amount =
   assert_balance_changed Tez_repr.( +? ) ctxt ctxt' account amount
@@ -452,7 +452,7 @@ let assert_staker_exists ctxt rollup staker =
   let*@ frozen_balance =
     Contract_storage.(get_frozen_bonds ctxt (Contract_repr.Implicit staker))
   in
-  let* () = equal_tez ~loc:__LOC__ stake frozen_balance in
+  let* () = equal_mav ~loc:__LOC__ stake frozen_balance in
   (* Assert [staker] was given an index. *)
   let*@ ctxt, staker_index_opt =
     Sc_rollup_staker_index_storage.find_staker_index_unsafe ctxt rollup staker
@@ -469,7 +469,7 @@ let assert_staker_dont_exists ctxt rollup staker =
   let*@ frozen_balance =
     Contract_storage.(get_frozen_bonds ctxt (Contract_repr.Implicit staker))
   in
-  let* () = equal_tez ~loc:__LOC__ Tez_repr.zero frozen_balance in
+  let* () = equal_mav ~loc:__LOC__ Tez_repr.zero frozen_balance in
   (* Assert [staker] has no index. *)
   let*@ _ctxt, staker_index_opt =
     Sc_rollup_staker_index_storage.find_staker_index_unsafe ctxt rollup staker
@@ -668,7 +668,7 @@ module Stake_storage_tests = struct
       let*@ frozen_balance =
         Contract_storage.(get_frozen_bonds ctxt (Contract_repr.Implicit staker))
       in
-      equal_tez ~loc:__LOC__ expected frozen_balance
+      equal_mav ~loc:__LOC__ expected frozen_balance
     in
     let stake = Constants_storage.sc_rollup_stake_amount ctxt in
     let* () = assert_frozen_balance ctxt staker Tez_repr.zero in
@@ -1310,7 +1310,7 @@ module Stake_storage_tests = struct
     let open Lwt_result_wrap_syntax in
     let*@ _, balance = Token.Internal_for_tests.balance ctxt account in
     let*@ _, balance' = Token.Internal_for_tests.balance ctxt' account in
-    equal_tez ~loc:__LOC__ balance' balance
+    equal_mav ~loc:__LOC__ balance' balance
 
   let remove_staker_and_check_balances ctxt rollup staker =
     let open Lwt_result_wrap_syntax in

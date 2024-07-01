@@ -28,7 +28,7 @@ use evm_execution::account_storage::{init_account_storage, EthereumAccountStorag
 use evm_execution::precompiles;
 use evm_execution::precompiles::PrecompileBTreeMap;
 use primitive_types::{H160, H256, U256};
-use mavryk_crypto_rs::hash::ContractKt1Hash;
+use tezos_crypto_rs::hash::ContractKt1Hash;
 use mavryk_ethereum::block::BlockFees;
 use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup::outbox::OutboxQueue;

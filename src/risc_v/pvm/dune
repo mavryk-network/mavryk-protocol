@@ -73,6 +73,8 @@
  (action
   (no-infer
    (progn
+    (run chmod u+w Cargo.toml)
+    (run chmod u+w ../Cargo.lock)
     (run cargo build --release -p mavkit-risc-v-pvm)
     (copy ../target/release/libmavkit_risc_v_pvm.a libmavkit_risc_v_pvm.a)))))
 

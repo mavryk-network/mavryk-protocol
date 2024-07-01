@@ -26,7 +26,7 @@ hex.workspace = true
 rlp.workspace = true
 const-decoder.workspace = true
 
-mavryk_crypto_rs.workspace = true
+tezos_crypto_rs.workspace = true
 sha2.workspace = true
 sha3.workspace = true
 ripemd.workspace = true
@@ -52,7 +52,7 @@ proptest = { workspace = true, optional = true }
 
 [dev-dependencies]
 mavryk-smart-rollup-mock.workspace = true
-mavryk_data_encoding.workspace = true
+tezos_data_encoding.workspace = true
 
 [features]
 default = ["evm_execution"]

@@ -87,7 +87,7 @@ let check_issuance_rpc block : unit tzresult Lwt.t =
     match expected_issuance with
     | ei :: _ ->
         (* We assume only the fixed portion is issued *)
-        Assert.equal_tez
+        Assert.equal_mav
           ~loc:__LOC__
           rewards_per_block
           ei.baking_reward_fixed_portion

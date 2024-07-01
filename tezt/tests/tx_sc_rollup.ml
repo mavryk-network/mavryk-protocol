@@ -52,7 +52,7 @@ let assert_state_changed ?block sc_rollup_node prev_state_hash =
 
 let assert_ticks_advanced ?block sc_rollup_node prev_ticks =
   let* ticks =
-    Sc_rollup_node.RPC.call sc_rollup_node
+    Sc_rollup_node.RPC.call ~rpc_hooks sc_rollup_node
     @@ Sc_rollup_rpc.get_global_block_total_ticks ?block ()
   in
   Check.(ticks > prev_ticks)
@@ -83,10 +83,9 @@ let setup_classic ~commitment_period ~challenge_window protocol =
   in
   let* {boot_sector; _} =
     prepare_installer_kernel
-      ~base_installee:"./"
       ~preimages_dir:
         (Filename.concat (Sc_rollup_node.data_dir sc_rollup_node) "wasm_2_0_0")
-      "tx_kernel"
+      Constant.WASM.tx_kernel
   in
   (* Initialise the sc rollup *)
   let* sc_rollup_address =
@@ -110,11 +109,10 @@ let setup_bootstrap ~commitment_period ~challenge_window protocol =
          smart_rollup_node_extra_args;
        } =
     setup_bootstrap_smart_rollup
-      ~base_installee:"./"
       ~name:"tx_kernel"
       ~address:sc_rollup_address
       ~parameters_ty:"pair string (ticket string)"
-      ~installee:"tx_kernel"
+      ~installee:Constant.WASM.tx_kernel
       ()
   in
   let bootstrap1_key = Constant.bootstrap1.alias in
@@ -145,28 +143,15 @@ let tx_kernel_e2e setup protocol =
   in
 
   (* Run the rollup node, ensure origination succeeds. *)
-  let* genesis_info =
-    Client.RPC.call ~hooks client
-    @@ RPC.get_chain_block_context_smart_rollups_smart_rollup_genesis_info
-         sc_rollup_address
-  in
-  let init_level = JSON.(genesis_info |-> "level" |> as_int) in
   let* () = Sc_rollup_node.run sc_rollup_node sc_rollup_address node_args in
-  let sc_rollup_client = Sc_rollup_client.create ~protocol sc_rollup_node in
-  let* level =
-    Sc_rollup_node.wait_for_level ~timeout:30. sc_rollup_node init_level
-  in
-  Check.(level = init_level)
-    Check.int
-    ~error_msg:"Current level has moved past origination level (%L = %R)" ;
-
+  let* _level = Sc_rollup_node.wait_sync ~timeout:30. sc_rollup_node in
   (* Originate a contract that will mint and transfer tickets to the tx kernel. *)
   let* mint_and_deposit_contract =
     Tezt_tx_kernel.Contracts.prepare_mint_and_deposit_contract client protocol
   in
-  let level = init_level + 1 in
+  let* _level = Sc_rollup_node.wait_sync ~timeout:30. sc_rollup_node in
 
-  (* gen two mv1 accounts *)
+  (* gen two tz1 accounts *)
   let pkh1, pk1, sk1 = Mavryk_crypto.Signature.Ed25519.generate_key () in
   let pkh2, pk2, sk2 = Mavryk_crypto.Signature.Ed25519.generate_key () in
   let ticket_content = "Hello, Ticket!" in
@@ -187,7 +172,7 @@ let tx_kernel_e2e setup protocol =
       ~ticket_content
       ~amount:450
   in
-  let level = level + 1 in
+  let* _level = Sc_rollup_node.wait_sync ~timeout:30. sc_rollup_node in
 
   (* Construct transfer *)
   let sc_rollup_hash =
@@ -222,9 +207,8 @@ let tx_kernel_e2e setup protocol =
     @@ Sc_rollup_rpc.get_global_block_state_hash ()
   in
   let* () = send_message client (sf "hex:[%S]" transfer_message) in
-  let level = level + 1 in
 
-  let* _ = Sc_rollup_node.wait_for_level ~timeout:30. sc_rollup_node level in
+  let* _ = Sc_rollup_node.wait_sync ~timeout:30. sc_rollup_node in
   let* () = assert_state_changed sc_rollup_node prev_state_hash in
 
   (* After that pkh1 has 400 tickets, pkh2 has 50 tickets *)
@@ -236,7 +220,7 @@ let tx_kernel_e2e setup protocol =
       client
       protocol
   in
-  let level = level + 1 in
+  let* _level = Sc_rollup_node.wait_sync ~timeout:30. sc_rollup_node in
   (* pk withdraws part of his tickets, pk2 withdraws all of his tickets *)
   let withdraw_message =
     Transaction_batch.(
@@ -268,14 +252,12 @@ let tx_kernel_e2e setup protocol =
     @@ Sc_rollup_rpc.get_global_block_state_hash ()
   in
   let* prev_ticks =
-    Sc_rollup_node.RPC.call sc_rollup_node
+    Sc_rollup_node.RPC.call ~rpc_hooks sc_rollup_node
     @@ Sc_rollup_rpc.get_global_block_total_ticks ()
   in
   let* () = send_message client (sf "hex:[%S]" withdraw_message) in
-  let level = level + 1 in
-  let withdrawal_level = level in
-  let* _ =
-    Sc_rollup_node.wait_for_level ~timeout:30. sc_rollup_node withdrawal_level
+  let* withdrawal_level =
+    Sc_rollup_node.wait_sync ~timeout:30. sc_rollup_node
   in
 
   let* _, last_lcc_level =
@@ -313,10 +295,8 @@ let tx_kernel_e2e setup protocol =
   let execute_outbox_proof ~message_index =
     let outbox_level = withdrawal_level in
     let* proof =
-      Sc_rollup_client.outbox_proof
-        sc_rollup_client
-        ~message_index
-        ~outbox_level
+      Sc_rollup_node.RPC.call sc_rollup_node
+      @@ Sc_rollup_rpc.outbox_proof_simple ~message_index ~outbox_level ()
     in
     match proof with
     | Some {commitment_hash; proof} ->
@@ -349,16 +329,26 @@ let test_tx_kernel_e2e =
     ~regression:true
     ~__FILE__
     ~tags:["wasm"; "kernel"; "wasm_2_0_0"; "kernel_e2e"]
-    ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
+    ~uses:(fun _protocol ->
+      [
+        Constant.mavkit_smart_rollup_node;
+        Constant.smart_rollup_installer;
+        Constant.WASM.tx_kernel;
+      ])
     ~title:(Printf.sprintf "wasm_2_0_0 - tx kernel should run e2e (kernel_e2e)")
     (tx_kernel_e2e setup_classic)
 
 let test_bootstrapped_tx_kernel_e2e =
   register_test
-    ~supports:(Protocol.From_protocol 001)
+    ~supports:(Protocol.From_protocol 018)
     ~__FILE__
     ~tags:["wasm"; "kernel"; "wasm_2_0_0"; "kernel_e2e"; "bootstrap"]
-    ~uses:(fun _protocol -> [Constant.mavkit_smart_rollup_node])
+    ~uses:(fun _protocol ->
+      [
+        Constant.mavkit_smart_rollup_node;
+        Constant.smart_rollup_installer;
+        Constant.WASM.tx_kernel;
+      ])
     ~title:
       (Printf.sprintf
          "wasm_2_0_0 - bootstrapped tx kernel should run e2e (kernel_e2e)")

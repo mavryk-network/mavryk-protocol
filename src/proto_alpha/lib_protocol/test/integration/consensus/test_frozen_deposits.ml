@@ -82,9 +82,9 @@ let test_invariants () =
     Context.Delegate.current_frozen_deposits (B genesis) account1
   in
   (* before delegation *)
-  let* () = Assert.equal_tez ~loc:__LOC__ full_balance staking_balance in
+  let* () = Assert.equal_mav ~loc:__LOC__ full_balance staking_balance in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       full_balance
       Tez_helpers.(spendable_balance +! frozen_deposits)
@@ -107,7 +107,7 @@ let test_invariants () =
   let* b = Block.bake ~operation:transfer genesis in
   let* new_account_balance = Context.Contract.balance (B b) new_contract in
   let* () =
-    Assert.equal_tez ~loc:__LOC__ new_account_balance spendable_balance2
+    Assert.equal_mav ~loc:__LOC__ new_account_balance spendable_balance2
   in
   let* delegation =
     Op.delegation ~force_reveal:true (B b) new_contract (Some account1)
@@ -123,13 +123,13 @@ let test_invariants () =
   (* after delegation, we see the delegated stake reflected in the new staking
      balance of account1 *)
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       new_staking_balance
       Tez_helpers.(new_full_balance +! new_account_balance)
   in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       new_full_balance
       Tez_helpers.(new_spendable_balance +! new_frozen_deposits)
@@ -141,7 +141,7 @@ let test_invariants () =
       new_staking_balance
       /! Int64.of_int (constants.limit_of_delegation_over_baking + 1))
   in
-  Assert.equal_tez ~loc:__LOC__ new_frozen_deposits expected_new_frozen_deposits
+  Assert.equal_mav ~loc:__LOC__ new_frozen_deposits expected_new_frozen_deposits
 
 let adjust_staking_towards_limit ~limit ~block ~account ~contract =
   let open Lwt_result_syntax in
@@ -213,7 +213,7 @@ let test_limit_with_overdelegation () =
   in
   let* new_staking_balance = Context.Delegate.staking_balance (B b) account1 in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       new_staking_balance
       expected_new_staking_balance
@@ -223,7 +223,7 @@ let test_limit_with_overdelegation () =
   in
   let* new_staking_balance' = Context.Delegate.staking_balance (B b) account2 in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       new_staking_balance'
       expected_new_staking_balance'
@@ -247,7 +247,7 @@ let test_limit_with_overdelegation () =
     Context.Delegate.current_frozen_deposits (B b) account1
   in
   let* () =
-    Assert.equal_tez ~loc:__LOC__ frozen_deposits expected_new_frozen_deposits
+    Assert.equal_mav ~loc:__LOC__ frozen_deposits expected_new_frozen_deposits
   in
   let cycles_to_bake =
     2 * (constants.consensus_rights_delay + Constants.max_slashing_period)
@@ -260,7 +260,7 @@ let test_limit_with_overdelegation () =
         Context.Delegate.current_frozen_deposits (B b) account1
       in
       let* () =
-        Assert.equal_tez
+        Assert.equal_mav
           ~loc:__LOC__
           frozen_deposits
           expected_new_frozen_deposits
@@ -339,7 +339,7 @@ let test_may_not_bake_again_after_full_deposit_slash () =
   in
   (* The [slashed_account]'s deposits haven't changed yet... *)
   let* fd = Context.Delegate.current_frozen_deposits (B b) slashed_account in
-  let* () = Assert.equal_tez ~loc:__LOC__ fd fd_before in
+  let* () = Assert.equal_mav ~loc:__LOC__ fd fd_before in
   (* ...though we are immediately not allowed to bake with [slashed_account] *)
   let*! res = Block.bake ~policy:(By_account slashed_account) b in
   let* () =
@@ -354,7 +354,7 @@ let test_may_not_bake_again_after_full_deposit_slash () =
   let metadata = Option.value_f ~default:(fun () -> assert false) metadata in
   let autostaked = Block.autostaked slashed_account metadata in
   let* fd = Context.Delegate.current_frozen_deposits (B b) slashed_account in
-  let* () = Assert.equal_tez ~loc:__LOC__ fd autostaked in
+  let* () = Assert.equal_mav ~loc:__LOC__ fd autostaked in
   (* Though [slashed_account] is still forbidden for two more cycles. *)
   let*! res = Block.bake ~policy:(By_account slashed_account) b in
   let* () =
@@ -388,7 +388,7 @@ let test_set_limit balance_percentage () =
   let expected_deposits =
     full_balance /! Int64.of_int (constants.limit_of_delegation_over_baking + 1)
   in
-  let* () = Assert.equal_tez ~loc:__LOC__ frozen_deposits expected_deposits in
+  let* () = Assert.equal_mav ~loc:__LOC__ frozen_deposits expected_deposits in
   (* Bake until end of first cycle *)
   let* b = Block.bake_until_cycle_end genesis in
   let* full_balance = Context.Delegate.full_balance (B genesis) account1 in
@@ -398,7 +398,7 @@ let test_set_limit balance_percentage () =
   let expected_deposits =
     full_balance /! Int64.of_int (constants.limit_of_delegation_over_baking + 1)
   in
-  let* () = Assert.equal_tez ~loc:__LOC__ frozen_deposits expected_deposits in
+  let* () = Assert.equal_mav ~loc:__LOC__ frozen_deposits expected_deposits in
   (* set deposits limit to balance_percentage out of the balance *)
   let limit =
     Tez_helpers.(full_balance *! Int64.of_int balance_percentage /! 100L)
@@ -410,7 +410,7 @@ let test_set_limit balance_percentage () =
       Context.Delegate.frozen_deposits_limit (B b) account1
     in
     match frozen_deposits_limit with
-    | Some set_limit -> Assert.equal_tez ~loc:__LOC__ set_limit limit
+    | Some set_limit -> Assert.equal_mav ~loc:__LOC__ set_limit limit
     | None -> Alcotest.fail "unexpected absence of deposits limit"
   in
   (* the frozen deposits limit affects the active stake at cycle end. *)
@@ -418,7 +418,7 @@ let test_set_limit balance_percentage () =
   let* frozen_deposits =
     Context.Delegate.current_frozen_deposits (B b) account1
   in
-  Assert.equal_tez ~loc:__LOC__ frozen_deposits limit
+  Assert.equal_mav ~loc:__LOC__ frozen_deposits limit
 
 let test_unset_limit () =
   let open Lwt_result_syntax in
@@ -436,7 +436,7 @@ let test_unset_limit () =
       Context.Delegate.frozen_deposits_limit (B b) account1
     in
     match frozen_deposits_limit with
-    | Some set_limit -> Assert.equal_tez ~loc:__LOC__ set_limit Tez.zero
+    | Some set_limit -> Assert.equal_mav ~loc:__LOC__ set_limit Tez.zero
     | None -> Alcotest.fail "unexpected absence of deposits limit"
   in
   let* b = Block.bake_until_cycle_end ~policy:(By_account account2) b in
@@ -445,7 +445,7 @@ let test_unset_limit () =
   in
   (* after cycle end, the 0 limit is reflected in the deposit which becomes 0
      itself *)
-  let* () = Assert.equal_tez ~loc:__LOC__ frozen_deposits_at_b Tez.zero in
+  let* () = Assert.equal_mav ~loc:__LOC__ frozen_deposits_at_b Tez.zero in
   (* unset the 0 limit *)
   let* operation = Op.set_deposits_limit (B b) contract1 None in
   let* b = Block.bake ~policy:(By_account account2) ~operation b in
@@ -465,7 +465,7 @@ let test_unset_limit () =
   (* without a limit and with autostaking staking, the new deposit is no more
      zero; note that account1 hasn't baked any block. *)
   let* () =
-    Assert.not_equal_tez ~loc:__LOC__ frozen_deposits_at_bfin Tez.zero
+    Assert.not_equal_mav ~loc:__LOC__ frozen_deposits_at_bfin Tez.zero
   in
   return_unit
 
@@ -497,18 +497,18 @@ let test_cannot_bake_with_zero_deposits_limit () =
   (* by now, the frozen deposits of account1 are 0 but it still has slashable
      unstaked frozen deposits so it can still bake. *)
   let* fd = Context.Delegate.current_frozen_deposits (B b) account1 in
-  let* () = Assert.equal_tez ~loc:__LOC__ fd Tez.zero in
+  let* () = Assert.equal_mav ~loc:__LOC__ fd Tez.zero in
   let* ufd =
     Context.Contract.unstaked_frozen_balance (B b) (Implicit account1)
   in
   let ufd = Option.value_f ufd ~default:(fun () -> assert false) in
-  let* () = Assert.not_equal_tez ~loc:__LOC__ ufd Tez.zero in
+  let* () = Assert.not_equal_mav ~loc:__LOC__ ufd Tez.zero in
   let* (_ : Block.t) = Block.bake ~policy:(By_account account1) b in
   let* b = Block.bake_until_cycle_end ~policy:(By_account account2) b in
   (* after one cycle is passed, the frozen deposit window has passed
      and the baker should now effectively have no baking rights. *)
   let* fd = Context.Delegate.current_frozen_deposits (B b) account1 in
-  let* () = Assert.equal_tez ~loc:__LOC__ fd Tez.zero in
+  let* () = Assert.equal_mav ~loc:__LOC__ fd Tez.zero in
   let*! b1 = Block.bake ~policy:(By_account account1) b in
   let* () =
     Assert.error ~loc:__LOC__ b1 (function
@@ -521,7 +521,7 @@ let test_cannot_bake_with_zero_deposits_limit () =
     Context.Contract.unstaked_frozen_balance (B b) (Implicit account1)
   in
   let ufd = Option.value_f ufd ~default:(fun () -> assert false) in
-  Assert.equal_tez ~loc:__LOC__ ufd Tez.zero
+  Assert.equal_mav ~loc:__LOC__ ufd Tez.zero
 
 let test_deposits_after_stake_removal () =
   let open Lwt_result_syntax in
@@ -546,13 +546,13 @@ let test_deposits_after_stake_removal () =
     Context.Delegate.current_frozen_deposits (B b) account1
   in
   let* () =
-    Assert.equal_tez ~loc:__LOC__ frozen_deposits_1 initial_frozen_deposits_1
+    Assert.equal_mav ~loc:__LOC__ frozen_deposits_1 initial_frozen_deposits_1
   in
   let* frozen_deposits_2 =
     Context.Delegate.current_frozen_deposits (B b) account2
   in
   let* () =
-    Assert.equal_tez ~loc:__LOC__ frozen_deposits_2 initial_frozen_deposits_2
+    Assert.equal_mav ~loc:__LOC__ frozen_deposits_2 initial_frozen_deposits_2
   in
   (* Bake a cycle. *)
   let expected_new_frozen_deposits_2 =
@@ -563,7 +563,7 @@ let test_deposits_after_stake_removal () =
     Context.Delegate.current_frozen_deposits (B b) account2
   in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       frozen_deposits_2
       expected_new_frozen_deposits_2
@@ -583,7 +583,7 @@ let test_deposits_after_stake_removal () =
         Context.Delegate.current_frozen_deposits (B b) account1
       in
       let* () =
-        Assert.equal_tez
+        Assert.equal_mav
           ~loc:__LOC__
           frozen_deposits_1
           initial_frozen_deposits_1
@@ -592,7 +592,7 @@ let test_deposits_after_stake_removal () =
         Context.Delegate.current_frozen_deposits (B b) account2
       in
       let* () =
-        Assert.equal_tez
+        Assert.equal_mav
           ~loc:__LOC__
           frozen_deposits_2
           initial_frozen_deposits_2
@@ -612,13 +612,13 @@ let test_deposits_after_stake_removal () =
     Context.Delegate.current_frozen_deposits (B b) account1
   in
   let* () =
-    Assert.equal_tez ~loc:__LOC__ frozen_deposits_1 initial_frozen_deposits_1
+    Assert.equal_mav ~loc:__LOC__ frozen_deposits_1 initial_frozen_deposits_1
   in
   (* similarly account2's frozen deposits aren't increased automatically *)
   let* frozen_deposits_2 =
     Context.Delegate.current_frozen_deposits (B b) account2
   in
-  Assert.equal_tez ~loc:__LOC__ frozen_deposits_2 initial_frozen_deposits_2
+  Assert.equal_mav ~loc:__LOC__ frozen_deposits_2 initial_frozen_deposits_2
 
 let test_deposits_unfrozen_after_deactivation () =
   let open Lwt_result_syntax in
@@ -671,7 +671,7 @@ let test_deposits_unfrozen_after_deactivation () =
       in
       (* deposits are automatically unfrozen for deactivated delegates only *)
       let* () =
-        Assert.equal_tez
+        Assert.equal_mav
           ~loc:__LOC__
           frozen_deposits
           (if is_deactivated then frozen_deposits_when_deactivated
@@ -711,7 +711,7 @@ let test_frozen_deposits_with_delegation () =
     Tez_helpers.(initial_staking_balance -! delegated_amount)
   in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       new_staking_balance
       expected_new_staking_balance
@@ -725,7 +725,7 @@ let test_frozen_deposits_with_delegation () =
   in
   let* new_staking_balance = Context.Delegate.staking_balance (B b) account1 in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       new_staking_balance
       expected_new_staking_balance
@@ -742,7 +742,7 @@ let test_frozen_deposits_with_delegation () =
     Context.Delegate.current_frozen_deposits (B b) account1
   in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       new_frozen_deposits
       expected_new_frozen_deposits
@@ -758,7 +758,7 @@ let test_frozen_deposits_with_delegation () =
         Context.Delegate.current_frozen_deposits (B b) account1
       in
       let* () =
-        Assert.equal_tez
+        Assert.equal_mav
           ~loc:__LOC__
           frozen_deposits
           expected_new_frozen_deposits
@@ -803,7 +803,7 @@ let test_frozen_deposits_with_overdelegation () =
   in
   let* new_staking_balance = Context.Delegate.staking_balance (B b) account1 in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       new_staking_balance
       expected_new_staking_balance
@@ -813,7 +813,7 @@ let test_frozen_deposits_with_overdelegation () =
   in
   let* new_staking_balance' = Context.Delegate.staking_balance (B b) account2 in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       new_staking_balance'
       expected_new_staking_balance'
@@ -827,7 +827,7 @@ let test_frozen_deposits_with_overdelegation () =
     Tez_helpers.(initial_frozen_deposits +! amount +! amount')
   in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       new_staking_balance
       expected_new_staking_balance
@@ -844,7 +844,7 @@ let test_frozen_deposits_with_overdelegation () =
     Context.Delegate.current_frozen_deposits (B b) account1
   in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       new_frozen_deposits
       expected_new_frozen_deposits
@@ -856,7 +856,7 @@ let test_frozen_deposits_with_overdelegation () =
     Context.Delegate.current_frozen_deposits (B b) account1
   in
   let* () =
-    Assert.equal_tez ~loc:__LOC__ frozen_deposits expected_new_frozen_deposits
+    Assert.equal_mav ~loc:__LOC__ frozen_deposits expected_new_frozen_deposits
   in
   let rec loop b n =
     if n = 0 then return b
@@ -866,7 +866,7 @@ let test_frozen_deposits_with_overdelegation () =
         Context.Delegate.current_frozen_deposits (B b) account1
       in
       let* () =
-        Assert.equal_tez
+        Assert.equal_mav
           ~loc:__LOC__
           frozen_deposits
           expected_new_frozen_deposits
@@ -914,7 +914,7 @@ let test_set_limit_with_overdelegation () =
   in
   let* new_staking_balance = Context.Delegate.staking_balance (B b) account1 in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       new_staking_balance
       expected_new_staking_balance
@@ -924,7 +924,7 @@ let test_set_limit_with_overdelegation () =
   in
   let* new_staking_balance' = Context.Delegate.staking_balance (B b) account2 in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       new_staking_balance'
       expected_new_staking_balance'
@@ -941,7 +941,7 @@ let test_set_limit_with_overdelegation () =
     Context.Delegate.current_frozen_deposits (B b) account1
   in
   let* () =
-    Assert.equal_tez ~loc:__LOC__ frozen_deposits expected_new_frozen_deposits
+    Assert.equal_mav ~loc:__LOC__ frozen_deposits expected_new_frozen_deposits
   in
   let cycles_to_bake =
     2 * (constants.consensus_rights_delay + Constants.max_slashing_period)
@@ -954,7 +954,7 @@ let test_set_limit_with_overdelegation () =
         Context.Delegate.current_frozen_deposits (B b) account1
       in
       let* () =
-        Assert.equal_tez
+        Assert.equal_mav
           ~loc:__LOC__
           frozen_deposits
           expected_new_frozen_deposits

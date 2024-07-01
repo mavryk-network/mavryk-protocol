@@ -28,7 +28,7 @@ use crate::{simulation, upgrade};
 use primitive_types::{H160, U256};
 use rlp::{Decodable, DecoderError, Encodable};
 use sha3::{Digest, Keccak256};
-use mavryk_crypto_rs::hash::ContractKt1Hash;
+use tezos_crypto_rs::hash::ContractKt1Hash;
 use mavryk_ethereum::rlp_helpers::{decode_field, decode_tx_hash, next};
 use mavryk_ethereum::transaction::{
     TransactionHash, TransactionType, TRANSACTION_HASH_SIZE,
@@ -613,8 +613,8 @@ mod tests {
     use crate::inbox::TransactionContent::Ethereum;
     use crate::parsing::RollupType;
     use crate::storage::*;
-    use mavryk_crypto_rs::hash::SmartRollupHash;
-    use mavryk_data_encoding::types::Bytes;
+    use tezos_crypto_rs::hash::SmartRollupHash;
+    use tezos_data_encoding::types::Bytes;
     use mavryk_ethereum::transaction::TRANSACTION_HASH_SIZE;
     use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
     use mavryk_smart_rollup_encoding::contract::Contract;

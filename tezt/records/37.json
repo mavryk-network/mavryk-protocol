@@ -2764,7 +2764,7 @@
       "dal_node",
       "layer1",
       "node",
-      "tezos2"
+      "mavryk2"
     ],
     "successful_runs": {
       "total_time": "35101971",
@@ -2783,7 +2783,7 @@
       "dal",
       "dal_node",
       "node",
-      "tezos2",
+      "mavryk2",
       "trusted"
     ],
     "successful_runs": {

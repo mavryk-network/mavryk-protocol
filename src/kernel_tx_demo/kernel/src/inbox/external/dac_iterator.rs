@@ -4,7 +4,7 @@
 
 //! Iterator-like structure for iterating through the contents of a dac message.
 
-use mavryk_data_encoding::{
+use tezos_data_encoding::{
     enc::{BinError, BinWriter},
     nom::NomReader,
 };
@@ -271,8 +271,8 @@ mod tests {
     use proptest::collection;
 
     use proptest::prelude::*;
-    use mavryk_data_encoding::enc::BinWriter;
-    use mavryk_data_encoding::nom::NomReader;
+    use tezos_data_encoding::enc::BinWriter;
+    use tezos_data_encoding::nom::NomReader;
     use mavryk_smart_rollup_host::runtime::Runtime;
     use mavryk_smart_rollup_mock::MockHost;
 

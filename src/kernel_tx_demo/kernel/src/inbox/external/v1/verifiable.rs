@@ -18,9 +18,9 @@ use crypto::PublicKeySignatureVerifier;
 use nom::combinator::{consumed, map};
 use nom::sequence::pair;
 use num_bigint::{BigInt, TryFromBigIntError};
-use mavryk_crypto_rs::blake2b::digest_256;
-use mavryk_crypto_rs::blake2b::Blake2bError;
-use mavryk_data_encoding::nom::NomReader;
+use tezos_crypto_rs::blake2b::digest_256;
+use tezos_crypto_rs::blake2b::Blake2bError;
+use tezos_data_encoding::nom::NomReader;
 #[cfg(feature = "debug")]
 use mavryk_smart_rollup_debug::debug_msg;
 use mavryk_smart_rollup_encoding::michelson::ticket::TicketHashError;
@@ -221,7 +221,7 @@ impl<'a> VerifiableOperation<'a> {
     }
 
     /// Parse an operation, remembering the parsed slice.
-    pub fn parse(input: &'a [u8]) -> mavryk_data_encoding::nom::NomResult<Self> {
+    pub fn parse(input: &'a [u8]) -> tezos_data_encoding::nom::NomResult<Self> {
         map(
             pair(consumed(Operation::nom_read), Signature::nom_read),
             |((parsed, operation), signature)| Self {
@@ -287,7 +287,7 @@ pub struct VerifiedOperation {
 #[cfg(test)]
 mod test {
     use proptest::prelude::*;
-    use mavryk_data_encoding::enc::BinWriter;
+    use tezos_data_encoding::enc::BinWriter;
 
     use crate::inbox::v1::Operation;
 

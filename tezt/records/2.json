@@ -2746,7 +2746,7 @@
       "node",
       "smart_rollup_installer",
       "smart_rollup_node",
-      "tezos2"
+      "mavryk2"
     ],
     "successful_runs": {
       "total_time": "50208642",

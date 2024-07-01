@@ -14,45 +14,45 @@
     Subject: Test versions parser
  *)
 
-let mavkit_legal_versions =
+ let mavkit_legal_versions =
   [
     ( "mavkit-10.93",
       {
-        product = Octez;
+        product = Mavkit;
         Version.major = 10;
         minor = 93;
         additional_info = Release;
       } );
     ( "mavkit-v10.93",
       {
-        product = Octez;
+        product = Mavkit;
         Version.major = 10;
         minor = 93;
         additional_info = Release;
       } );
     ( "mavkit-10.93+dev",
-      {product = Octez; Version.major = 10; minor = 93; additional_info = Dev}
+      {product = Mavkit; Version.major = 10; minor = 93; additional_info = Dev}
     );
     ( "mavkit-10.93-rc1",
-      {product = Octez; Version.major = 10; minor = 93; additional_info = RC 1}
+      {product = Mavkit; Version.major = 10; minor = 93; additional_info = RC 1}
     );
     ( "mavkit-10.93-rc1+dev",
       {
-        product = Octez;
+        product = Mavkit;
         Version.major = 10;
         minor = 93;
         additional_info = RC_dev 1;
       } );
     ( "mavkit-10.93-beta1",
       {
-        product = Octez;
+        product = Mavkit;
         Version.major = 10;
         minor = 93;
         additional_info = Beta 1;
       } );
     ( "mavkit-10.93-beta1+dev",
       {
-        product = Octez;
+        product = Mavkit;
         Version.major = 10;
         minor = 93;
         additional_info = Beta_dev 1;
@@ -120,6 +120,8 @@ let eq v1 v2 =
     match (a1, a2) with
     | Dev, Dev -> true
     | Dev, _ -> false
+    | Beta n1, Beta n2 | Beta_dev n1, Beta_dev n2 -> n1 = n2
+    | Beta _, _ | Beta_dev _, _ -> false
     | RC n1, RC n2 | RC_dev n1, RC_dev n2 -> n1 = n2
     | RC _, _ | RC_dev _, _ -> false
     | Release, Release -> true
@@ -141,7 +143,7 @@ let version_typ : Mavryk_version_parser.t option Check.typ =
 let () =
   Test.register
     ~__FILE__
-    ~title:"Version: Test Octez versions parser"
+    ~title:"Version: Test Mavkit versions parser"
     ~tags:["version"; "mavkit"]
   @@ fun () ->
   ( Fun.flip List.iter mavkit_legal_versions @@ fun (x, e) ->

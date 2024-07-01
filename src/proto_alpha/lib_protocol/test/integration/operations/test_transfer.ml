@@ -223,7 +223,7 @@ let test_transfer_zero_implicit_with_bal_src_as_fee () =
   in
   let* b = Block.bake ~operation b in
   let* bal_src = Context.Contract.balance (B b) src in
-  let* () = Assert.equal_tez ~loc:__LOC__ bal_src (Tez.of_mumav_exn 100L) in
+  let* () = Assert.equal_mav ~loc:__LOC__ bal_src (Tez.of_mumav_exn 100L) in
   let* op =
     Op.transaction ~force_reveal:true (B b) ~fee:bal_src src dest Tez.zero
   in
@@ -242,7 +242,7 @@ let test_transfer_zero_implicit_with_bal_src_as_fee () =
   let* balance = Context.Contract.balance (I inc) src in
   (* We assert that the failing operation was included and that the
      fees were taken, effectively depleting the contract. *)
-  let* () = Assert.equal_tez ~loc:__LOC__ balance Tez.zero in
+  let* () = Assert.equal_mav ~loc:__LOC__ balance Tez.zero in
   (* Empty contracts should be unrevealed *)
   let* revelead = Context.Contract.is_manager_key_revealed (I inc) src in
   when_ revelead (fun () ->
@@ -266,7 +266,7 @@ let test_transfer_zero_to_originated_with_bal_src_as_fee () =
   let* operation =
     Op.transaction (B b) ~fee:bal_src src new_contract Tez.zero
   in
-  let* () = Assert.equal_tez ~loc:__LOC__ bal_src (Tez.of_mumav_exn 100L) in
+  let* () = Assert.equal_mav ~loc:__LOC__ bal_src (Tez.of_mumav_exn 100L) in
   let* (_ : Block.t) = Block.bake ~operation b in
   return_unit
 
@@ -279,7 +279,7 @@ let test_transfer_one_to_implicit_with_bal_src_as_fee () =
   let* operation = Op.transaction (B b) dest src (Tez.of_mumav_exn 100L) in
   let* b = Block.bake ~operation b in
   let* bal_src = Context.Contract.balance (B b) src in
-  let* () = Assert.equal_tez ~loc:__LOC__ bal_src (Tez.of_mumav_exn 100L) in
+  let* () = Assert.equal_mav ~loc:__LOC__ bal_src (Tez.of_mumav_exn 100L) in
   let* operation = Op.revelation (B b) ~fee:Tez.zero account.pk in
   let* b = Block.bake ~operation b in
   let* op = Op.transaction (B b) ~fee:bal_src src dest Tez.one in

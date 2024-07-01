@@ -10,10 +10,10 @@ use nom::branch::alt;
 use nom::combinator::map;
 use prim::*;
 use std::fmt::Debug;
-use mavryk_data_encoding::enc::{self, BinResult, BinWriter};
-use mavryk_data_encoding::encoding::{Encoding, HasEncoding};
-use mavryk_data_encoding::nom::{self as nom_read, NomReader, NomResult};
-use mavryk_data_encoding::types::Zarith;
+use tezos_data_encoding::enc::{self, BinResult, BinWriter};
+use tezos_data_encoding::encoding::{Encoding, HasEncoding};
+use tezos_data_encoding::nom::{self as nom_read, NomReader, NomResult};
+use tezos_data_encoding::types::Zarith;
 
 mod micheline;
 #[cfg(feature = "alloc")]
@@ -667,7 +667,7 @@ impl NomReader for MichelsonInt {
 impl NomReader for MichelsonNat {
     fn nom_read(input: &[u8]) -> NomResult<Self> {
         use nom::error::{ErrorKind, ParseError};
-        use mavryk_data_encoding::nom::error::*;
+        use tezos_data_encoding::nom::error::*;
 
         let (rest, i) = nom_read_micheline_int(input)?;
         if i.0 >= 0.into() {

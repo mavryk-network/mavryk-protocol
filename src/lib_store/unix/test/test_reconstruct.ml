@@ -41,7 +41,7 @@ let export_mode = Snapshots.Tar
 
 let equal_history_mode ?loc ?msg hm1 hm2 =
   let eq = ( = ) in
-  let pp = Tezos_shell_services.History_mode.pp in
+  let pp = Mavryk_shell_services.History_mode.pp in
   Assert.equal ?loc ?msg ~pp ~eq hm1 hm2
 
 let check_flags descr store expected_head =

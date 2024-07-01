@@ -21,7 +21,7 @@ use crate::{
 use primitive_types::{H160, U256};
 use rlp::Encodable;
 use sha3::{Digest, Keccak256};
-use mavryk_crypto_rs::{hash::ContractKt1Hash, PublicKeySignatureVerifier};
+use tezos_crypto_rs::{hash::ContractKt1Hash, PublicKeySignatureVerifier};
 use mavryk_ethereum::{
     rlp_helpers::FromRlpBytes,
     transaction::{TransactionHash, TRANSACTION_HASH_SIZE},
@@ -300,7 +300,7 @@ impl SequencerInput {
         }
         let bytes = unsigned_seq_blueprint.rlp_bytes().to_vec();
         // The sequencer signs the hash of the blueprint.
-        let msg = mavryk_crypto_rs::blake2b::digest_256(&bytes).unwrap();
+        let msg = tezos_crypto_rs::blake2b::digest_256(&bytes).unwrap();
 
         let correctly_signed = context
             .sequencer

@@ -93,7 +93,7 @@ let test_valid_double_baking_evidence () =
     Context.Delegate.current_frozen_deposits (B blk_final) baker1
   in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       frozen_deposits_before
       frozen_deposits_right_after
@@ -106,7 +106,7 @@ let test_valid_double_baking_evidence () =
     Context.Delegate.initial_frozen_deposits (B blk_final) baker1
   in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       initial_frozen_deposits_before
       initial_frozen_deposits_after
@@ -132,7 +132,7 @@ let test_valid_double_baking_evidence () =
       -! (initial_frozen_deposits_before *! Z.to_int64 num /! Z.to_int64 den)
       +! autostaked)
   in
-  Assert.equal_tez
+  Assert.equal_mav
     ~loc:__LOC__
     frozen_deposits_after
     expected_frozen_deposits_after
@@ -184,7 +184,7 @@ let test_valid_double_baking_followed_by_double_attesting () =
     Context.Delegate.current_frozen_deposits (B blk_final) baker1
   in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       frozen_deposits_before
       frozen_deposits_right_after
@@ -217,7 +217,7 @@ let test_valid_double_baking_followed_by_double_attesting () =
   in
   (* Both slashings are computed on the initial amount of frozen deposits so
      the percentages are additive, not multiplicative. *)
-  Assert.equal_tez
+  Assert.equal_mav
     ~loc:__LOC__
     expected_frozen_deposits_after
     frozen_deposits_after
@@ -263,7 +263,7 @@ let test_valid_double_attesting_followed_by_double_baking () =
     Context.Delegate.current_frozen_deposits (B blk_with_db_evidence) baker1
   in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       frozen_deposits_before
       frozen_deposits_right_after
@@ -298,7 +298,7 @@ let test_valid_double_attesting_followed_by_double_baking () =
   in
   (* Both slashings are computed on the initial amount of frozen deposits so
      the percentages are additive, not multiplicative. *)
-  Assert.equal_tez
+  Assert.equal_mav
     ~loc:__LOC__
     expected_frozen_deposits_after
     frozen_deposits_after
@@ -359,7 +359,7 @@ let test_payload_producer_gets_evidence_rewards () =
     Context.Delegate.current_frozen_deposits (B b') baker1
   in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       frozen_deposits_right_after
       frozen_deposits_before
@@ -373,7 +373,7 @@ let test_payload_producer_gets_evidence_rewards () =
     Test_tez.(full_balance_with_rewards_right_after -! full_balance)
   in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       expected_reward_right_after
       real_reward_right_after
@@ -398,7 +398,7 @@ let test_payload_producer_gets_evidence_rewards () =
   in
   (* the frozen deposits of the double-signer [baker1] are slashed *)
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       frozen_deposits_after
       expected_frozen_deposits_after
@@ -427,12 +427,12 @@ let test_payload_producer_gets_evidence_rewards () =
     Context.Delegate.full_balance (B b') baker2
   in
   let real_reward = Test_tez.(full_balance_with_rewards -! full_balance) in
-  let* () = Assert.equal_tez ~loc:__LOC__ expected_reward real_reward in
+  let* () = Assert.equal_mav ~loc:__LOC__ expected_reward real_reward in
   (* [baker1] did not produce the payload, it does not receive the reward for the
      evidence *)
   let* full_balance_at_b1 = Context.Delegate.full_balance (B b1) baker1 in
   let* full_balance_at_b' = Context.Delegate.full_balance (B b') baker1 in
-  Assert.equal_tez
+  Assert.equal_mav
     ~loc:__LOC__
     full_balance_at_b'
     Test_tez.(full_balance_at_b1 -! slashed_amount)

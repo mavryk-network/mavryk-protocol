@@ -172,13 +172,13 @@ let not_equal_string ~loc (a : string) (b : string) =
   not_equal ~loc String.equal "Strings are equal" Format.pp_print_string a b
 
 (* mav *)
-let equal_tez ~loc (a : Alpha_context.Tez.t) (b : Alpha_context.Tez.t) =
+let equal_mav ~loc (a : Alpha_context.Tez.t) (b : Alpha_context.Tez.t) =
   let open Alpha_context in
-  equal ~loc Tez.( = ) "Tez aren't equal" Tez.pp a b
+  equal ~loc Tez.( = ) "Mav aren't equal" Tez.pp a b
 
-let not_equal_tez ~loc (a : Alpha_context.Tez.t) (b : Alpha_context.Tez.t) =
+let not_equal_mav ~loc (a : Alpha_context.Tez.t) (b : Alpha_context.Tez.t) =
   let open Alpha_context in
-  not_equal ~loc Tez.( = ) "Tez are equal" Tez.pp a b
+  not_equal ~loc Tez.( = ) "Mav are equal" Tez.pp a b
 
 (* pkh *)
 let equal_pkh ~loc (a : Signature.Public_key_hash.t)
@@ -248,7 +248,7 @@ open Context
 let contract_property_is property ~loc b contract expected =
   let open Lwt_result_syntax in
   let* balance = property b contract in
-  equal_tez ~loc balance expected
+  equal_mav ~loc balance expected
 
 (** [balance_is b c amount] checks that the current balance [b] of contract [c]
     is [amount].

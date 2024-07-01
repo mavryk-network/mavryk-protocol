@@ -46,7 +46,7 @@ let test_wait_rewards_no_ai_yes_auto =
           Tez_helpers.(mul_q src_total Q.(1 // rat) |> of_q ~round:`Up)
         in
         let* () =
-          Assert.equal_tez
+          Assert.equal_mav
             ~loc:__LOC__
             expected_frozen
             (Tez_helpers.of_q ~round:`Down src_balance.staked_b)

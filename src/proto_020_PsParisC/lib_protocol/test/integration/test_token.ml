@@ -69,8 +69,8 @@ let test_simple_balances () =
   let*@ _, bal_receiver' = Token.Internal_for_tests.balance ctxt' receiver in
   let*? add_bal_giver'_amount = bal_giver' +? amount in
   let*? add_bal_receiver_amount = bal_receiver +? amount in
-  let* () = Assert.equal_tez ~loc:__LOC__ bal_giver add_bal_giver'_amount in
-  Assert.equal_tez ~loc:__LOC__ bal_receiver' add_bal_receiver_amount
+  let* () = Assert.equal_mav ~loc:__LOC__ bal_giver add_bal_giver'_amount in
+  Assert.equal_mav ~loc:__LOC__ bal_receiver' add_bal_receiver_amount
 
 (** Check balance updates for a simple transfer from [bootstrap] to new
     [Implicit]. *)
@@ -162,7 +162,7 @@ let check_receiver_balances ctxt ctxt' receiver amount =
   let*@ _, bal_receiver = Token.Internal_for_tests.balance ctxt receiver in
   let*@ _, bal_receiver' = Token.Internal_for_tests.balance ctxt' receiver in
   let*? add_bal_receiver_amount = bal_receiver +? amount in
-  Assert.equal_tez ~loc:__LOC__ bal_receiver' add_bal_receiver_amount
+  Assert.equal_mav ~loc:__LOC__ bal_receiver' add_bal_receiver_amount
 
 let test_transferring_to_receiver ctxt receiver amount expected_bupds =
   let open Lwt_result_wrap_syntax in
@@ -313,7 +313,7 @@ let check_giver_balances ctxt ctxt' giver amount =
   let*@ _, bal_giver = Token.Internal_for_tests.balance ctxt giver in
   let*@ _, bal_giver' = Token.Internal_for_tests.balance ctxt' giver in
   let*? add_bal_giver'_amount = bal_giver' +? amount in
-  Assert.equal_tez ~loc:__LOC__ bal_giver add_bal_giver'_amount
+  Assert.equal_mav ~loc:__LOC__ bal_giver add_bal_giver'_amount
 
 let test_transferring_from_infinite_source ctxt giver expected_bupds =
   let open Lwt_result_wrap_syntax in
@@ -343,7 +343,7 @@ let balance_no_fail ctxt account =
 let test_transferring_from_container ctxt giver amount expected_bupds =
   let open Lwt_result_wrap_syntax in
   let* ctxt, balance = balance_no_fail ctxt giver in
-  let* () = Assert.equal_tez ~loc:__LOC__ balance Tez.zero in
+  let* () = Assert.equal_mav ~loc:__LOC__ balance Tez.zero in
   (* Test transferring from an empty account. *)
   let*!@ res = Token.transfer ctxt giver `Burned Tez.one in
   let error_title =
@@ -583,7 +583,7 @@ let check_balances ctxt ctxt' giver receiver amount =
       let*@ _, bal_receiver' =
         Token.Internal_for_tests.balance ctxt' receiver
       in
-      Assert.equal_tez ~loc:__LOC__ bal_receiver bal_receiver'
+      Assert.equal_mav ~loc:__LOC__ bal_receiver bal_receiver'
   | Some giver, None -> check_giver_balances ctxt ctxt' giver amount
   | None, Some receiver -> check_receiver_balances ctxt ctxt' receiver amount
   | Some giver, Some receiver ->

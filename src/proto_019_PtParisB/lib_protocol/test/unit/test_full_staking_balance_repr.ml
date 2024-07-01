@@ -46,20 +46,20 @@ let equal_full_staking_balance (a : Full_staking_balance_repr.t)
   let open Lwt_result_syntax in
   let open Full_staking_balance_repr in
   let open Full_staking_balance_repr.Internal_for_tests_and_RPCs in
-  let equal_tez_repr ~loc a b =
+  let equal_mav_repr ~loc a b =
     Assert.equal_int64 ~loc (Tez_repr.to_mumav a) (Tez_repr.to_mumav b)
   in
   let equal_cycle_repr ~loc a b =
     Assert.equal_int32 ~loc (Cycle_repr.to_int32 a) (Cycle_repr.to_int32 b)
   in
 
-  let* () = equal_tez_repr ~loc:__LOC__ (own_frozen a) (own_frozen b) in
-  let* () = equal_tez_repr ~loc:__LOC__ (staked_frozen a) (staked_frozen b) in
+  let* () = equal_mav_repr ~loc:__LOC__ (own_frozen a) (own_frozen b) in
+  let* () = equal_mav_repr ~loc:__LOC__ (staked_frozen a) (staked_frozen b) in
   let* () =
-    equal_tez_repr ~loc:__LOC__ (current_delegated a) (current_delegated b)
+    equal_mav_repr ~loc:__LOC__ (current_delegated a) (current_delegated b)
   in
   let* () =
-    equal_tez_repr
+    equal_mav_repr
       ~loc:__LOC__
       (min_delegated_in_cycle a)
       (min_delegated_in_cycle b)

@@ -37,7 +37,7 @@ default-features = false
 version = "7.1"
 default-features = false
 
-[dependencies.mavryk_data_encoding]
+[dependencies.tezos_data_encoding]
 version = "=0.5.2"
 optional = true
 
@@ -54,7 +54,7 @@ optional = true
 version = "0.4.3"
 optional = true
 
-[dependencies.mavryk_crypto_rs]
+[dependencies.tezos_crypto_rs]
 version = "=0.5.2"
 default-features = false
 optional = true
@@ -71,14 +71,14 @@ version = "0.2.2"
 default = ["std"]
 std = ["alloc"]
 alloc = [
-    "mavryk_data_encoding",
+    "tezos_data_encoding",
     "mavryk-smart-rollup-host/alloc",
     "mavryk-smart-rollup-encoding/alloc",
     "mavryk-smart-rollup-encoding/mavryk-encoding",
     "serde",
     "serde_yaml",
     "hex",
-    "mavryk_crypto_rs",
+    "tezos_crypto_rs",
     "thiserror",
 ]
 testing = []

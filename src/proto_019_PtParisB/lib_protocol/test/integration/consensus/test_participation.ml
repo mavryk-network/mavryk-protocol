@@ -215,7 +215,7 @@ let test_participation_rpc () =
           else Tez.zero
         in
         let* () =
-          Assert.equal_tez
+          Assert.equal_mav
             ~loc:__LOC__
             info.expected_attesting_rewards
             attesting_rewards

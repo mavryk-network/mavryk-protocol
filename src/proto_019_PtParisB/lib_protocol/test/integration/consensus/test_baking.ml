@@ -169,7 +169,7 @@ let test_basic_baking_reward () =
   let* br = Context.get_baking_reward_fixed_portion (B b) in
   let open Test_tez in
   let expected_initial_balance = bal +! frozen_deposit -! br in
-  Assert.equal_tez
+  Assert.equal_mav
     ~loc:__LOC__
     expected_initial_balance
     Account.default_initial_balance
@@ -253,7 +253,7 @@ let test_rewards_block_and_payload_producer () =
     Account.default_initial_balance -! frozen_deposit +! baking_reward
     +! bonus_reward +! reward_for_b1 +! fee
   in
-  let* () = Assert.equal_tez ~loc:__LOC__ bal expected_balance in
+  let* () = Assert.equal_mav ~loc:__LOC__ bal expected_balance in
   (* Some new baker [baker_b2'] bakes b2' at the first round which does not
      correspond to a slot of [baker_b2] and it includes the PQC for [b2]. We
      check that the fixed baking reward goes to the payload producer [baker_b2],
@@ -295,7 +295,7 @@ let test_rewards_block_and_payload_producer () =
     Account.default_initial_balance +! baking_reward -! frozen_deposit
     +! reward_for_b1 +! fee
   in
-  let* () = Assert.equal_tez ~loc:__LOC__ bal expected_balance in
+  let* () = Assert.equal_mav ~loc:__LOC__ bal expected_balance in
   (* [baker_b2'] gets the bonus because he is the one who included the
      attestations *)
   let* baker_b2'_contract = get_contract_for_pkh contracts baker_b2' in
@@ -313,7 +313,7 @@ let test_rewards_block_and_payload_producer () =
     Account.default_initial_balance +! bonus_reward +! reward_for_b1'
     -! frozen_deposits'
   in
-  Assert.equal_tez ~loc:__LOC__ bal' expected_balance'
+  Assert.equal_mav ~loc:__LOC__ bal' expected_balance'
 
 (** We test that:
     - a delegate that has active stake can bake;
@@ -353,7 +353,7 @@ let test_enough_active_stake_to_bake ~has_active_stake () =
         Tez.of_mumav_exn initial_bal1
         +! baking_reward_fixed_portion -! frozen_deposit)
     in
-    Assert.equal_tez ~loc:__LOC__ bal expected_bal
+    Assert.equal_mav ~loc:__LOC__ bal expected_bal
   else
     (* pkh1 has less than minimal_stake so it will have no slots, thus it
        cannot be a proposer, thus it cannot bake. Precisely, bake fails because

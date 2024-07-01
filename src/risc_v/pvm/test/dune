@@ -13,7 +13,7 @@
   (:standard)
   -open Tezt_core
   -open Tezt_core.Base
-  -open mavkit_alcotezt)
+  -open Mavkit_alcotezt)
  (modules test_main))
 
 (executable

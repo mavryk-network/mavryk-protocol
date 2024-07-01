@@ -1378,7 +1378,7 @@
       "node",
       "slow",
       "smart_rollup_node",
-      "tezos2"
+      "mavryk2"
     ],
     "successful_runs": {
       "total_time": "187035876",

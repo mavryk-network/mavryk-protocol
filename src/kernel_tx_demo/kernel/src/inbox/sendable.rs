@@ -4,7 +4,7 @@
 
 //! Constructing inbox messages for sending to the kernel.
 
-use mavryk_data_encoding::{enc::BinWriter, encoding::HasEncoding};
+use tezos_data_encoding::{enc::BinWriter, encoding::HasEncoding};
 
 use mavryk_smart_rollup_encoding::inbox::InternalInboxMessage;
 use mavryk_smart_rollup_encoding::michelson::Michelson;
@@ -37,7 +37,7 @@ mod test {
     use crate::inbox::external::ParsedExternalInboxMessage;
     use proptest::collection;
     use proptest::prelude::*;
-    use mavryk_data_encoding::enc::BinWriter;
+    use tezos_data_encoding::enc::BinWriter;
     use mavryk_smart_rollup_encoding::inbox::InboxMessage as ParsedInboxMessage;
     use mavryk_smart_rollup_encoding::michelson::ticket::StringTicket;
     use mavryk_smart_rollup_encoding::michelson::{MichelsonPair, MichelsonString};

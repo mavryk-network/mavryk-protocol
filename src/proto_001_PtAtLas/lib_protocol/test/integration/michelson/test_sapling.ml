@@ -926,7 +926,7 @@ module Interpreter_tests = struct
           List.exists
             (function
               | Environment.Ecoproto_error
-                  (Mavryk_protocol_018_Proxford.Protocol.Script_tc_errors
+                  (Mavryk_protocol_001_PtAtLas.Protocol.Script_tc_errors
                    .Unexpected_forged_value _) ->
                   true
               | _ -> false)

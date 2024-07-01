@@ -12,7 +12,7 @@
 #![cfg_attr(feature = "debug", forbid(unsafe_code))]
 
 extern crate alloc;
-extern crate mavryk_crypto_rs as crypto;
+extern crate tezos_crypto_rs as crypto;
 
 #[cfg(feature = "dal")]
 pub mod dal;
@@ -169,7 +169,7 @@ where
 #[derive(Error, Debug)]
 enum TransactionError<'a> {
     #[error("Unable to parse header inbox message {0:?}")]
-    MalformedInboxMessage(nom::Err<mavryk_data_encoding::nom::NomError<'a>>),
+    MalformedInboxMessage(nom::Err<tezos_data_encoding::nom::NomError<'a>>),
     #[error("Invalid internal inbox message, expected deposit: {0}")]
     InvalidInternalInbox(#[from] DepositFromInternalPayloadError),
     #[error("Error storing ticket on rollup")]

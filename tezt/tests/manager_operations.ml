@@ -978,10 +978,10 @@ module Deserialisation = struct
 end
 
 module Gas_limits = struct
-  (** Build a batch of transfers with the same given gas limit for every one of
-      them.  *)
-  let mk_batch ?(source = Constant.bootstrap2) ?(dest = Constant.bootstrap3) ~nb
-      ~gas_limit client =
+  (** Build a batch of transfers with specific gas limit for every one of
+      them. *)
+  let mk_batch ?(source = Constant.bootstrap2) ?(dest = Constant.bootstrap3)
+      ~operations_gas_limit client =
     let open Operation.Manager in
     let fee = 1_000_000 in
     let* counter = get_next_counter client ~source:Constant.bootstrap1 in
@@ -1005,12 +1005,10 @@ module Gas_limits = struct
       limits.hard_gas_limit_per_block - limits.hard_gas_limit_per_operation
     in
     (* Gas limit per op is ok *)
-    let* batch =
-      mk_batch
-        ~nb:2
-        ~gas_limit:limits.hard_gas_limit_per_operation
-        nodes.main.client
+    let operations_gas_limit =
+      [limits.hard_gas_limit_per_operation; gas_limit]
     in
+    let* batch = mk_batch ~operations_gas_limit nodes.main.client in
     let* _oph =
       Memchecks.with_validated_checks
         ~__LOC__
@@ -1034,6 +1032,7 @@ module Gas_limits = struct
     let operations_gas_limit =
       [limits.hard_gas_limit_per_operation + 1; gas_limit - 2]
     in
+    let* batch = mk_batch ~operations_gas_limit nodes.main.client in
     let* _oph =
       Memchecks.with_refused_checks ~__LOC__ nodes @@ fun () ->
       (* Gas limit per op is too high *)
@@ -1054,12 +1053,10 @@ module Gas_limits = struct
       (limits.hard_gas_limit_per_block / limits.hard_gas_limit_per_operation)
       + 1
     in
-    let* batch =
-      mk_batch
-        ~nb:too_many_ops
-        ~gas_limit:limits.hard_gas_limit_per_operation
-        nodes.main.client
+    let operations_gas_limit =
+      List.init too_many_ops (fun _i -> limits.hard_gas_limit_per_operation)
     in
+    let* batch = mk_batch ~operations_gas_limit nodes.main.client in
     let* _oph =
       Memchecks.with_refused_checks ~__LOC__ nodes @@ fun () ->
       Operation.Manager.inject ~force:true batch nodes.main.client

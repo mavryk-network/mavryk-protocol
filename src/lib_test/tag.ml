@@ -37,7 +37,7 @@ let infrastructure = "infrastructure"
 
 let layer1 = "layer1"
 
-let tezos2 = "tezos2"
+let mavryk2 = "mavryk2"
 
 let etherlink = "etherlink"
 

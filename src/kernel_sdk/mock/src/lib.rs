@@ -9,12 +9,12 @@
 mod host;
 mod state;
 
-extern crate mavryk_crypto_rs as crypto;
+extern crate tezos_crypto_rs as crypto;
 
 use crypto::hash::ContractKt1Hash;
 use crypto::hash::HashType;
 use crypto::hash::SmartRollupHash;
-use mavryk_data_encoding::enc::BinWriter;
+use tezos_data_encoding::enc::BinWriter;
 use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
 use mavryk_smart_rollup_encoding::inbox;
 use mavryk_smart_rollup_encoding::michelson::Michelson;

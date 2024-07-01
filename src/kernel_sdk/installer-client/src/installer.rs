@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-use mavryk_data_encoding::enc::BinWriter;
+use tezos_data_encoding::enc::BinWriter;
 use mavryk_smart_rollup_installer_config::binary::owned::OwnedConfigProgram;
 use wasm_gen::write_custom_section;
 

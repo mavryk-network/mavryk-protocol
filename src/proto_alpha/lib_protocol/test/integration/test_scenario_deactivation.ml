@@ -140,7 +140,7 @@ let test_baking_deactivation =
             CycleMap.find current_cycle dlgt.frozen_rights
             |> Option.value ~default:Tez.zero
           in
-          Assert.not_equal_tez ~loc:__LOC__ Tez.zero rights)
+          Assert.not_equal_mav ~loc:__LOC__ Tez.zero rights)
   --> next_block_with_baker "delegate"
   --> check_is_active ~loc:__LOC__ "delegate"
 

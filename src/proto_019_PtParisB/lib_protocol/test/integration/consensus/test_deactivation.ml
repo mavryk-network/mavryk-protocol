@@ -47,7 +47,7 @@ let check_stake ~loc (b : Block.t) (account : Account.t) =
   let open Lwt_result_wrap_syntax in
   let* staking_balance = Context.Delegate.staking_balance (B b) account.pkh in
   let* full_balance = Context.Delegate.full_balance (B b) account.pkh in
-  let* () = Assert.equal_tez ~loc full_balance staking_balance in
+  let* () = Assert.equal_mav ~loc full_balance staking_balance in
   let*@ ctxt =
     Raw_context.prepare
       b.context
@@ -97,11 +97,11 @@ let test_simple_staking_rights () =
   let expected_initial_balance =
     Account.default_initial_balance -! frozen_deposits
   in
-  let* () = Assert.equal_tez ~loc:__LOC__ balance expected_initial_balance in
+  let* () = Assert.equal_mav ~loc:__LOC__ balance expected_initial_balance in
   let* m1 = Context.Contract.manager (B b) a1 in
   let* info = Context.Delegate.info (B b) m1.pkh in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       Account.default_initial_balance
       info.staking_balance
@@ -125,7 +125,7 @@ let test_simple_staking_rights_after_baking () =
   in
   let*? full_balance = balance +? frozen_deposits in
   let* info = Context.Delegate.info (B b) m1.pkh in
-  let* () = Assert.equal_tez ~loc:__LOC__ full_balance info.staking_balance in
+  let* () = Assert.equal_mav ~loc:__LOC__ full_balance info.staking_balance in
   let* () = check_stake ~loc:__LOC__ b m1 in
   check_stake ~loc:__LOC__ b m2
 
@@ -266,7 +266,7 @@ let test_deactivation_then_empty_then_self_delegation () =
   in
   (* the account is activated, the stake is still 0. *)
   let* balance = Context.Contract.balance (B b2) deactivated_contract in
-  Assert.equal_tez ~loc:__LOC__ Tez.zero balance
+  Assert.equal_mav ~loc:__LOC__ Tez.zero balance
 
 (** A deactivated account, which is emptied, then self-delegated, then
     re-credited of the sunk amount, becomes active again. Staking
@@ -331,7 +331,7 @@ let test_deactivation_then_empty_then_self_delegation_then_recredit () =
       deactivated_account
   in
   let* balance2 = Context.Contract.balance (B b2) deactivated_contract in
-  let* () = Assert.equal_tez ~loc:__LOC__ amount balance2 in
+  let* () = Assert.equal_mav ~loc:__LOC__ amount balance2 in
   check_stake ~loc:__LOC__ b2 deactivated_account
 
 (** Initialize a block with two contracts/accounts. A third new account is also

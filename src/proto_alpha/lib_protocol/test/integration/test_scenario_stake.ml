@@ -520,7 +520,7 @@ let test_deactivation =
   --> exec_unit (fun (_, state) ->
           let dlgt = State.find_account "delegate" state in
           let total = Frozen_tez.total_current dlgt.frozen_deposits in
-          Assert.equal_tez ~loc:__LOC__ total (Tez.of_mumav 2_200_000_000_000L))
+          Assert.equal_mav ~loc:__LOC__ total (Tez.of_mumav 2_200_000_000_000L))
 
 let tests =
   tests_of_scenarios

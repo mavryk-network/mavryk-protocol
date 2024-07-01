@@ -2,10 +2,10 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name mavryk_scoru_wasm_regressions)
- (package mavryk-scoru-wasm-regressions)
+ (name src_lib_scoru_wasm_regressions_tezt_lib)
  (instrumentation (backend bisect_ppx))
  (libraries
+  tezt.core
   mavkit-libs.base
   mavkit-l2-libs.scoru-wasm
   mavkit-l2-libs.scoru-wasm-helpers
@@ -14,11 +14,38 @@
   mavkit-protocol-alpha-libs.smart-rollup
   mavryk-protocol-alpha.parameters
   tezt)
- (preprocess (staged_pps ppx_import ppx_deriving.show))
+ (library_flags (:standard -linkall))
  (flags
   (:standard)
+  -open Tezt_core
+  -open Tezt_core.Base
   -open Mavryk_base.TzPervasives
   -open Mavryk_scoru_wasm
   -open Mavryk_smart_rollup_alpha
   -open Tezt
-  -open Tezt.Base))
+  -open Tezt.Base)
+ (modules mavryk_scoru_wasm_regressions))
+
+(executable
+ (name main)
+ (instrumentation (backend bisect_ppx --bisect-sigterm))
+ (libraries
+  src_lib_scoru_wasm_regressions_tezt_lib
+  tezt)
+ (preprocess (staged_pps ppx_import ppx_deriving.show))
+ (modules main))
+
+(rule
+ (alias runtest)
+ (package mavryk-scoru-wasm-regressions)
+ (deps
+  ../../proto_alpha/lib_protocol/test/integration/wasm_kernel/echo.wast
+  ../test/wasm_kernels/tx-kernel-no-verif.wasm
+  ../test/messages/deposit.out
+  ../test/messages/withdrawal.out)
+ (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
+ (action (run %{dep:./main.exe})))
+
+(rule
+ (targets main.ml)
+ (action (with-stdout-to %{targets} (echo "let () = Tezt.Test.run ()"))))

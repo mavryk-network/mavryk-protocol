@@ -169,7 +169,7 @@ let test_basic_baking_reward () =
   let* br = Context.get_baking_reward_fixed_portion (B b) in
   let open Tez_helpers in
   let expected_initial_balance = bal +! frozen_deposit -! br in
-  Assert.equal_tez
+  Assert.equal_mav
     ~loc:__LOC__
     expected_initial_balance
     Account.default_initial_balance
@@ -226,7 +226,7 @@ let test_rewards_block_and_payload_producer () =
       attesters
   in
   let fee = Tez.one in
-  let open Test_tez in
+  let open Tez_helpers in
   let fee_to_producer = fee /! 4L in
   let fee_to_protocol_treasury = fee /! 4L in
   let fee_to_burn = fee -! (fee_to_producer *! 2L) in
@@ -257,7 +257,7 @@ let test_rewards_block_and_payload_producer () =
     Account.default_initial_balance -! frozen_deposit +! baking_reward
     +! bonus_reward +! reward_for_b1 +! fee_to_producer
   in
-  let* () = Assert.equal_tez ~loc:__LOC__ bal expected_balance in
+  let* () = Assert.equal_mav ~loc:__LOC__ bal expected_balance in
   (* the protocol treasury is currently the buffer address *)
   let protocol_treasury_contract_result = Contract.of_b58check "KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH" in
   match protocol_treasury_contract_result with
@@ -265,18 +265,22 @@ let test_rewards_block_and_payload_producer () =
       failwith ("Error invalid contract address")
   | Ok protocol_treasury_contract ->
 
-      Context.Contract.balance (B b1) protocol_treasury_contract >>=? fun initial_protocol_treasury_balance ->
-      Context.Contract.balance (B b2) protocol_treasury_contract >>=? fun protocol_treasury_balance ->
+      let* initial_protocol_treasury_balance =
+        Context.Contract.balance (B b1) protocol_treasury_contract
+      in
+      let* protocol_treasury_balance =
+        Context.Contract.balance (B b2) protocol_treasury_contract
+      in
       Log.info "------";
       Log.info "fee_to_protocol_treasury is: %s" (Tez.to_string fee_to_protocol_treasury);
       Log.info "initial_protocol_treasury_balance is: %s" (Tez.to_string initial_protocol_treasury_balance);
       Log.info "protocol_treasury_balance is: %s" (Tez.to_string protocol_treasury_balance);
       Log.info "------";
       (* let expected_protocol_treasury_balance =
-        let open Test_tez in
+        let open Tez_helpers in
         initial_protocol_treasury_balance +! fee_to_protocol_treasury
       in
-      Assert.equal_tez ~loc:__LOC__ burn_address_balance expected_burn_address_balance >>=? fun () -> *)
+      let* () = Assert.equal_mav ~loc:__LOC__ burn_address_balance expected_burn_address_balance in *)
 
   let cpmm_contract_result = Contract.of_b58check "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" in
     match cpmm_contract_result with
@@ -284,8 +288,12 @@ let test_rewards_block_and_payload_producer () =
         failwith ("Error invalid contract address")
     | Ok cpmm_contract ->
   
-        Context.Contract.balance (B b1) cpmm_contract >>=? fun initial_cpmm_balance ->
-        Context.Contract.balance (B b2) cpmm_contract >>=? fun cpmm_balance ->
+        let* initial_cpmm_balance =
+          Context.Contract.balance (B b1) cpmm_contract
+        in
+        let* cpmm_balance =
+          Context.Contract.balance (B b2) cpmm_contract
+        in
         Log.info "------";
         Log.info "initial_cpmm_balance is: %s" (Tez.to_string initial_cpmm_balance);
         Log.info "cpmm_balance is: %s" (Tez.to_string cpmm_balance);
@@ -297,14 +305,17 @@ let test_rewards_block_and_payload_producer () =
         failwith ("Error invalid contract address")
     | Ok burn_address ->
   
-        Context.Contract.balance (B b1) burn_address >>=? fun initial_burn_address_balance ->
-        Context.Contract.balance (B b2) burn_address >>=? fun burn_address_balance ->
-        
+        let* initial_burn_address_balance =
+          Context.Contract.balance (B b1) burn_address
+        in
+        let* burn_address_balance =
+          Context.Contract.balance (B b2) burn_address
+        in
         let expected_burn_address_balance =
-          let open Test_tez in
+          let open Tez_helpers in
           initial_burn_address_balance +! fee_to_burn
         in
-        Assert.equal_tez ~loc:__LOC__ burn_address_balance expected_burn_address_balance >>=? fun () ->
+        let* () = Assert.equal_mav ~loc:__LOC__ burn_address_balance expected_burn_address_balance in
 
   (* Some new baker [baker_b2'] bakes b2' at the first round which does not
      correspond to a slot of [baker_b2] and it includes the PQC for [b2]. We
@@ -347,7 +358,7 @@ let test_rewards_block_and_payload_producer () =
     Account.default_initial_balance +! baking_reward -! frozen_deposit
     +! reward_for_b1 +! fee_to_producer
   in
-  let* () = Assert.equal_tez ~loc:__LOC__ bal expected_balance in
+  let* () = Assert.equal_mav ~loc:__LOC__ bal expected_balance in
   (* [baker_b2'] gets the bonus because he is the one who included the
      attestations *)
   let* baker_b2'_contract = get_contract_for_pkh contracts baker_b2' in
@@ -365,7 +376,7 @@ let test_rewards_block_and_payload_producer () =
     Account.default_initial_balance +! bonus_reward +! reward_for_b1'
     -! frozen_deposits'
   in
-  Assert.equal_tez ~loc:__LOC__ bal' expected_balance'
+  Assert.equal_mav ~loc:__LOC__ bal' expected_balance'
 
 (** We test that:
     - a delegate that has active stake can bake;
@@ -405,7 +416,7 @@ let test_enough_active_stake_to_bake ~has_active_stake () =
         Tez.of_mumav_exn initial_bal1
         +! baking_reward_fixed_portion -! frozen_deposit)
     in
-    Assert.equal_tez ~loc:__LOC__ bal expected_bal
+    Assert.equal_mav ~loc:__LOC__ bal expected_bal
   else
     (* pkh1 has less than minimal_stake so it will have no slots, thus it
        cannot be a proposer, thus it cannot bake. Precisely, bake fails because

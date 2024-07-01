@@ -414,8 +414,8 @@ mod tests {
     use crate::sequencer_blueprint::UnsignedSequencerBlueprint;
     use crate::Timestamp;
     use primitive_types::H256;
-    use mavryk_crypto_rs::hash::ContractKt1Hash;
-    use mavryk_crypto_rs::hash::Signature;
+    use tezos_crypto_rs::hash::ContractKt1Hash;
+    use tezos_crypto_rs::hash::Signature;
     use mavryk_ethereum::transaction::TRANSACTION_HASH_SIZE;
     use mavryk_smart_rollup_encoding::public_key::PublicKey;
     use mavryk_smart_rollup_mock::MockHost;

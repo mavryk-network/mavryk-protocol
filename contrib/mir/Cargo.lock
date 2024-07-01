@@ -696,8 +696,8 @@ dependencies = [
  "smallvec",
  "strum 0.25.0",
  "strum_macros 0.25.3",
- "mavryk_crypto_rs",
- "mavryk_data_encoding",
+ "tezos_crypto_rs",
+ "tezos_data_encoding",
  "thiserror",
  "typed-arena",
 ]
@@ -1235,7 +1235,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "mavryk_crypto_rs"
+name = "tezos_crypto_rs"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "576b69129eabf1edca392ff5e763610d448275fd2724d05464bb3542829c6d64"

@@ -9,7 +9,7 @@
   mavkit-libs.test-helpers
   mavkit-libs.tezt-wrapper
   tezt-mavryk
-  tezt_ethereum)
+  tezt_etherlink)
  (flags
   (:standard)
   -open Mavryk_test_helpers
@@ -17,4 +17,4 @@
   -open Tezt_wrapper.Base
   -open Tezt_mavryk
   -open Tezt_mavryk.Runnable.Syntax
-  -open Tezt_ethereum))
+  -open Tezt_etherlink))

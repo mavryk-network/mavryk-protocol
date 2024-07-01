@@ -5,7 +5,7 @@
 use crate::configuration::fetch_configuration;
 use crate::storage::{ADMIN, SEQUENCER};
 use rlp::{Decodable, DecoderError, Rlp};
-use mavryk_crypto_rs::hash::ContractKt1Hash;
+use tezos_crypto_rs::hash::ContractKt1Hash;
 use mavryk_ethereum::rlp_helpers::{decode_field, next, FromRlpBytes};
 use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup_debug::Runtime;

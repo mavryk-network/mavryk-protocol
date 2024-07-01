@@ -12,11 +12,11 @@
 use nom::bytes::complete::tag;
 use nom::combinator::map;
 use nom::sequence::{pair, preceded, tuple};
-use mavryk_data_encoding::enc::{self, BinResult, BinSerializer, BinWriter};
-use mavryk_data_encoding::encoding::{Encoding, HasEncoding};
-use mavryk_data_encoding::has_encoding;
-use mavryk_data_encoding::nom::{self as nom_read, NomInput, NomReader, NomResult};
-use mavryk_data_encoding::types::Zarith;
+use tezos_data_encoding::enc::{self, BinResult, BinSerializer, BinWriter};
+use tezos_data_encoding::encoding::{Encoding, HasEncoding};
+use tezos_data_encoding::has_encoding;
+use tezos_data_encoding::nom::{self as nom_read, NomInput, NomReader, NomResult};
+use tezos_data_encoding::types::Zarith;
 
 use std::fmt::Debug;
 
@@ -50,8 +50,8 @@ pub const MICHELINE_BYTES_TAG: u8 = 10;
 pub(crate) mod annots {
     use regex::Regex;
     use std::fmt;
-    use mavryk_data_encoding::enc::{self, BinResult, BinWriter};
-    use mavryk_data_encoding::nom::{self as nom_read, NomError, NomReader, NomResult};
+    use tezos_data_encoding::enc::{self, BinResult, BinWriter};
+    use tezos_data_encoding::nom::{self as nom_read, NomError, NomReader, NomResult};
 
     #[derive(Debug, PartialEq, Eq, Clone)]
     pub struct Annotation(String);

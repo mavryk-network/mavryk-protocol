@@ -67,7 +67,7 @@ let assert_current_cycle ~loc (blk : Block.t) expected =
 let assert_total_frozen_stake ~loc block expected =
   let open Lwt_result_syntax in
   let* actual = Context.get_total_frozen_stake (B block) in
-  Assert.equal_tez ~loc actual expected
+  Assert.equal_mav ~loc actual expected
 
 (* Assert that the current voting power of a delegate is the expected
    one. The expectation is computed based on the expected self-staked,

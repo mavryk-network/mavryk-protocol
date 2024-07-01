@@ -143,12 +143,12 @@ let test_valid_double_attestation_evidence () =
   in
   (* Check that the initial frozen deposits have not changed *)
   let* () =
-    Assert.equal_tez ~loc:__LOC__ initial_frozen_deposits frozen_deposits_before
+    Assert.equal_mav ~loc:__LOC__ initial_frozen_deposits frozen_deposits_before
   in
   (* Similarly for current frozen deposits because slashing is deferred to the
      end of the cycle. *)
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       frozen_deposits_right_after
       frozen_deposits_before
@@ -178,7 +178,7 @@ let test_valid_double_attestation_evidence () =
     Tez_helpers.(frozen_deposits_before *! Z.to_int64 num /! Z.to_int64 den)
   in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       expected_frozen_deposits_after
       frozen_deposits_after
@@ -203,7 +203,7 @@ let test_valid_double_attestation_evidence () =
     Context.Delegate.full_balance (B blk_eoc) baker
   in
   let real_reward = Tez_helpers.(full_balance_with_rewards -! full_balance) in
-  Assert.equal_tez ~loc:__LOC__ expected_reward real_reward
+  Assert.equal_mav ~loc:__LOC__ expected_reward real_reward
 
 (** Check that a double (pre)attestation evidence with equivalent
     attestations but on different branches succeeds. *)
@@ -317,7 +317,7 @@ let test_two_double_attestation_evidences_leadsto_no_bake () =
     Context.Delegate.current_frozen_deposits (B blk_with_evidence2) delegate
   in
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       frozen_deposits_before
       frozen_deposits_right_after
@@ -362,7 +362,7 @@ let test_two_double_attestation_evidences_leadsto_no_bake () =
   in
   (* [delegate] baked one block. The block rewards for that block should be all
      that's left *)
-  Assert.equal_tez
+  Assert.equal_mav
     ~loc:__LOC__
     Tez_helpers.(base_reward -! to_liquid)
     frozen_deposits_after
@@ -436,7 +436,7 @@ let test_two_double_attestation_evidences_staggered () =
     frozen_deposits_before
     Tez.pp
     frozen_deposits_after ;
-  let* () = Assert.not_equal_tez ~loc:__LOC__ Tez.zero frozen_deposits_after in
+  let* () = Assert.not_equal_mav ~loc:__LOC__ Tez.zero frozen_deposits_after in
   let* is_forbidden =
     Context.Delegate.is_forbidden
       ~policy:(Block.By_account baker)
@@ -512,7 +512,7 @@ let test_two_double_attestation_evidences_consecutive_cycles () =
     frozen_deposits_before
     Tez.pp
     frozen_deposits_after ;
-  let* () = Assert.not_equal_tez ~loc:__LOC__ Tez.zero frozen_deposits_after in
+  let* () = Assert.not_equal_mav ~loc:__LOC__ Tez.zero frozen_deposits_after in
   let* is_forbidden =
     Context.Delegate.is_forbidden
       ~policy:(Block.By_account baker)
@@ -748,10 +748,10 @@ let test_freeze_more_with_low_balance =
        frozen_deposits, in this particular case, full_balance = frozen_deposits
        for [account1], and the frozen_deposits didn't change since genesis. *)
     let* () =
-      Assert.equal_tez ~loc:__LOC__ info2.full_balance info2.frozen_deposits
+      Assert.equal_mav ~loc:__LOC__ info2.full_balance info2.frozen_deposits
     in
     let* () =
-      Assert.equal_tez ~loc:__LOC__ info1.frozen_deposits info2.frozen_deposits
+      Assert.equal_mav ~loc:__LOC__ info1.frozen_deposits info2.frozen_deposits
     in
     let* b3 = double_attest_and_punish b2 account1 in
     (* Denunciation has happened but slashing hasn't yet.
@@ -759,16 +759,16 @@ let test_freeze_more_with_low_balance =
        full balance and itself hasn't changed. *)
     let* info3 = Context.Delegate.info (B b3) account1 in
     let* () =
-      Assert.equal_tez
+      Assert.equal_mav
         ~loc:__LOC__
         info3.frozen_deposits
         info3.current_frozen_deposits
     in
     let* () =
-      Assert.equal_tez ~loc:__LOC__ info3.full_balance info3.frozen_deposits
+      Assert.equal_mav ~loc:__LOC__ info3.full_balance info3.frozen_deposits
     in
     let* () =
-      Assert.equal_tez ~loc:__LOC__ info3.full_balance info2.full_balance
+      Assert.equal_mav ~loc:__LOC__ info3.full_balance info2.full_balance
     in
     (* We now bake until end of cycle only with [account2]:
        block of the new cycle are called cX below. *)
@@ -777,7 +777,7 @@ let test_freeze_more_with_low_balance =
        is (still) equal to its deposit. *)
     let* info4 = Context.Delegate.info (B c1) account1 in
     let* () =
-      Assert.equal_tez
+      Assert.equal_mav
         ~loc:__LOC__
         info4.full_balance
         info4.current_frozen_deposits
@@ -793,7 +793,7 @@ let test_freeze_more_with_low_balance =
       Tez_helpers.(info2.frozen_deposits *! Z.to_int64 num /! Z.to_int64 den)
     in
     let* () =
-      Assert.equal_tez
+      Assert.equal_mav
         ~loc:__LOC__
         expected_frozen_deposits_after
         info4.current_frozen_deposits
@@ -804,19 +804,19 @@ let test_freeze_more_with_low_balance =
        deposits. *)
     let* info5 = Context.Delegate.info (B c2) account1 in
     let* () =
-      Assert.not_equal_tez
+      Assert.not_equal_mav
         ~loc:__LOC__
         info5.current_frozen_deposits
         info5.frozen_deposits
     in
     let* () =
-      Assert.equal_tez
+      Assert.equal_mav
         ~loc:__LOC__
         info5.current_frozen_deposits
         info4.current_frozen_deposits
     in
     let* () =
-      Assert.equal_tez
+      Assert.equal_mav
         ~loc:__LOC__
         info5.full_balance
         info5.current_frozen_deposits
@@ -833,9 +833,9 @@ let test_freeze_more_with_low_balance =
        [account1] reflects the slashing of 50% of the original deposit. Its
        current deposits are thus 0tz. *)
     let* info6 = Context.Delegate.info (B c3) account1 in
-    let* () = Assert.equal_tez ~loc:__LOC__ info6.full_balance Tez.zero in
+    let* () = Assert.equal_mav ~loc:__LOC__ info6.full_balance Tez.zero in
     let* () =
-      Assert.equal_tez ~loc:__LOC__ info6.current_frozen_deposits Tez.zero
+      Assert.equal_mav ~loc:__LOC__ info6.current_frozen_deposits Tez.zero
     in
     (* We bake [2 * consensus_rights_delay - 1] additional cycles only with [account2].
        Because [account1] does not bake during this period, it loses its rights.

@@ -26,7 +26,7 @@ use storage::{
     read_minimum_base_fee_per_gas, store_base_fee_per_gas, store_chain_id, store_da_fee,
     store_kernel_version, store_storage_version, STORAGE_VERSION, STORAGE_VERSION_PATH,
 };
-use mavryk_crypto_rs::hash::ContractKt1Hash;
+use tezos_crypto_rs::hash::ContractKt1Hash;
 use mavryk_ethereum::block::BlockFees;
 use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup_encoding::public_key::PublicKey;

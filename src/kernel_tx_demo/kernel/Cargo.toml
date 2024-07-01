@@ -18,8 +18,8 @@ hex = "0.4"
 num-bigint = "0.3"
 num-traits = "0.2.8"
 
-mavryk_data_encoding = "0.5.2"
-mavryk_crypto_rs = { version = "0.5.2", default-features = false }
+tezos_data_encoding = "0.5.2"
+tezos_crypto_rs = { version = "0.5.2", default-features = false }
 
 # Adding these to 'dev_dependencies' causes the rand feature in crypto to be enabled
 # on wasm builds, when building the entire workspace.
@@ -49,7 +49,7 @@ testing = [
   "mavryk-smart-rollup-host/testing",
   "mavryk-smart-rollup-entrypoint/testing",
   "mavryk-smart-rollup-encoding/testing",
-  "mavryk_crypto_rs/std"
+  "tezos_crypto_rs/std"
 ]
 tx-kernel = []
 tx-kernel-no-sig-verif = ["tx-kernel"]

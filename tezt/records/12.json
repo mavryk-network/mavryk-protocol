@@ -2779,7 +2779,7 @@
       "node",
       "smart_rollup_node",
       "test",
-      "tezos2"
+      "mavryk2"
     ],
     "successful_runs": {
       "total_time": "117166229",

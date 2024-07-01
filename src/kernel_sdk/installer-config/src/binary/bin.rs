@@ -3,7 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-use mavryk_data_encoding::enc::{
+use tezos_data_encoding::enc::{
     field, put_byte, put_bytes, BinError, BinResult, BinWriter,
 };
 use mavryk_smart_rollup_host::path::Path;
@@ -23,7 +23,7 @@ fn put_le_size(size: usize, out: &mut Vec<u8>) -> BinResult {
             size
         ))
     })?;
-    mavryk_data_encoding::enc::put_bytes(&size.to_le_bytes(), out);
+    tezos_data_encoding::enc::put_bytes(&size.to_le_bytes(), out);
     Ok(())
 }
 
@@ -50,12 +50,12 @@ impl<'a> BinWriter for RefBytes<'a> {
 }
 
 impl<P: Path> BinWriter for MoveInstruction<P> {
-    fn bin_write(&self, out: &mut Vec<u8>) -> mavryk_data_encoding::enc::BinResult {
+    fn bin_write(&self, out: &mut Vec<u8>) -> tezos_data_encoding::enc::BinResult {
         (|data: &Self, out: &mut Vec<u8>| {
-            mavryk_data_encoding::enc::field("MoveInstruction::from", path_dynamic)(
+            tezos_data_encoding::enc::field("MoveInstruction::from", path_dynamic)(
                 &data.from, out,
             )?;
-            mavryk_data_encoding::enc::field("MoveInstruction::to", path_dynamic)(
+            tezos_data_encoding::enc::field("MoveInstruction::to", path_dynamic)(
                 &data.to, out,
             )?;
             Ok(())
@@ -64,7 +64,7 @@ impl<P: Path> BinWriter for MoveInstruction<P> {
 }
 
 impl<P: Path, B: AsRef<[u8]>> BinWriter for RevealInstruction<P, B> {
-    fn bin_write(&self, out: &mut Vec<u8>) -> mavryk_data_encoding::enc::BinResult {
+    fn bin_write(&self, out: &mut Vec<u8>) -> tezos_data_encoding::enc::BinResult {
         (|data: &Self, out: &mut Vec<u8>| {
             field("RevealInstruction::hash", bytes_dynamic)(&data.hash, out)?;
             field("RevealInstruction::to", path_dynamic)(&data.to, out)?;
@@ -74,7 +74,7 @@ impl<P: Path, B: AsRef<[u8]>> BinWriter for RevealInstruction<P, B> {
 }
 
 impl<P: Path, B: AsRef<[u8]>> BinWriter for SetInstruction<P, B> {
-    fn bin_write(&self, out: &mut Vec<u8>) -> mavryk_data_encoding::enc::BinResult {
+    fn bin_write(&self, out: &mut Vec<u8>) -> tezos_data_encoding::enc::BinResult {
         (|data: &Self, out: &mut Vec<u8>| {
             field("SetInstruction::value", bytes_dynamic)(&data.value, out)?;
             field("SetInstruction::to", path_dynamic)(&data.to, out)?;
@@ -84,8 +84,8 @@ impl<P: Path, B: AsRef<[u8]>> BinWriter for SetInstruction<P, B> {
 }
 
 impl<P: Path, B: AsRef<[u8]>> BinWriter for ConfigInstruction<P, B> {
-    fn bin_write(&self, out: &mut Vec<u8>) -> mavryk_data_encoding::enc::BinResult {
-        use mavryk_data_encoding::enc::{u8, variant_with_field};
+    fn bin_write(&self, out: &mut Vec<u8>) -> tezos_data_encoding::enc::BinResult {
+        use tezos_data_encoding::enc::{u8, variant_with_field};
         match self {
             ConfigInstruction::Reveal(inner) => variant_with_field(
                 "ConfigInstruction::Reveal",
@@ -93,7 +93,7 @@ impl<P: Path, B: AsRef<[u8]>> BinWriter for ConfigInstruction<P, B> {
                 <RevealInstruction<P, B> as BinWriter>::bin_write,
             )(&0, inner, out),
             ConfigInstruction::Move(inner) => {
-                mavryk_data_encoding::enc::variant_with_field(
+                tezos_data_encoding::enc::variant_with_field(
                     "ConfigInstruction::Move",
                     u8,
                     <MoveInstruction<P> as BinWriter>::bin_write,
@@ -132,7 +132,7 @@ impl BinWriter for OwnedConfigProgram {
 mod test {
     use std::fmt::Debug;
 
-    use mavryk_data_encoding::enc::BinWriter;
+    use tezos_data_encoding::enc::BinWriter;
 
     use crate::binary::NomReader;
 

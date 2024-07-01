@@ -30,13 +30,13 @@
       "^tezt/tests/replace_by_fees.ml$"
     ]
   },
-  "tezos2": {
+  "mavryk2": {
     "tags": [
       "dac",
       "dac_node",
       "dal",
       "vdf",
-      "tezos2"
+      "mavryk2"
     ],
     "path_patterns": [
       "^src/bin_dal_node",

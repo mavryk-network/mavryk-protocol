@@ -284,7 +284,7 @@ mod owned {
     use crate::path::PATH_MAX_SIZE;
     use alloc::string::{String, ToString};
     use alloc::vec::Vec;
-    use mavryk_data_encoding::enc::{put_bytes, BinResult, BinWriter};
+    use tezos_data_encoding::enc::{put_bytes, BinResult, BinWriter};
 
     /// Representation of a [`Path`] which *owns* its underlying path-encoded byte sequence.
     ///

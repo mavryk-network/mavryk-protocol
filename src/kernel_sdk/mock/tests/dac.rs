@@ -1,6 +1,6 @@
 //! Test of reveal preimage mechanism from [encoding::dac].
 
-use mavryk_crypto_rs::hash::BlsSignature;
+use tezos_crypto_rs::hash::BlsSignature;
 use mavryk_smart_rollup_encoding::dac::certificate::CertificateError;
 use mavryk_smart_rollup_encoding::dac::certificate::*;
 use mavryk_smart_rollup_encoding::dac::pages::*;
@@ -24,7 +24,7 @@ fn certificate_reveal_to_store_small() {
     let cert = Certificate::V0(V0Certificate {
         root_hash,
         aggregated_signature: BlsSignature(Vec::new()),
-        witnesses: mavryk_data_encoding::types::Zarith(0.into()),
+        witnesses: tezos_data_encoding::types::Zarith(0.into()),
     });
 
     let size = cert.reveal_to_store(&mut host, &path).unwrap();
@@ -54,7 +54,7 @@ fn certificate_reveal_to_store_med() {
     let cert = Certificate::V0(V0Certificate {
         root_hash,
         aggregated_signature: BlsSignature(Vec::new()),
-        witnesses: mavryk_data_encoding::types::Zarith(0.into()),
+        witnesses: tezos_data_encoding::types::Zarith(0.into()),
     });
 
     let size = cert.reveal_to_store(&mut host, &path).unwrap();
@@ -83,7 +83,7 @@ fn certificate_reveal_to_store_max() {
     let cert = Certificate::V0(V0Certificate {
         root_hash,
         aggregated_signature: BlsSignature(Vec::new()),
-        witnesses: mavryk_data_encoding::types::Zarith(0.into()),
+        witnesses: tezos_data_encoding::types::Zarith(0.into()),
     });
 
     let size = cert.reveal_to_store(&mut host, &path).unwrap();
@@ -107,7 +107,7 @@ fn certificate_reveal_to_store_too_large() {
     let cert = Certificate::V0(V0Certificate {
         root_hash,
         aggregated_signature: BlsSignature(Vec::new()),
-        witnesses: mavryk_data_encoding::types::Zarith(0.into()),
+        witnesses: tezos_data_encoding::types::Zarith(0.into()),
     });
 
     assert!(matches!(

@@ -53,12 +53,12 @@ path = "../mock"
 version = "0.2.2"
 optional = true
 
-[dependencies.mavryk_crypto_rs]
+[dependencies.tezos_crypto_rs]
 version = "=0.5.2"
 default-features = false
 optional = true
 
-[dependencies.mavryk_data_encoding]
+[dependencies.tezos_data_encoding]
 version = "=0.5.2"
 optional = true
 
@@ -72,13 +72,13 @@ default-features = false
 
 [features]
 default = ["std", "crypto", "dlmalloc", "panic-hook", "data-encoding", "storage", "bls", "testing"]
-crypto = ["mavryk_crypto_rs"]
+crypto = ["tezos_crypto_rs"]
 bls = ["mavryk-smart-rollup-encoding/bls"]
 debug_alloc = ["mavryk-smart-rollup-debug/alloc"]
 alloc = ["mavryk-smart-rollup-entrypoint/alloc"]
 dlmalloc = ["mavryk-smart-rollup-entrypoint/dlmalloc"]
 panic-hook = ["mavryk-smart-rollup-entrypoint/default"]
-data-encoding = ["mavryk_data_encoding", "mavryk-smart-rollup-encoding/alloc", "mavryk-smart-rollup-encoding/mavryk-encoding", "mavryk-smart-rollup-encoding/crypto"]
+data-encoding = ["tezos_data_encoding", "mavryk-smart-rollup-encoding/alloc", "mavryk-smart-rollup-encoding/mavryk-encoding", "mavryk-smart-rollup-encoding/crypto"]
 storage = ["mavryk-smart-rollup-storage"]
 std = ["alloc", "debug_alloc", "mavryk-smart-rollup-entrypoint/std"]
 testing = ["crypto", "mavryk-smart-rollup-mock"]

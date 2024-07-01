@@ -359,7 +359,7 @@ let delegated_implicit_bootstrap_contract () =
   let* i = Incremental.begin_construction b in
   let ctxt = Incremental.alpha_ctxt i in
   let*@ amount = Delegate.For_RPC.delegated_balance ctxt to_pkh in
-  Assert.equal_tez ~loc:__LOC__ amount (Tez.of_mumav_exn 4_000_000_000_000L)
+  Assert.equal_mav ~loc:__LOC__ amount (Tez.of_mumav_exn 4_000_000_000_000L)
 
 let tests_bootstrap_contracts =
   [
@@ -1028,7 +1028,7 @@ let test_failed_self_delegation_no_transaction () =
   let impl_contract = Contract.Implicit unregistered_pkh in
   (* check balance *)
   let* balance = Context.Contract.balance (I i) impl_contract in
-  let* () = Assert.equal_tez ~loc:__LOC__ Tez.zero balance in
+  let* () = Assert.equal_mav ~loc:__LOC__ Tez.zero balance in
   (* self delegation fails *)
   let* self_delegation =
     Op.delegation (I i) impl_contract (Some unregistered_pkh)

@@ -12,7 +12,7 @@ use crate::simulation::SimulationResult;
 use anyhow::Context;
 use evm_execution::account_storage::EthereumAccount;
 use evm_execution::storage::blocks::add_new_block_hash;
-use mavryk_crypto_rs::hash::{ContractKt1Hash, HashTrait};
+use tezos_crypto_rs::hash::{ContractKt1Hash, HashTrait};
 use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
 use mavryk_smart_rollup_encoding::public_key::PublicKey;

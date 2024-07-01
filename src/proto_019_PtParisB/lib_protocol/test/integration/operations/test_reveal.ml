@@ -90,7 +90,7 @@ let test_empty_account_on_reveal () =
   in
   let* inc = Incremental.add_operation ~expect_apply_failure inc operation in
   let* balance = Context.Contract.balance (I inc) new_contract in
-  let* () = Assert.equal_tez ~loc:__LOC__ balance Tez.zero in
+  let* () = Assert.equal_mav ~loc:__LOC__ balance Tez.zero in
   let+ is_revealed =
     Context.Contract.is_manager_key_revealed (I inc) new_contract
   in

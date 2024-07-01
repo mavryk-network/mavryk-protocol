@@ -467,7 +467,7 @@ let liquidity_baking_origination_result_cpmm_balance () =
   in
   let result = get_cpmm_result origination_results in
   let balance_update = get_balance_update_in_result result in
-  let* () = Assert.equal_tez ~loc:__LOC__ balance_update (of_mumav 100L) in
+  let* () = Assert.equal_mav ~loc:__LOC__ balance_update (of_mumav 100L) in
   return_unit
 
 let liquidity_baking_origination_result_lqt_address () =
@@ -506,10 +506,10 @@ let liquidity_baking_origination_result_lqt_balance () =
      (Liquidity_baking_subsidies, Debited am3, Protocol_migration);
    Balance_update_item (Storage_fees, Credited am4, Protocol_migration);
   ] ->
-      let* () = Assert.equal_tez ~loc:__LOC__ am1 am2 in
-      let* () = Assert.equal_tez ~loc:__LOC__ am3 am4 in
-      let* () = Assert.equal_tez ~loc:__LOC__ am1 (of_mumav 64_250L) in
-      Assert.equal_tez ~loc:__LOC__ am3 (of_mumav 494_500L)
+      let* () = Assert.equal_mav ~loc:__LOC__ am1 am2 in
+      let* () = Assert.equal_mav ~loc:__LOC__ am3 am4 in
+      let* () = Assert.equal_mav ~loc:__LOC__ am1 (of_mumav 64_250L) in
+      Assert.equal_mav ~loc:__LOC__ am3 (of_mumav 494_500L)
   | _ -> failwith "Unexpected balance updates (%s)" __LOC__
 
 (* Test that with no contract at the tzBTC address and the level low enough to indicate we're not on mainnet, three contracts are originated in stitching. *)

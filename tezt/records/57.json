@@ -2808,7 +2808,7 @@
       "node",
       "producer",
       "profile",
-      "tezos2"
+      "mavryk2"
     ],
     "successful_runs": {
       "total_time": "35127825",

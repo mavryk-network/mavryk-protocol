@@ -1697,7 +1697,7 @@
       "node",
       "atlas",
       "plugin",
-      "tezos2"
+      "mavryk2"
     ],
     "successful_runs": {
       "total_time": "47293369",
@@ -2747,7 +2747,7 @@
       "dal_node",
       "node",
       "smart_rollup_node",
-      "tezos2"
+      "mavryk2"
     ],
     "successful_runs": {
       "total_time": "51162723",

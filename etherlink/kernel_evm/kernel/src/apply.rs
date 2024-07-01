@@ -14,7 +14,7 @@ use evm_execution::handler::{ExecutionOutcome, ExtendedExitReason};
 use evm_execution::precompiles::PrecompileBTreeMap;
 use evm_execution::run_transaction;
 use primitive_types::{H160, U256};
-use mavryk_crypto_rs::hash::ContractKt1Hash;
+use tezos_crypto_rs::hash::ContractKt1Hash;
 use mavryk_ethereum::block::BlockConstants;
 use mavryk_ethereum::transaction::{TransactionHash, TransactionType};
 use mavryk_ethereum::tx_common::EthereumTransactionCommon;

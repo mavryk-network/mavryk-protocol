@@ -2731,7 +2731,7 @@
       "node",
       "smart_rollup_installer",
       "smart_rollup_node",
-      "tezos2",
+      "mavryk2",
       "tx_kernel_dal"
     ],
     "successful_runs": {

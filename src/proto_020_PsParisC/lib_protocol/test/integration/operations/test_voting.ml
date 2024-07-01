@@ -1258,7 +1258,7 @@ let test_voting_power_updated_each_voting_period () =
   in
   let*? full_balance1 = balance1 +? frozen_deposits1 in
   let* () =
-    Assert.equal_tez ~loc:__LOC__ full_balance1 (of_mumav_exn init_bal1)
+    Assert.equal_mav ~loc:__LOC__ full_balance1 (of_mumav_exn init_bal1)
   in
   (* Retrieve balance of con2 *)
   let* balance2 = Context.Contract.balance (B genesis) con2 in
@@ -1267,7 +1267,7 @@ let test_voting_power_updated_each_voting_period () =
   in
   let*? full_balance2 = balance2 +? frozen_deposits2 in
   let* () =
-    Assert.equal_tez ~loc:__LOC__ full_balance2 (of_mumav_exn init_bal2)
+    Assert.equal_mav ~loc:__LOC__ full_balance2 (of_mumav_exn init_bal2)
   in
   (* Retrieve balance of con3 *)
   let* balance3 = Context.Contract.balance (B genesis) con3 in
@@ -1276,7 +1276,7 @@ let test_voting_power_updated_each_voting_period () =
   in
   let*? full_balance3 = balance3 +? frozen_deposits3 in
   let* () =
-    Assert.equal_tez ~loc:__LOC__ full_balance3 (of_mumav_exn init_bal3)
+    Assert.equal_mav ~loc:__LOC__ full_balance3 (of_mumav_exn init_bal3)
   in
   (* Auxiliary assert_voting_power *)
   let assert_voting_power ~loc n block baker =
@@ -1323,7 +1323,7 @@ let test_voting_power_updated_each_voting_period () =
   in
   let* () =
     let*? t = balance1_after_deducing_amount -? frozen_deposit1 in
-    Assert.equal_tez ~loc:__LOC__ balance1 t
+    Assert.equal_mav ~loc:__LOC__ balance1 t
   in
   (* Retrieve balance of con2 *)
   let* balance2 = Context.Contract.balance (B block) con2 in
@@ -1334,7 +1334,7 @@ let test_voting_power_updated_each_voting_period () =
   in
   let* () =
     let*? t = balance2_after_adding_amount -? frozen_deposit2 in
-    Assert.equal_tez ~loc:__LOC__ balance2 t
+    Assert.equal_mav ~loc:__LOC__ balance2 t
   in
   let* block = Block.bake ~policy block in
   (* Assert voting power (and total) remains the same before next voting period *)

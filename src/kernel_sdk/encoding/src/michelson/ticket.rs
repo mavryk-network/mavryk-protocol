@@ -30,7 +30,7 @@ use nom::{
 use num_bigint::BigInt;
 use num_traits::Signed;
 use std::fmt::Debug;
-use mavryk_data_encoding::{
+use tezos_data_encoding::{
     enc::{BinError, BinResult, BinWriter},
     encoding::{Encoding, HasEncoding},
     nom::{error::DecodeError, NomReader, NomResult},
@@ -284,7 +284,7 @@ impl<Expr: MichelsonTicketContent> BinWriter for Ticket<Expr> {
 }
 
 impl<Expr: MichelsonTicketContent> HasEncoding for Ticket<Expr> {
-    fn encoding() -> mavryk_data_encoding::encoding::Encoding {
+    fn encoding() -> tezos_data_encoding::encoding::Encoding {
         <LegacyTicketRepr<Expr>>::encoding()
     }
 }
@@ -379,8 +379,8 @@ mod test {
     use crate::michelson::MichelsonOr;
 
     use super::*;
-    use mavryk_data_encoding::enc::BinWriter;
-    use mavryk_data_encoding::nom::NomReader;
+    use tezos_data_encoding::enc::BinWriter;
+    use tezos_data_encoding::nom::NomReader;
 
     #[test]
     fn content_bytes() {

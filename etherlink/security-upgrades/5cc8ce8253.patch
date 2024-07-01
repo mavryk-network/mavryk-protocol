@@ -630,7 +630,7 @@ index 2802b6d781..0c0c25389a 100644
 +    read_minimum_base_fee_per_gas, store_base_fee_per_gas, store_chain_id, store_da_fee,
      store_kernel_version, store_storage_version, STORAGE_VERSION, STORAGE_VERSION_PATH,
  };
- use mavryk_crypto_rs::hash::ContractKt1Hash;
+ use tezos_crypto_rs::hash::ContractKt1Hash;
 @@ -47,7 +48,6 @@ mod error;
  mod event;
  mod fallback_upgrade;

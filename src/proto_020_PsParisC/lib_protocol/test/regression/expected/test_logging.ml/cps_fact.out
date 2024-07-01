@@ -27,11 +27,11 @@ trace
     [ "[CONTRACT_HASH]"
       60 ]
     - log/COMPARE (exit) @ location: 12
-      [ "[PUBLIC_KEY_HASH]"
+      [ "mv181VziBavwKZ5dqT5NJNj8BekysbEwEfHN"
         "[CONTRACT_HASH]"
         60 ]
   - COMPARE (entry) @ location: 14
-    [ "[PUBLIC_KEY_HASH]"
+    [ "mv181VziBavwKZ5dqT5NJNj8BekysbEwEfHN"
       "[CONTRACT_HASH]"
       60 ]
     - log/EQ (exit) @ location: 14

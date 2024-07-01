@@ -18,10 +18,10 @@ categories = ["no-std", "no-std::no-alloc", "encoding", "wasm"]
 path = "src/lib.rs"
 
 [dependencies]
-mavryk_data_encoding = { version = "=0.5.2", optional = true }
-mavryk_data_encoding_derive = { version = "=0.5.2", optional = true }
+tezos_data_encoding = { version = "=0.5.2", optional = true }
+tezos_data_encoding_derive = { version = "=0.5.2", optional = true }
 nom = { version = "7.1", default-features = false }
-mavryk_crypto_rs = { version = "=0.5.2", default-features = false, optional = true }
+tezos_crypto_rs = { version = "=0.5.2", default-features = false, optional = true }
 
 num-bigint = { version = "0.3", optional = true }
 num-traits = { version = "0.2.8", optional = true }
@@ -47,8 +47,8 @@ default-features = false
 [features]
 default = ["alloc", "mavryk-encoding", "crypto", "bls" ]
 testing = ["crypto", "num-bigint", "num-traits", "proptest"]
-crypto = ["mavryk_crypto_rs"]
-bls = ["mavryk_crypto_rs/bls"]
+crypto = ["tezos_crypto_rs"]
+bls = ["tezos_crypto_rs/bls"]
 alloc = ["crypto", "thiserror", "hex", "num-traits", "num-bigint", "regex"]
-mavryk-encoding = ["mavryk_data_encoding", "mavryk_data_encoding_derive", "time"]
+mavryk-encoding = ["tezos_data_encoding", "tezos_data_encoding_derive", "time"]
 proto-alpha = ["mavryk-smart-rollup-core/proto-alpha", "mavryk-smart-rollup-host/proto-alpha"]

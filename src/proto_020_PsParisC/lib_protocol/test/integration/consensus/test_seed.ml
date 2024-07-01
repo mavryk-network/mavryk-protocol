@@ -349,7 +349,7 @@ let test_unrevealed () =
   (* Assert that we did not received a reward because we didn't
      reveal the nonce. *)
   let* () =
-    Assert.equal_tez
+    Assert.equal_mav
       ~loc:__LOC__
       info_before.full_balance
       info_after.full_balance

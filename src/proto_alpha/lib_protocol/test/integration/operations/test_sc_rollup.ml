@@ -426,7 +426,7 @@ let verify_execute_outbox_message_operations ctxt rollup ~loc ~operations
             (Destination.to_b58check op_sender)
         in
         (* Assert that the amount is 0. *)
-        let* () = Assert.equal_tez ~loc amount Tez.zero in
+        let* () = Assert.equal_mav ~loc amount Tez.zero in
         (* Load the arg-type and entrypoints of the destination script. *)
         let* ( Script_ir_translator.Ex_script (Script {arg_type; entrypoints; _}),
                ctxt ) =
@@ -755,8 +755,8 @@ let check_balances_evolution bal_before {liquid; frozen} ~action =
         let*?@ frozen = Tez.( -? ) bal_before.frozen amount in
         return {liquid; frozen}
   in
-  let* () = Assert.equal_tez ~loc:__LOC__ expected_liquid liquid in
-  let* () = Assert.equal_tez ~loc:__LOC__ expected_frozen frozen in
+  let* () = Assert.equal_mav ~loc:__LOC__ expected_liquid liquid in
+  let* () = Assert.equal_mav ~loc:__LOC__ expected_frozen frozen in
   return_unit
 
 (* Generates a list of cemented dummy commitments. *)

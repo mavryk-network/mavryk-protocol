@@ -18,7 +18,7 @@ smart_rollup_node=./mavkit-smart-rollup-node
 dal_node=./mavkit-dal-node
 
 # Protocol configuration.
-protocol_hash=PtParisBxoLz5gzMmn3d9WBQNoPSZakgnkMC2VNuQ3KXfUtUQeZ
+protocol_hash=PsH6pEknnnM3rwWnLc8mQ2JMLtJoDXfs7bfQW3LebUMsB6LciGx
 protocol_parameters=src/proto_019_PtParisB/parameters/sandbox-parameters.json
 protocol_name=paris
 

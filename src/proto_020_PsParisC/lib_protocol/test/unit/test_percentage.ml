@@ -22,8 +22,8 @@ let assert_equal ~loc n (pct : Percentage.t) =
   let pct_q = Percentage.to_q pct in
   Assert.equal_q ~loc Q.(n // 100) pct_q
 
-let assert_equal_tez ~loc t1 t2 =
-  Assert.equal ~loc Tez_repr.equal "Tez aren't equal" Tez_repr.pp t1 t2
+let assert_equal_mav ~loc t1 t2 =
+  Assert.equal ~loc Tez_repr.equal "Mav aren't equal" Tez_repr.pp t1 t2
 
 let assert_equal_q ~loc q (pct : Percentage.t) =
   let pct_q = Percentage.to_q pct in
@@ -64,41 +64,41 @@ let test_mul_percentage () =
   let open Tez_repr in
   let rounding = `Down in
   let* () =
-    assert_equal_tez
+    assert_equal_mav
       ~loc:__LOC__
       (of_mumav_exn 50L)
       (mul_percentage ~rounding (of_mumav_exn 100L) Percentage.p50)
   in
   let* () =
-    assert_equal_tez
+    assert_equal_mav
       ~loc:__LOC__
       (of_mumav_exn 5L)
       (mul_percentage ~rounding (of_mumav_exn 100L) Percentage.p5)
   in
   (* round down *)
   let* () =
-    assert_equal_tez
+    assert_equal_mav
       ~loc:__LOC__
       (of_mumav_exn 49L)
       (mul_percentage ~rounding (of_mumav_exn 99L) Percentage.p50)
   in
   (* round up *)
   let* () =
-    assert_equal_tez
+    assert_equal_mav
       ~loc:__LOC__
       (of_mumav_exn 50L)
       (mul_percentage ~rounding:`Up (of_mumav_exn 99L) Percentage.p50)
   in
   let tz = 123456L in
   let* () =
-    assert_equal_tez
+    assert_equal_mav
       ~loc:__LOC__
       (of_mumav_exn tz)
       (mul_percentage ~rounding (of_mumav_exn tz) (pct_of_int 200))
   in
   (* no overflow *)
   let* () =
-    assert_equal_tez
+    assert_equal_mav
       ~loc:__LOC__
       (of_mumav_exn 9131138316486228048L)
       (mul_percentage ~rounding Tez_repr.max_mumav (pct_of_int 99))

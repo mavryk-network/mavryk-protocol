@@ -831,7 +831,7 @@ let check_issuance_rpc block : unit tzresult Lwt.t =
     match expected_issuance with
     | ei :: _ ->
         (* We assume only the fixed portion is issued *)
-        Assert.equal_tez
+        Assert.equal_mav
           ~loc:__LOC__
           rewards_per_block
           ei.baking_reward_fixed_portion
@@ -1761,7 +1761,7 @@ let rec loop_action n : ('a -> 'a tzresult Lwt.t) -> ('a, 'a) scenarios =
 (** Check a specific balance field for a specific account is equal to a specific amount *)
 let check_balance_field src_name field amount : (t, t) scenarios =
   let open Lwt_result_syntax in
-  let check = Assert.equal_tez ~loc:__LOC__ amount in
+  let check = Assert.equal_mav ~loc:__LOC__ amount in
   let check' a = check (Partial_tez.to_tez ~round_up:false a) in
   exec_state (fun (block, state) ->
       let src = State.find_account src_name state in

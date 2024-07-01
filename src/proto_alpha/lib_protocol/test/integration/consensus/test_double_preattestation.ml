@@ -141,7 +141,7 @@ end = struct
     (* Slashing hasn't happened yet. *)
     let* bal_good = Context.Delegate.full_balance (B bgood) d1 in
     let* bal_bad = Context.Delegate.full_balance (B bbad) d1 in
-    let* () = Assert.equal_tez ~loc:__LOC__ bal_good bal_bad in
+    let* () = Assert.equal_mav ~loc:__LOC__ bal_good bal_bad in
     (* Slashing happens at the end of the cycle. *)
     let* bgood = bake_until_n_cycle_end ~policy:(By_account baker) 2 bgood in
     let* bbad = bake_until_n_cycle_end ~policy:(By_account baker) 2 bbad in
@@ -174,7 +174,7 @@ end = struct
       else lost_deposit
     in
     let* () =
-      Assert.equal_tez ~loc:__LOC__ expected_attester_loss diff_end_bal
+      Assert.equal_mav ~loc:__LOC__ expected_attester_loss diff_end_bal
     in
     (* Checking what the baker earned (or lost) *)
     let* bal_good = Context.Delegate.full_balance (B bgood) baker in
@@ -191,7 +191,7 @@ end = struct
     let diff_baker = Tez_helpers.(high -! low) in
     (* the baker has either earnt or lost (in case baker = d1) half of burnt
        attestation deposits *)
-    let* () = Assert.equal_tez ~loc:__LOC__ denun_reward diff_baker in
+    let* () = Assert.equal_mav ~loc:__LOC__ denun_reward diff_baker in
     return_unit
 
   let order_preattestations ~correct_order op1 op2 =

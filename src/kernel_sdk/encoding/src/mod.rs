@@ -7,7 +7,7 @@
 //! Defines mavryk-encoding compatible structures.
 //!
 //! # Encoding overview
-//! Encodings are implemented using [mavryk_data_encoding] crate from [tezedge], of which the
+//! Encodings are implemented using [tezos_data_encoding] crate from [tezedge], of which the
 //! most relevant traits are:
 //!
 //! ## [HasEncoding]
@@ -17,8 +17,8 @@
 //! Where encoding's are non-derivable, you may need to use:
 //!
 //! ```rust
-//! use mavryk_data_encoding::has_encoding;
-//! use mavryk_data_encoding::encoding::{Encoding, HasEncoding};
+//! use tezos_data_encoding::has_encoding;
+//! use tezos_data_encoding::encoding::{Encoding, HasEncoding};
 //!
 //! struct Example(String);
 //!
@@ -29,18 +29,18 @@
 //! ## [NomReader]
 //! Defines deserialization for a given type.  Built on [nom], which is a
 //! parser-combinator library for rust.  Useful combinators for dealing with
-//! mavryk-encodings are available in the [mavryk_data_encoding::nom] module.
+//! mavryk-encodings are available in the [tezos_data_encoding::nom] module.
 //!
 //! See [nom] for a useful overview of how it's structured.
 //!
 //! ## [BinWriter]
-//! Defines *serialization* for a given type.  The [mavryk_data_encoding::enc] module defines
+//! Defines *serialization* for a given type.  The [tezos_data_encoding::enc] module defines
 //! useful combinators for mavryk-encoding compatible serialization.
 //!
 //! [tezedge]: <https://github.com/tezedge/tezedge>
-//! [HasEncoding]: mavryk_data_encoding::encoding::HasEncoding
-//! [NomReader]: mavryk_data_encoding::nom::NomReader
-//! [BinWriter]: mavryk_data_encoding::enc::BinWriter
+//! [HasEncoding]: tezos_data_encoding::encoding::HasEncoding
+//! [NomReader]: tezos_data_encoding::nom::NomReader
+//! [BinWriter]: tezos_data_encoding::enc::BinWriter
 
 pub mod contract;
 pub mod entrypoint;

@@ -406,7 +406,7 @@ let compute_future_frozen_rights block account_map =
               Context.Delegate.initial_frozen_deposits (B block) acc.pkh
             in
             let* () =
-              Assert.equal_tez
+              Assert.equal_mav
                 ~loc:__LOC__
                 current_rights_state
                 current_rights_rpc

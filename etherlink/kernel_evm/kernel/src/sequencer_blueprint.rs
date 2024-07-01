@@ -5,7 +5,7 @@
 
 use primitive_types::{H256, U256};
 use rlp::{Decodable, DecoderError, Encodable};
-use mavryk_crypto_rs::hash::Signature;
+use tezos_crypto_rs::hash::Signature;
 use mavryk_ethereum::rlp_helpers::{
     self, append_timestamp, append_u16_le, append_u256_le, decode_field_u16_le,
     decode_field_u256_le, decode_timestamp,
@@ -147,7 +147,7 @@ mod tests {
     use crate::inbox::TransactionContent::Ethereum;
     use primitive_types::{H160, U256};
     use rlp::Encodable;
-    use mavryk_crypto_rs::hash::Signature;
+    use tezos_crypto_rs::hash::Signature;
     use mavryk_ethereum::rlp_helpers::FromRlpBytes;
     use mavryk_ethereum::{
         transaction::TRANSACTION_HASH_SIZE, tx_common::EthereumTransactionCommon,
