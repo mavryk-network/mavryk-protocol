@@ -83,10 +83,10 @@ mod test {
             7, // Pair tag,
             1, // String tag
             0, 0, 0, b'$', // String size
-            b't', b'z', b'4', b'M', b'S', b'f', b'Z', b's', b'n', b'6', b'k', // mv4 (1)
-            b'M', b'D', b'c', b'z', b'S', b'h', b'y', b'8', b'P', b'M', b'e', // mv4 (2)
-            b'B', b'6', b'2', b'8', b'T', b'N', b'u', b'k', b'n', b'9', b'h', // mv4 (3)
-            b'i', b'2', b'K',  // mv3 (4)
+            b'm', b'v', b'4', b'S', b'r', b'u', b'a', b'm', b'F', b'h', b'F', // mv4 (1)
+            b'Y', b'8', b'S', b'N', b'h', b'X', b'4', b'Z', b'T', b'e', b'p', // mv4 (2)
+            b'U', b'3', b'Z', b'P', b'1', b'c', b'e', b'W', b'M', b'z', b'F', // mv4 (3)
+            b'n', b'Z', b'j',  // mv3 (4)
             7,     // Prim_2
             7,     // Pair tag
             b'\n', // Bytes tag

@@ -21,7 +21,7 @@ cargo install mavryk-smart-rollup-installer
 ```
 
 > to get the latest development version, you can instead run
-> `cargo install mavryk-smart-rollup-installer --git https://gitlab.com/tezos/tezos.git`
+> `cargo install mavryk-smart-rollup-installer --git https://gitlab.com/mavryk-network/mavryk-protocol.git`
 
 This will place the `smart-rollup-installer` executable at `$HOME/.cargo/bin` by default.
 

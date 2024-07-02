@@ -7,8 +7,11 @@ name = "mavryk-smart-rollup-host"
 edition = "2021"
 version = "0.2.2"
 license = "MIT"
-authors = ["TriliTech <contact@trili.tech>"]
-repository = "https://gitlab.com/tezos/tezos.git"
+authors = [
+    "TriliTech <contact@trili.tech>",
+    "Mavryk Dynamics <info@mavryk.io>"
+]
+repository = "https://gitlab.com/mavryk-network/mavryk-protocol.git"
 description = "Safe Runtime trait for Mavryk Smart Rollups host functions."
 keywords = ["tezos", "smart", "rollup"]
 categories = ["no-std", "no-std::no-alloc", "api-bindings", "wasm"]

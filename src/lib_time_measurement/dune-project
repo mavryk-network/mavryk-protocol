@@ -6,7 +6,7 @@
 (authors "Tezos devteam")
 (homepage https://www.tezos.com/)
 (bug_reports https://gitlab.com/tezos/tezos/issues)
-(source (uri git+https://gitlab.com/tezos/tezos.git))
+(source (uri git+https://gitlab.com/mavryk-network/mavryk-protocol.git))
 (license MIT)
 
 (generate_opam_files true)

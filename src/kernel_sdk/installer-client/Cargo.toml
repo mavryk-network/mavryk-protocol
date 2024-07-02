@@ -6,10 +6,13 @@
 name = "mavryk-smart-rollup-installer"
 version = "0.2.2"
 edition = "2021"
-authors = ["TriliTech <contact@trili.tech>"]
+authors = [
+    "TriliTech <contact@trili.tech>",
+    "Mavryk Dynamics <info@mavryk.io>"
+]
 include = ["src/", "installer.wasm", "README.md"]
 license = "MIT"
-repository = "https://gitlab.com/tezos/tezos.git"
+repository = "https://gitlab.com/mavryk-network/mavryk-protocol.git"
 description = "Installer client for Mavryk Smart Rollups."
 keywords = ["tezos", "smart", "rollup", "installer"]
 categories = ["development-tools", "command-line-utilities"]

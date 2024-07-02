@@ -8,8 +8,11 @@ name = "mavryk-smart-rollup-storage"
 version = "0.2.2"
 edition = "2021"
 license = "MIT"
-authors = ["TriliTech <contact@trili.tech>"]
-repository = "https://gitlab.com/tezos/tezos.git"
+authors = [
+    "TriliTech <contact@trili.tech>",
+    "Mavryk Dynamics <info@mavryk.io>"
+]
+repository = "https://gitlab.com/mavryk-network/mavryk-protocol.git"
 description = "Higher-level transactional account view over Mavryk Smart Rollup durable storage."
 keywords = ["tezos", "smart", "rollup"]
 categories = ["database", "wasm"]

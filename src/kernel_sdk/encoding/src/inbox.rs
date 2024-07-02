@@ -44,7 +44,7 @@ pub enum InboxMessage<'a, Expr: Michelson> {
     ///
     /// The containing operation will be sent by an implicit account - but will
     /// deserialize to a structure representing *transactions* & *withdrawals* between
-    /// and from **Layer2Tz4* addresses respectively.
+    /// and from **Layer2Mv4* addresses respectively.
     External(&'a [u8]),
 }
 

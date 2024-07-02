@@ -8,8 +8,11 @@ name = "mavryk-smart-rollup-encoding"
 version = "0.2.2"
 edition = "2021"
 license = "MIT"
-authors = ["TriliTech <contact@trili.tech>"]
-repository = "https://gitlab.com/tezos/tezos.git"
+authors = [
+    "TriliTech <contact@trili.tech>",
+    "Mavryk Dynamics <info@mavryk.io>"
+]
+repository = "https://gitlab.com/mavryk-network/mavryk-protocol.git"
 description = "Data Encodings used by Mavryk Smart Rollup kernels."
 keywords = ["tezos", "smart", "rollup"]
 categories = ["no-std", "no-std::no-alloc", "encoding", "wasm"]

@@ -6,7 +6,10 @@
 name = "installer-kernel"
 version = "0.2.2"
 edition = "2021"
-authors = ["TriliTech <contact@trili.tech>"]
+authors = [
+    "TriliTech <contact@trili.tech>",
+    "Mavryk Dynamics <info@mavryk.io>"
+]
 license = "MIT"
 publish = false
 
