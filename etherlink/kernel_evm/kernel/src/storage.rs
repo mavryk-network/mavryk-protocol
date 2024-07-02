@@ -12,7 +12,7 @@ use crate::simulation::SimulationResult;
 use anyhow::Context;
 use evm_execution::account_storage::EthereumAccount;
 use evm_execution::storage::blocks::add_new_block_hash;
-use tezos_crypto_rs::hash::{ContractKt1Hash, HashTrait};
+use mavryk_crypto_rs::hash::{ContractKt1Hash, HashTrait};
 use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
 use mavryk_smart_rollup_encoding::public_key::PublicKey;
@@ -21,13 +21,13 @@ use mavryk_smart_rollup_host::path::*;
 use mavryk_smart_rollup_host::runtime::{Runtime, ValueType};
 
 use crate::error::{Error, StorageError};
-use rlp::{Decodable, Encodable, Rlp};
 use mavryk_ethereum::block::L2Block;
 use mavryk_ethereum::rlp_helpers::FromRlpBytes;
 use mavryk_ethereum::transaction::{
     TransactionHash, TransactionObject, TransactionReceipt,
 };
 use mavryk_ethereum::wei::Wei;
+use rlp::{Decodable, Encodable, Rlp};
 
 use primitive_types::{H160, H256, U256};
 
@@ -125,7 +125,7 @@ const EVM_DELAYED_INBOX_MIN_LEVELS: RefPath =
 /// The size of one 256 bit word. Size in bytes
 pub const WORD_SIZE: usize = 32usize;
 
-// Path to the tz1 administrating the sequencer. If there is nothing
+// Path to the mv1 administrating the sequencer. If there is nothing
 // at this path, the kernel is in proxy mode.
 pub const SEQUENCER: RefPath = RefPath::assert_from(b"/evm/sequencer");
 
@@ -959,9 +959,9 @@ pub fn delete_block_in_progress<Host: Runtime>(host: &mut Host) -> anyhow::Resul
 pub fn sequencer<Host: Runtime>(host: &Host) -> anyhow::Result<Option<PublicKey>> {
     if host.store_has(&SEQUENCER)?.is_some() {
         let bytes = host.store_read_all(&SEQUENCER)?;
-        let Ok(tz1_b58) = String::from_utf8(bytes) else { return Ok(None) };
-        let Ok(tz1) = PublicKey::from_b58check(&tz1_b58) else { return Ok(None)};
-        Ok(Some(tz1))
+        let Ok(mv1_b58) = String::from_utf8(bytes) else { return Ok(None) };
+        let Ok(mv1) = PublicKey::from_b58check(&mv1_b58) else { return Ok(None)};
+        Ok(Some(mv1))
     } else {
         Ok(None)
     }

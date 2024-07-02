@@ -13,8 +13,7 @@ use evm_execution::account_storage::{
 use evm_execution::handler::{ExecutionOutcome, ExtendedExitReason};
 use evm_execution::precompiles::PrecompileBTreeMap;
 use evm_execution::run_transaction;
-use primitive_types::{H160, U256};
-use tezos_crypto_rs::hash::ContractKt1Hash;
+use mavryk_crypto_rs::hash::ContractKt1Hash;
 use mavryk_ethereum::block::BlockConstants;
 use mavryk_ethereum::transaction::{TransactionHash, TransactionType};
 use mavryk_ethereum::tx_common::EthereumTransactionCommon;
@@ -32,6 +31,7 @@ use mavryk_smart_rollup_encoding::outbox::OutboxMessage;
 use mavryk_smart_rollup_encoding::outbox::OutboxMessageTransaction;
 use mavryk_smart_rollup_host::path::{Path, RefPath};
 use mavryk_smart_rollup_host::runtime::Runtime;
+use primitive_types::{H160, U256};
 
 use crate::error::Error;
 use crate::fees::{tx_execution_gas_limit, FeeUpdates};
@@ -683,7 +683,6 @@ mod tests {
 
     use crate::{apply::Validity, fees::gas_for_fees};
     use evm_execution::account_storage::{account_path, EthereumAccountStorage};
-    use primitive_types::{H160, U256};
     use mavryk_ethereum::{
         block::{BlockConstants, BlockFees},
         transaction::TransactionType,
@@ -691,6 +690,7 @@ mod tests {
     };
     use mavryk_smart_rollup_encoding::timestamp::Timestamp;
     use mavryk_smart_rollup_mock::MockHost;
+    use primitive_types::{H160, U256};
 
     use super::is_valid_ethereum_transaction_common;
 

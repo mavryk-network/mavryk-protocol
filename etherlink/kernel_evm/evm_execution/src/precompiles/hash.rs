@@ -8,10 +8,10 @@ use crate::precompiles::{tick_model, PrecompileOutcome};
 use crate::{handler::EvmHandler, EthereumError};
 use evm::{Context, ExitReason, ExitSucceed, Transfer};
 use host::runtime::Runtime;
-use ripemd::Ripemd160;
-use sha2::{Digest, Sha256};
 use mavryk_evm_logging::log;
 use mavryk_evm_logging::Level::Debug;
+use ripemd::Ripemd160;
+use sha2::{Digest, Sha256};
 
 // Implementation of 0x03 precompiled (sha256)
 pub fn sha256_precompile<Host: Runtime>(

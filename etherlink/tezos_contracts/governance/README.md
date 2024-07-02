@@ -48,7 +48,7 @@ mavkit-client transfer 0 from %YOUR_ADDRESS% to %CONTRACT_ADDRESS% --entrypoint 
 ##### Example
 
 ```bash
-mavkit-client transfer 0 from tz1RfbwbXjE8UaRLLjZjUyxbj4KCxibTp9xN to KT1HfJb718fGszcgYguA4bfTjAqe1BEmFHkv --entrypoint "new_proposal" --arg "0x009279df4982e47cf101e2525b605fa06cd3ccc0f67d1c792a6a3ea56af9606abc"
+mavkit-client transfer 0 from mv1P1rnCm28CwG2Yz44Mv8eFJLW4eJDiRLsn to KT1HfJb718fGszcgYguA4bfTjAqe1BEmFHkv --entrypoint "new_proposal" --arg "0x009279df4982e47cf101e2525b605fa06cd3ccc0f67d1c792a6a3ea56af9606abc"
 ```
 
 #### upvote_proposal
@@ -64,7 +64,7 @@ mavkit-client transfer 0 from %YOUR_ADDRESS% to %CONTRACT_ADDRESS% --entrypoint 
 ##### Example
 
 ```bash
-mavkit-client transfer 0 from tz1RfbwbXjE8UaRLLjZjUyxbj4KCxibTp9xN to KT1HfJb718fGszcgYguA4bfTjAqe1BEmFHkv --entrypoint "upvote_proposal" --arg "0x009279df4982e47cf101e2525b605fa06cd3ccc0f67d1c792a6a3ea56af9606abc"
+mavkit-client transfer 0 from mv1P1rnCm28CwG2Yz44Mv8eFJLW4eJDiRLsn to KT1HfJb718fGszcgYguA4bfTjAqe1BEmFHkv --entrypoint "upvote_proposal" --arg "0x009279df4982e47cf101e2525b605fa06cd3ccc0f67d1c792a6a3ea56af9606abc"
 ```
 
 #### vote
@@ -82,7 +82,7 @@ where `%YOUR_VOTE%` is one of the values: `yea`, `nay` or `pass`
 ##### Example
 
 ```bash
-mavkit-client transfer 0 from tz1RfbwbXjE8UaRLLjZjUyxbj4KCxibTp9xN to KT1HfJb718fGszcgYguA4bfTjAqe1BEmFHkv --entrypoint "vote" --arg "\"yea\""
+mavkit-client transfer 0 from mv1P1rnCm28CwG2Yz44Mv8eFJLW4eJDiRLsn to KT1HfJb718fGszcgYguA4bfTjAqe1BEmFHkv --entrypoint "vote" --arg "\"yea\""
 ```
 
 
@@ -99,7 +99,7 @@ mavkit-client transfer 0 from %YOUR_ADDRESS% to %CONTRACT_ADDRESS% --entrypoint 
 ##### Example
 
 ```bash
-mavkit-client transfer 0 from tz1RfbwbXjE8UaRLLjZjUyxbj4KCxibTp9xN to KT1HfJb718fGszcgYguA4bfTjAqe1BEmFHkv --entrypoint "trigger_kernel_upgrade" --arg "\"sr1EStimadnRRA3vnjpWV1RwNAsDbM3JaDt6\""
+mavkit-client transfer 0 from mv1P1rnCm28CwG2Yz44Mv8eFJLW4eJDiRLsn to KT1HfJb718fGszcgYguA4bfTjAqe1BEmFHkv --entrypoint "trigger_kernel_upgrade" --arg "\"sr1EStimadnRRA3vnjpWV1RwNAsDbM3JaDt6\""
 ```
 
 
@@ -122,7 +122,7 @@ mavkit-client transfer 0 from %YOUR_ADDRESS% to %CONTRACT_ADDRESS% --entrypoint 
 ##### Example
 
 ```bash
-mavkit-client transfer 0 from tz1RLPEeMxbJYQBFbXYw8WHdXjeUjnG5ZXNq to KT1FRzozuzFMWLimpFeSdADHTMxzU8KtgCr9 --entrypoint "new_proposal" --arg "Pair \"edpkurcgafZ2URyB6zsm5d1YqmLt9r1Lk89J81N6KpyMaUzXWEsv1X\" 0xb7a97043983f24991398e5a82f63f4c58a417185"
+mavkit-client transfer 0 from mv18P5m9ypuakSfjv5NTcz5Rv5toJX5NQ83v to KT1FRzozuzFMWLimpFeSdADHTMxzU8KtgCr9 --entrypoint "new_proposal" --arg "Pair \"edpkurcgafZ2URyB6zsm5d1YqmLt9r1Lk89J81N6KpyMaUzXWEsv1X\" 0xb7a97043983f24991398e5a82f63f4c58a417185"
 ```
 
 #### upvote_proposal
@@ -138,7 +138,7 @@ mavkit-client transfer 0 from %YOUR_ADDRESS% to %CONTRACT_ADDRESS% --entrypoint 
 ##### Example
 
 ```bash
-mavkit-client transfer 0 from tz1RLPEeMxbJYQBFbXYw8WHdXjeUjnG5ZXNq to KT1FRzozuzFMWLimpFeSdADHTMxzU8KtgCr9 --entrypoint "upvote_proposal" --arg "Pair \"edpkurcgafZ2URyB6zsm5d1YqmLt9r1Lk89J81N6KpyMaUzXWEsv1X\" 0xb7a97043983f24991398e5a82f63f4c58a417185"
+mavkit-client transfer 0 from mv18P5m9ypuakSfjv5NTcz5Rv5toJX5NQ83v to KT1FRzozuzFMWLimpFeSdADHTMxzU8KtgCr9 --entrypoint "upvote_proposal" --arg "Pair \"edpkurcgafZ2URyB6zsm5d1YqmLt9r1Lk89J81N6KpyMaUzXWEsv1X\" 0xb7a97043983f24991398e5a82f63f4c58a417185"
 ```
 
 #### vote
@@ -156,7 +156,7 @@ where `%YOUR_VOTE%` is one of the values: `yea`, `nay` or `pass`
 ##### Example
 
 ```bash
-mavkit-client transfer 0 from tz1RLPEeMxbJYQBFbXYw8WHdXjeUjnG5ZXNq to KT1FRzozuzFMWLimpFeSdADHTMxzU8KtgCr9 --entrypoint "vote" --arg "\"yea\""
+mavkit-client transfer 0 from mv18P5m9ypuakSfjv5NTcz5Rv5toJX5NQ83v to KT1FRzozuzFMWLimpFeSdADHTMxzU8KtgCr9 --entrypoint "vote" --arg "\"yea\""
 ```
 
 
@@ -173,7 +173,7 @@ mavkit-client transfer 0 from %YOUR_ADDRESS% to %CONTRACT_ADDRESS% --entrypoint 
 ##### Example
 
 ```bash
-mavkit-client transfer 0 from tz1RfbwbXjE8UaRLLjZjUyxbj4KCxibTp9xN to KT1Bda2EHR3pwjPgQc6mBHwtfCP8Cuf5ud5j --entrypoint "trigger_committee_upgrade" --arg "\"sr1EStimadnRRA3vnjpWV1RwNAsDbM3JaDt6\""
+mavkit-client transfer 0 from mv1P1rnCm28CwG2Yz44Mv8eFJLW4eJDiRLsn to KT1Bda2EHR3pwjPgQc6mBHwtfCP8Cuf5ud5j --entrypoint "trigger_committee_upgrade" --arg "\"sr1EStimadnRRA3vnjpWV1RwNAsDbM3JaDt6\""
 ```
 
 ## The get_voting_state on-chain view and voting_finished events

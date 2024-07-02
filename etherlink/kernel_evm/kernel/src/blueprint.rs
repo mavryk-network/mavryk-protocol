@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 
 use crate::inbox::Transaction;
-use rlp::{Decodable, DecoderError, Encodable};
 use mavryk_ethereum::rlp_helpers::{self, append_timestamp, decode_timestamp};
+use rlp::{Decodable, DecoderError, Encodable};
 
 use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 
@@ -52,11 +52,11 @@ mod tests {
 
     use super::*;
     use crate::inbox::TransactionContent::Ethereum;
-    use primitive_types::{H160, U256};
-    use rlp::Rlp;
     use mavryk_ethereum::{
         transaction::TRANSACTION_HASH_SIZE, tx_common::EthereumTransactionCommon,
     };
+    use primitive_types::{H160, U256};
+    use rlp::Rlp;
 
     fn address_from_str(s: &str) -> Option<H160> {
         let data = &hex::decode(s).unwrap();

@@ -8,14 +8,14 @@
 //!
 //! [entrypoint_repr.ml]: <https://gitlab.com/tezos/tezos/-/blob/80b2cccb9c663dde2d86a6c94806fc149b7d1ef3/src/proto_alpha/lib_protocol/entrypoint_repr.ml>
 
+use mavryk_data_encoding::enc::{self, BinWriter};
+use mavryk_data_encoding::encoding::{Encoding, HasEncoding};
+use mavryk_data_encoding::has_encoding;
+use mavryk_data_encoding::nom::{bounded_dynamic, NomReader};
 use nom::branch;
 use nom::bytes::complete::{take_while, take_while1};
 use nom::combinator::{self, map, map_res, recognize};
 use nom::sequence::pair;
-use tezos_data_encoding::enc::{self, BinWriter};
-use tezos_data_encoding::encoding::{Encoding, HasEncoding};
-use tezos_data_encoding::has_encoding;
-use tezos_data_encoding::nom::{bounded_dynamic, NomReader};
 
 /// The entrypoint of a smart contract.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -80,9 +80,9 @@ impl TryFrom<String> for Entrypoint {
 has_encoding!(Entrypoint, ENTRYPOINT_SIMPLE_ENCODING, { Encoding::Custom });
 
 impl NomReader for Entrypoint {
-    fn nom_read(input: &[u8]) -> tezos_data_encoding::nom::NomResult<Self> {
+    fn nom_read(input: &[u8]) -> mavryk_data_encoding::nom::NomResult<Self> {
         map(
-            // Can't use tezos_data_encoding 'bounded_string' here, as we have an
+            // Can't use mavryk_data_encoding 'bounded_string' here, as we have an
             // additional constraint on the string, that need to match entrypoint encoding
             map_res(
                 bounded_dynamic(
@@ -114,7 +114,7 @@ impl NomReader for Entrypoint {
 }
 
 impl BinWriter for Entrypoint {
-    fn bin_write(&self, output: &mut Vec<u8>) -> tezos_data_encoding::enc::BinResult {
+    fn bin_write(&self, output: &mut Vec<u8>) -> mavryk_data_encoding::enc::BinResult {
         enc::bounded_string(Self::MAX_LEN)(&self.name, output)
     }
 }

@@ -40,7 +40,7 @@ version = "0.1.4"
 path = "../installer-config"
 version = "0.2.2"
 
-[dependencies.tezos_data_encoding]
+[dependencies.mavryk_data_encoding]
 version = "=0.5.2"
 
 [dependencies.mavryk-smart-rollup-host]

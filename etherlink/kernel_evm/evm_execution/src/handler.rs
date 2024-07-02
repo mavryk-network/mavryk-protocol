@@ -30,14 +30,14 @@ use evm::{
     ExitSucceed, Handler, Opcode, Stack, Transfer,
 };
 use host::runtime::Runtime;
-use primitive_types::{H160, H256, U256};
-use sha3::{Digest, Keccak256};
-use std::cmp::min;
-use std::fmt::Debug;
 use mavryk_ethereum::block::BlockConstants;
 use mavryk_ethereum::withdrawal::Withdrawal;
 use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup_storage::StorageError;
+use primitive_types::{H160, H256, U256};
+use sha3::{Digest, Keccak256};
+use std::cmp::min;
+use std::fmt::Debug;
 
 /// Extends ExitReason with our own errors. It avoids using
 /// ExitError::Other(<string>) and matching on strings.
@@ -2283,12 +2283,12 @@ mod test {
     use crate::account_storage::init_account_storage;
     use crate::precompiles;
     use evm::Config;
+    use mavryk_ethereum::block::BlockFees;
+    use mavryk_smart_rollup_mock::MockHost;
     use primitive_types::{H160, H256};
     use std::cmp::Ordering;
     use std::str::FromStr;
     use std::vec;
-    use mavryk_ethereum::block::BlockFees;
-    use mavryk_smart_rollup_mock::MockHost;
 
     const DUMMY_ALLOCATED_TICKS: u64 = 1_000_000;
 

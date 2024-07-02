@@ -347,13 +347,13 @@ pub struct ReadInputMessageInfo {
 mod riscv64_hermit {
     extern crate std;
     use crate::smart_rollup_core::ReadInputMessageInfo;
-    use std::{
-        io::{self, Write},
-        slice::from_raw_parts,
-    };
     use mavryk_smart_rollup_constants::riscv::{
         SBI_FIRMWARE_TEZOS, SBI_TEZOS_INBOX_NEXT, SBI_TEZOS_META_ADDRESS,
         SBI_TEZOS_META_ORIGINATION_LEVEL,
+    };
+    use std::{
+        io::{self, Write},
+        slice::from_raw_parts,
     };
 
     /// Information about the next inbox level

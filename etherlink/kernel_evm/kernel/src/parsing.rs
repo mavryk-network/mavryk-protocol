@@ -18,10 +18,7 @@ use crate::{
     upgrade::KernelUpgrade,
     upgrade::SequencerUpgrade,
 };
-use primitive_types::{H160, U256};
-use rlp::Encodable;
-use sha3::{Digest, Keccak256};
-use tezos_crypto_rs::{hash::ContractKt1Hash, PublicKeySignatureVerifier};
+use mavryk_crypto_rs::{hash::ContractKt1Hash, PublicKeySignatureVerifier};
 use mavryk_ethereum::{
     rlp_helpers::FromRlpBytes,
     transaction::{TransactionHash, TRANSACTION_HASH_SIZE},
@@ -39,6 +36,9 @@ use mavryk_smart_rollup_encoding::{
 };
 use mavryk_smart_rollup_host::input::Message;
 use mavryk_smart_rollup_host::runtime::Runtime;
+use primitive_types::{H160, U256};
+use rlp::Encodable;
+use sha3::{Digest, Keccak256};
 
 /// On an option, either the value, or if `None`, interrupt and return the
 /// default value of the return type instead.
@@ -300,7 +300,7 @@ impl SequencerInput {
         }
         let bytes = unsigned_seq_blueprint.rlp_bytes().to_vec();
         // The sequencer signs the hash of the blueprint.
-        let msg = tezos_crypto_rs::blake2b::digest_256(&bytes).unwrap();
+        let msg = mavryk_crypto_rs::blake2b::digest_256(&bytes).unwrap();
 
         let correctly_signed = context
             .sequencer

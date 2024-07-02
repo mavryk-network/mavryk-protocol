@@ -5,7 +5,7 @@
 
 //! Rollup Metadata: `sr1..` address & origination level.
 #[cfg(feature = "crypto")]
-use tezos_crypto_rs::hash::SmartRollupHash;
+use mavryk_crypto_rs::hash::SmartRollupHash;
 
 /// Size of raw rollup address - [`SmartRollupHash`].
 pub const RAW_ROLLUP_ADDRESS_SIZE: usize = 20;

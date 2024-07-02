@@ -13,17 +13,17 @@ use self::verifiable::TransactionError;
 
 use super::Signer;
 use crypto::hash::TryFromPKError;
-use crypto::hash::{ContractKt1Hash, ContractTz1Hash};
+use crypto::hash::{ContractKt1Hash, ContractMv1Hash};
 use crypto::CryptoError;
-use nom::combinator::map;
-use nom::multi::many0;
-use tezos_crypto_rs::blake2b::Blake2bError;
-use tezos_data_encoding::enc::{BinError, BinWriter};
-use tezos_data_encoding::encoding::Encoding;
-use tezos_data_encoding::encoding::HasEncoding;
-use tezos_data_encoding::nom::{dynamic, NomReader};
+use mavryk_crypto_rs::blake2b::Blake2bError;
+use mavryk_data_encoding::enc::{BinError, BinWriter};
+use mavryk_data_encoding::encoding::Encoding;
+use mavryk_data_encoding::encoding::HasEncoding;
+use mavryk_data_encoding::nom::{dynamic, NomReader};
 use mavryk_smart_rollup_encoding::entrypoint::Entrypoint;
 use mavryk_smart_rollup_encoding::michelson::ticket::{StringTicket, TicketHash};
+use nom::combinator::map;
+use nom::multi::many0;
 use thiserror::Error;
 use verifiable::VerifiableOperation;
 
@@ -55,7 +55,7 @@ pub struct OperationWithdraw {
 /// ticket that exists within the account.
 #[derive(Debug, PartialEq, Eq, HasEncoding, NomReader, BinWriter)]
 pub struct OperationTransfer {
-    destination: ContractTz1Hash,
+    destination: ContractMv1Hash,
     ticket: TicketHash,
     amount: TicketAmount,
 }
@@ -68,7 +68,7 @@ pub struct OperationTransfer {
 /// ticket that exists within the account.
 #[derive(Debug, PartialEq, Eq, HasEncoding, NomReader, BinWriter)]
 pub struct OperationTransferCompressed {
-    destination: ContractTz1Hash,
+    destination: ContractMv1Hash,
     ticket: TicketIndex,
     amount: TicketAmount,
 }
@@ -92,13 +92,13 @@ impl HasEncoding for TicketAmount {
 }
 
 impl NomReader for TicketAmount {
-    fn nom_read(input: &[u8]) -> tezos_data_encoding::nom::NomResult<Self> {
+    fn nom_read(input: &[u8]) -> mavryk_data_encoding::nom::NomResult<Self> {
         nom::combinator::map(nom::number::complete::le_u64, |amount| Self { amount })(input)
     }
 }
 
 impl BinWriter for TicketAmount {
-    fn bin_write(&self, output: &mut Vec<u8>) -> tezos_data_encoding::enc::BinResult {
+    fn bin_write(&self, output: &mut Vec<u8>) -> mavryk_data_encoding::enc::BinResult {
         output.extend_from_slice(&self.amount.to_le_bytes());
         Ok(())
     }
@@ -111,13 +111,13 @@ impl HasEncoding for TicketIndex {
 }
 
 impl NomReader for TicketIndex {
-    fn nom_read(input: &[u8]) -> tezos_data_encoding::nom::NomResult<Self> {
+    fn nom_read(input: &[u8]) -> mavryk_data_encoding::nom::NomResult<Self> {
         nom::combinator::map(nom::number::complete::le_u64, |index| Self { index })(input)
     }
 }
 
 impl BinWriter for TicketIndex {
-    fn bin_write(&self, output: &mut Vec<u8>) -> tezos_data_encoding::enc::BinResult {
+    fn bin_write(&self, output: &mut Vec<u8>) -> mavryk_data_encoding::enc::BinResult {
         output.extend_from_slice(&self.index.to_le_bytes());
         Ok(())
     }
@@ -150,7 +150,7 @@ impl OperationContent {
 
     /// Create a new transfer operation.
     pub fn transfer(
-        destination: ContractTz1Hash,
+        destination: ContractMv1Hash,
         ticket: TicketHash,
         amount: u64,
     ) -> Result<OperationContent, TransactionError> {
@@ -167,7 +167,7 @@ impl OperationContent {
 
     /// Create a new transfer operation.
     pub fn compressed_transfer(
-        destination: ContractTz1Hash,
+        destination: ContractMv1Hash,
         ticket: u64,
         amount: u64,
     ) -> Result<OperationContent, TransactionError> {
@@ -223,7 +223,7 @@ pub struct ParsedBatch<'a> {
 
 impl<'a> ParsedBatch<'a> {
     /// Parse a batch, where each transaction is *verifiable*.
-    pub fn parse(input: &'a [u8]) -> tezos_data_encoding::nom::NomResult<Self> {
+    pub fn parse(input: &'a [u8]) -> mavryk_data_encoding::nom::NomResult<Self> {
         map(dynamic(many0(VerifiableOperation::parse)), |operations| {
             ParsedBatch { operations }
         })(input)
@@ -232,9 +232,9 @@ impl<'a> ParsedBatch<'a> {
 
 #[cfg(test)]
 mod test {
+    use mavryk_data_encoding::enc::BinWriter;
+    use mavryk_data_encoding::nom::NomReader;
     use proptest::prelude::*;
-    use tezos_data_encoding::enc::BinWriter;
-    use tezos_data_encoding::nom::NomReader;
 
     use super::OperationContent;
 

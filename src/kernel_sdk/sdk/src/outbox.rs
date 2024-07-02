@@ -74,7 +74,7 @@
 #[doc(inline)]
 pub use mavryk_smart_rollup_encoding::outbox::*;
 
-use tezos_data_encoding::enc::BinWriter;
+use mavryk_data_encoding::enc::BinWriter;
 use mavryk_smart_rollup_core::MAX_OUTPUT_SIZE;
 use mavryk_smart_rollup_encoding::michelson::Michelson;
 use mavryk_smart_rollup_host::path::{concat, Path, PathError};
@@ -284,7 +284,7 @@ mod test {
     use crate::michelson::MichelsonBytes;
     use crate::testing::prelude::*;
     use crate::types::{Contract, Entrypoint};
-    use tezos_data_encoding::nom::NomReader;
+    use mavryk_data_encoding::nom::NomReader;
     use mavryk_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
 
     #[test]

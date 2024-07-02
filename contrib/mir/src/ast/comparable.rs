@@ -78,7 +78,7 @@ impl Ord for TypedValue<'_> {
 
 #[cfg(test)]
 mod tests {
-    use tezos_crypto_rs::hash::HashTrait;
+    use mavryk_crypto_rs::hash::HashTrait;
 
     use crate::ast::ByteReprTrait;
 
@@ -154,11 +154,11 @@ mod tests {
             "tz1SNL5w4RFRbCWRMB4yDWvoRQrPQxZmNzeQ",
             "tz1V8fDHpHzN8RrZqiYCHaJM9EocsYZch5Cy",
             "tz1WPGZjP9eHGqD9DkiRJ1xGRU1wEMY19AAF",
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%bar",
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defauls",
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j",
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defaulu",
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%foo",
+            "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%bar",
+            "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%defauls",
+            "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe",
+            "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%defaulu",
+            "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%foo",
             "tz1hHGTh6Yk4k7d2PiTcBUeMvw6fJCFikedv",
             "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%bar",
             "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH",
@@ -197,7 +197,7 @@ mod tests {
         ]
         .map(|x| {
             TypedValue::ChainId(
-                tezos_crypto_rs::hash::ChainId::try_from_bytes(&hex::decode(x).unwrap()).unwrap(),
+                mavryk_crypto_rs::hash::ChainId::try_from_bytes(&hex::decode(x).unwrap()).unwrap(),
             )
         });
 
@@ -230,11 +230,11 @@ addrs=(
   "tz1SNL5w4RFRbCWRMB4yDWvoRQrPQxZmNzeQ"
   "tz1V8fDHpHzN8RrZqiYCHaJM9EocsYZch5Cy"
   "tz1WPGZjP9eHGqD9DkiRJ1xGRU1wEMY19AAF"
-  "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%bar"
-  "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defauls"
-  "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j"
-  "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defaulu"
-  "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%foo"
+  "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%bar"
+  "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%defauls"
+  "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe"
+  "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%defaulu"
+  "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%foo"
   "tz1hHGTh6Yk4k7d2PiTcBUeMvw6fJCFikedv"
   "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%bar"
   "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH"

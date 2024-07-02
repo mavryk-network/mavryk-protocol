@@ -138,9 +138,9 @@ pub mod blocks {
     pub mod tests {
         use super::test_utils::blocks_iter;
         use super::*;
+        use mavryk_smart_rollup_mock::MockHost;
         use primitive_types::U256;
         use sha3::{Digest, Keccak256};
-        use mavryk_smart_rollup_mock::MockHost;
 
         #[test]
         fn blocks_cleaned_up() {

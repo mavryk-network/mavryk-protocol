@@ -7,7 +7,7 @@
 
 //! Representation for typed Michelson `key` values.
 
-use tezos_crypto_rs::{
+use mavryk_crypto_rs::{
     hash::{Hash, HashTrait, PublicKeyBls, PublicKeyEd25519, PublicKeyP256, PublicKeySecp256k1},
     PublicKeyWithHash,
 };

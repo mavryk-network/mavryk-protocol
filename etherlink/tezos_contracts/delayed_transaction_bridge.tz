@@ -17,7 +17,7 @@
               RIGHT (pair bytes (ticket (pair nat (option bytes)))) ;
               LEFT bytes ;
               TRANSFER_TOKENS ;
-              PUSH address "tz1burnburnburnburnburnburnburjAYjjX" ;
+              PUSH address "mv2burnburnburnburnburnburnbur7hzNeg" ;
               CONTRACT unit ;
               IF_NONE { PUSH string "Invalid burn address" ; FAILWITH } {} ;
               PUSH mumav 1000000 ;

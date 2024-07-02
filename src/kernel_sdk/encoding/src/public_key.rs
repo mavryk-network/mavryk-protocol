@@ -4,14 +4,14 @@
 
 //! Public Key of Layer1.
 
-use std::fmt::Display;
-use tezos_crypto_rs::hash::{
+use mavryk_crypto_rs::hash::{
     PublicKeyEd25519, PublicKeyP256, PublicKeySecp256k1, Signature,
 };
-use tezos_crypto_rs::{CryptoError, PublicKeySignatureVerifier};
-use tezos_data_encoding::enc::BinWriter;
-use tezos_data_encoding::encoding::HasEncoding;
-use tezos_data_encoding::nom::NomReader;
+use mavryk_crypto_rs::{CryptoError, PublicKeySignatureVerifier};
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_data_encoding::encoding::HasEncoding;
+use mavryk_data_encoding::nom::NomReader;
+use std::fmt::Display;
 
 use crypto::base58::{FromBase58Check, FromBase58CheckError};
 use crypto::hash::{Hash, HashTrait, HashType};

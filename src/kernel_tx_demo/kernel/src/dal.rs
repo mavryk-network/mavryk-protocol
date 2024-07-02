@@ -9,7 +9,7 @@
 #![cfg(feature = "dal")]
 
 extern crate alloc;
-extern crate tezos_crypto_rs as crypto;
+extern crate mavryk_crypto_rs as crypto;
 
 use mavryk_smart_rollup_host::path::OwnedPath;
 

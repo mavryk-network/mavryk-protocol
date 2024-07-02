@@ -84,7 +84,9 @@ impl IndexableStorage {
             Err(
                 RuntimeError::PathNotFound
                 | RuntimeError::HostErr(mavryk_smart_rollup_host::Error::StoreNotAValue)
-                | RuntimeError::HostErr(mavryk_smart_rollup_host::Error::StoreInvalidAccess),
+                | RuntimeError::HostErr(
+                    mavryk_smart_rollup_host::Error::StoreInvalidAccess,
+                ),
                 // An InvalidAccess implies that the path does not exist at all
                 // in the storage: store_read fails because reading is out of
                 // bounds since the value has never been allocated before

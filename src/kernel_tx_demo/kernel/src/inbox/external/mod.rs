@@ -13,18 +13,18 @@
 //! - replaces uses of `Ticket_hash` + `quantity` with `StringTicket`.  In future, either
 //!   ticket_hash will be reintroduced, or indexes (with the compact encoding) will be encouraged.
 
-use crypto::hash::ContractTz1Hash;
+use crypto::hash::ContractMv1Hash;
 use crypto::hash::PublicKeyEd25519;
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_data_encoding::encoding::HasEncoding;
+use mavryk_data_encoding::nom::NomReader;
+use mavryk_data_encoding::nom::NomResult;
+use mavryk_smart_rollup_encoding::dac::certificate::Certificate;
+use mavryk_smart_rollup_encoding::dac::certificate::V0Certificate;
 use nom::branch::alt;
 use nom::bytes::complete::tag;
 use nom::combinator::map;
 use nom::sequence::preceded;
-use tezos_data_encoding::enc::BinWriter;
-use tezos_data_encoding::encoding::HasEncoding;
-use tezos_data_encoding::nom::NomReader;
-use tezos_data_encoding::nom::NomResult;
-use mavryk_smart_rollup_encoding::dac::certificate::Certificate;
-use mavryk_smart_rollup_encoding::dac::certificate::V0Certificate;
 
 pub mod dac_iterator;
 pub mod sendable;
@@ -64,19 +64,19 @@ impl<'a> ParsedExternalInboxMessage<'a> {
 
 /// Represents the `signer` of a layer-2 operation.
 ///
-/// This is either a [`PublicKeyEd25519`] or a [`ContractTz1Hash`] address, whose
+/// This is either a [`PublicKeyEd25519`] or a [`ContractMv1Hash`] address, whose
 /// associated account contains a corresponding Ed25519 public key.
 #[derive(Debug, Clone, PartialEq, Eq, HasEncoding, NomReader, BinWriter)]
 pub enum Signer {
     /// A signer identified by a ed25519 public key.
     PublicKey(PublicKeyEd25519),
     /// A signer identified by a mv1 address.
-    Tz1(ContractTz1Hash),
+    Tz1(ContractMv1Hash),
 }
 
 impl Signer {
     /// Return the mv1 account-address of the signer.
-    pub fn address(&self) -> Result<ContractTz1Hash, crypto::hash::TryFromPKError> {
+    pub fn address(&self) -> Result<ContractMv1Hash, crypto::hash::TryFromPKError> {
         use crypto::PublicKeyWithHash;
 
         match self {
@@ -90,12 +90,12 @@ impl Signer {
 mod test {
     use super::*;
     use crypto::hash::BlsSignature;
-    use proptest::prelude::*;
-    use tezos_data_encoding::enc::BinWriter;
-    use tezos_data_encoding::nom::NomReader;
+    use mavryk_data_encoding::enc::BinWriter;
+    use mavryk_data_encoding::nom::NomReader;
     use mavryk_smart_rollup_encoding::dac::make_preimage_hash;
     use mavryk_smart_rollup_encoding::dac::PreimageHash;
     use mavryk_smart_rollup_encoding::testing::make_witnesses;
+    use proptest::prelude::*;
 
     proptest! {
         #[test]

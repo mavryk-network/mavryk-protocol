@@ -9,13 +9,13 @@ use crate::{
     storage,
 };
 use anyhow::Result;
-use rlp::{Decodable, DecoderError, Encodable};
 use mavryk_ethereum::{
     rlp_helpers, transaction::TRANSACTION_HASH_SIZE, tx_common::EthereumTransactionCommon,
 };
 use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 use mavryk_smart_rollup_host::{path::RefPath, runtime::Runtime};
+use rlp::{Decodable, DecoderError, Encodable};
 
 pub struct DelayedInbox(LinkedList<Hash, DelayedInboxItem>);
 
@@ -343,8 +343,8 @@ mod tests {
     use super::Hash;
     use crate::current_timestamp;
     use crate::inbox::Transaction;
-    use primitive_types::{H160, U256};
     use mavryk_smart_rollup_encoding::timestamp::Timestamp;
+    use primitive_types::{H160, U256};
 
     use crate::inbox::TransactionContent::{Ethereum, EthereumDelayed};
     use mavryk_ethereum::{

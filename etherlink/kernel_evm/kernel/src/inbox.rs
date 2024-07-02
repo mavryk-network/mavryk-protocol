@@ -25,10 +25,7 @@ use crate::tick_model::maximum_ticks_for_sequencer_chunk;
 use crate::upgrade::*;
 use crate::Error;
 use crate::{simulation, upgrade};
-use primitive_types::{H160, U256};
-use rlp::{Decodable, DecoderError, Encodable};
-use sha3::{Digest, Keccak256};
-use tezos_crypto_rs::hash::ContractKt1Hash;
+use mavryk_crypto_rs::hash::ContractKt1Hash;
 use mavryk_ethereum::rlp_helpers::{decode_field, decode_tx_hash, next};
 use mavryk_ethereum::transaction::{
     TransactionHash, TransactionType, TRANSACTION_HASH_SIZE,
@@ -37,6 +34,9 @@ use mavryk_ethereum::tx_common::EthereumTransactionCommon;
 use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup_encoding::public_key::PublicKey;
 use mavryk_smart_rollup_host::runtime::Runtime;
+use primitive_types::{H160, U256};
+use rlp::{Decodable, DecoderError, Encodable};
+use sha3::{Digest, Keccak256};
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Deposit {
@@ -613,8 +613,8 @@ mod tests {
     use crate::inbox::TransactionContent::Ethereum;
     use crate::parsing::RollupType;
     use crate::storage::*;
-    use tezos_crypto_rs::hash::SmartRollupHash;
-    use tezos_data_encoding::types::Bytes;
+    use mavryk_crypto_rs::hash::SmartRollupHash;
+    use mavryk_data_encoding::types::Bytes;
     use mavryk_ethereum::transaction::TRANSACTION_HASH_SIZE;
     use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
     use mavryk_smart_rollup_encoding::contract::Contract;
@@ -744,10 +744,13 @@ mod tests {
 
         host.add_external(Bytes::from(input_to_bytes(SMART_ROLLUP_ADDRESS, input)));
 
-        let inbox_content =
-            read_proxy_inbox(&mut host, SMART_ROLLUP_ADDRESS, &MavrykContracts::default())
-                .unwrap()
-                .unwrap();
+        let inbox_content = read_proxy_inbox(
+            &mut host,
+            SMART_ROLLUP_ADDRESS,
+            &MavrykContracts::default(),
+        )
+        .unwrap()
+        .unwrap();
         let expected_transactions = vec![Transaction {
             tx_hash,
             content: Ethereum(tx),
@@ -769,10 +772,13 @@ mod tests {
             host.add_external(Bytes::from(input_to_bytes(SMART_ROLLUP_ADDRESS, input)))
         }
 
-        let inbox_content =
-            read_proxy_inbox(&mut host, SMART_ROLLUP_ADDRESS, &MavrykContracts::default())
-                .unwrap()
-                .unwrap();
+        let inbox_content = read_proxy_inbox(
+            &mut host,
+            SMART_ROLLUP_ADDRESS,
+            &MavrykContracts::default(),
+        )
+        .unwrap()
+        .unwrap();
         let expected_transactions = vec![Transaction {
             tx_hash,
             content: Ethereum(tx),
@@ -802,7 +808,7 @@ mod tests {
         // Create a transfer from the bridge contract, that act as the
         // dictator (or administrator).
         let source =
-            PublicKeyHash::from_b58check("tz1NiaviJwtMbpEcNqSP6neeoBYj8Brb3QPv").unwrap();
+            PublicKeyHash::from_b58check("mv1EuH4Bx4xsvgk614bvWGh43BPpSJ1JgsJ2").unwrap();
         let contract =
             Contract::from_b58check("KT1HJphVV3LUxqZnc7YSH6Zdfd3up1DjLqZv").unwrap();
         let sender = match contract {
@@ -864,9 +870,12 @@ mod tests {
             new_chunk2,
         )));
 
-        let _inbox_content =
-            read_proxy_inbox(&mut host, SMART_ROLLUP_ADDRESS, &MavrykContracts::default())
-                .unwrap();
+        let _inbox_content = read_proxy_inbox(
+            &mut host,
+            SMART_ROLLUP_ADDRESS,
+            &MavrykContracts::default(),
+        )
+        .unwrap();
 
         let num_chunks = chunked_transaction_num_chunks(&mut host, &tx_hash)
             .expect("The number of chunks should exist");
@@ -908,9 +917,12 @@ mod tests {
         };
         host.add_external(Bytes::from(input_to_bytes(SMART_ROLLUP_ADDRESS, chunk)));
 
-        let _inbox_content =
-            read_proxy_inbox(&mut host, SMART_ROLLUP_ADDRESS, &MavrykContracts::default())
-                .unwrap();
+        let _inbox_content = read_proxy_inbox(
+            &mut host,
+            SMART_ROLLUP_ADDRESS,
+            &MavrykContracts::default(),
+        )
+        .unwrap();
 
         // The out of bounds chunk should not exist.
         let chunked_transaction_path = chunked_transaction_path(&tx_hash).unwrap();
@@ -941,9 +953,12 @@ mod tests {
 
         host.add_external(Bytes::from(input_to_bytes(SMART_ROLLUP_ADDRESS, chunk)));
 
-        let _inbox_content =
-            read_proxy_inbox(&mut host, SMART_ROLLUP_ADDRESS, &MavrykContracts::default())
-                .unwrap();
+        let _inbox_content = read_proxy_inbox(
+            &mut host,
+            SMART_ROLLUP_ADDRESS,
+            &MavrykContracts::default(),
+        )
+        .unwrap();
 
         // The unknown chunk should not exist.
         let chunked_transaction_path = chunked_transaction_path(&tx_hash).unwrap();
@@ -990,10 +1005,13 @@ mod tests {
 
         host.add_external(Bytes::from(input_to_bytes(SMART_ROLLUP_ADDRESS, chunk0)));
 
-        let inbox_content =
-            read_proxy_inbox(&mut host, SMART_ROLLUP_ADDRESS, &MavrykContracts::default())
-                .unwrap()
-                .unwrap();
+        let inbox_content = read_proxy_inbox(
+            &mut host,
+            SMART_ROLLUP_ADDRESS,
+            &MavrykContracts::default(),
+        )
+        .unwrap()
+        .unwrap();
         assert_eq!(
             inbox_content,
             ProxyInboxContent {
@@ -1005,10 +1023,13 @@ mod tests {
         for input in inputs {
             host.add_external(Bytes::from(input_to_bytes(SMART_ROLLUP_ADDRESS, input)))
         }
-        let inbox_content =
-            read_proxy_inbox(&mut host, SMART_ROLLUP_ADDRESS, &MavrykContracts::default())
-                .unwrap()
-                .unwrap();
+        let inbox_content = read_proxy_inbox(
+            &mut host,
+            SMART_ROLLUP_ADDRESS,
+            &MavrykContracts::default(),
+        )
+        .unwrap()
+        .unwrap();
 
         let expected_transactions = vec![Transaction {
             tx_hash,
@@ -1062,10 +1083,13 @@ mod tests {
 
         host.add_external(framed);
 
-        let inbox_content =
-            read_proxy_inbox(&mut host, SMART_ROLLUP_ADDRESS, &MavrykContracts::default())
-                .unwrap()
-                .unwrap();
+        let inbox_content = read_proxy_inbox(
+            &mut host,
+            SMART_ROLLUP_ADDRESS,
+            &MavrykContracts::default(),
+        )
+        .unwrap()
+        .unwrap();
         let expected_transactions = vec![Transaction {
             tx_hash,
             content: Ethereum(tx),
@@ -1081,15 +1105,21 @@ mod tests {
         // an empty inbox content. As we test in isolation there is nothing
         // in the inbox, we mock it by adding a single input.
         host.add_external(Bytes::from(vec![]));
-        let inbox_content =
-            read_proxy_inbox(&mut host, SMART_ROLLUP_ADDRESS, &MavrykContracts::default())
-                .unwrap();
+        let inbox_content = read_proxy_inbox(
+            &mut host,
+            SMART_ROLLUP_ADDRESS,
+            &MavrykContracts::default(),
+        )
+        .unwrap();
         assert!(inbox_content.is_some());
 
         // Reading again the inbox returns no inbox content at all.
-        let inbox_content =
-            read_proxy_inbox(&mut host, SMART_ROLLUP_ADDRESS, &MavrykContracts::default())
-                .unwrap();
+        let inbox_content = read_proxy_inbox(
+            &mut host,
+            SMART_ROLLUP_ADDRESS,
+            &MavrykContracts::default(),
+        )
+        .unwrap();
         assert!(inbox_content.is_none());
     }
 }

@@ -91,7 +91,9 @@ impl From<i32> for Error {
             mavryk_smart_rollup_core::STORE_INVALID_ACCESS => Self::StoreInvalidAccess,
             mavryk_smart_rollup_core::MEMORY_INVALID_ACCESS => Self::MemoryInvalidAccess,
             mavryk_smart_rollup_core::INPUT_OUTPUT_TOO_LARGE => Self::InputOutputTooLarge,
-            mavryk_smart_rollup_core::GENERIC_INVALID_ACCESS => Self::GenericInvalidAccess,
+            mavryk_smart_rollup_core::GENERIC_INVALID_ACCESS => {
+                Self::GenericInvalidAccess
+            }
             mavryk_smart_rollup_core::STORE_READONLY_VALUE => Self::StoreReadonlyValue,
             mavryk_smart_rollup_core::STORE_NOT_A_NODE => Self::StoreNotANode,
             mavryk_smart_rollup_core::FULL_OUTBOX => Self::FullOutbox,

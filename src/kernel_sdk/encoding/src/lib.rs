@@ -12,7 +12,7 @@
 #[cfg(feature = "alloc")]
 extern crate alloc;
 #[cfg(feature = "crypto")]
-extern crate tezos_crypto_rs as crypto;
+extern crate mavryk_crypto_rs as crypto;
 extern crate mavryk_smart_rollup_host as host;
 
 #[cfg(feature = "crypto")]

@@ -10,8 +10,10 @@ mod preimages;
 use clap::Parser;
 use commands::Cli;
 use commands::Commands;
+use mavryk_smart_rollup_installer::config::{
+    create_installer_config, ConfigurationError,
+};
 use std::path::Path;
-use mavryk_smart_rollup_installer::config::{create_installer_config, ConfigurationError};
 use thiserror::Error;
 
 fn main() -> Result<(), ClientError> {

@@ -15,7 +15,7 @@ use num_integer::Integer;
 use num_traits::{Signed, ToPrimitive, Zero};
 use std::ops::{Shl, Shr};
 use std::rc::Rc;
-use tezos_crypto_rs::blake2b::digest as blake2bdigest;
+use mavryk_crypto_rs::blake2b::digest as blake2bdigest;
 use typed_arena::Arena;
 
 use crate::ast::big_map::{BigMap, LazyStorageError};
@@ -1719,7 +1719,7 @@ fn interpret_one<'a>(
 }
 
 fn compute_contract_address(operation_group_hash: &[u8; 32], o_index: u32) -> Address {
-    use tezos_crypto_rs::hash::{ContractKt1Hash, HashTrait};
+    use mavryk_crypto_rs::hash::{ContractKt1Hash, HashTrait};
     let mut input: [u8; 36] = [0; 36];
     input[..32].copy_from_slice(operation_group_hash);
     // append bytes representing o_index
@@ -6481,7 +6481,7 @@ mod interpreter_tests {
 
     #[test]
     fn contract_address_computation() {
-        use tezos_crypto_rs::hash::OperationListHash;
+        use mavryk_crypto_rs::hash::OperationListHash;
 
         assert_eq!(
             compute_contract_address(

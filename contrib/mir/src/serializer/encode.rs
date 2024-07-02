@@ -8,7 +8,7 @@
 //! Micheline serialization.
 
 use std::mem::size_of;
-use tezos_data_encoding::{enc::BinWriter, types::Zarith};
+use mavryk_data_encoding::{enc::BinWriter, types::Zarith};
 
 use super::constants::*;
 use crate::{
@@ -221,7 +221,7 @@ impl<'a> Micheline<'a> {
 }
 
 impl<'a> BinWriter for Micheline<'a> {
-    fn bin_write(&self, out: &mut Vec<u8>) -> tezos_data_encoding::enc::BinResult {
+    fn bin_write(&self, out: &mut Vec<u8>) -> mavryk_data_encoding::enc::BinResult {
         encode_micheline(self, out);
         Ok(())
     }

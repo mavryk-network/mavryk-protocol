@@ -28,7 +28,7 @@ hex.workspace = true
 
 sha3.workspace = true
 libsecp256k1.workspace = true
-tezos_crypto_rs.workspace = true
+mavryk_crypto_rs.workspace = true
 
 ethereum.workspace = true
 ethbloom.workspace = true
@@ -47,7 +47,7 @@ mavryk-smart-rollup-encoding.workspace = true
 mavryk-smart-rollup-installer-config.workspace = true
 mavryk-smart-rollup-storage.workspace = true
 
-tezos_data_encoding.workspace = true
+mavryk_data_encoding.workspace = true
 
 proptest = { workspace = true, optional = true }
 

@@ -10,11 +10,11 @@ use evm::{Context, Transfer};
 use evm::{ExitReason, ExitSucceed};
 use host::runtime::Runtime;
 use libsecp256k1::{recover, Message, RecoveryId, Signature};
+use mavryk_evm_logging::log;
+use mavryk_evm_logging::Level::{Debug, Info};
 use sha2::Digest;
 use sha3::Keccak256;
 use std::cmp::min;
-use mavryk_evm_logging::log;
-use mavryk_evm_logging::Level::{Debug, Info};
 
 macro_rules! unwrap_ecrecover {
     ($expr : expr) => {

@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: MIT
 
 use crate::internal_storage::InternalRuntime;
-use sha3::{Digest, Keccak256};
 use mavryk_smart_rollup_host::path::Path;
 use mavryk_smart_rollup_host::runtime::RuntimeError;
+use sha3::{Digest, Keccak256};
 pub struct MockInternal();
 impl InternalRuntime for MockInternal {
     fn __internal_store_get_hash<T: Path>(

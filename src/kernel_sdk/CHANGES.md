@@ -32,7 +32,7 @@
 - Add `Runtime::reveal_dal_parameters` to let a kernel request DAL parameters from the L1.
 - Add experimental, partial support for RISC-V kernels behind the `proto-alpha`flag.
 - Add a `bls` feature flag, enabled by default, which allows disabling features which require
-  the `bls` feature from `tezos_crypto_rs`.
+  the `bls` feature from `mavryk_crypto_rs`.
 
 ### Installer client/kernel
 
@@ -64,7 +64,7 @@
 
 - Implements trait `Error` and `Display` for `PathError` in `mavryk-smart-rollup-host`.
 - Upgrade dependencies:
-  - `tezos_crypto_rs`, `tezos_data_encoding` to `v0.5.0`.
+  - `mavryk_crypto_rs`, `mavryk_data_encoding` to `v0.5.0`.
   - `nom` to `7.1`.
 - Rework `dac` module in `mavryk-smart-rollup-encoding`:
   -  Keep `PreimageHash` in `dac` module.

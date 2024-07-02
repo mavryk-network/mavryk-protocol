@@ -27,13 +27,13 @@ use block_in_progress::BlockInProgress;
 use evm_execution::account_storage::{init_account_storage, EthereumAccountStorage};
 use evm_execution::precompiles;
 use evm_execution::precompiles::PrecompileBTreeMap;
-use primitive_types::{H160, H256, U256};
-use tezos_crypto_rs::hash::ContractKt1Hash;
+use mavryk_crypto_rs::hash::ContractKt1Hash;
 use mavryk_ethereum::block::BlockFees;
 use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup::outbox::OutboxQueue;
 use mavryk_smart_rollup_host::path::Path;
 use mavryk_smart_rollup_host::runtime::Runtime;
+use primitive_types::{H160, H256, U256};
 use tick_model::estimate_remaining_ticks_for_transaction_execution;
 
 use mavryk_ethereum::block::BlockConstants;
@@ -531,14 +531,14 @@ mod tests {
     use evm_execution::account_storage::{
         account_path, init_account_storage, EthereumAccountStorage,
     };
-    use primitive_types::{H160, U256};
-    use std::str::FromStr;
     use mavryk_ethereum::transaction::{
         TransactionHash, TransactionStatus, TransactionType, TRANSACTION_HASH_SIZE,
     };
     use mavryk_ethereum::tx_common::EthereumTransactionCommon;
     use mavryk_smart_rollup_encoding::timestamp::Timestamp;
     use mavryk_smart_rollup_mock::MockHost;
+    use primitive_types::{H160, U256};
+    use std::str::FromStr;
 
     fn blueprint(transactions: Vec<Transaction>) -> Blueprint {
         Blueprint {

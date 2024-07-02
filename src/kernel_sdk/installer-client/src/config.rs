@@ -4,13 +4,13 @@
 
 use std::{ffi::OsString, path::Path};
 
-use std::fs::File;
 use mavryk_smart_rollup_encoding::dac::PreimageHash;
 use mavryk_smart_rollup_host::path::{OwnedPath, RefPath};
 use mavryk_smart_rollup_installer_config::binary::owned::{
     OwnedConfigInstruction, OwnedConfigProgram,
 };
 use mavryk_smart_rollup_installer_config::yaml::{ConfigConversionError, YamlConfig};
+use std::fs::File;
 use thiserror::Error;
 
 #[derive(Debug, Error)]

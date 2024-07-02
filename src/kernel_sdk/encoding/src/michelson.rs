@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: MIT
 
 //! Definitions & mavryk-encodings for *michelson* data.
+use mavryk_data_encoding::enc::{self, BinResult, BinWriter};
+use mavryk_data_encoding::encoding::{Encoding, HasEncoding};
+use mavryk_data_encoding::nom::{self as nom_read, NomReader, NomResult};
+use mavryk_data_encoding::types::Zarith;
 use micheline::annots::Annotations;
 use nom::branch::alt;
 use nom::combinator::map;
 use prim::*;
 use std::fmt::Debug;
-use tezos_data_encoding::enc::{self, BinResult, BinWriter};
-use tezos_data_encoding::encoding::{Encoding, HasEncoding};
-use tezos_data_encoding::nom::{self as nom_read, NomReader, NomResult};
-use tezos_data_encoding::types::Zarith;
 
 mod micheline;
 #[cfg(feature = "alloc")]
@@ -666,8 +666,8 @@ impl NomReader for MichelsonInt {
 
 impl NomReader for MichelsonNat {
     fn nom_read(input: &[u8]) -> NomResult<Self> {
+        use mavryk_data_encoding::nom::error::*;
         use nom::error::{ErrorKind, ParseError};
-        use tezos_data_encoding::nom::error::*;
 
         let (rest, i) = nom_read_micheline_int(input)?;
         if i.0 >= 0.into() {

@@ -7,7 +7,9 @@ use std::{cell::RefCell, io::Write};
 use mavryk_smart_rollup_mock::MockHost;
 
 use core::slice::from_raw_parts;
-use mavryk_smart_rollup_core::smart_rollup_core::{ReadInputMessageInfo, SmartRollupCore};
+use mavryk_smart_rollup_core::smart_rollup_core::{
+    ReadInputMessageInfo, SmartRollupCore,
+};
 
 pub struct EvalHost {
     pub host: MockHost,

@@ -6,9 +6,9 @@ class PayloadDecorationTestCase(BaseTestCase):
         proxy = self.deploy_internal_test_proxy()
 
         assert proxy.address_to_key_hash('mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe') == 'mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe'
-        assert proxy.address_to_key_hash('tz2VGBaXuS6rnaa5hpC92qkgadRJKdEbeGwc') == 'tz2VGBaXuS6rnaa5hpC92qkgadRJKdEbeGwc'
-        assert proxy.address_to_key_hash('tz3WEJYwJ6pPwVbSL8FrSoAXRmFHHZTuEnMA') == 'tz3WEJYwJ6pPwVbSL8FrSoAXRmFHHZTuEnMA'
-        assert proxy.address_to_key_hash('tz4Jxn8MpRndqWUzkuZbQKmE3aNWJzYsSEso') == 'tz4Jxn8MpRndqWUzkuZbQKmE3aNWJzYsSEso'
+        assert proxy.address_to_key_hash('mv2Ms2ww2MDq88NtTDoAi5YXwNc5Rhkf1ZCW') == 'mv2Ms2ww2MDq88NtTDoAi5YXwNc5Rhkf1ZCW'
+        assert proxy.address_to_key_hash('mv3SQDtnFQGs49sZuxcuLkFNioZovhHU5Z75') == 'mv3SQDtnFQGs49sZuxcuLkFNioZovhHU5Z75'
+        assert proxy.address_to_key_hash('mv4b621g9B8y9iN2YKbPM7sNE37uu6w9McXG') == 'mv4b621g9B8y9iN2YKbPM7sNE37uu6w9McXG'
 
         with self.raisesMichelsonError(NOT_IMPLICIT_ADDRESS):
             proxy.address_to_key_hash('KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq')

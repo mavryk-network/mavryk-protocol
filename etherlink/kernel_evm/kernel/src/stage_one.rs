@@ -10,11 +10,11 @@ use crate::delayed_inbox::DelayedInbox;
 use crate::inbox::{read_proxy_inbox, read_sequencer_inbox};
 use crate::inbox::{ProxyInboxContent, StageOneStatus};
 use anyhow::Ok;
-use std::ops::Add;
-use tezos_crypto_rs::hash::ContractKt1Hash;
+use mavryk_crypto_rs::hash::ContractKt1Hash;
 use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup_encoding::public_key::PublicKey;
 use mavryk_smart_rollup_host::metadata::RAW_ROLLUP_ADDRESS_SIZE;
+use std::ops::Add;
 
 use mavryk_smart_rollup_host::runtime::Runtime;
 
@@ -125,9 +125,8 @@ pub fn fetch<Host: Runtime>(
 
 #[cfg(test)]
 mod tests {
-    use primitive_types::U256;
-    use tezos_crypto_rs::hash::HashTrait;
-    use tezos_data_encoding::types::Bytes;
+    use mavryk_crypto_rs::hash::HashTrait;
+    use mavryk_data_encoding::types::Bytes;
     use mavryk_smart_rollup::{
         michelson::{
             ticket::FA2_1Ticket, MichelsonBytes, MichelsonOption, MichelsonOr,
@@ -137,6 +136,7 @@ mod tests {
     };
     use mavryk_smart_rollup_encoding::contract::Contract;
     use mavryk_smart_rollup_mock::{MockHost, TransferMetadata};
+    use primitive_types::U256;
 
     use crate::{
         blueprint_storage::read_next_blueprint, parsing::RollupType,
@@ -383,7 +383,7 @@ mod tests {
         let mut conf = dummy_sequencer_config();
         let metadata = TransferMetadata::new(
             delayed_bridge(&conf),
-            PublicKeyHash::from_b58check("tz1NiaviJwtMbpEcNqSP6neeoBYj8Brb3QPv").unwrap(),
+            PublicKeyHash::from_b58check("mv1EuH4Bx4xsvgk614bvWGh43BPpSJ1JgsJ2").unwrap(),
         );
         host.add_transfer(dummy_delayed_transaction(), &metadata);
         fetch(&mut host, DEFAULT_SR_ADDRESS, &mut conf).expect("fetch failed");
@@ -407,7 +407,7 @@ mod tests {
         let mut conf = dummy_sequencer_config();
         let metadata = TransferMetadata::new(
             ContractKt1Hash::from_b58check(DUMMY_INVALID_TICKETER).unwrap(),
-            PublicKeyHash::from_b58check("tz1NiaviJwtMbpEcNqSP6neeoBYj8Brb3QPv").unwrap(),
+            PublicKeyHash::from_b58check("mv1EuH4Bx4xsvgk614bvWGh43BPpSJ1JgsJ2").unwrap(),
         );
         host.add_transfer(dummy_delayed_transaction(), &metadata);
         fetch(&mut host, DEFAULT_SR_ADDRESS, &mut conf).expect("fetch failed");
@@ -431,7 +431,7 @@ mod tests {
         let mut conf = dummy_proxy_configuration();
         let metadata = TransferMetadata::new(
             ContractKt1Hash::from_b58check(DUMMY_INVALID_TICKETER).unwrap(),
-            PublicKeyHash::from_b58check("tz1NiaviJwtMbpEcNqSP6neeoBYj8Brb3QPv").unwrap(),
+            PublicKeyHash::from_b58check("mv1EuH4Bx4xsvgk614bvWGh43BPpSJ1JgsJ2").unwrap(),
         );
         host.add_transfer(dummy_delayed_transaction(), &metadata);
         fetch(&mut host, DEFAULT_SR_ADDRESS, &mut conf).expect("fetch failed");
@@ -452,7 +452,7 @@ mod tests {
         let mut conf = dummy_proxy_configuration();
         let metadata = TransferMetadata::new(
             conf.mavryk_contracts.ticketer.clone().unwrap(),
-            PublicKeyHash::from_b58check("tz1NiaviJwtMbpEcNqSP6neeoBYj8Brb3QPv").unwrap(),
+            PublicKeyHash::from_b58check("mv1EuH4Bx4xsvgk614bvWGh43BPpSJ1JgsJ2").unwrap(),
         );
         host.add_transfer(
             dummy_deposit(conf.mavryk_contracts.ticketer.clone().unwrap()),
@@ -479,7 +479,7 @@ mod tests {
         let mut conf = dummy_proxy_configuration();
         let metadata = TransferMetadata::new(
             ContractKt1Hash::from_b58check(DUMMY_INVALID_TICKETER).unwrap(),
-            PublicKeyHash::from_b58check("tz1NiaviJwtMbpEcNqSP6neeoBYj8Brb3QPv").unwrap(),
+            PublicKeyHash::from_b58check("mv1EuH4Bx4xsvgk614bvWGh43BPpSJ1JgsJ2").unwrap(),
         );
         host.add_transfer(
             dummy_deposit(
@@ -508,7 +508,7 @@ mod tests {
         let mut conf = dummy_sequencer_config();
         let metadata = TransferMetadata::new(
             conf.mavryk_contracts.ticketer.clone().unwrap(),
-            PublicKeyHash::from_b58check("tz1NiaviJwtMbpEcNqSP6neeoBYj8Brb3QPv").unwrap(),
+            PublicKeyHash::from_b58check("mv1EuH4Bx4xsvgk614bvWGh43BPpSJ1JgsJ2").unwrap(),
         );
         host.add_transfer(
             dummy_deposit(conf.mavryk_contracts.ticketer.clone().unwrap()),

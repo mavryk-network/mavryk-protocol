@@ -13,10 +13,10 @@ use alloc::collections::TryReserveError;
 use evm::executor::stack::PrecompileFailure;
 use evm::ExitReason;
 use host::runtime::Runtime;
-use primitive_types::{H160, U256};
 use mavryk_ethereum::block::BlockConstants;
 use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup_storage::StorageError;
+use primitive_types::{H160, U256};
 use thiserror::Error;
 
 mod access_record;
@@ -34,7 +34,7 @@ pub mod utilities;
 pub use evm::Config;
 
 extern crate alloc;
-extern crate tezos_crypto_rs as crypto;
+extern crate mavryk_crypto_rs as crypto;
 extern crate mavryk_smart_rollup_debug as debug;
 extern crate mavryk_smart_rollup_host as host;
 
@@ -243,12 +243,12 @@ mod test {
     use evm::{ExitError, ExitReason, ExitRevert, ExitSucceed, Opcode};
     use handler::ExecutionOutcome;
     use host::runtime::Runtime;
-    use primitive_types::{H160, H256};
-    use std::str::FromStr;
-    use std::vec;
     use mavryk_ethereum::block::BlockFees;
     use mavryk_ethereum::tx_common::EthereumTransactionCommon;
     use mavryk_smart_rollup_mock::MockHost;
+    use primitive_types::{H160, H256};
+    use std::str::FromStr;
+    use std::vec;
 
     // The compiled initialization code for the Ethereum demo contract given
     // as an example in kernel_evm/solidity_examples/storage.sol
@@ -926,8 +926,9 @@ mod test {
             ),
         ];
         test_list.iter().fold((), |_, (s, ea)| {
-            let (_, a) =
-                mavryk_ethereum::tx_common::string_to_sk_and_address_unsafe(s.to_string());
+            let (_, a) = mavryk_ethereum::tx_common::string_to_sk_and_address_unsafe(
+                s.to_string(),
+            );
             let value: [u8; 20] = hex::decode(ea).unwrap().try_into().unwrap();
             let ea = value.into();
             assert_eq!(a, ea);

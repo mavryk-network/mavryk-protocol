@@ -13,8 +13,8 @@ use crate::ast::michelson_key_hash::KeyHash;
 
 use super::{ByteReprError, ByteReprTrait};
 
-use tezos_crypto_rs::hash::{
-    ContractKt1Hash, ContractTz1Hash, ContractTz2Hash, ContractTz3Hash, ContractTz4Hash, Hash,
+use mavryk_crypto_rs::hash::{
+    ContractKt1Hash, ContractMv1Hash, ContractMv2Hash, ContractMv3Hash, ContractMv4Hash, Hash,
     HashTrait, SmartRollupHash,
 };
 
@@ -61,26 +61,26 @@ address_hash_type_and_impls! {
     Sr1(SmartRollupHash),
 }
 
-impl From<ContractTz1Hash> for AddressHash {
-    fn from(x: ContractTz1Hash) -> Self {
+impl From<ContractMv1Hash> for AddressHash {
+    fn from(x: ContractMv1Hash) -> Self {
         Self::Implicit(x.into())
     }
 }
 
-impl From<ContractTz2Hash> for AddressHash {
-    fn from(x: ContractTz2Hash) -> Self {
+impl From<ContractMv2Hash> for AddressHash {
+    fn from(x: ContractMv2Hash) -> Self {
         Self::Implicit(x.into())
     }
 }
 
-impl From<ContractTz3Hash> for AddressHash {
-    fn from(x: ContractTz3Hash) -> Self {
+impl From<ContractMv3Hash> for AddressHash {
+    fn from(x: ContractMv3Hash) -> Self {
         Self::Implicit(x.into())
     }
 }
 
-impl From<ContractTz4Hash> for AddressHash {
-    fn from(x: ContractTz4Hash) -> Self {
+impl From<ContractMv4Hash> for AddressHash {
+    fn from(x: ContractMv4Hash) -> Self {
         Self::Implicit(x.into())
     }
 }

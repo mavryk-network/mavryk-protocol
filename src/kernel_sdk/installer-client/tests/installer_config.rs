@@ -3,9 +3,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-use std::ffi::OsString;
-use std::fs;
-use std::path::Path;
 use mavryk_smart_rollup::core_unsafe::MAX_FILE_CHUNK_SIZE;
 use mavryk_smart_rollup::dac::pages::prepare_preimages;
 use mavryk_smart_rollup::dac::PreimageHash;
@@ -19,6 +16,9 @@ use mavryk_smart_rollup_installer_config::binary::owned::{
     OwnedBytes, OwnedConfigInstruction, OwnedConfigProgram,
 };
 use mavryk_smart_rollup_mock::MockHost;
+use std::ffi::OsString;
+use std::fs;
+use std::path::Path;
 
 fn write_kernel_to_boot_path(host: &mut MockHost, kernel: Vec<u8>) {
     host.store_write_all(&KERNEL_BOOT_PATH, &kernel)

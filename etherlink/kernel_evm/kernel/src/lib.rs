@@ -16,6 +16,13 @@ use delayed_inbox::DelayedInbox;
 use evm_execution::Config;
 use fallback_upgrade::fallback_backup_kernel;
 use inbox::StageOneStatus;
+use mavryk_crypto_rs::hash::ContractKt1Hash;
+use mavryk_ethereum::block::BlockFees;
+use mavryk_evm_logging::{log, Level::*};
+use mavryk_smart_rollup_encoding::public_key::PublicKey;
+use mavryk_smart_rollup_encoding::timestamp::Timestamp;
+use mavryk_smart_rollup_entrypoint::kernel_entry;
+use mavryk_smart_rollup_host::runtime::Runtime;
 use migration::MigrationStatus;
 use primitive_types::U256;
 use reveal_storage::{is_revealed_storage, reveal_storage};
@@ -26,13 +33,6 @@ use storage::{
     read_minimum_base_fee_per_gas, store_base_fee_per_gas, store_chain_id, store_da_fee,
     store_kernel_version, store_storage_version, STORAGE_VERSION, STORAGE_VERSION_PATH,
 };
-use tezos_crypto_rs::hash::ContractKt1Hash;
-use mavryk_ethereum::block::BlockFees;
-use mavryk_evm_logging::{log, Level::*};
-use mavryk_smart_rollup_encoding::public_key::PublicKey;
-use mavryk_smart_rollup_encoding::timestamp::Timestamp;
-use mavryk_smart_rollup_entrypoint::kernel_entry;
-use mavryk_smart_rollup_host::runtime::Runtime;
 
 mod apply;
 mod block;
@@ -324,7 +324,6 @@ mod tests {
         upgrade::KernelUpgrade,
     };
     use evm_execution::account_storage::{self, EthereumAccountStorage};
-    use primitive_types::{H160, U256};
     use mavryk_ethereum::block::BlockFees;
     use mavryk_ethereum::{
         transaction::{TransactionHash, TransactionType},
@@ -335,6 +334,7 @@ mod tests {
     use mavryk_smart_rollup_encoding::timestamp::Timestamp;
     use mavryk_smart_rollup_host::path::RefPath;
     use mavryk_smart_rollup_mock::MockHost;
+    use primitive_types::{H160, U256};
 
     const DUMMY_CHAIN_ID: U256 = U256::one();
     const DUMMY_BASE_FEE_PER_GAS: u64 = 12345u64;

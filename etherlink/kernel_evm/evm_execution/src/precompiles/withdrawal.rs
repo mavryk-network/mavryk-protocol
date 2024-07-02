@@ -9,10 +9,10 @@ use crate::precompiles::PrecompileOutcome;
 use crate::{abi, fail_if_too_much, EthereumError};
 use evm::{Context, ExitReason, ExitRevert, ExitSucceed, Transfer};
 use host::runtime::Runtime;
-use primitive_types::U256;
 use mavryk_ethereum::withdrawal::Withdrawal;
 use mavryk_evm_logging::log;
 use mavryk_evm_logging::Level::Info;
+use primitive_types::U256;
 
 /// Cost of doing a withdrawal. A valid call to this precompiled contract
 /// takes almost 880000 ticks, and one gas unit takes 1000 ticks.
@@ -121,10 +121,10 @@ mod tests {
         precompiles::{test_helpers::execute_precompiled, withdrawal::WITHDRAWAL_COST},
     };
     use evm::{ExitReason, ExitRevert, ExitSucceed, Transfer};
-    use primitive_types::{H160, U256};
-    use std::str::FromStr;
     use mavryk_ethereum::withdrawal::Withdrawal;
     use mavryk_smart_rollup_encoding::contract::Contract;
+    use primitive_types::{H160, U256};
+    use std::str::FromStr;
 
     #[test]
     fn call_withdraw_with_implicit_address() {
@@ -139,7 +139,7 @@ mod tests {
             "cda4fee2\
              0000000000000000000000000000000000000000000000000000000000000020\
              0000000000000000000000000000000000000000000000000000000000000024\
-             747a31526a745a5556654c6841444648444c385577445a4136766a5757686f6a70753577\
+             6d763145374d7334703165336a5632574d65684c42334642467762563536476952516665\
              00000000000000000000000000000000000000000000000000000000",
         )
         .unwrap();

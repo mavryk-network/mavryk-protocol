@@ -20,12 +20,12 @@ path = "src/lib.rs"
 path = "../core"
 version = "0.2.2"
 
-[dependencies.tezos_crypto_rs]
+[dependencies.mavryk_crypto_rs]
 version = "=0.5.2"
 default-features = false
 optional = true
 
-[dependencies.tezos_data_encoding]
+[dependencies.mavryk_data_encoding]
 version = "=0.5.2"
 default-features = false
 optional = true
@@ -40,8 +40,8 @@ optional = true
 
 [features]
 default = ["std", "alloc", "crypto"]
-crypto = ["tezos_crypto_rs"]
-alloc = ["thiserror", "tezos_data_encoding"]
+crypto = ["mavryk_crypto_rs"]
+alloc = ["thiserror", "mavryk_data_encoding"]
 testing = ["crypto", "mockall", "mavryk-smart-rollup-core/testing"]
 proto-nairobi = ["mavryk-smart-rollup-core/proto-nairobi"]
 proto-alpha = ["mavryk-smart-rollup-core/proto-alpha"]

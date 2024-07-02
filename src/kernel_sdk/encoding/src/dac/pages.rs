@@ -78,9 +78,9 @@ mod encoding {
 
     use super::*;
     use crate::dac::PreimageHash;
-    use tezos_data_encoding::enc::BinWriter;
-    use tezos_data_encoding::encoding::HasEncoding;
-    use tezos_data_encoding::nom::NomReader;
+    use mavryk_data_encoding::enc::BinWriter;
+    use mavryk_data_encoding::encoding::HasEncoding;
+    use mavryk_data_encoding::nom::NomReader;
     use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
 
     /// A Dac page: either a leaf node of contents, or node of hashes.
@@ -360,8 +360,8 @@ pub fn reveal_loop<Host: Runtime>(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tezos_data_encoding::enc::BinWriter;
-    use tezos_data_encoding::nom::NomReader;
+    use mavryk_data_encoding::enc::BinWriter;
+    use mavryk_data_encoding::nom::NomReader;
 
     // taken from DAC test example in tezos
     const EXAMPLE_CONTENT_PAGE: &[u8] = &[

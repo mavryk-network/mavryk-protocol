@@ -7,8 +7,8 @@
 
 //! Representation for typed Michelson `key_hash` values.
 
-use tezos_crypto_rs::hash::{
-    ContractTz1Hash, ContractTz2Hash, ContractTz3Hash, ContractTz4Hash, Hash, HashTrait,
+use mavryk_crypto_rs::hash::{
+    ContractMv1Hash, ContractMv2Hash, ContractMv3Hash, ContractMv4Hash, Hash, HashTrait,
 };
 
 use super::{ByteReprError, ByteReprTrait};
@@ -48,13 +48,13 @@ macro_rules! key_hash_type_and_impls {
 
 key_hash_type_and_impls! {
     /// A hash of a Ed25519 public key, `tz1...` in base58-check encoding.
-    Tz1(ContractTz1Hash),
+    Tz1(ContractMv1Hash),
     /// A hash of a SecP256k1 public key, `tz2...` in base58-check encoding.
-    Tz2(ContractTz2Hash),
+    Tz2(ContractMv2Hash),
     /// A hash of a P256 public key, `tz3...` in base58-check encoding.
-    Tz3(ContractTz3Hash),
+    Tz3(ContractMv3Hash),
     /// A hash of a BLS public key, `tz4...` in base58-check encoding.
-    Tz4(ContractTz4Hash),
+    Tz4(ContractMv4Hash),
 }
 
 impl TryFrom<&[u8]> for KeyHash {
@@ -211,7 +211,7 @@ mod tests {
             "0075deb97789e2429f2b9bb5dba1b1e4a061e832a3",
         ),
         (
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j",
+            "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe",
             "007b09f782e0bcd67739510afa819d85976119d5ef",
         ),
         (

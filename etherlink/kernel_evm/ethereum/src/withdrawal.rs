@@ -4,9 +4,9 @@
 
 //! Withdrawals to layer 1 from the EVM kernel
 
-use primitive_types::U256;
-use tezos_data_encoding::nom::NomReader;
+use mavryk_data_encoding::nom::NomReader;
 use mavryk_smart_rollup_encoding::contract::Contract;
+use primitive_types::U256;
 
 /// A single withdrawal from the rollup to an account on layer one.
 #[derive(Debug, Eq, PartialEq)]

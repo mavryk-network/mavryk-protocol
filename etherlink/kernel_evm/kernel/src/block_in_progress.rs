@@ -15,9 +15,6 @@ use crate::storage::{EVM_TRANSACTIONS_OBJECTS, EVM_TRANSACTIONS_RECEIPTS};
 use crate::tick_model;
 use anyhow::Context;
 use evm_execution::account_storage::EVM_ACCOUNTS_PATH;
-use primitive_types::{H256, U256};
-use rlp::{Decodable, DecoderError, Encodable};
-use std::collections::VecDeque;
 use mavryk_ethereum::block::{BlockConstants, L2Block};
 use mavryk_ethereum::rlp_helpers::*;
 use mavryk_ethereum::transaction::{
@@ -29,6 +26,9 @@ use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 use mavryk_smart_rollup_host::path::RefPath;
 use mavryk_smart_rollup_host::runtime::Runtime;
+use primitive_types::{H256, U256};
+use rlp::{Decodable, DecoderError, Encodable};
+use std::collections::VecDeque;
 
 #[derive(Debug, PartialEq, Clone)]
 /// Container for all data needed during block computation
@@ -431,8 +431,6 @@ mod tests {
 
     use super::BlockInProgress;
     use crate::inbox::{Deposit, Transaction, TransactionContent};
-    use primitive_types::{H160, H256, U256};
-    use rlp::{Decodable, Encodable, Rlp};
     use mavryk_ethereum::{
         transaction::{TransactionType, TRANSACTION_HASH_SIZE},
         tx_common::EthereumTransactionCommon,
@@ -440,6 +438,8 @@ mod tests {
         Bloom,
     };
     use mavryk_smart_rollup_encoding::timestamp::Timestamp;
+    use primitive_types::{H160, H256, U256};
+    use rlp::{Decodable, Encodable, Rlp};
 
     fn new_sig_unsafe(v: u64, r: H256, s: H256) -> TxSignature {
         TxSignature::new(U256::from(v), r, s).unwrap()

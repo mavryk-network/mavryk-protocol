@@ -127,7 +127,7 @@ Internal(
                 "[CONTRACT_HASH]",
             ),
             source: Ed25519(
-                ContractTz1Hash(
+                ContractMv1Hash(
                     "[PUBLIC_KEY_HASH]",
                 ),
             ),

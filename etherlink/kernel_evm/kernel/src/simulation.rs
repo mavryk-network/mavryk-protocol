@@ -20,8 +20,6 @@ use evm::ExitReason;
 use evm_execution::handler::ExtendedExitReason;
 use evm_execution::{account_storage, handler::ExecutionOutcome, precompiles};
 use evm_execution::{run_transaction, EthereumError};
-use primitive_types::{H160, U256};
-use rlp::{Decodable, DecoderError, Encodable, Rlp};
 use mavryk_ethereum::block::BlockConstants;
 use mavryk_ethereum::rlp_helpers::{
     append_option_u64_le, check_list, decode_field, decode_option, decode_option_u64_le,
@@ -30,6 +28,8 @@ use mavryk_ethereum::rlp_helpers::{
 use mavryk_ethereum::tx_common::EthereumTransactionCommon;
 use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup_host::runtime::Runtime;
+use primitive_types::{H160, U256};
+use rlp::{Decodable, DecoderError, Encodable, Rlp};
 
 // SIMULATION/SIMPLE/RLP_ENCODED_SIMULATION
 pub const SIMULATION_SIMPLE_TAG: u8 = 1;
@@ -586,11 +586,11 @@ pub fn start_simulation_mode<Host: Runtime>(
 #[cfg(test)]
 mod tests {
 
-    use primitive_types::H256;
     use mavryk_ethereum::{
         block::BlockConstants, transaction::TransactionType, tx_signature::TxSignature,
     };
     use mavryk_smart_rollup_mock::MockHost;
+    use primitive_types::H256;
 
     use crate::{
         current_timestamp, fees::gas_for_fees, retrieve_block_fees, retrieve_chain_id,

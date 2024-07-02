@@ -11,7 +11,7 @@
 //! [inbox message repr]: <https://gitlab.com/tezos/tezos/-/blob/9028b797894a5d9db38bc61a20abb793c3778316/src/proto_alpha/lib_protocol/sc_rollup_inbox_message_repr.mli>
 
 use crypto::base58::FromBase58CheckError;
-use crypto::hash::ContractTz1Hash;
+use crypto::hash::ContractMv1Hash;
 use num_bigint::{BigInt, TryFromBigIntError};
 use thiserror::Error;
 
@@ -26,7 +26,7 @@ pub use self::external::*;
 #[derive(Debug, PartialEq, Eq)]
 pub struct InboxDeposit {
     /// The destination account of the deposit.
-    pub destination: ContractTz1Hash,
+    pub destination: ContractMv1Hash,
     /// The ticket - including amount - to be deposited.
     pub ticket: StringTicket,
 }

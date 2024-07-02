@@ -8,9 +8,9 @@
 use const_decoder::Decoder;
 use host::path::{concat, OwnedPath, Path, RefPath};
 use host::runtime::{Runtime, RuntimeError, ValueType};
+use mavryk_smart_rollup_storage::storage::Storage;
 use primitive_types::{H160, H256, U256};
 use sha3::{Digest, Keccak256};
-use mavryk_smart_rollup_storage::storage::Storage;
 use thiserror::Error;
 
 use crate::DurableStorageError;
@@ -551,8 +551,8 @@ pub fn init_account_storage() -> Result<EthereumAccountStorage, AccountStorageEr
 mod test {
     use super::*;
     use host::path::RefPath;
-    use primitive_types::U256;
     use mavryk_smart_rollup_mock::MockHost;
+    use primitive_types::U256;
 
     #[test]
     fn test_account_nonce_update() {

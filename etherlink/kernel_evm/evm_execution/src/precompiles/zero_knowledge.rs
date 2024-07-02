@@ -10,9 +10,9 @@ use bn::{FieldError, GroupError};
 use evm::{executor::stack::PrecompileFailure, ExitError, ExitReason, ExitSucceed};
 use evm::{Context, Transfer};
 use host::runtime::Runtime;
-use primitive_types::U256;
 use mavryk_evm_logging::log;
 use mavryk_evm_logging::Level::Debug;
+use primitive_types::U256;
 
 /// Input length for the add operation.
 const ADD_INPUT_LEN: usize = 128;

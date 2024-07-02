@@ -2188,7 +2188,7 @@ let test_deposit_and_withdraw =
   (* Keep a small amount to pay for the gas. *)
   let amount_wei = Wei.(amount_wei - one_eth) in
 
-  let withdraw_receiver = "tz1fp5ncDmqYwYC568fREYz9iwQTgGQuKZqX" in
+  let withdraw_receiver = "mv1QZhGYQueCWBuhhyVtmFvP4DHBqZdQrwZH" in
   let* _tx =
     withdraw
       ~evm_node
@@ -5163,7 +5163,7 @@ let test_outbox_size_limit_resilience ~slow =
     in
     let* balance =
       Client.get_balance_for
-        ~account:"tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j"
+        ~account:"mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe"
         client
     in
     Check.((balance = Tez.of_int 100) Tez.typ)
@@ -5181,7 +5181,7 @@ let test_outbox_size_limit_resilience ~slow =
     in
     let* balance =
       Client.get_balance_for
-        ~account:"tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j"
+        ~account:"mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe"
         client
     in
     Check.((balance = Tez.of_int 120) Tez.typ)

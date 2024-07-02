@@ -4,14 +4,14 @@
 
 //! Hash of Layer1 contract ids.
 
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_data_encoding::encoding::HasEncoding;
+use mavryk_data_encoding::nom::NomReader;
 use std::fmt::Display;
-use tezos_data_encoding::enc::BinWriter;
-use tezos_data_encoding::encoding::HasEncoding;
-use tezos_data_encoding::nom::NomReader;
 
 use crypto::base58::{FromBase58Check, FromBase58CheckError};
 use crypto::hash::{
-    ContractTz1Hash, ContractTz2Hash, ContractTz3Hash, Hash, HashTrait, HashType,
+    ContractMv1Hash, ContractMv2Hash, ContractMv3Hash, Hash, HashTrait, HashType,
 };
 
 /// Hash of Layer1 contract ids.
@@ -20,11 +20,11 @@ use crypto::hash::{
 )]
 pub enum PublicKeyHash {
     /// Tz1-contract
-    Ed25519(ContractTz1Hash),
+    Ed25519(ContractMv1Hash),
     /// Tz2-contract
-    Secp256k1(ContractTz2Hash),
+    Secp256k1(ContractMv2Hash),
     /// Tz3-contract
-    P256(ContractTz3Hash),
+    P256(ContractMv3Hash),
 }
 
 impl Display for PublicKeyHash {
@@ -42,14 +42,14 @@ impl PublicKeyHash {
     pub fn from_b58check(data: &str) -> Result<Self, FromBase58CheckError> {
         let bytes = data.from_base58check()?;
         match bytes {
-            _ if bytes.starts_with(HashType::ContractTz1Hash.base58check_prefix()) => Ok(
-                PublicKeyHash::Ed25519(ContractTz1Hash::from_b58check(data)?),
+            _ if bytes.starts_with(HashType::ContractMv1Hash.base58check_prefix()) => Ok(
+                PublicKeyHash::Ed25519(ContractMv1Hash::from_b58check(data)?),
             ),
-            _ if bytes.starts_with(HashType::ContractTz2Hash.base58check_prefix()) => Ok(
-                PublicKeyHash::Secp256k1(ContractTz2Hash::from_b58check(data)?),
+            _ if bytes.starts_with(HashType::ContractMv2Hash.base58check_prefix()) => Ok(
+                PublicKeyHash::Secp256k1(ContractMv2Hash::from_b58check(data)?),
             ),
-            _ if bytes.starts_with(HashType::ContractTz3Hash.base58check_prefix()) => {
-                Ok(PublicKeyHash::P256(ContractTz3Hash::from_b58check(data)?))
+            _ if bytes.starts_with(HashType::ContractMv3Hash.base58check_prefix()) => {
+                Ok(PublicKeyHash::P256(ContractMv3Hash::from_b58check(data)?))
             }
             _ => Err(FromBase58CheckError::InvalidBase58),
         }

@@ -181,23 +181,23 @@ mod tests {
             "000075deb97789e2429f2b9bb5dba1b1e4a061e832a3",
         ),
         (
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%bar",
+            "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%bar",
             "00007b09f782e0bcd67739510afa819d85976119d5ef626172",
         ),
         (
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defauls",
+            "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%defauls",
             "00007b09f782e0bcd67739510afa819d85976119d5ef64656661756c73",
         ),
         (
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j",
+            "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe",
             "00007b09f782e0bcd67739510afa819d85976119d5ef",
         ),
         (
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%defaulu",
+            "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%defaulu",
             "00007b09f782e0bcd67739510afa819d85976119d5ef64656661756c75",
         ),
         (
-            "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%foo",
+            "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%foo",
             "00007b09f782e0bcd67739510afa819d85976119d5ef666f6f",
         ),
         (

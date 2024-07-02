@@ -535,17 +535,17 @@ dependencies = [
  "evm-execution",
  "hex",
  "hex-literal",
+ "mavryk-evm-logging",
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-host",
+ "mavryk-smart-rollup-mock",
+ "mavryk_ethereum",
  "primitive-types",
  "regex",
  "serde",
  "serde_json",
  "serde_yaml",
  "structopt",
- "mavryk-evm-logging",
- "mavryk-smart-rollup-core",
- "mavryk-smart-rollup-host",
- "mavryk-smart-rollup-mock",
- "mavryk_ethereum",
  "thiserror",
  "walkdir",
 ]
@@ -559,6 +559,16 @@ dependencies = [
  "evm",
  "hex",
  "libsecp256k1",
+ "mavryk-evm-logging",
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-debug",
+ "mavryk-smart-rollup-encoding",
+ "mavryk-smart-rollup-host",
+ "mavryk-smart-rollup-mock",
+ "mavryk-smart-rollup-storage",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding",
+ "mavryk_ethereum",
  "num-bigint 0.3.3",
  "num-traits",
  "primitive-types",
@@ -569,16 +579,6 @@ dependencies = [
  "sha2 0.10.6",
  "sha3",
  "substrate-bn",
- "mavryk-evm-logging",
- "mavryk-smart-rollup-core",
- "mavryk-smart-rollup-debug",
- "mavryk-smart-rollup-encoding",
- "mavryk-smart-rollup-host",
- "mavryk-smart-rollup-mock",
- "mavryk-smart-rollup-storage",
- "tezos_crypto_rs",
- "tezos_data_encoding",
- "mavryk_ethereum",
  "thiserror",
 ]
 
@@ -616,12 +616,6 @@ dependencies = [
  "evm-execution",
  "hex",
  "libsecp256k1",
- "num-traits",
- "primitive-types",
- "proptest",
- "rlp",
- "sha3",
- "softfloat",
  "mavryk-evm-logging",
  "mavryk-smart-rollup",
  "mavryk-smart-rollup-core",
@@ -633,9 +627,15 @@ dependencies = [
  "mavryk-smart-rollup-mock",
  "mavryk-smart-rollup-panic-hook",
  "mavryk-smart-rollup-storage",
- "tezos_crypto_rs",
- "tezos_data_encoding",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding",
  "mavryk_ethereum",
+ "num-traits",
+ "primitive-types",
+ "proptest",
+ "rlp",
+ "sha3",
+ "softfloat",
  "thiserror",
 ]
 
@@ -1065,6 +1065,210 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "abb12e687cfb44aa40f41fc3978ef76448f9b6038cad6aef4259d3c095a2382e"
 dependencies = [
  "cfg-if",
+]
+
+[[package]]
+name = "mavryk-evm-logging"
+version = "0.1.0"
+dependencies = [
+ "mavryk-smart-rollup-debug",
+]
+
+[[package]]
+name = "mavryk-smart-rollup"
+version = "0.2.2"
+dependencies = [
+ "hermit",
+ "hex",
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-debug",
+ "mavryk-smart-rollup-encoding",
+ "mavryk-smart-rollup-entrypoint",
+ "mavryk-smart-rollup-host",
+ "mavryk-smart-rollup-mock",
+ "mavryk-smart-rollup-storage",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding",
+]
+
+[[package]]
+name = "mavryk-smart-rollup-constants"
+version = "0.2.2"
+
+[[package]]
+name = "mavryk-smart-rollup-core"
+version = "0.2.2"
+dependencies = [
+ "mavryk-smart-rollup-constants",
+]
+
+[[package]]
+name = "mavryk-smart-rollup-debug"
+version = "0.2.2"
+dependencies = [
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-host",
+]
+
+[[package]]
+name = "mavryk-smart-rollup-encoding"
+version = "0.2.2"
+dependencies = [
+ "hex",
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-host",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding",
+ "mavryk_data_encoding_derive",
+ "nom",
+ "num-bigint 0.3.3",
+ "num-traits",
+ "regex",
+ "thiserror",
+ "time",
+]
+
+[[package]]
+name = "mavryk-smart-rollup-entrypoint"
+version = "0.2.2"
+dependencies = [
+ "dlmalloc",
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-debug",
+ "mavryk-smart-rollup-host",
+ "mavryk-smart-rollup-panic-hook",
+]
+
+[[package]]
+name = "mavryk-smart-rollup-host"
+version = "0.2.2"
+dependencies = [
+ "mavryk-smart-rollup-core",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding",
+ "thiserror",
+]
+
+[[package]]
+name = "mavryk-smart-rollup-installer-config"
+version = "0.2.2"
+dependencies = [
+ "hex",
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-encoding",
+ "mavryk-smart-rollup-host",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding",
+ "nom",
+ "serde",
+ "serde_yaml",
+ "thiserror",
+]
+
+[[package]]
+name = "mavryk-smart-rollup-mock"
+version = "0.2.2"
+dependencies = [
+ "hex",
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-encoding",
+ "mavryk-smart-rollup-host",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding",
+]
+
+[[package]]
+name = "mavryk-smart-rollup-panic-hook"
+version = "0.2.2"
+dependencies = [
+ "mavryk-smart-rollup-core",
+]
+
+[[package]]
+name = "mavryk-smart-rollup-storage"
+version = "0.2.2"
+dependencies = [
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-debug",
+ "mavryk-smart-rollup-encoding",
+ "mavryk-smart-rollup-host",
+ "thiserror",
+]
+
+[[package]]
+name = "mavryk_crypto_rs"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e87c3213e23367a7a9998611d3f98b5ae0b2385d848cf5ca96b6592bbfa3a64a"
+dependencies = [
+ "anyhow",
+ "base58",
+ "blst",
+ "byteorder",
+ "cryptoxide",
+ "ed25519-dalek",
+ "hex",
+ "libsecp256k1",
+ "num-bigint 0.3.3",
+ "num-traits",
+ "p256",
+ "rand 0.7.3",
+ "serde",
+ "strum",
+ "strum_macros",
+ "thiserror",
+ "zeroize",
+]
+
+[[package]]
+name = "mavryk_data_encoding"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8bdc600b4fc14f7e60c595d54edf5a406962fceb5e5ae4195a5630b628433f6f"
+dependencies = [
+ "bit-vec",
+ "bitvec",
+ "hex",
+ "lazy_static",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding_derive",
+ "nom",
+ "num-bigint 0.3.3",
+ "num-traits",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "mavryk_data_encoding_derive"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "24bcc9ab0e4e37e4790c4d7e630112fea7a17b1a7634be44077c4166b724de88"
+dependencies = [
+ "lazy_static",
+ "once_cell",
+ "parse-display",
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
+]
+
+[[package]]
+name = "mavryk_ethereum"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "ethbloom",
+ "ethereum",
+ "hex",
+ "libsecp256k1",
+ "mavryk-smart-rollup-encoding",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding",
+ "primitive-types",
+ "rlp",
+ "sha3",
+ "thiserror",
 ]
 
 [[package]]
@@ -1943,210 +2147,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d326610f408c7a4eb6f51c37c330e496b08506c9457c9d34287ecc38809fb060"
 dependencies = [
  "unicode-width",
-]
-
-[[package]]
-name = "mavryk-evm-logging"
-version = "0.1.0"
-dependencies = [
- "mavryk-smart-rollup-debug",
-]
-
-[[package]]
-name = "mavryk-smart-rollup"
-version = "0.2.2"
-dependencies = [
- "hermit",
- "hex",
- "mavryk-smart-rollup-core",
- "mavryk-smart-rollup-debug",
- "mavryk-smart-rollup-encoding",
- "mavryk-smart-rollup-entrypoint",
- "mavryk-smart-rollup-host",
- "mavryk-smart-rollup-mock",
- "mavryk-smart-rollup-storage",
- "tezos_crypto_rs",
- "tezos_data_encoding",
-]
-
-[[package]]
-name = "mavryk-smart-rollup-constants"
-version = "0.2.2"
-
-[[package]]
-name = "mavryk-smart-rollup-core"
-version = "0.2.2"
-dependencies = [
- "mavryk-smart-rollup-constants",
-]
-
-[[package]]
-name = "mavryk-smart-rollup-debug"
-version = "0.2.2"
-dependencies = [
- "mavryk-smart-rollup-core",
- "mavryk-smart-rollup-host",
-]
-
-[[package]]
-name = "mavryk-smart-rollup-encoding"
-version = "0.2.2"
-dependencies = [
- "hex",
- "nom",
- "num-bigint 0.3.3",
- "num-traits",
- "regex",
- "mavryk-smart-rollup-core",
- "mavryk-smart-rollup-host",
- "tezos_crypto_rs",
- "tezos_data_encoding",
- "tezos_data_encoding_derive",
- "thiserror",
- "time",
-]
-
-[[package]]
-name = "mavryk-smart-rollup-entrypoint"
-version = "0.2.2"
-dependencies = [
- "dlmalloc",
- "mavryk-smart-rollup-core",
- "mavryk-smart-rollup-debug",
- "mavryk-smart-rollup-host",
- "mavryk-smart-rollup-panic-hook",
-]
-
-[[package]]
-name = "mavryk-smart-rollup-host"
-version = "0.2.2"
-dependencies = [
- "mavryk-smart-rollup-core",
- "tezos_crypto_rs",
- "tezos_data_encoding",
- "thiserror",
-]
-
-[[package]]
-name = "mavryk-smart-rollup-installer-config"
-version = "0.2.2"
-dependencies = [
- "hex",
- "nom",
- "serde",
- "serde_yaml",
- "mavryk-smart-rollup-core",
- "mavryk-smart-rollup-encoding",
- "mavryk-smart-rollup-host",
- "tezos_crypto_rs",
- "tezos_data_encoding",
- "thiserror",
-]
-
-[[package]]
-name = "mavryk-smart-rollup-mock"
-version = "0.2.2"
-dependencies = [
- "hex",
- "mavryk-smart-rollup-core",
- "mavryk-smart-rollup-encoding",
- "mavryk-smart-rollup-host",
- "tezos_crypto_rs",
- "tezos_data_encoding",
-]
-
-[[package]]
-name = "mavryk-smart-rollup-panic-hook"
-version = "0.2.2"
-dependencies = [
- "mavryk-smart-rollup-core",
-]
-
-[[package]]
-name = "mavryk-smart-rollup-storage"
-version = "0.2.2"
-dependencies = [
- "mavryk-smart-rollup-core",
- "mavryk-smart-rollup-debug",
- "mavryk-smart-rollup-encoding",
- "mavryk-smart-rollup-host",
- "thiserror",
-]
-
-[[package]]
-name = "tezos_crypto_rs"
-version = "0.5.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "284fa6f4be10eff67ca5b2f9e8ec9544be81a07223f6a4c8d3a49a13aecce768"
-dependencies = [
- "anyhow",
- "base58",
- "blst",
- "byteorder",
- "cryptoxide",
- "ed25519-dalek",
- "hex",
- "libsecp256k1",
- "num-bigint 0.3.3",
- "num-traits",
- "p256",
- "rand 0.7.3",
- "serde",
- "strum",
- "strum_macros",
- "thiserror",
- "zeroize",
-]
-
-[[package]]
-name = "tezos_data_encoding"
-version = "0.5.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "66c34be797025fcab7a9e417a4cc374925ee796af21f8d7df5e2330cdc2595af"
-dependencies = [
- "bit-vec",
- "bitvec",
- "hex",
- "lazy_static",
- "nom",
- "num-bigint 0.3.3",
- "num-traits",
- "serde",
- "tezos_crypto_rs",
- "tezos_data_encoding_derive",
- "thiserror",
-]
-
-[[package]]
-name = "tezos_data_encoding_derive"
-version = "0.5.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "82e0c104555ce4d8c790567d725dc49f519d721e114202e38e851c1ac5769f08"
-dependencies = [
- "lazy_static",
- "once_cell",
- "parse-display",
- "proc-macro2",
- "quote",
- "syn 1.0.109",
-]
-
-[[package]]
-name = "mavryk_ethereum"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "ethbloom",
- "ethereum",
- "hex",
- "libsecp256k1",
- "primitive-types",
- "rlp",
- "sha3",
- "mavryk-smart-rollup-encoding",
- "tezos_crypto_rs",
- "tezos_data_encoding",
- "thiserror",
 ]
 
 [[package]]

@@ -15,7 +15,7 @@ use num_traits::{Signed, Zero};
 use std::collections::hash_map::Entry;
 use std::collections::{BTreeMap, BTreeSet};
 use std::rc::Rc;
-use tezos_crypto_rs::{base58::FromBase58CheckError, hash::FromBytesError};
+use mavryk_crypto_rs::{base58::FromBase58CheckError, hash::FromBytesError};
 
 pub mod type_props;
 
@@ -2315,7 +2315,7 @@ pub(crate) fn typecheck_value<'a>(
             )
         }
         (T::ChainId, V::Bytes(bs)) => {
-            use tezos_crypto_rs::hash::HashTrait;
+            use mavryk_crypto_rs::hash::HashTrait;
             ctx.gas.consume(gas::tc_cost::CHAIN_ID_OPTIMIZED)?;
             TV::ChainId(ChainId::try_from_bytes(bs).map_err(|x| TcError::ChainIdError(x.into()))?)
         }
@@ -6065,13 +6065,13 @@ mod typecheck_tests {
                 entrypoint: Entrypoint::try_from(ep).unwrap(),
             }
         }
-        use tezos_crypto_rs::hash::*;
+        use mavryk_crypto_rs::hash::*;
         // hex representations are obtained via `mavkit-client hash data`
         test_ok(
-            r#""tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j""#,
+            r#""mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe""#,
             "0x00007b09f782e0bcd67739510afa819d85976119d5ef",
             hex(
-                ContractTz1Hash,
+                ContractMv1Hash,
                 "7b09f782e0bcd67739510afa819d85976119d5ef",
                 "default",
             ),
@@ -6080,7 +6080,7 @@ mod typecheck_tests {
             r#""tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH""#,
             "0x00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe",
             hex(
-                ContractTz2Hash,
+                ContractMv2Hash,
                 "0a053e3d8b622a993d3182e3f6cc5638ff5f12fe",
                 "default",
             ),
@@ -6089,7 +6089,7 @@ mod typecheck_tests {
             r#""tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r""#,
             "0x00025cfa532f50de3e12befc0ad21603835dd7698d35",
             hex(
-                ContractTz3Hash,
+                ContractMv3Hash,
                 "5cfa532f50de3e12befc0ad21603835dd7698d35",
                 "default",
             ),
@@ -6098,7 +6098,7 @@ mod typecheck_tests {
             r#""tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN""#,
             "0x00036342f30484dd46b6074373aa6ddca9dfb70083d6",
             hex(
-                ContractTz4Hash,
+                ContractMv4Hash,
                 "6342f30484dd46b6074373aa6ddca9dfb70083d6",
                 "default",
             ),
@@ -6123,10 +6123,10 @@ mod typecheck_tests {
         );
         // with entrypoints
         test_ok(
-            r#""tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j%foo""#,
+            r#""mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%foo""#,
             "0x00007b09f782e0bcd67739510afa819d85976119d5ef666f6f",
             hex(
-                ContractTz1Hash,
+                ContractMv1Hash,
                 "7b09f782e0bcd67739510afa819d85976119d5ef",
                 "foo",
             ),
@@ -6135,7 +6135,7 @@ mod typecheck_tests {
             r#""tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%foo""#,
             "0x00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe666f6f",
             hex(
-                ContractTz2Hash,
+                ContractMv2Hash,
                 "0a053e3d8b622a993d3182e3f6cc5638ff5f12fe",
                 "foo",
             ),
@@ -6144,7 +6144,7 @@ mod typecheck_tests {
             r#""tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%foo""#,
             "0x00025cfa532f50de3e12befc0ad21603835dd7698d35666f6f",
             hex(
-                ContractTz3Hash,
+                ContractMv3Hash,
                 "5cfa532f50de3e12befc0ad21603835dd7698d35",
                 "foo",
             ),
@@ -6153,7 +6153,7 @@ mod typecheck_tests {
             r#""tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%foo""#,
             "0x00036342f30484dd46b6074373aa6ddca9dfb70083d6666f6f",
             hex(
-                ContractTz4Hash,
+                ContractMv4Hash,
                 "6342f30484dd46b6074373aa6ddca9dfb70083d6",
                 "foo",
             ),
@@ -6308,7 +6308,7 @@ mod typecheck_tests {
                 &mut tc_stk![],
             ),
             Err(TcError::ChainIdError(
-                tezos_crypto_rs::base58::FromBase58CheckError::InvalidChecksum.into()
+                mavryk_crypto_rs::base58::FromBase58CheckError::InvalidChecksum.into()
             ))
         );
         assert_eq!(
@@ -6318,7 +6318,7 @@ mod typecheck_tests {
                 &mut tc_stk![],
             ),
             Err(TcError::ChainIdError(
-                tezos_crypto_rs::hash::FromBytesError::InvalidSize.into()
+                mavryk_crypto_rs::hash::FromBytesError::InvalidSize.into()
             ))
         );
     }

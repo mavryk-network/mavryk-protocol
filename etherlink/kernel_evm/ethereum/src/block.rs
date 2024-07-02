@@ -12,10 +12,10 @@ use crate::rlp_helpers::{
 };
 use crate::transaction::TransactionHash;
 use ethbloom::Bloom;
+use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 use primitive_types::{H160, H256, U256};
 use rlp::{Decodable, DecoderError, Encodable, Rlp, RlpStream};
 use sha3::{Digest, Keccak256};
-use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 
 /// Container for fee calculation.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -330,9 +330,9 @@ mod tests {
     use super::L2Block;
     use crate::rlp_helpers::FromRlpBytes;
     use crate::transaction::TRANSACTION_HASH_SIZE;
+    use mavryk_smart_rollup_encoding::timestamp::Timestamp;
     use primitive_types::{H256, U256};
     use rlp::Encodable;
-    use mavryk_smart_rollup_encoding::timestamp::Timestamp;
 
     fn block_encoding_roundtrip(v: L2Block) {
         let bytes = v.rlp_bytes();

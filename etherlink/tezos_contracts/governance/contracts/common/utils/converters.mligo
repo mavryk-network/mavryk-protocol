@@ -42,9 +42,9 @@ let address_to_key_hash
         Explanation of workaround
         Bytes.pack for an address can return the following variants depending on address type 
             tz1NyAf1KeeFCCPPAZ9ard9YVshVGFibzVKa -> 0x050a0000001600002486eda3c7bbbe6be511b46d6deeb1594258a7fd
-            tz2VGBaXuS6rnaa5hpC92qkgadRJKdEbeGwc -> 0x050a000000160001e5c6d1f726796e98b2bad2a819a36f742b2fe25b
-            tz3WEJYwJ6pPwVbSL8FrSoAXRmFHHZTuEnMA -> 0x050a0000001600026c9b3ad59e0f8bdc2bd2011675825f9f547131da
-            tz4Jxn8MpRndqWUzkuZbQKmE3aNWJzYsSEso -> 0x050a0000001600036d39817a1e9a4a66bd28c2f2bb430a04b2d93ecf
+            mv2Ms2ww2MDq88NtTDoAi5YXwNc5Rhkf1ZCW -> 0x050a000000160001e5c6d1f726796e98b2bad2a819a36f742b2fe25b
+            mv3SQDtnFQGs49sZuxcuLkFNioZovhHU5Z75 -> 0x050a0000001600026c9b3ad59e0f8bdc2bd2011675825f9f547131da
+            mv4b621g9B8y9iN2YKbPM7sNE37uu6w9McXG -> 0x050a0000001600036d39817a1e9a4a66bd28c2f2bb430a04b2d93ecf
             KT1GzjQs7HLLVGG95GxURZXAPqEquAVyYD4c -> 0x050a00000016015c49311596d2b140b04401f2824b8ff4fe1256a200
         
             the template for address in michelson bytes is 0xMMTT(LLx4)AA(DDx21)
@@ -56,9 +56,9 @@ let address_to_key_hash
 
         Bytes.pack for a key hash can return the following variants depending on address type 
             tz1NyAf1KeeFCCPPAZ9ard9YVshVGFibzVKa -> 0x050a00000015002486eda3c7bbbe6be511b46d6deeb1594258a7fd
-            tz2VGBaXuS6rnaa5hpC92qkgadRJKdEbeGwc -> 0x050a0000001501e5c6d1f726796e98b2bad2a819a36f742b2fe25b
-            tz3WEJYwJ6pPwVbSL8FrSoAXRmFHHZTuEnMA -> 0x050a00000015026c9b3ad59e0f8bdc2bd2011675825f9f547131da
-            tz4Jxn8MpRndqWUzkuZbQKmE3aNWJzYsSEso -> 0x050a00000015036d39817a1e9a4a66bd28c2f2bb430a04b2d93ecf
+            mv2Ms2ww2MDq88NtTDoAi5YXwNc5Rhkf1ZCW -> 0x050a0000001501e5c6d1f726796e98b2bad2a819a36f742b2fe25b
+            mv3SQDtnFQGs49sZuxcuLkFNioZovhHU5Z75 -> 0x050a00000015026c9b3ad59e0f8bdc2bd2011675825f9f547131da
+            mv4b621g9B8y9iN2YKbPM7sNE37uu6w9McXG -> 0x050a00000015036d39817a1e9a4a66bd28c2f2bb430a04b2d93ecf
 
             the template for key hash in michelson bytes is 0xMMTT(LLx4)(DDx21)
                 MM      - Michelson bytes mark (0x05)

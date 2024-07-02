@@ -6,7 +6,7 @@
 //! Withdrawals
 
 use crypto::hash::ContractKt1Hash;
-use tezos_data_encoding::enc::BinWriter;
+use mavryk_data_encoding::enc::BinWriter;
 use mavryk_smart_rollup_core::MAX_OUTPUT_SIZE;
 #[cfg(feature = "debug")]
 use mavryk_smart_rollup_debug::debug_msg;

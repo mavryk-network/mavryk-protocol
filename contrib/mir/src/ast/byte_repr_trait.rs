@@ -8,8 +8,8 @@
 //! Trait for values representable by either raw bytes or base58check-derived
 //! strings and related types.
 
-use tezos_crypto_rs::base58::FromBase58CheckError;
-use tezos_crypto_rs::hash::FromBytesError;
+use mavryk_crypto_rs::base58::FromBase58CheckError;
+use mavryk_crypto_rs::hash::FromBytesError;
 
 /// Errors that can happen when working with [ByteReprTrait].
 #[derive(Debug, PartialEq, Eq, Clone, thiserror::Error)]

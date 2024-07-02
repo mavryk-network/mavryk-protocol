@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-use std::fs;
-use std::path::Path;
 use mavryk_smart_rollup_encoding::dac::pages::prepare_preimages;
 use mavryk_smart_rollup_encoding::dac::PreimageHash;
+use std::fs;
+use std::path::Path;
 use thiserror::Error;
 
 #[derive(Debug, Error)]

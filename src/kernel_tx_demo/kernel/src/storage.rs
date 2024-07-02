@@ -9,10 +9,9 @@
 //! is rolled back. This module allows for both dealing with transactions
 //! and the updates to accounts that happen within said transactions.
 
-use crypto::hash::ContractTz1Hash;
+use crypto::hash::ContractMv1Hash;
 use crypto::hash::HashType;
 use crypto::hash::PublicKeyEd25519;
-use num_bigint::{BigInt, TryFromBigIntError};
 use mavryk_smart_rollup_encoding::michelson::ticket::StringTicket;
 use mavryk_smart_rollup_encoding::michelson::ticket::{TicketHash, TicketHashError};
 use mavryk_smart_rollup_host::path::{concat, OwnedPath, RefPath};
@@ -20,6 +19,7 @@ use mavryk_smart_rollup_host::runtime::RuntimeError::*;
 use mavryk_smart_rollup_host::runtime::{Runtime, RuntimeError};
 use mavryk_smart_rollup_host::Error::*;
 use mavryk_smart_rollup_storage::storage::Storage;
+use num_bigint::{BigInt, TryFromBigIntError};
 use thiserror::Error;
 
 extern crate alloc;
@@ -129,7 +129,7 @@ const COUNTER_PATH: RefPath = RefPath::assert_from(b"/counter");
 const PUBLIC_KEY_PATH: RefPath = RefPath::assert_from(b"/public.key");
 
 /// Find the path where account information is stored from the account address.
-pub fn account_path(address: &ContractTz1Hash) -> Result<OwnedPath, AccountStorageError> {
+pub fn account_path(address: &ContractMv1Hash) -> Result<OwnedPath, AccountStorageError> {
     let address_name: Vec<u8> = alloc::format!("/{}", address).into();
     OwnedPath::try_from(address_name).map_err(AccountStorageError::from)
 }
@@ -473,7 +473,7 @@ pub fn init_account_storage() -> Result<AccountStorage, AccountStorageError> {
 pub fn deposit_ticket_to_storage<Host: Runtime>(
     host: &mut Host,
     account_storage: &mut AccountStorage,
-    destination: &ContractTz1Hash,
+    destination: &ContractMv1Hash,
     ticket: &StringTicket,
 ) -> Result<(), AccountStorageError> {
     let path = account_path(destination)?;

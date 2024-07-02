@@ -8,9 +8,9 @@
 use crate::transaction::{
     TransactionHash, TransactionStatus, TransactionType, TRANSACTION_HASH_SIZE,
 };
+use mavryk_smart_rollup_encoding::{public_key::PublicKey, timestamp::Timestamp};
 use primitive_types::{H160, H256, U256};
 use rlp::{Decodable, DecoderError, Encodable, Rlp, RlpIterator, RlpStream};
-use mavryk_smart_rollup_encoding::{public_key::PublicKey, timestamp::Timestamp};
 
 pub fn next<'a, 'v>(decoder: &mut RlpIterator<'a, 'v>) -> Result<Rlp<'a>, DecoderError> {
     decoder.next().ok_or(DecoderError::RlpIncorrectListLen)

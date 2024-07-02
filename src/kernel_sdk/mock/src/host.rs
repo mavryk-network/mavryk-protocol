@@ -15,7 +15,9 @@ use core::{
     ptr,
     slice::{from_raw_parts, from_raw_parts_mut},
 };
-use mavryk_smart_rollup_core::smart_rollup_core::{ReadInputMessageInfo, SmartRollupCore};
+use mavryk_smart_rollup_core::smart_rollup_core::{
+    ReadInputMessageInfo, SmartRollupCore,
+};
 use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
 use mavryk_smart_rollup_host::metadata::METADATA_SIZE;
 use mavryk_smart_rollup_host::Error;

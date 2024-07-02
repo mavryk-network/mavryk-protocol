@@ -7,7 +7,7 @@
 
 //! Representation for typed Michelson `signature` values.
 
-use tezos_crypto_rs::{
+use mavryk_crypto_rs::{
     base58::*,
     blake2b,
     hash::{self, HashTrait},
@@ -21,13 +21,13 @@ use super::{ByteReprError, ByteReprTrait};
 
 /* *** Note: reimplementation of signature types. ***
 
-tezos_crypto_rs has some unfortunate quirks with signatures:
+mavryk_crypto_rs has some unfortunate quirks with signatures:
 
 - signature of all zeros is always converted to base58 representation for edsig,
   but tests with mavkit-client show that it should be generic
 - spsig1 and p2sig are entirely missing
 - `verify_signature` requires generic `Signature` as argument, making it
-  very inconvenient to use `tezos_crypto_rs::hash::Ed25519Signature`
+  very inconvenient to use `mavryk_crypto_rs::hash::Ed25519Signature`
 
 These issues should be addressed upstream, but for the time being,
 reimplementation.
@@ -219,7 +219,7 @@ impl TryFrom<&str> for Signature {
     }
 }
 
-/// tezos_crypto_rs refuses to accept strings of length >= 128 for some ungodly
+/// mavryk_crypto_rs refuses to accept strings of length >= 128 for some ungodly
 /// reason. This is a reimplementation without that check.
 fn from_b58check(s: &str) -> Result<Vec<u8>, FromBase58CheckError> {
     const CHECKSUM_BYTE_SIZE: usize = 4;
@@ -253,7 +253,7 @@ impl ByteReprTrait for Signature {
         } else if data.starts_with("p2sig") {
             P256(SignatureTrait::from_b58check(data)?)
         } else if data.starts_with("BLsig") {
-            // BLS signatures are broken in tezos_crypto_rs
+            // BLS signatures are broken in mavryk_crypto_rs
             let raw_bytes = from_b58check(data)?;
             let bytes = &raw_bytes[4..]; // strip 4-byte prefix
             Bls(BlsSignature(bytes.to_vec()))

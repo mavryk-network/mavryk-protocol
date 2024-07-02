@@ -29,9 +29,9 @@ use std::{
     collections::{BTreeMap, BTreeSet},
     rc::Rc,
 };
-/// Reexported from [tezos_crypto_rs::hash]. Typechecked values of the Michelson
+/// Reexported from [mavryk_crypto_rs::hash]. Typechecked values of the Michelson
 /// type `chain_id`.
-pub use tezos_crypto_rs::hash::ChainId;
+pub use mavryk_crypto_rs::hash::ChainId;
 use typed_arena::Arena;
 
 use crate::{bls, lexer::Prim};

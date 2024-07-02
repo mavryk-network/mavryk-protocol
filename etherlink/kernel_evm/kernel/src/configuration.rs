@@ -6,7 +6,7 @@ use crate::{
         sequencer,
     },
 };
-use tezos_crypto_rs::hash::ContractKt1Hash;
+use mavryk_crypto_rs::hash::ContractKt1Hash;
 use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup_debug::Runtime;
 use mavryk_smart_rollup_encoding::public_key::PublicKey;

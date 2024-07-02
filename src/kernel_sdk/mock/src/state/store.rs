@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: MIT
 
 //! Mock runtime store - the container for host state.
+use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
 use std::collections::HashMap;
 use std::rc::Rc;
-use mavryk_smart_rollup_core::PREIMAGE_HASH_SIZE;
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub(crate) struct Store {

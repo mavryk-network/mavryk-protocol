@@ -12,7 +12,7 @@
 #![cfg_attr(feature = "debug", forbid(unsafe_code))]
 
 extern crate alloc;
-extern crate tezos_crypto_rs as crypto;
+extern crate mavryk_crypto_rs as crypto;
 
 #[cfg(feature = "dal")]
 pub mod dal;
@@ -23,7 +23,7 @@ pub mod transactions;
 #[cfg(feature = "testing")]
 pub(crate) mod fake_hash;
 
-use crypto::hash::{ContractTz1Hash, HashTrait, HashType, SmartRollupHash};
+use crypto::hash::{ContractMv1Hash, HashTrait, HashType, SmartRollupHash};
 use inbox::DepositFromInternalPayloadError;
 use mavryk_smart_rollup_core::MAX_INPUT_MESSAGE_SIZE;
 use mavryk_smart_rollup_encoding::inbox::ExternalMessageFrame;
@@ -54,7 +54,7 @@ impl TryFrom<MichelsonPair<MichelsonString, StringTicket>> for InboxDeposit {
 
     fn try_from(value: MichelsonPair<MichelsonString, StringTicket>) -> Result<Self, Self::Error> {
         Ok(Self {
-            destination: ContractTz1Hash::from_b58check(value.0 .0.as_str())?,
+            destination: ContractMv1Hash::from_b58check(value.0 .0.as_str())?,
             ticket: value.1,
         })
     }
@@ -169,7 +169,7 @@ where
 #[derive(Error, Debug)]
 enum TransactionError<'a> {
     #[error("Unable to parse header inbox message {0:?}")]
-    MalformedInboxMessage(nom::Err<tezos_data_encoding::nom::NomError<'a>>),
+    MalformedInboxMessage(nom::Err<mavryk_data_encoding::nom::NomError<'a>>),
     #[error("Invalid internal inbox message, expected deposit: {0}")]
     InvalidInternalInbox(#[from] DepositFromInternalPayloadError),
     #[error("Error storing ticket on rollup")]
@@ -327,7 +327,7 @@ mod test {
     use super::*;
 
     use crate::inbox::external::testing::gen_ed25519_keys;
-    use crypto::hash::{ContractKt1Hash, ContractTz1Hash, HashTrait};
+    use crypto::hash::{ContractKt1Hash, ContractMv1Hash, HashTrait};
     use crypto::PublicKeyWithHash;
     use mavryk_smart_rollup_core::MAX_FILE_CHUNK_SIZE;
     use mavryk_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
@@ -341,7 +341,7 @@ mod test {
         let mut mock_runtime = MockHost::default();
 
         let destination =
-            ContractTz1Hash::from_b58check("mv4SruamFhFY8SNhX4ZTepU3ZP1ceWMzFnZj").unwrap();
+            ContractMv1Hash::from_b58check("mv4SruamFhFY8SNhX4ZTepU3ZP1ceWMzFnZj").unwrap();
 
         let ticket_creator =
             Contract::from_b58check("KT1JW6PwhfaEJu6U3ENsxUeja48AdtqSoekd").unwrap();
@@ -416,7 +416,7 @@ mod test {
         assert_eq!(500, amount);
     }
 
-    fn ticket_amount(mock_host: &MockHost, account: &ContractTz1Hash, ticket_id: u64) -> u64 {
+    fn ticket_amount(mock_host: &MockHost, account: &ContractMv1Hash, ticket_id: u64) -> u64 {
         let ticket_path = OwnedPath::try_from(format!("/accounts/{}/{}", account, ticket_id))
             .expect("Invalid path");
 

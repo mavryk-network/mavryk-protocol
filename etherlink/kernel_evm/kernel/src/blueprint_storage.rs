@@ -11,15 +11,15 @@ use crate::storage::{
     self, read_current_block_number, read_rlp, store_read_slice, store_rlp,
 };
 use crate::{delayed_inbox, DelayedInbox};
-use primitive_types::{H256, U256};
-use rlp::{Decodable, DecoderError, Encodable};
-use sha3::{Digest, Keccak256};
 use mavryk_ethereum::rlp_helpers;
 use mavryk_ethereum::tx_common::EthereumTransactionCommon;
 use mavryk_evm_logging::{log, Level::*};
 use mavryk_smart_rollup_core::MAX_INPUT_MESSAGE_SIZE;
 use mavryk_smart_rollup_host::path::*;
 use mavryk_smart_rollup_host::runtime::{Runtime, RuntimeError};
+use primitive_types::{H256, U256};
+use rlp::{Decodable, DecoderError, Encodable};
+use sha3::{Digest, Keccak256};
 
 pub const EVM_BLUEPRINTS: RefPath = RefPath::assert_from(b"/evm/blueprints");
 
@@ -413,12 +413,12 @@ mod tests {
     use crate::delayed_inbox::Hash;
     use crate::sequencer_blueprint::UnsignedSequencerBlueprint;
     use crate::Timestamp;
-    use primitive_types::H256;
-    use tezos_crypto_rs::hash::ContractKt1Hash;
-    use tezos_crypto_rs::hash::Signature;
+    use mavryk_crypto_rs::hash::ContractKt1Hash;
+    use mavryk_crypto_rs::hash::Signature;
     use mavryk_ethereum::transaction::TRANSACTION_HASH_SIZE;
     use mavryk_smart_rollup_encoding::public_key::PublicKey;
     use mavryk_smart_rollup_mock::MockHost;
+    use primitive_types::H256;
 
     #[test]
     fn test_invalid_sequencer_blueprint_is_removed() {

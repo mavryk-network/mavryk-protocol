@@ -17,9 +17,9 @@ use crate::{
 use aurora_engine_modexp::modexp;
 use evm::{Context, ExitError, ExitReason, ExitSucceed, Transfer};
 use host::runtime::Runtime;
-use primitive_types::U256;
 use mavryk_evm_logging::log;
 use mavryk_evm_logging::Level::Debug;
+use primitive_types::U256;
 
 fn calculate_iteration_count(exp_length: u64, exp_highp: &U256) -> u64 {
     let mut iteration_count: u64 = 0;

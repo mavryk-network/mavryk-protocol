@@ -4,10 +4,12 @@
 
 #![cfg(feature = "experimental-host-in-memory-store")]
 
-use std::cell::RefCell;
 use mavryk_smart_rollup_core::rollup_host::RollupHost;
-use mavryk_smart_rollup_core::smart_rollup_core::{ReadInputMessageInfo, SmartRollupCore};
+use mavryk_smart_rollup_core::smart_rollup_core::{
+    ReadInputMessageInfo, SmartRollupCore,
+};
 use mavryk_smart_rollup_mock::InMemoryStore;
+use std::cell::RefCell;
 
 /// Runtime with in-memory storage
 pub struct RollupHostWithInMemoryStorage {

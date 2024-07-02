@@ -762,12 +762,12 @@ mod tests {
         path::{OwnedPath, Path, RefPath},
         Error, METADATA_SIZE,
     };
-    use std::slice::{from_raw_parts, from_raw_parts_mut};
-    use test_helpers::*;
     use mavryk_smart_rollup_core::{
         smart_rollup_core::MockSmartRollupCore, MAX_FILE_CHUNK_SIZE,
         MAX_INPUT_MESSAGE_SIZE, MAX_OUTPUT_SIZE,
     };
+    use std::slice::{from_raw_parts, from_raw_parts_mut};
+    use test_helpers::*;
 
     const READ_SIZE: usize = 80;
 

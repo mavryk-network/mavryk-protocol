@@ -7,7 +7,7 @@ use crate::{fake_hash::arb_kt1, inbox::Signer};
 use mavryk_smart_rollup_encoding::{entrypoint::Entrypoint, michelson::ticket::StringTicket};
 
 use super::{Operation, OperationContent};
-use crypto::hash::ContractTz1Hash;
+use crypto::hash::ContractMv1Hash;
 use crypto::hash::HashType;
 use crypto::hash::SecretKeyEd25519;
 use crypto::hash::SeedEd25519;
@@ -27,13 +27,13 @@ impl OperationContent {
     /// Generation strategy for transfer operations.
     pub fn arb_transfer() -> BoxedStrategy<OperationContent> {
         (
-            any::<[u8; HashType::ContractTz1Hash.size()]>(),
+            any::<[u8; HashType::ContractMv1Hash.size()]>(),
             StringTicket::arb(),
         )
             .prop_map(|(hash, ticket)| {
                 let amount = ticket.amount_as().unwrap();
                 let ticket_hash = ticket.hash().unwrap();
-                OperationContent::transfer(ContractTz1Hash(hash.to_vec()), ticket_hash, amount)
+                OperationContent::transfer(ContractMv1Hash(hash.to_vec()), ticket_hash, amount)
                     .unwrap()
             })
             .boxed()

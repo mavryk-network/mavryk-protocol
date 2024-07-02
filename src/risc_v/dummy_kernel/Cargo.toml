@@ -3,7 +3,7 @@ name = "risc-v-dummy"
 version = "0.0.0"
 edition = "2021"
 
-[dependencies.tezos_crypto_rs]
+[dependencies.mavryk_crypto_rs]
 version = "0.5.2"
 default-features = false
 

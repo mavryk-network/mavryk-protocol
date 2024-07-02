@@ -7,9 +7,9 @@ use crate::access_record::AccessRecord;
 use evm::executor::stack::Log;
 use evm::gasometer::Gasometer;
 use evm::Config;
+use mavryk_ethereum::withdrawal::Withdrawal;
 use primitive_types::H160;
 use std::collections::BTreeSet;
-use mavryk_ethereum::withdrawal::Withdrawal;
 
 /// Data related to the current transaction layer
 pub struct TransactionLayerData<'config> {

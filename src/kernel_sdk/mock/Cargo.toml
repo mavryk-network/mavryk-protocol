@@ -15,8 +15,8 @@ categories = ["development-tools", "development-tools::testing"]
 
 [dependencies]
 hex = "0.4"
-tezos_crypto_rs = { version = "=0.5.2", default-features = false }
-tezos_data_encoding = "=0.5.2"
+mavryk_crypto_rs = { version = "=0.5.2", default-features = false }
+mavryk_data_encoding = "=0.5.2"
 
 [dependencies.mavryk-smart-rollup-encoding]
 path = "../encoding"

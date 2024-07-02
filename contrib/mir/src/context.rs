@@ -15,7 +15,7 @@ use crate::ast::michelson_key_hash::KeyHash;
 use crate::gas::Gas;
 use num_bigint::{BigInt, BigUint};
 use std::collections::HashMap;
-use tezos_crypto_rs::hash::OperationListHash;
+use mavryk_crypto_rs::hash::OperationListHash;
 
 /// [Ctx] includes "outer context" required for typechecking and interpreting
 /// Michelson.
@@ -42,7 +42,7 @@ pub struct Ctx<'a> {
     pub min_block_time: BigUint,
     /// Identifier of the chain where the script is being executed. The result
     /// of the `CHAIN_ID` instruction. Defaults to `NetXynUjJNZm7wi`.
-    pub chain_id: tezos_crypto_rs::hash::ChainId,
+    pub chain_id: mavryk_crypto_rs::hash::ChainId,
     /// Address of the contract being executed. The result of the `SELF_ADDRESS`
     /// instruction. Defaults to `KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi`.
     pub self_address: AddressHash,
@@ -139,7 +139,7 @@ impl Default for Ctx<'_> {
             now: 0i32.into(),
             min_block_time: 1u32.into(),
             // the default chain id is NetXynUjJNZm7wi, which is also the default chain id of mavkit-client in mockup mode
-            chain_id: tezos_crypto_rs::hash::ChainId(vec![0xf3, 0xd4, 0x85, 0x54]),
+            chain_id: mavryk_crypto_rs::hash::ChainId(vec![0xf3, 0xd4, 0x85, 0x54]),
             self_address: "KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi".try_into().unwrap(),
             sender: "KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi".try_into().unwrap(),
             source: "tz1TSbthBCECxmnABv73icw7yyyvUWFLAoSP".try_into().unwrap(),

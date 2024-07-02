@@ -1048,7 +1048,7 @@ mod tests {
 
     #[test]
     fn create_contract() {
-        use tezos_crypto_rs::hash::OperationListHash;
+        use mavryk_crypto_rs::hash::OperationListHash;
         let mut ctx = Ctx::default();
         let cs_mich =
             parse("{ parameter unit; storage unit; code { DROP; UNIT; NIL operation; PAIR; }}")
@@ -1182,7 +1182,7 @@ mod multisig_tests {
     fn make_ctx<'a>() -> Ctx<'a> {
         let mut ctx = Ctx::default();
         ctx.self_address = "KT1BFATQpdP5xJGErJyk2vfL46dvFanWz87H".try_into().unwrap();
-        ctx.chain_id = tezos_crypto_rs::hash::ChainId(hex::decode("f3d48554").unwrap());
+        ctx.chain_id = mavryk_crypto_rs::hash::ChainId(hex::decode("f3d48554").unwrap());
         ctx
     }
 
@@ -1231,7 +1231,7 @@ mod multisig_tests {
                 Pair
                     (Pair $CHAIN_ID \"$SELF_ADDRESS\")
                     $ANTI_REPLAY_COUNTER
-                    (Left (Pair 123 \"tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j\"))
+                    (Left (Pair 123 \"mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe\"))
                 " of type $PARAM_TYPE | sed -n 's/^Raw packed data: //p')
 
             # Sign the packed parameter.
@@ -1239,7 +1239,7 @@ mod multisig_tests {
             Signature: edsigu1GCyS754UrkFLng9P5vG5T51Hs8TcgZoV7fPfj5qeXYzC1JKuUYzyowpfGghEEqUyPxpUdU7WRFrdxad5pnspQg9hwk6v
         */
         let transfer_amount = 123;
-        let transfer_destination = "tz1WrbkDrzKVqcGXkjw4Qk4fXkjXpAJuNP1j";
+        let transfer_destination = "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe";
         let signature = "edsigu1GCyS754UrkFLng9P5vG5T51Hs8TcgZoV7fPfj5qeXYzC1JKuUYzyowpfGghEEqUyPxpUdU7WRFrdxad5pnspQg9hwk6v";
 
         let interp_res = parse_contract_script(MULTISIG_SRC)

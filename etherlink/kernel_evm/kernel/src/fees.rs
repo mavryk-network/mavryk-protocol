@@ -20,11 +20,11 @@ use crate::inbox::TransactionContent;
 use evm_execution::account_storage::{account_path, EthereumAccountStorage};
 use evm_execution::handler::ExecutionOutcome;
 use evm_execution::EthereumError;
-use primitive_types::{H160, H256, U256};
 use mavryk_ethereum::access_list::AccessListItem;
 use mavryk_ethereum::block::BlockFees;
 use mavryk_ethereum::tx_common::EthereumTransactionCommon;
 use mavryk_smart_rollup_host::runtime::Runtime;
+use primitive_types::{H160, H256, U256};
 
 use std::mem::size_of;
 
@@ -292,8 +292,8 @@ mod tests {
         account_storage::{account_path, EthereumAccountStorage},
         handler::ExtendedExitReason,
     };
-    use primitive_types::{H160, U256};
     use mavryk_smart_rollup_mock::MockHost;
+    use primitive_types::{H160, U256};
 
     use proptest::prelude::*;
 

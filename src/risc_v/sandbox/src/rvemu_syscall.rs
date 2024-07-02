@@ -9,6 +9,12 @@ use crate::inbox::Inbox;
 use crate::rvemu_boot::{A0, A1, A2, A3, A6, A7};
 use ed25519_dalek::{Signature, Signer, SigningKey, VerifyingKey};
 use kernel_loader::Memory;
+use mavryk_smart_rollup_constants::riscv::{
+    SBI_CONSOLE_PUTCHAR, SBI_FIRMWARE_TEZOS, SBI_SHUTDOWN, SBI_TEZOS_BLAKE2B_HASH256,
+    SBI_TEZOS_ED25519_SIGN, SBI_TEZOS_ED25519_VERIFY, SBI_TEZOS_INBOX_NEXT, SBI_TEZOS_META_ADDRESS,
+    SBI_TEZOS_META_ORIGINATION_LEVEL,
+};
+use mavryk_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
 use rvemu::cpu::{AccessType, BYTE};
 use rvemu::emulator::Emulator;
 use rvemu::exception::Exception;
@@ -17,12 +23,6 @@ use std::{
     io::{self, Write},
     process::exit,
 };
-use mavryk_smart_rollup_constants::riscv::{
-    SBI_CONSOLE_PUTCHAR, SBI_FIRMWARE_TEZOS, SBI_SHUTDOWN, SBI_TEZOS_BLAKE2B_HASH256,
-    SBI_TEZOS_ED25519_SIGN, SBI_TEZOS_ED25519_VERIFY, SBI_TEZOS_INBOX_NEXT, SBI_TEZOS_META_ADDRESS,
-    SBI_TEZOS_META_ORIGINATION_LEVEL,
-};
-use mavryk_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
 
 type SBIResult = Result<(), Box<dyn Error>>;
 
@@ -171,7 +171,7 @@ fn sbi_tezos_blake2b_hash256(emu: &mut Emulator) -> SBIResult {
     let msg_len = emu.cpu.xregs.read(A2);
     let msg_bytes = read_memory(emu, msg_addr, msg_len)?;
 
-    let hash = tezos_crypto_rs::blake2b::digest_256(msg_bytes.as_slice())?;
+    let hash = mavryk_crypto_rs::blake2b::digest_256(msg_bytes.as_slice())?;
 
     let out_addr = read_physical_address(emu, A0)?;
     emu.cpu.bus.write_bytes(out_addr, hash.as_slice())?;

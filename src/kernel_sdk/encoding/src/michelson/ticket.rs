@@ -23,6 +23,12 @@ use core::{
 };
 use crypto::blake2b::{digest_256, Blake2bError};
 use hex::FromHexError;
+use mavryk_data_encoding::{
+    enc::{BinError, BinResult, BinWriter},
+    encoding::{Encoding, HasEncoding},
+    nom::{error::DecodeError, NomReader, NomResult},
+    types::{SizedBytes, Zarith},
+};
 use nom::{
     combinator::map,
     error::{ErrorKind, ParseError},
@@ -30,12 +36,6 @@ use nom::{
 use num_bigint::BigInt;
 use num_traits::Signed;
 use std::fmt::Debug;
-use tezos_data_encoding::{
-    enc::{BinError, BinResult, BinWriter},
-    encoding::{Encoding, HasEncoding},
-    nom::{error::DecodeError, NomReader, NomResult},
-    types::{SizedBytes, Zarith},
-};
 use thiserror::Error;
 
 #[cfg(feature = "testing")]
@@ -284,7 +284,7 @@ impl<Expr: MichelsonTicketContent> BinWriter for Ticket<Expr> {
 }
 
 impl<Expr: MichelsonTicketContent> HasEncoding for Ticket<Expr> {
-    fn encoding() -> tezos_data_encoding::encoding::Encoding {
+    fn encoding() -> mavryk_data_encoding::encoding::Encoding {
         <LegacyTicketRepr<Expr>>::encoding()
     }
 }
@@ -379,8 +379,8 @@ mod test {
     use crate::michelson::MichelsonOr;
 
     use super::*;
-    use tezos_data_encoding::enc::BinWriter;
-    use tezos_data_encoding::nom::NomReader;
+    use mavryk_data_encoding::enc::BinWriter;
+    use mavryk_data_encoding::nom::NomReader;
 
     #[test]
     fn content_bytes() {

@@ -1,5 +1,4 @@
-use std::collections::LinkedList;
-use tezos_crypto_rs::hash::{BlockHash, ContractKt1Hash};
+use mavryk_crypto_rs::hash::{BlockHash, ContractKt1Hash};
 use mavryk_smart_rollup_encoding::{
     inbox::{InboxMessage, InfoPerLevel, InternalInboxMessage, Transfer},
     michelson,
@@ -7,6 +6,7 @@ use mavryk_smart_rollup_encoding::{
     smart_rollup::SmartRollupAddress,
     timestamp::Timestamp,
 };
+use std::collections::LinkedList;
 
 /// Inbox builder
 pub struct InboxBuilder {

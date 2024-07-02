@@ -28,7 +28,7 @@ let main {transaction; evm_rollup} store : return =
     in
     let burn_contract =
       Mavryk.get_contract_with_error
-        ("tz1burnburnburnburnburnburnburjAYjjX" : address)
+        ("mv2burnburnburnburnburnburnbur7hzNeg" : address)
         "Invalid burn address"
     in
     let burn_1tez =

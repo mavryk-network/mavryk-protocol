@@ -13,9 +13,9 @@
 //!
 //! [outbox message repr]: <https://gitlab.com/tezos/tezos/-/blob/80b2cccb9c663dde2d86a6c94806fc149b7d1ef3/src/proto_alpha/lib_protocol/sc_rollup_outbox_message_repr.ml>
 
-use tezos_data_encoding::enc::BinWriter;
-use tezos_data_encoding::encoding::HasEncoding;
-use tezos_data_encoding::nom::NomReader;
+use mavryk_data_encoding::enc::BinWriter;
+use mavryk_data_encoding::encoding::HasEncoding;
+use mavryk_data_encoding::nom::NomReader;
 
 use crate::contract::Contract;
 use crate::entrypoint::Entrypoint;

@@ -30,9 +30,9 @@ use evm::{Context, ExitReason, Handler, Transfer};
 use hash::{ripemd160_precompile, sha256_precompile};
 use host::runtime::Runtime;
 use identity::identity_precompile;
+use mavryk_ethereum::withdrawal::Withdrawal;
 use modexp::modexp_precompile;
 use primitive_types::H160;
-use mavryk_ethereum::withdrawal::Withdrawal;
 use withdrawal::withdrawal_precompile;
 use zero_knowledge::{ecadd_precompile, ecmul_precompile, ecpairing_precompile};
 
@@ -244,10 +244,10 @@ mod test_helpers {
     use crate::EthereumError;
     use evm::Config;
     use evm::Transfer;
-    use primitive_types::{H160, U256};
     use mavryk_ethereum::block::BlockConstants;
     use mavryk_ethereum::block::BlockFees;
     use mavryk_smart_rollup_mock::MockHost;
+    use primitive_types::{H160, U256};
 
     use super::precompile_set;
     const DUMMY_ALLOCATED_TICKS: u64 = 100_000_000;
