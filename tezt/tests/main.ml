@@ -59,13 +59,12 @@ let register_protocol_independent_tests () =
   Proxy.register_protocol_independent () ;
   Rpc_tls.register_protocol_independent () ;
   Snoop_codegen.register_protocol_independent () ;
-  Snoop_protocol_codegen.register_protocol_independent ()
-(* TODO: Restore after Atlas update to test migrations + unable to properly compile the dummy kernel to test the sandbox *)
-  (* Risc_v_sandbox.register () *)
+  Snoop_protocol_codegen.register_protocol_independent () ;
+  Sc_rollup.register_protocol_independent () ;
+  Risc_v_sandbox.register ()
 
 (* Tests related to protocol migration. *)
-(* TODO: Restore after Atlas update to test migrations *)
-let _register_protocol_migration_tests () =
+let register_protocol_migration_tests () =
   let migrate_from = Option.get @@ Protocol.previous_protocol migrate_to in
   Mockup.register_constant_migration ~migrate_from ~migrate_to ;
   Protocol_migration.register ~migrate_from ~migrate_to ;
@@ -89,8 +88,7 @@ let _register_protocol_migration_tests () =
   Sc_rollup_migration.register ~migrate_from ~migrate_to ;
   Dal.register_migration ~migrate_from ~migrate_to
 
-(* TODO: Restore after Atlas update to test migrations *)
-let _register_old_protocol_migration_tests () =
+let register_old_protocol_migration_tests () =
   List.iter
     (fun p ->
       match (Protocol.previous_protocol p, p) with
@@ -178,17 +176,15 @@ let register_protocol_tests_that_use_supports_correctly () =
   P2p.register ~protocols ;
   Precheck.register ~protocols ;
   Prevalidator.register ~protocols ;
-  (* TODO: Restore after Atlas update to test migrations *)
-  (* Protocol_limits.register ~protocols ; *)
+  Protocol_limits.register ~protocols ;
   Proxy.register ~protocols ;
-  (* TODO: Restore after Atlas update to test migrations *)
-  (* Proxy_server_test.register ~protocols ; *)
+  Proxy_server_test.register ~protocols ;
+  Rpc_process.register ~protocols ;
   RPC_test.register protocols ;
   Rpc_versioning_attestation.register ~protocols ;
   Reject_malformed_micheline.register ~protocols ;
   Replace_by_fees.register ~protocols ;
-  (* TODO: Restore after Atlas update to test migrations *)
-  (* Retro.register ~protocols ; *)
+  Retro.register ~protocols ;
   Rpc_config_logging.register ~protocols ;
   Run_operation_RPC.register ~protocols ;
   Run_script.register ~protocols ;
@@ -235,10 +231,10 @@ let register_protocol_specific_because_regression_tests () = ()
 
 let () =
   register_protocol_independent_tests () ;
-  (* register_protocol_migration_tests () ;
-  register_old_protocol_migration_tests () ; *)
+  register_protocol_migration_tests () ;
+  register_old_protocol_migration_tests () ;
   register_protocol_tests_that_use_supports_correctly () ;
   register_protocol_specific_because_regression_tests () ;
-  Mavryk_scoru_wasm_regressions.register () ;
+  Tezt_wrapper.Uses.register_meta_test () ;
   (* Test.run () should be the last statement, don't register afterwards! *)
   Test.run ()

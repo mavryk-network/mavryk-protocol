@@ -293,7 +293,7 @@ let with_layer1 ?custom_constants ?additional_bootstrap_accounts
   let bootstrap1_key = Constant.bootstrap1.public_key_hash in
   f dal_parameters cryptobox node client bootstrap1_key
 
-let with_fresh_rollup ?(pvm_name = "arith") ?dal_node f Mavryk_node Mavryk_client
+let with_fresh_rollup ?(pvm_name = "arith") ?dal_node f tezos_node tezos_client
     bootstrap1_key =
   let* rollup_address =
     Client.Sc_rollup.originate
@@ -304,22 +304,22 @@ let with_fresh_rollup ?(pvm_name = "arith") ?dal_node f Mavryk_node Mavryk_clien
       ~kind:pvm_name
       ~boot_sector:""
       ~parameters_ty:"string"
-      Mavryk_client
+      tezos_client
   in
   let sc_rollup_node =
     Sc_rollup_node.create
       ?dal_node
       Operator
-      Mavryk_node
-      ~base_dir:(Client.base_dir Mavryk_client)
+      tezos_node
+      ~base_dir:(Client.base_dir tezos_client)
       ~default_operator:bootstrap1_key
   in
-  let* () = bake_for Mavryk_client in
+  let* () = bake_for tezos_client in
   f rollup_address sc_rollup_node
 
 let make_dal_node ?name ?peers ?attester_profiles ?producer_profiles
-    ?bootstrap_profile ?history_mode Mavryk_node =
-  let dal_node = Dal_node.create ?name ~node:Mavryk_node () in
+    ?bootstrap_profile ?history_mode tezos_node =
+  let dal_node = Dal_node.create ?name ~node:tezos_node () in
   let* () =
     Dal_node.init_config
       ?peers
@@ -333,7 +333,7 @@ let make_dal_node ?name ?peers ?attester_profiles ?producer_profiles
   return dal_node
 
 let with_dal_node ?peers ?attester_profiles ?producer_profiles
-    ?bootstrap_profile ?history_mode Mavryk_node f key =
+    ?bootstrap_profile ?history_mode tezos_node f key =
   let* dal_node =
     make_dal_node
       ?peers
@@ -341,7 +341,7 @@ let with_dal_node ?peers ?attester_profiles ?producer_profiles
       ?producer_profiles
       ?bootstrap_profile
       ?history_mode
-      Mavryk_node
+      tezos_node
   in
   f key dal_node
 
@@ -6070,7 +6070,7 @@ let scenario_tutorial_dal_baker =
       in
 
       (* Launch dal node (Step 4) *)
-      Log.info "Step 4: Run an Mavkit dal node" ;
+      Log.info "Step 4: Run an Octez dal node" ;
       let* dal_node = make_dal_node node in
 
       let* topics = Dal_RPC.Local.call dal_node @@ Dal_RPC.get_topics () in
@@ -6089,7 +6089,7 @@ let scenario_tutorial_dal_baker =
         Account.Bootstrap.keys |> Array.to_list |> List.cons my_baker
         |> List.map (fun key -> key.Account.alias)
       in
-      Log.info "Step 5: Run an Mavkit baking daemon" ;
+      Log.info "Step 5: Run an Octez baking daemon" ;
       let* _baker =
         Baker.init
           ~event_sections_levels:[(Protocol.name protocol ^ ".baker", `Debug)]

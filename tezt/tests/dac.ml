@@ -1088,11 +1088,11 @@ module Full_infrastructure = struct
           to the serialized payload in [5].*)
     committee_member_receives_root_hash_promise
 
-  (** [test_mavryk_node_disconnects_scenario] checks that upon L1 disconnection,
+  (** [test_tezos_node_disconnects_scenario] checks that upon L1 disconnection,
       DAC actors automatically restart L1 tracking. In addition, we also test
       that upon reconnection, DAC network works as expected when serializing a
       random payload.  *)
-  let test_mavryk_node_disconnects_scenario
+  let test_tezos_node_disconnects_scenario
       Scenarios.
         {node; coordinator_node; committee_members_nodes; observer_nodes; _} =
     (* We assert DAC network of only one committee member and one observer node.
@@ -1111,7 +1111,7 @@ module Full_infrastructure = struct
         coordinator_node
         (committee_members_nodes @ observer_nodes)
     in
-    (* 2. We terminate the Mavryk [node], which cause a L1 disconnection of the
+    (* 2. We terminate the Tezos [node], which cause a L1 disconnection of the
           DAC network. *)
     let wait_for_coordinator_stopped_tracking_l1 =
       wait_for_l1_tracking_ended coordinator_node
@@ -1122,12 +1122,12 @@ module Full_infrastructure = struct
     let wait_for_observer_stopped_tracking_l1 =
       wait_for_l1_tracking_ended observer
     in
-    Log.info "Terminating Mavryk node" ;
+    Log.info "Terminating Tezos node" ;
     let* () = Node.terminate node in
     let* () = wait_for_coordinator_stopped_tracking_l1 in
     let* () = wait_for_committee_member_stopped_tracking_l1 in
     let* () = wait_for_observer_stopped_tracking_l1 in
-    (* 3. We restart Mavryk [node] and expect the DAC network to restart tracking
+    (* 3. We restart Tezos [node] and expect the DAC network to restart tracking
          L1 heads. *)
     let wait_for_coordinator_connected_to_l1 =
       wait_for_layer1_new_head coordinator_node
@@ -1135,7 +1135,7 @@ module Full_infrastructure = struct
     let wait_for_committee_member_connected_to_l1 =
       wait_for_layer1_new_head committee_member
     in
-    Log.info "Restarting Mavryk node" ;
+    Log.info "Restarting Tezos node" ;
     let* () = Node.run node [] in
     (* 4. We assert [3.] by waiting for "dac_node_layer_1_new_head" event from
        both [coordinator_node] and [committee_member] node. *)
@@ -1420,7 +1420,7 @@ module Tx_kernel_e2e = struct
 
   let assert_ticks_advanced ?block sc_rollup_node prev_ticks =
     let* ticks =
-      Sc_rollup_node.RPC.call sc_rollup_node
+      Sc_rollup_node.RPC.call ~rpc_hooks sc_rollup_node
       @@ Sc_rollup_rpc.get_global_block_total_ticks ?block ()
     in
     Check.(ticks > prev_ticks)
@@ -1596,7 +1596,7 @@ module Tx_kernel_e2e = struct
       @@ Sc_rollup_rpc.get_global_block_state_hash ()
     in
     let* prev_ticks =
-      Sc_rollup_node.RPC.call sc_rollup_node
+      Sc_rollup_node.RPC.call ~rpc_hooks sc_rollup_node
       @@ Sc_rollup_rpc.get_global_block_total_ticks ()
     in
     let* () = send_message client (sf "hex:[%S]" hex_encoded_message) in
@@ -1605,20 +1605,19 @@ module Tx_kernel_e2e = struct
     let* () = assert_state_changed sc_rollup_node prev_state_hash in
     return {prev_state_hash; prev_ticks; level}
 
-  let verify_outbox_answer ~withdrawal_level ~sc_rollup_node ~sc_rollup_client
-      ~sc_rollup_address ~client =
+  let verify_outbox_answer ~withdrawal_level ~sc_rollup_node ~sc_rollup_address
+      ~client =
     let* outbox =
       Sc_rollup_node.RPC.call sc_rollup_node
       @@ Sc_rollup_rpc.get_global_block_outbox ~outbox_level:withdrawal_level ()
     in
     Log.info "Outbox is %s" @@ JSON.encode outbox ;
     let* answer =
-      let message_index = 0 in
-      let outbox_level = withdrawal_level in
-      Sc_rollup_client.outbox_proof
-        sc_rollup_client
-        ~message_index
-        ~outbox_level
+      Sc_rollup_node.RPC.call sc_rollup_node
+      @@ Sc_rollup_rpc.outbox_proof_simple
+           ~message_index:0
+           ~outbox_level:withdrawal_level
+           ()
     in
     match answer with
     | Some {commitment_hash; proof} ->
@@ -1773,7 +1772,6 @@ module Tx_kernel_e2e = struct
     in
     let init_level = JSON.(genesis_info |-> "level" |> as_int) in
     let* () = Sc_rollup_node.run sc_rollup_node sc_rollup_address [] in
-    let sc_rollup_client = Sc_rollup_client.create ~protocol sc_rollup_node in
     let* level =
       Sc_rollup_node.wait_for_level ~timeout:30. sc_rollup_node init_level
     in
@@ -1865,7 +1863,6 @@ module Tx_kernel_e2e = struct
       verify_outbox_answer
         ~client
         ~sc_rollup_node
-        ~sc_rollup_client
         ~sc_rollup_address
         ~withdrawal_level
     in
@@ -1931,9 +1928,8 @@ module Tx_kernel_e2e = struct
       Sc_rollup_node.run
         sc_rollup_node
         sc_rollup_address
-        ["--dac-observer"; Dac_node.endpoint observer_node]
+        [Dac_observer observer_node]
     in
-    let sc_rollup_client = Sc_rollup_client.create ~protocol sc_rollup_node in
     let* level =
       Sc_rollup_node.wait_for_level ~timeout:30. sc_rollup_node init_level
     in
@@ -2050,7 +2046,6 @@ module Tx_kernel_e2e = struct
       verify_outbox_answer
         ~client
         ~sc_rollup_node
-        ~sc_rollup_client
         ~sc_rollup_address
         ~withdrawal_level
     in
@@ -2166,7 +2161,9 @@ module Api_regression = struct
       [
         ("tz[1234]\\w{33}\\b", "[PUBLIC_KEY_HASH]");
         ("(BLsig|asig)\\w{137}\\b", "[AGGREGATED_SIG]");
+        ("http://localhost:\\d{4,5}/", "$SCHEME://$HOST:$PORT/");
         ("http://127.0.0.1:\\d{4,5}/", "$SCHEME://$HOST:$PORT/");
+        ("http://\\[::1\\]:\\d{4,5}/", "$SCHEME://$HOST:$PORT/");
       ]
     in
     List.fold_left
@@ -2542,7 +2539,7 @@ let register ~protocols =
     ~committee_size:1
     ~tags:["dac"]
     "test DAC disconnects from L1"
-    Full_infrastructure.test_mavryk_node_disconnects_scenario
+    Full_infrastructure.test_tezos_node_disconnects_scenario
     protocols ;
   Tx_kernel_e2e.test_tx_kernel_e2e_with_dac_observer_synced_with_dac protocols ;
   Tx_kernel_e2e.test_tx_kernel_e2e_with_dac_observer_missing_pages protocols ;

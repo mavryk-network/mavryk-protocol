@@ -246,7 +246,7 @@ let () =
     ~hash_frequency:137L
     ~proof_frequency:(11L, 23L)
     echo_kernel ;
-  register
+  (* register
     ~name:"tx_no_verify"
     ~from_binary:true
     ~ticks_per_snapshot:6_000_000L
@@ -307,4 +307,4 @@ let () =
     ~versions
     ~hash_frequency:0L
     ~proof_frequency:(1L, 0L)
-    (link_kernel "reveal" ["i32"; "i32"; "i32"; "i32"] ["i32"])
+    (link_kernel "reveal" ["i32"; "i32"; "i32"; "i32"] ["i32"]) *)

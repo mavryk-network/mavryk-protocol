@@ -5,7 +5,7 @@ maintainer: ["contact@tezos.com"]
 authors: ["Tezos devteam"]
 license: "MIT"
 homepage: "https://www.tezos.com/"
-bug-reports: "https://gitlab.com/mavryk-network/mavryk-protocol/issues"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
 depends: [
   "dune" {>= "3.0"}
   "ppxlib" {>= "0.22.2"}
