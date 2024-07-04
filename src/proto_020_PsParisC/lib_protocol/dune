@@ -209,6 +209,9 @@
   Liquidity_baking_cpmm
   Liquidity_baking_lqt
   Liquidity_baking_migration
+  Protocol_treasury_storage
+  Protocol_treasury_buffer
+  Protocol_treasury_migration
   Sc_rollup_errors
   Sc_rollup_inbox_storage
   Legacy_script_patches
@@ -316,7 +319,7 @@
  (action
   (write-file
    %{targets}
-   "\nlet hash = Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn \"PsCyhwT21r2MENfwDr36nj9o3U8XJR5s8QetXEDQBweBru4xvZh\"\nlet name = Mavryk_protocol_environment_020_PsParisC.Name.name\ninclude Mavryk_raw_protocol_020_PsParisC\ninclude Mavryk_raw_protocol_020_PsParisC.Main\n")))
+   "\nlet hash = Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn \"Pt5eSupwy3BnjkS7DXRT786XArLsXi1hGQ7sMUBYoTX5bYi89iV\"\nlet name = Mavryk_protocol_environment_020_PsParisC.Name.name\ninclude Mavryk_raw_protocol_020_PsParisC\ninclude Mavryk_raw_protocol_020_PsParisC.Main\n")))
 
 (rule
  (targets mavryk_protocol_020_PsParisC.ml)
@@ -509,6 +512,9 @@
   liquidity_baking_cpmm.ml
   liquidity_baking_lqt.ml
   liquidity_baking_migration.ml liquidity_baking_migration.mli
+  protocol_treasury_storage.ml protocol_treasury_storage.mli
+  protocol_treasury_buffer.ml
+  protocol_treasury_migration.ml protocol_treasury_migration.mli
   sc_rollup_errors.ml
   sc_rollup_inbox_storage.ml sc_rollup_inbox_storage.mli
   legacy_script_patches.ml
@@ -810,6 +816,9 @@
   liquidity_baking_cpmm.ml
   liquidity_baking_lqt.ml
   liquidity_baking_migration.ml liquidity_baking_migration.mli
+  protocol_treasury_storage.ml protocol_treasury_storage.mli
+  protocol_treasury_buffer.ml
+  protocol_treasury_migration.ml protocol_treasury_migration.mli
   sc_rollup_errors.ml
   sc_rollup_inbox_storage.ml sc_rollup_inbox_storage.mli
   legacy_script_patches.ml
@@ -1095,6 +1104,9 @@
   liquidity_baking_cpmm.ml
   liquidity_baking_lqt.ml
   liquidity_baking_migration.ml liquidity_baking_migration.mli
+  protocol_treasury_storage.ml protocol_treasury_storage.mli
+  protocol_treasury_buffer.ml
+  protocol_treasury_migration.ml protocol_treasury_migration.mli
   sc_rollup_errors.ml
   sc_rollup_inbox_storage.ml sc_rollup_inbox_storage.mli
   legacy_script_patches.ml

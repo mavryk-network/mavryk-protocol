@@ -93,7 +93,7 @@ let mainnet_user_activated_upgrades =
   [
     (28082l, "PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt");
     (204761l, "PsddFKi32cMJ2qPjf43Qv5GDWLDPZb3T3bF6fLKiF5HtvHNU7aP");
-    (5898241l, "PsCyhwT21r2MENfwDr36nj9o3U8XJR5s8QetXEDQBweBru4xvZh");
+    (5898241l, "Pt5eSupwy3BnjkS7DXRT786XArLsXi1hGQ7sMUBYoTX5bYi89iV");
   ]
 
 (* END_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
@@ -123,7 +123,7 @@ let blockchain_network_mainnet =
     ~user_activated_protocol_overrides:
       [
         ( "PtParisBQscdCm6Cfow6ndeU6wKJyA3aV1j4D3gQBQMsTQyJCrz",
-          "PsH6pEknnnM3rwWnLc8mQ2JMLtJoDXfs7bfQW3LebUMsB6LciGx" );
+          "PtNf8SCVYCkQaTdktW8s3isRtLWEgHbLp3KbumCchdsH6gia9mP" );
       ]
     ~default_bootstrap_peers:
       ["boot.tzinit.org"; "boot.tzboot.net"; "boot.tzbeta.net"]
@@ -166,7 +166,7 @@ let blockchain_network_ghostnet =
         (765952l, "PtJakart2xVj7pYXJBXrqHgd82rdkLey5ZeeGwDgPp9rhQUbSqY");
         (1191936l, "PtKathmankSpLLDALzWw7CGD2j2MtyveTwboEYokqUCP4a1LxMg");
         (1654784l, "PtLimaPtLMwfNinJi9rCfDPWea8dFgTZ1MeJ9f1m2SRic6ayiwW");
-        (6729729l, "PsCyhwT21r2MENfwDr36nj9o3U8XJR5s8QetXEDQBweBru4xvZh");
+        (6729729l, "Pt5eSupwy3BnjkS7DXRT786XArLsXi1hGQ7sMUBYoTX5bYi89iV");
       ]
     ~default_bootstrap_peers:
       [

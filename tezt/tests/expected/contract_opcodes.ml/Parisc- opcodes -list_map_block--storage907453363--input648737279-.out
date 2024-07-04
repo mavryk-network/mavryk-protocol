@@ -1,5 +1,5 @@
 
-./mavkit-client --protocol PsCyhwT21r2MENfwDr36nj9o3U8XJR5s8QetXEDQBweBru4xvZh --mode mockup --no-base-dir-warnings run script michelson_test_scripts/opcodes/list_map_block.tz on storage '{0}' and input '{ 1 ; 2 ; 3 ; 0 }' --level 1 --trace-stack
+./mavkit-client --protocol Pt5eSupwy3BnjkS7DXRT786XArLsXi1hGQ7sMUBYoTX5bYi89iV --mode mockup --no-base-dir-warnings run script michelson_test_scripts/opcodes/list_map_block.tz on storage '{0}' and input '{ 1 ; 2 ; 3 ; 0 }' --level 1 --trace-stack
 storage
   { 1 ; 3 ; 5 ; 3 }
 emitted operations

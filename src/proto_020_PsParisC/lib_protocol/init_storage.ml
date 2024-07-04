@@ -171,15 +171,20 @@ let prepare_first_block chain_id ctxt ~typecheck_smart_contract
         in
         let* ctxt = Vote_storage.update_listings ctxt in
         (* Must be called after other originations since it unsets the origination nonce. *)
-        let* ctxt, operation_results =
+        let* ctxt, liquidity_baking_operation_results =
           Liquidity_baking_migration.init
+            ctxt
+            ~typecheck:typecheck_smart_contract
+        in
+        let* ctxt, buffer_operation_results =
+          Protocol_treasury_migration.init
             ctxt
             ~typecheck:typecheck_smart_contract
         in
         let* ctxt =
           Storage.Pending_migration.Operation_results.init
             ctxt
-            operation_results
+            (liquidity_baking_operation_results @ buffer_operation_results)
         in
         let* ctxt = Sc_rollup_inbox_storage.init_inbox ~predecessor ctxt in
         let* ctxt = Adaptive_issuance_storage.init ctxt in

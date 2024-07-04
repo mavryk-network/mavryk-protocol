@@ -46,10 +46,10 @@ let err x = Exn (Script_cache_test_error x)
    model. It has been computed by a manual run of the test.
 
 *)
-let liquidity_baking_contract_size = 127824
+let protocol_treasury_contract_size = 3912
 
-let liquidity_baking_contract =
-  Contract_hash.of_b58check_exn "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"
+let protocol_treasury_contract =
+  Contract_hash.of_b58check_exn "KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH"
 
 let make_block block f =
   let open Lwt_result_syntax in
@@ -93,9 +93,9 @@ let path = project_root // Filename.dirname __FILE__
 
 let add_some_contracts k src block baker =
   let open Lwt_result_syntax in
-  let* liquidity_baking_contract_id, block =
+  let* protocol_treasury_contract_id, block =
     make_block block @@ fun ctxt ->
-    let* ctxt, id, _, _ = find ctxt liquidity_baking_contract in
+    let* ctxt, id, _, _ = find ctxt protocol_treasury_contract in
     return (id, ctxt)
   in
   let* rev_contracts, block =
@@ -118,9 +118,9 @@ let add_some_contracts k src block baker =
       (1 -- k)
   in
   let contracts =
-    (* After each baking [liquidity_baking_contract] is the most
+    (* After each baking [protocol_treasury_contract] is the most
        recently used contract. *)
-    let lb = (liquidity_baking_contract_id, liquidity_baking_contract) in
+    let lb = (protocol_treasury_contract_id, protocol_treasury_contract) in
     List.rev (lb :: rev_contracts)
   in
   return (contracts, block)
@@ -147,11 +147,11 @@ let assert_cache_size expected_size ctxt =
           expected_size
           (Script_cache.size ctxt)))
 
-let test_size_of_liquidity_baking_contract () =
+let test_size_of_protocol_treasury_contract () =
   let open Lwt_result_syntax in
   let* block, _, _, _ = init () in
   let* (), _block =
-    make_block block @! assert_cache_size liquidity_baking_contract_size
+    make_block block @! assert_cache_size protocol_treasury_contract_size
   in
   return_unit
 
@@ -170,7 +170,7 @@ let test_size_of_int_store_contract () =
     make_block block @! fun ctxt ->
     let*@ ctxt, _, _ = Script_cache.find ctxt addr in
     assert_cache_size
-      (int_store_contract_size + liquidity_baking_contract_size)
+      (int_store_contract_size + protocol_treasury_contract_size)
       ctxt
   in
   return_unit
@@ -333,7 +333,7 @@ let test_size_adds_entries_sizes () =
   let* (), _block =
     make_block block @! fun ctxt ->
     let expected_size =
-      liquidity_baking_contract_size + (ncontracts * int_store_contract_size)
+      protocol_treasury_contract_size + (ncontracts * int_store_contract_size)
     in
     fail_unless
       (Script_cache.size ctxt = expected_size)
@@ -425,7 +425,7 @@ let test_entries_shows_lru () =
       | (contract, size) :: rev_entries, (_, contract') :: rev_contracts ->
           let* () =
             fail_unless
-              (size = new_size || contract = liquidity_baking_contract)
+              (size = new_size || contract = protocol_treasury_contract)
               (err
                  (Printf.sprintf
                     "A contract in the cache has not the right size, expecting \
@@ -454,9 +454,9 @@ let tests =
   let open Tztest in
   [
     tztest
-      "assumption about size of liquidity baking holds"
+      "assumption about size of protocol treasury holds"
       `Quick
-      test_size_of_liquidity_baking_contract;
+      test_size_of_protocol_treasury_contract;
     tztest
       "assumption about size of 'int_store' contract holds"
       `Quick

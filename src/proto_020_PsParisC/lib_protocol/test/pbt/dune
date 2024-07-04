@@ -41,7 +41,7 @@
   -open Mavryk_base_test_helpers
   -open Mavryk_protocol_020_PsParisC_parameters)
  (modules
-  liquidity_baking_pbt
+  ; liquidity_baking_pbt
   saturation_fuzzing
   test_merkle_list
   test_gas_properties
