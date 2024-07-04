@@ -189,7 +189,7 @@ module Slashed_deposits_history = struct
 end
 
 (* TODO #6918: Remove after P *)
-module Slashed_deposits_history__Oxford = struct
+module Slashed_deposits_history__Atlas = struct
   include Slashed_deposits_history
 
   let encoding =
@@ -489,13 +489,13 @@ module Contract = struct
       (Tez_repr)
 
   (* TODO #6918: Remove after P *)
-  module Slashed_deposits__Oxford =
+  module Slashed_deposits__Atlas =
     Indexed_context.Make_map
       (Ghost)
       (struct
         let name = ["slashed_deposits"]
       end)
-      (Slashed_deposits_history__Oxford)
+      (Slashed_deposits_history__Atlas)
 
   module Bond_id_index =
     Make_indexed_subcontext
@@ -1114,7 +1114,7 @@ module Slashed_deposits =
 (** Per cycle storage *)
 
 (* TODO #6957: Remove this from protocol Q. *)
-type denounced__Oxford = {for_double_attesting : bool; for_double_baking : bool}
+type denounced__Atlas = {for_double_attesting : bool; for_double_baking : bool}
 
 type denounced = {
   for_double_preattesting : bool;
@@ -1173,7 +1173,7 @@ module Cycle = struct
       end)
 
   (* TODO #6957: Remove this from protocol Q. *)
-  module Already_denounced__Oxford =
+  module Already_denounced__Atlas =
     Make_indexed_data_storage
       (Make_subcontext (Ghost) (Indexed_context.Raw_context)
          (struct
@@ -1181,12 +1181,12 @@ module Cycle = struct
          end))
          (Pair (Make_index (Raw_level_repr.Index)) (Public_key_hash_index))
       (struct
-        type t = denounced__Oxford
+        type t = denounced__Atlas
 
         let encoding =
           let open Data_encoding in
           conv
-            (fun ({for_double_attesting; for_double_baking} : denounced__Oxford) ->
+            (fun ({for_double_attesting; for_double_baking} : denounced__Atlas) ->
               (for_double_attesting, for_double_baking))
             (fun (for_double_attesting, for_double_baking) ->
               {for_double_attesting; for_double_baking})
@@ -1336,7 +1336,7 @@ module Cycle = struct
 end
 
 module Already_denounced = Cycle.Already_denounced
-module Already_denounced__Oxford = Cycle.Already_denounced__Oxford
+module Already_denounced__Atlas = Cycle.Already_denounced__Atlas
 module Pending_consensus_keys = Cycle.Pending_consensus_keys
 module Pending_staking_parameters = Cycle.Pending_staking_parameters
 
@@ -1845,15 +1845,6 @@ module Sc_rollup = struct
     let add_or_remove ctxt key value =
       add_or_remove ctxt key (Option.map Versioned_value.to_versioned value)
   end
-
-  (* TODO: To be removed in Q, to use [Tenderbake.First_level_of_protocol]
-     instead. *)
-  module Parisb2_activation_level =
-    Make_single_data_storage (Registered) (Raw_context)
-      (struct
-        let name = ["parisb2_activation_level"]
-      end)
-      (Raw_level_repr)
 
   module Previous_commitment_period =
     Make_single_data_storage (Registered) (Raw_context)

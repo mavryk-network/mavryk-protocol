@@ -174,113 +174,6 @@
     }
   },
   {
-    "file": "tezt/tests/sc_rollup_migration.ml",
-    "title": "Nairobi->Atlas: wasm_2_0_0 - refutation games over migrations (inbox_proof_1_at_inbox)",
-    "tags": [
-      "admin_client",
-      "client",
-      "etherlink",
-      "flaky",
-      "l2",
-      "migration",
-      "nairobi",
-      "node",
-      "atlas",
-      "refutation",
-      "smart_rollup_node",
-      "wasm_2_0_0"
-    ],
-    "successful_runs": {
-      "total_time": "47651539",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/sc_rollup_migration.ml",
-    "title": "Nairobi->Atlas: wasm_2_0_0 - refutation games over migrations (inbox_proof_1_at_published_commitment)",
-    "tags": [
-      "admin_client",
-      "client",
-      "etherlink",
-      "flaky",
-      "l2",
-      "migration",
-      "nairobi",
-      "node",
-      "atlas",
-      "refutation",
-      "smart_rollup_node",
-      "wasm_2_0_0"
-    ],
-    "successful_runs": {
-      "total_time": "51357892",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/sc_rollup_migration.ml",
-    "title": "Nairobi->Atlas: wasm_2_0_0 - refutation games over migrations (pvm_proof_2_at_inbox)",
-    "tags": [
-      "admin_client",
-      "client",
-      "etherlink",
-      "flaky",
-      "l2",
-      "migration",
-      "nairobi",
-      "node",
-      "atlas",
-      "refutation",
-      "smart_rollup_node",
-      "wasm_2_0_0"
-    ],
-    "successful_runs": {
-      "total_time": "47623735",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/sc_rollup_migration.ml",
-    "title": "Nairobi->Atlas: wasm_2_0_0 - refutation games over migrations (pvm_proof_2_at_published_commitment)",
-    "tags": [
-      "admin_client",
-      "client",
-      "etherlink",
-      "flaky",
-      "l2",
-      "migration",
-      "nairobi",
-      "node",
-      "atlas",
-      "refutation",
-      "smart_rollup_node",
-      "wasm_2_0_0"
-    ],
-    "successful_runs": {
-      "total_time": "48964707",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/synchronisation_heuristic.ml",
-    "title": "Nairobi: check synchronization state",
-    "tags": [
-      "admin_client",
-      "bootstrap",
-      "client",
-      "flaky",
-      "memory_3k",
-      "nairobi",
-      "node",
-      "sync",
-      "synchronisation_threshold"
-    ],
-    "successful_runs": {
-      "total_time": "16300750",
-      "count": "1"
-    }
-  },
-  {
     "file": "tezt/tests/synchronisation_heuristic.ml",
     "title": "Atlas: check synchronization state",
     "tags": [
@@ -320,29 +213,10 @@
   },
   {
     "file": "tezt/tests/synchronisation_heuristic.ml",
-    "title": "Nairobi: bootstrap: test threshold zero",
-    "tags": [
-      "admin_client",
-      "baker_ptnairob",
-      "bootstrap",
-      "client",
-      "flaky",
-      "nairobi",
-      "node",
-      "synchronisation_threshold",
-      "threshold"
-    ],
-    "successful_runs": {
-      "total_time": "4423985",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/synchronisation_heuristic.ml",
     "title": "Atlas: bootstrap: test threshold zero",
     "tags": [
       "admin_client",
-      "baker_proxford",
+      "baker_ptatlas",
       "bootstrap",
       "client",
       "flaky",
@@ -377,29 +251,10 @@
   },
   {
     "file": "tezt/tests/synchronisation_heuristic.ml",
-    "title": "Nairobi: bootstrap: test threshold two",
-    "tags": [
-      "admin_client",
-      "baker_ptnairob",
-      "bootstrap",
-      "client",
-      "flaky",
-      "nairobi",
-      "node",
-      "synchronisation_threshold",
-      "threshold"
-    ],
-    "successful_runs": {
-      "total_time": "16726823",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/synchronisation_heuristic.ml",
     "title": "Atlas: bootstrap: test threshold two",
     "tags": [
       "admin_client",
-      "baker_proxford",
+      "baker_ptatlas",
       "bootstrap",
       "client",
       "flaky",
@@ -434,29 +289,10 @@
   },
   {
     "file": "tezt/tests/synchronisation_heuristic.ml",
-    "title": "Nairobi: bootstrap: test threshold stuck",
-    "tags": [
-      "admin_client",
-      "baker_ptnairob",
-      "bootstrap",
-      "client",
-      "flaky",
-      "nairobi",
-      "node",
-      "synchronisation_threshold",
-      "threshold"
-    ],
-    "successful_runs": {
-      "total_time": "20761409",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/synchronisation_heuristic.ml",
     "title": "Atlas: bootstrap: test threshold stuck",
     "tags": [
       "admin_client",
-      "baker_proxford",
+      "baker_ptatlas",
       "bootstrap",
       "client",
       "flaky",
@@ -491,29 +327,10 @@
   },
   {
     "file": "tezt/tests/synchronisation_heuristic.ml",
-    "title": "Nairobi: bootstrap: test threshold split view",
-    "tags": [
-      "admin_client",
-      "baker_ptnairob",
-      "bootstrap",
-      "client",
-      "flaky",
-      "nairobi",
-      "node",
-      "synchronisation_threshold",
-      "threshold"
-    ],
-    "successful_runs": {
-      "total_time": "17401455",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/synchronisation_heuristic.ml",
     "title": "Atlas: bootstrap: test threshold split view",
     "tags": [
       "admin_client",
-      "baker_proxford",
+      "baker_ptatlas",
       "bootstrap",
       "client",
       "flaky",
@@ -543,24 +360,6 @@
     ],
     "successful_runs": {
       "total_time": "17944831",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/synchronisation_heuristic.ml",
-    "title": "Nairobi: Check prevalidator start",
-    "tags": [
-      "admin_client",
-      "bootstrap",
-      "client",
-      "flaky",
-      "nairobi",
-      "node",
-      "prevalidator",
-      "synchronisation_threshold"
-    ],
-    "successful_runs": {
-      "total_time": "65048227",
       "count": "1"
     }
   },

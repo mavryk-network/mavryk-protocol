@@ -71,8 +71,6 @@ let stack_size_limit = 300
 
 let atlas_name = "atlas_001"
 
-let parisb_name = "paris_019"
-
 let parisc_name = "paris_020"
 
 let proto_alpha_name = "alpha_current"

@@ -2167,7 +2167,7 @@
     "title": "Atlas: double attestation using wrong branch",
     "tags": [
       "accuser",
-      "accuser_proxford",
+      "accuser_ptatlas",
       "admin_client",
       "attestation",
       "branch",

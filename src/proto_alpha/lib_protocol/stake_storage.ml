@@ -282,7 +282,7 @@ let add_contract_delegated_stake ctxt contract amount =
    we need to keep [ new_cycles; new_cycles + consensus_rights_delay ]
    and remove the rest, i.e.,
    [ new_cycles + consensus_rights_delay + 1; new_cycles + preserved_cycles ] *)
-let cleanup_values_for_protocol_p ctxt ~preserved_cycles ~consensus_rights_delay
+let cleanup_values_for_protocol_b ctxt ~preserved_cycles ~consensus_rights_delay
     ~new_cycle =
   let open Lwt_result_syntax in
   assert (Compare.Int.(consensus_rights_delay <= preserved_cycles)) ;

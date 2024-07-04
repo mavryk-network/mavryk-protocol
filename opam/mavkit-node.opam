@@ -27,8 +27,6 @@ depends: [
   "mavryk-protocol-000-Ps9mPmXa" { = version }
   "mavryk-protocol-001-PtAtLas" { = version }
   "mavkit-protocol-001-PtAtLas-libs" { = version }
-  "mavryk-protocol-019-PtParisB" { = version }
-  "mavkit-protocol-019-PtParisB-libs" { = version }
   "mavryk-protocol-020-PsParisC" { = version }
   "mavkit-protocol-020-PsParisC-libs" { = version }
 ]

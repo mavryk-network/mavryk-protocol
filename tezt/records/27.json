@@ -1613,11 +1613,11 @@
     "file": "tezt/tests/binaries.ml",
     "title": "Released binaries: report consistent version",
     "tags": [
-      "accuser_proxford",
+      "accuser_ptatlas",
       "accuser_ptnairob",
       "admin_client",
       "baker",
-      "baker_proxford",
+      "baker_ptatlas",
       "baker_ptnairob",
       "binaries",
       "client",

@@ -646,23 +646,6 @@
   },
   {
     "file": "tezt/tests/mockup.ml",
-    "title": "Nairobi: (Mockup) RPC list",
-    "tags": [
-      "admin_client",
-      "client",
-      "describe",
-      "mockup",
-      "nairobi",
-      "rpc",
-      "slow"
-    ],
-    "successful_runs": {
-      "total_time": "107831787",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/mockup.ml",
     "title": "Alpha: (Mockup) RPC list",
     "tags": [
       "admin_client",

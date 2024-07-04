@@ -142,11 +142,11 @@ let generate_proof (node_ctxt : _ Node_context.t)
     Context.index context
   in
   let* dal_slots_history =
-    (* DAL is not activated in Oxford *)
+    (* DAL is not activated in Atlas *)
     return Dal.Slots_history.genesis
   in
   let* dal_slots_history_cache =
-    (* DAL is not activated in Oxford *)
+    (* DAL is not activated in Atlas *)
     return (Dal.Slots_history.History_cache.empty ~capacity:0L)
   in
   (* We fetch the value of protocol constants at block snapshot level

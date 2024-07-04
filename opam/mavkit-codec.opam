@@ -21,13 +21,11 @@ depends: [
 ]
 depopts: [
   "mavkit-protocol-001-PtAtLas-libs"
-  "mavkit-protocol-019-PtParisB-libs"
   "mavkit-protocol-020-PsParisC-libs"
   "mavkit-protocol-alpha-libs"
 ]
 conflicts: [
   "mavkit-protocol-001-PtAtLas-libs" { != version }
-  "mavkit-protocol-019-PtParisB-libs" { != version }
   "mavkit-protocol-020-PsParisC-libs" { != version }
   "mavkit-protocol-alpha-libs" { != version }
 ]

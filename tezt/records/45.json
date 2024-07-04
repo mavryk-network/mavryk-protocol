@@ -1644,7 +1644,7 @@
       "client",
       "from_alpha",
       "known",
-      "loser_oxford",
+      "loser_atlas",
       "node",
       "to_demo_counter"
     ],
@@ -1694,7 +1694,7 @@
     "tags": [
       "admin_client",
       "baker",
-      "baker_proxford",
+      "baker_ptatlas",
       "client",
       "node",
       "atlas",

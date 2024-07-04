@@ -71,7 +71,7 @@ module Slashed_deposits_history : sig
 end
 
 (* TODO #6918: Remove after P *)
-module Slashed_deposits_history__Oxford :
+module Slashed_deposits_history__Atlas :
     module type of Slashed_deposits_history
 
 module Unstake_request : sig
@@ -265,7 +265,7 @@ module Contract : sig
        and type t := Raw_context.t
 
   (* TODO #6918: Remove after P *)
-  module Slashed_deposits__Oxford :
+  module Slashed_deposits__Atlas :
     Indexed_data_storage
       with type key = Contract_repr.t
        and type value = Slashed_deposits_history.t

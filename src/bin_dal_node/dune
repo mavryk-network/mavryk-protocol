@@ -39,7 +39,6 @@
   prometheus-app
   prometheus
   mavkit-protocol-001-PtAtLas-libs.dal
-  mavkit-protocol-019-PtParisB-libs.dal
   mavkit-protocol-020-PsParisC-libs.dal
   (select void_for_linking-mavkit-protocol-alpha-libs-dal from
    (mavkit-protocol-alpha-libs.dal -> void_for_linking-mavkit-protocol-alpha-libs-dal.empty)

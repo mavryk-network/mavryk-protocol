@@ -573,241 +573,6 @@
     }
   },
   {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/unit/test_sc_rollup_storage.ml",
-    "title": "017-PtNairob: sc rollup storage (publish commitment returns level when commitment was first published)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "9276",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/unit/test_sc_rollup_arith.ml",
-    "title": "017-PtNairob: sc rollup arith (Parsing message)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "7647",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/unit/test_operation_repr.ml",
-    "title": "017-PtNairob: Operation_repr.ml (of_list: empty input list)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "211",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/regression/test_logging.ml",
-    "title": "017_PtNairob: rec_id_unit",
-    "tags": [
-      "regression",
-      "protocol",
-      "regression",
-      "logging"
-    ],
-    "successful_runs": {
-      "total_time": "17890",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/integration/validate/test_manager_operation_validation.ml",
-    "title": "017-PtNairob: single manager validation (empty undelegated source)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "12272416",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/integration/operations/test_voting.ml",
-    "title": "017-PtNairob: voting (voting cooldown, without supermajority)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "87769",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/integration/operations/test_transfer.ml",
-    "title": "017-PtNairob: transfer (random multi transfer)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "20658",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/integration/michelson/test_ticket_operations_diff.ml",
-    "title": "017-PtNairob: ticket operations diff (transfer multiple tickets)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "13216",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/integration/michelson/test_ticket_balance.ml",
-    "title": "017-PtNairob: ticket balance (send drop)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "13495",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/integration/michelson/test_sapling.ml",
-    "title": "017-PtNairob: sapling (verifyupdate_two_transactions)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "7024019",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/integration/gas/test_gas_levels.ml",
-    "title": "017-PtNairob: gas levels (both lists and single operations with contract fail)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "12516",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/integration/consensus/test_preendorsement.ml",
-    "title": "017-PtNairob: preendorsement (ConstrMode: ko: preendorsement_in_block_with_wrong_slot)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "11993",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/integration/consensus/test_endorsement.ml",
-    "title": "017-PtNairob: endorsement (One round too old)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "15258",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/integration/consensus/test_double_baking.ml",
-    "title": "017-PtNairob: double baking (double baking followed by double endorsing)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "14842",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/integration/consensus/test_deactivation.ml",
-    "title": "017-PtNairob: deactivation (deactivation then empty then self delegation)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "117917",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/integration/consensus/test_baking.ml",
-    "title": "017-PtNairob: baking (committee sampling)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "220925",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_protocol/test/integration/test_liquidity_baking.ml",
-    "title": "017-PtNairob: liquidity baking (liquidity baking toggle ema is equal to the threshold after the subsidy has been stopped by a toggle vote)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "1431216",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_client/test/test_michelson_v1_macros.ml",
-    "title": "017-PtNairob: micheline v1 macros (duup expansion)",
-    "tags": [
-      "alcotezt",
-      "quick",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "180",
-      "count": "1"
-    }
-  },
-  {
     "file": "src/lib_store/unix/test/test_store.ml",
     "title": "tezos-store: store (block_of_identifier should succeed to retrieve caboose successor)",
     "tags": [
@@ -1715,22 +1480,6 @@
   },
   {
     "file": "tezt/tests/baking.ml",
-    "title": "Nairobi: Baking minimal timestamp (true)",
-    "tags": [
-      "admin_client",
-      "baking",
-      "client",
-      "nairobi",
-      "node",
-      "timestamp"
-    ],
-    "successful_runs": {
-      "total_time": "2351500",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/baking.ml",
     "title": "Atlas: External operations are ordered (5 transfers, max 4 operations)",
     "tags": [
       "admin_client",
@@ -1742,39 +1491,6 @@
     ],
     "successful_runs": {
       "total_time": "7813905",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/basic.ml",
-    "title": "Nairobi: node initialization (rolling mode)",
-    "tags": [
-      "admin_client",
-      "basic",
-      "client",
-      "nairobi",
-      "node",
-      "rolling"
-    ],
-    "successful_runs": {
-      "total_time": "5658752",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/client_commands.ml",
-    "title": "Nairobi: Simulation of failing operation with force",
-    "tags": [
-      "admin_client",
-      "client",
-      "failing",
-      "force",
-      "nairobi",
-      "node",
-      "simulation"
-    ],
-    "successful_runs": {
-      "total_time": "2954849",
       "count": "1"
     }
   },
@@ -1812,21 +1528,6 @@
   },
   {
     "file": "tezt/tests/client_fa12.ml",
-    "title": "Nairobi: test fa1.2, get allowance callback [mini_scenarios/fa12_reference]",
-    "tags": [
-      "admin_client",
-      "client",
-      "fa12",
-      "fa12_reference",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "2017677",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/client_fa12.ml",
     "title": "Alpha: test fa1.2, test incremental [mini_scenarios/lqt_fa12.mligo]",
     "tags": [
       "admin_client",
@@ -1837,22 +1538,6 @@
     ],
     "successful_runs": {
       "total_time": "12203930",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/comparable_datatype.ml",
-    "title": "Nairobi: Run `comparable_options`",
-    "tags": [
-      "admin_client",
-      "client",
-      "comparable",
-      "michelson",
-      "nairobi",
-      "typechecking"
-    ],
-    "successful_runs": {
-      "total_time": "1597466",
       "count": "1"
     }
   },
@@ -1907,21 +1592,6 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Nairobi: opcodes [not_binary--storage921624073--input24243730]",
-    "tags": [
-      "regression",
-      "admin_client",
-      "client",
-      "michelson",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "312133",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/contract_opcodes.ml",
     "title": "Atlas: opcodes [xor--storage921624073--input576248088]",
     "tags": [
       "regression",
@@ -1932,21 +1602,6 @@
     ],
     "successful_runs": {
       "total_time": "317885",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Nairobi: opcodes [shifts--storage921624073--input374168553]",
-    "tags": [
-      "regression",
-      "admin_client",
-      "client",
-      "michelson",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "309662",
       "count": "1"
     }
   },
@@ -1997,21 +1652,6 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Nairobi: opcodes [list_concat_bytes--storage149262694--input220724351]",
-    "tags": [
-      "regression",
-      "admin_client",
-      "client",
-      "michelson",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "315192",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/contract_opcodes.ml",
     "title": "Alpha: opcodes [set_member--storage495706788--input33757838]",
     "tags": [
       "regression",
@@ -2022,21 +1662,6 @@
     ],
     "successful_runs": {
       "total_time": "317595",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Nairobi: opcodes [contains_all--storage921624073--input917967660]",
-    "tags": [
-      "regression",
-      "admin_client",
-      "client",
-      "michelson",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "326510",
       "count": "1"
     }
   },
@@ -2132,21 +1757,6 @@
   },
   {
     "file": "tezt/tests/contract_opcodes.ml",
-    "title": "Nairobi: opcodes [bls12_381_fr_z_int--storage994282947--input453441034]",
-    "tags": [
-      "regression",
-      "admin_client",
-      "client",
-      "michelson",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "317896",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/contract_opcodes.ml",
     "title": "Alpha: test Michelson opcodes: check_signature",
     "tags": [
       "regression",
@@ -2192,22 +1802,6 @@
   },
   {
     "file": "tezt/tests/contract_macros.ml",
-    "title": "Nairobi: Macro expansion: macros/big_map_get_add",
-    "tags": [
-      "regression",
-      "admin_client",
-      "client",
-      "macros",
-      "michelson",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "337998",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/contract_macros.ml",
     "title": "Atlas: Macro expansion: macros/unpair_macro",
     "tags": [
       "regression",
@@ -2239,58 +1833,6 @@
     }
   },
   {
-    "file": "tezt/tests/encoding.ml",
-    "title": "Nairobi: protocol encoding regression test: operation",
-    "tags": [
-      "regression",
-      "codec",
-      "encoding",
-      "nairobi",
-      "operation",
-      "protocol"
-    ],
-    "successful_runs": {
-      "total_time": "7775918",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/manager_operations.ml",
-    "title": "Nairobi: Contract's initial storage illtyped",
-    "tags": [
-      "admin_client",
-      "client",
-      "codec",
-      "illtyped",
-      "nairobi",
-      "node",
-      "origination",
-      "precheck",
-      "typing"
-    ],
-    "successful_runs": {
-      "total_time": "5323032",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/manager_operations.ml",
-    "title": "Nairobi: Test simple transfer with low balance to pay allocation (1)",
-    "tags": [
-      "admin_client",
-      "client",
-      "codec",
-      "nairobi",
-      "node",
-      "transaction",
-      "transfer"
-    ],
-    "successful_runs": {
-      "total_time": "10681924",
-      "count": "1"
-    }
-  },
-  {
     "file": "tezt/tests/manager_operations.ml",
     "title": "Alpha: Test batch with wrong counters (+1, +2, +2)",
     "tags": [
@@ -2305,25 +1847,6 @@
     ],
     "successful_runs": {
       "total_time": "5073012",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/mockup.ml",
-    "title": "Nairobi: (Mockup) Create mockup config show / init roundtrip [test_accounts,protocol_constants,show,show]",
-    "tags": [
-      "admin_client",
-      "base_dir",
-      "client",
-      "mockup",
-      "nairobi",
-      "protocol_constants",
-      "roundtrip",
-      "show",
-      "test_accounts"
-    ],
-    "successful_runs": {
-      "total_time": "2300622",
       "count": "1"
     }
   },
@@ -2373,24 +1896,6 @@
     ],
     "successful_runs": {
       "total_time": "2782998",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/proxy.ml",
-    "title": "Nairobi: (Proxy) (/chains/main/blocks/head/votes/total_voting_power) Cache at most once",
-    "tags": [
-      "admin_client",
-      "client",
-      "get",
-      "layer1",
-      "nairobi",
-      "node",
-      "proxy",
-      "rpc"
-    ],
-    "successful_runs": {
-      "total_time": "2704692",
       "count": "1"
     }
   },
@@ -2474,38 +1979,6 @@
     ],
     "successful_runs": {
       "total_time": "6289248",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/rpc_config_logging.ml",
-    "title": "Nairobi: logging configuration RPCs",
-    "tags": [
-      "admin_client",
-      "client",
-      "logging",
-      "nairobi",
-      "node",
-      "rpc"
-    ],
-    "successful_runs": {
-      "total_time": "6765434",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/script_illtyped.ml",
-    "title": "Nairobi: Test Ill Typecheck - stack_bottom_undipable",
-    "tags": [
-      "admin_client",
-      "client",
-      "michelson",
-      "nairobi",
-      "script",
-      "typechecking"
-    ],
-    "successful_runs": {
-      "total_time": "648697",
       "count": "1"
     }
   },
@@ -2602,48 +2075,6 @@
     }
   },
   {
-    "file": "tezt/tests/sc_rollup.ml",
-    "title": "Nairobi: wasm_2_0_0 - output exec (0, entrypoint: %default, eager: 0, intern, no_parameters_ty)",
-    "tags": [
-      "admin_client",
-      "client",
-      "codec",
-      "default",
-      "etherlink",
-      "intern",
-      "nairobi",
-      "no_parameters_ty",
-      "node",
-      "outbox",
-      "sc_rollup",
-      "smart_rollup_node",
-      "wasm_2_0_0"
-    ],
-    "successful_runs": {
-      "total_time": "10774919",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/sc_rollup.ml",
-    "title": "Nairobi: arith - rollup node - correct handling of commitments (non_final_level)",
-    "tags": [
-      "admin_client",
-      "arith",
-      "client",
-      "commitment",
-      "etherlink",
-      "nairobi",
-      "node",
-      "sc_rollup",
-      "smart_rollup_node"
-    ],
-    "successful_runs": {
-      "total_time": "44120954",
-      "count": "1"
-    }
-  },
-  {
     "file": "tezt/tests/stresstest_command.ml",
     "title": "Atlas: stresstest explicit transfers argument",
     "tags": [
@@ -2722,20 +2153,6 @@
     ],
     "successful_runs": {
       "total_time": "1609026",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/views.ml",
-    "title": "Nairobi: Typecheck view - view_toplevel_bad_type",
-    "tags": [
-      "admin_client",
-      "client",
-      "michelson",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "625203",
       "count": "1"
     }
   },

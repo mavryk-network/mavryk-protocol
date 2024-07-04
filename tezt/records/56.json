@@ -2102,22 +2102,6 @@
   },
   {
     "file": "tezt/tests/contract_macros.ml",
-    "title": "Nairobi: Macro expansion: macros/assert_cmpneq",
-    "tags": [
-      "regression",
-      "admin_client",
-      "client",
-      "macros",
-      "michelson",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "301531",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/contract_macros.ml",
     "title": "Atlas: Macro expansion: macros/macro_annotations",
     "tags": [
       "regression",
@@ -2129,21 +2113,6 @@
     ],
     "successful_runs": {
       "total_time": "301158",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/contract_mini_scenarios.ml",
-    "title": "Nairobi: test create contract balance",
-    "tags": [
-      "admin_client",
-      "client",
-      "michelson",
-      "mini_scenarios",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "2152755",
       "count": "1"
     }
   },
@@ -2168,7 +2137,7 @@
     "title": "Atlas: double preattestation using wrong branch",
     "tags": [
       "accuser",
-      "accuser_proxford",
+      "accuser_ptatlas",
       "admin_client",
       "branch",
       "client",
@@ -2180,38 +2149,6 @@
     ],
     "successful_runs": {
       "total_time": "7764549",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/encoding.ml",
-    "title": "Nairobi: protocol encoding regression test: contract",
-    "tags": [
-      "regression",
-      "codec",
-      "contract",
-      "encoding",
-      "nairobi",
-      "protocol"
-    ],
-    "successful_runs": {
-      "total_time": "1080881",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/hash_data.ml",
-    "title": "Nairobi: hash data ... of type ... (ugly)",
-    "tags": [
-      "admin_client",
-      "client",
-      "data",
-      "hash",
-      "mockup",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "1253692",
       "count": "1"
     }
   },
@@ -2231,23 +2168,6 @@
     ],
     "successful_runs": {
       "total_time": "4810333",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/manager_operations.ml",
-    "title": "Nairobi: Simple transfer not enough balance to make transfer",
-    "tags": [
-      "admin_client",
-      "client",
-      "codec",
-      "nairobi",
-      "node",
-      "transaction",
-      "transfer"
-    ],
-    "successful_runs": {
-      "total_time": "5910617",
       "count": "1"
     }
   },
@@ -2280,73 +2200,6 @@
     ],
     "successful_runs": {
       "total_time": "1814769",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/mockup.ml",
-    "title": "Nairobi: (Mockup) Create mockup config show / init roundtrip [test_accounts,None,init,init]",
-    "tags": [
-      "admin_client",
-      "base_dir",
-      "client",
-      "init",
-      "mockup",
-      "nairobi",
-      "roundtrip",
-      "test_accounts"
-    ],
-    "successful_runs": {
-      "total_time": "1220324",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/prevalidator.ml",
-    "title": "Nairobi: mempool ban operation and check applied",
-    "tags": [
-      "admin_client",
-      "client",
-      "mempool",
-      "nairobi",
-      "node"
-    ],
-    "successful_runs": {
-      "total_time": "4997895",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/prevalidator.ml",
-    "title": "Nairobi: Test request_operations rpc",
-    "tags": [
-      "admin_client",
-      "client",
-      "mempool",
-      "nairobi",
-      "node",
-      "request_operations"
-    ],
-    "successful_runs": {
-      "total_time": "4120996",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/proxy.ml",
-    "title": "Nairobi: (Proxy) (/chains/main/blocks/head/votes/current_quorum) No useless RPC call",
-    "tags": [
-      "admin_client",
-      "client",
-      "get",
-      "layer1",
-      "nairobi",
-      "node",
-      "proxy",
-      "rpc"
-    ],
-    "successful_runs": {
-      "total_time": "2728068",
       "count": "1"
     }
   },
@@ -2460,23 +2313,6 @@
     }
   },
   {
-    "file": "tezt/tests/replace_by_fees.ml",
-    "title": "Nairobi: Replace a replacement op with enough fees",
-    "tags": [
-      "admin_client",
-      "client",
-      "fee",
-      "manager",
-      "nairobi",
-      "node",
-      "replace"
-    ],
-    "successful_runs": {
-      "total_time": "8333812",
-      "count": "1"
-    }
-  },
-  {
     "file": "tezt/tests/script_illtyped.ml",
     "title": "Alpha: Test Ill Typecheck - contract_annotation_default",
     "tags": [
@@ -2505,22 +2341,6 @@
     ],
     "successful_runs": {
       "total_time": "586256",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/script_illtyped.ml",
-    "title": "Nairobi: Test Ill Typecheck - pack_sapling_state",
-    "tags": [
-      "admin_client",
-      "client",
-      "michelson",
-      "nairobi",
-      "script",
-      "typechecking"
-    ],
-    "successful_runs": {
-      "total_time": "572219",
       "count": "1"
     }
   },
@@ -2603,29 +2423,6 @@
   },
   {
     "file": "tezt/tests/sc_rollup.ml",
-    "title": "Nairobi: wasm_2_0_0 - output exec (0, entrypoint: %aux, eager: 5, extern, int)",
-    "tags": [
-      "admin_client",
-      "aux",
-      "client",
-      "codec",
-      "etherlink",
-      "extern",
-      "int",
-      "nairobi",
-      "node",
-      "outbox",
-      "sc_rollup",
-      "smart_rollup_node",
-      "wasm_2_0_0"
-    ],
-    "successful_runs": {
-      "total_time": "7750445",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/sc_rollup.ml",
     "title": "Alpha: arith - rollup node - correct handling of commitments (robust_to_failures)",
     "tags": [
       "admin_client",
@@ -2640,25 +2437,6 @@
     ],
     "successful_runs": {
       "total_time": "65424738",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/sc_rollup.ml",
-    "title": "Nairobi: arith - rollup node - correct handling of commitments (first_published_at_level_global)",
-    "tags": [
-      "admin_client",
-      "arith",
-      "client",
-      "commitment",
-      "etherlink",
-      "nairobi",
-      "node",
-      "sc_rollup",
-      "smart_rollup_node"
-    ],
-    "successful_runs": {
-      "total_time": "25324784",
       "count": "1"
     }
   },
@@ -2755,20 +2533,6 @@
     ],
     "successful_runs": {
       "total_time": "603955",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/views.ml",
-    "title": "Nairobi: Typecheck view - view_op_invalid_arity",
-    "tags": [
-      "admin_client",
-      "client",
-      "michelson",
-      "nairobi"
-    ],
-    "successful_runs": {
-      "total_time": "1367140",
       "count": "1"
     }
   },

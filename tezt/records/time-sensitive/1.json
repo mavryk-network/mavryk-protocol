@@ -269,7 +269,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: reaches level 5",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -283,7 +283,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: cannot progress without new head",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -297,7 +297,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: reset delayed pqc",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -311,7 +311,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario t1",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -325,7 +325,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario t2",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -339,7 +339,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario t3",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -353,7 +353,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario t4",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -367,7 +367,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario f1",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -381,7 +381,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario f2",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -395,7 +395,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario m1",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -409,7 +409,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario m2",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -423,7 +423,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario m3",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -437,7 +437,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario m4",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -451,7 +451,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario m5",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -465,7 +465,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario m6",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -479,7 +479,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario m7",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -493,7 +493,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario m8",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -507,7 +507,7 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario m9",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
@@ -521,279 +521,13 @@
     "file": "src/proto_001_PtAtLas/lib_delegate/test/test_scenario.ml",
     "title": "001-PtAtLas: scenario m10",
     "tags": [
-      "018_proxford",
+      "001_ptatlas",
       "baker",
       "mockup",
       "time_sensitive"
     ],
     "successful_runs": {
       "total_time": "3005453",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: reaches level 5",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "10000842",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: cannot progress without new head",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "3926653",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: reset delayed pqc",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "1949743",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario t1",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "2034934",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario t2",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "2004911",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario t3",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "5097874",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario t4",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "8982429",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario f1",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "5420752",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario f2",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "15527559",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario m1",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "15080957",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario m2",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "13024442",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario m3",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "27073675",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario m4",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "733542",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario m5",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "3243064",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario m6",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "14201878",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario m7",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "10995117",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario m8",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "22729804",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario m9",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "2965036",
-      "count": "1"
-    }
-  },
-  {
-    "file": "src/proto_017_PtNairob/lib_delegate/test/test_scenario.ml",
-    "title": "017-PtNairob: scenario m10",
-    "tags": [
-      "017_ptnairob",
-      "baker",
-      "mockup",
-      "time_sensitive"
-    ],
-    "successful_runs": {
-      "total_time": "2999842",
       "count": "1"
     }
   }

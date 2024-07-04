@@ -2,9 +2,9 @@ Protocol Paris
 ==============
 
 This page documents the changes brought by protocol Paris with respect
-to Oxford (see :ref:`naming_convention`).
+to Atlas (see :ref:`naming_convention`).
 
-The code can be found in directory :src:`src/proto_019_PtParisB` of the ``master``
+The code can be found in directory :src:`src/proto_020_PsParisC` of the ``master``
 branch of Mavkit.
 
 .. contents::
@@ -12,8 +12,8 @@ branch of Mavkit.
 Environment Version
 -------------------
 
-This protocol requires a different protocol environment version than Oxford.
-It requires protocol environment V12, compared to V11 for Oxford.
+This protocol requires a different protocol environment version than Atlas.
+It requires protocol environment V12, compared to V11 for Atlas.
 
 - Removed ``Z.extract`` and ``Z.extract_signed`` from all inactive protocols environments.
 
@@ -106,7 +106,7 @@ Adaptive Issuance
 
 - Added a feature flag which would force enabling Adaptive Issuance upon protocol activation. (MR :gl:`!11559`)
 
-- Updated the estimation for Mainnet's total tez supply which would be used while eventually migrating from Oxford to protocol P. (MR :gl:`!11996`)
+- Updated the estimation for Mainnet's total tez supply which would be used while eventually migrating from Atlas to protocol P. (MR :gl:`!11996`)
 
 - Added a ``min_delegated_in_current_cycle`` field to the delegates' information reported via
   ``GET /chains/<chain_id>/blocks/<block_id>/context/delegates/<delegate_id>``. (MR :gl:`!12018`)
@@ -201,7 +201,7 @@ the following quantities are kept the same:
    :header-rows: 1
 
    * - Parameter (unit)
-     - Old (oxford) value
+     - Old (atlas) value
      - New value
    * - ``minimal_block_delay`` (seconds)
      - ``15``

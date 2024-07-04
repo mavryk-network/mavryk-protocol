@@ -878,7 +878,7 @@
   },
   {
     "file": "src/lib_smart_rollup_node/test/canary.ml",
-    "title": "lib_smart_rollup_node: canary (ProxfordYmVf arith)",
+    "title": "lib_smart_rollup_node: canary (PtAtLasYmVf arith)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1614,7 +1614,7 @@
       "client",
       "from_alpha",
       "injected",
-      "loser_oxford",
+      "loser_atlas",
       "node",
       "to_injected_test"
     ],
@@ -1649,7 +1649,7 @@
       "regression",
       "admin_client",
       "baker",
-      "baker_proxford",
+      "baker_ptatlas",
       "client",
       "node",
       "atlas",

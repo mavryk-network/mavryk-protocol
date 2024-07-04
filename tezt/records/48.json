@@ -1700,7 +1700,7 @@
     "tags": [
       "admin_client",
       "baker",
-      "baker_proxford",
+      "baker_ptatlas",
       "client",
       "node",
       "atlas",
@@ -2700,7 +2700,7 @@
     "title": "Atlas: VDF daemon",
     "tags": [
       "admin_client",
-      "baker_proxford",
+      "baker_ptatlas",
       "client",
       "node",
       "atlas",

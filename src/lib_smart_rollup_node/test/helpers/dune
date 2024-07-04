@@ -17,7 +17,6 @@
   mavkit-smart-rollup-node-lib
   mavkit-l2-libs.layer2_store
   mavkit_smart_rollup_node_PtAtLas
-  mavkit_smart_rollup_node_PtParisB
   mavkit_smart_rollup_node_PsParisC
   (select void_for_linking-mavkit_smart_rollup_node_alpha from
    (mavkit_smart_rollup_node_alpha -> void_for_linking-mavkit_smart_rollup_node_alpha.empty)

@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 (* You can only add variants to this type. You cannot remove them. *)
-type protocol = Atlas | ParisB | ParisC | Proto_alpha
+type protocol = Atlas | ParisC | Proto_alpha
 
 (* This type mimics [Sc_rollup_inbox_repr.internal_inbox_messages], without
    fully deserializing the `Transfer`, and is produced by reading the first bytes
@@ -59,8 +59,6 @@ let protocol_from_raw payload =
     match Data_encoding.(Binary.of_string_exn string payload) with
     | payload when String.equal payload Constants.atlas_name ->
         Some (Protocol_migration Atlas)
-    | payload when String.equal payload Constants.parisb_name ->
-        Some (Protocol_migration ParisB)
     | payload when String.equal payload Constants.parisc_name ->
         Some (Protocol_migration ParisC)
     | payload when String.equal payload Constants.proto_alpha_name ->
@@ -94,8 +92,6 @@ module Internal_for_tests = struct
   let proto_to_binary = function
     | Atlas ->
         Data_encoding.(Binary.to_string_exn string Constants.atlas_name)
-    | ParisB ->
-        Data_encoding.(Binary.to_string_exn string Constants.parisb_name)
     | ParisC ->
         Data_encoding.(Binary.to_string_exn string Constants.parisc_name)
     | Proto_alpha ->

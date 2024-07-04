@@ -3,9 +3,9 @@ Version 19.1
 
 Version 19 contains a new version (V11) of the protocol environment,
 which is the set of functions that a protocol can call.
-This new version is used by the new version of :doc:`Oxford <../protocols/018_oxford>`,
+This new version is used by the new version of :doc:`Atlas <../protocols/001_atlas>`,
 protocol proposal for the successor of Nairobi.
-This release contains the Oxford 2 protocol proposal itself, as well as its associated protocol-specific executable binaries (baker, accuser, etc).
+This release contains the Atlas protocol proposal itself, as well as its associated protocol-specific executable binaries (baker, accuser, etc).
 
 .. _acl_fix:
 

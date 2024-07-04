@@ -231,9 +231,9 @@ let apply_block_denunciations ctxt current_cycle block_denunciations_map =
                 0) ;
             (* Validate ensures that [denunciations] contains [delegate] at most once *)
             let delegate_contract = Contract_repr.Implicit delegate in
-            (* Oxford values *)
+            (* Atlas values *)
             let* slash_history_opt_o =
-              Storage.Contract.Slashed_deposits__Oxford.find
+              Storage.Contract.Slashed_deposits__Atlas.find
                 ctxt
                 delegate_contract
             in
@@ -247,7 +247,7 @@ let apply_block_denunciations ctxt current_cycle block_denunciations_map =
             in
             let slash_history = Option.value slash_history_opt ~default:[] in
 
-            (* Concatenate both, Oxford first *)
+            (* Concatenate both, Atlas first *)
             let slash_history =
               List.fold_left
                 (fun acc (cycle, percentage) ->
@@ -257,7 +257,7 @@ let apply_block_denunciations ctxt current_cycle block_denunciations_map =
             in
 
             let*! ctxt =
-              Storage.Contract.Slashed_deposits__Oxford.remove
+              Storage.Contract.Slashed_deposits__Atlas.remove
                 ctxt
                 delegate_contract
             in

@@ -95,11 +95,11 @@ let protocol_alpha_parameters_template =
 
 let network_activation_parameters_templates protocol_hash =
   match protocol_hash with
-  | Tezt_mavryk.Protocol.ParisB ->
+  | Tezt_mavryk.Protocol.Atlas ->
       Some
         (Filename.concat
            network_parameters_templates_dir
-           "proto_019_PtParisB_mainnet.json")
+           "proto_001_PtAtLas_mainnet.json")
   | Tezt_mavryk.Protocol.ParisC ->
       Some
         (Filename.concat

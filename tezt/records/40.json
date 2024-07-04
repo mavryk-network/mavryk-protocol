@@ -847,7 +847,7 @@
   },
   {
     "file": "src/lib_smart_rollup_node/test/test_store_gc.ml",
-    "title": "lib_smart_rollup_node: store_gc_reorg (ProxfordYmVf wasm_2_0_0)",
+    "title": "lib_smart_rollup_node: store_gc_reorg (PtAtLasYmVf wasm_2_0_0)",
     "tags": [
       "alcotezt",
       "quick"

@@ -18,7 +18,6 @@ depends: [
   "mavkit-l2-libs" { = version }
   "mavkit-smart-rollup-node-lib" { = version }
   "mavkit-smart-rollup-node-PtAtLas" { = version }
-  "mavkit-smart-rollup-node-PtParisB" { = version }
   "mavkit-smart-rollup-node-PsParisC" { = version }
 ]
 depopts: [

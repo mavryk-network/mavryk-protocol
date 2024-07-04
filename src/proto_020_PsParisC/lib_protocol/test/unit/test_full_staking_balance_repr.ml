@@ -17,8 +17,8 @@ open Protocol
 open Data_encoding
 
 (* We duplicate the definition of the Full_staking_balance_repr module
-   from Oxford to test a None case in the current encoding *)
-module Full_staking_balance_repr_oxford = struct
+   from Atlas to test a None case in the current encoding *)
+module Full_staking_balance_repr_atlas = struct
   type t = {
     own_frozen : Tez_repr.t;
     staked_frozen : Tez_repr.t;
@@ -110,9 +110,9 @@ let test_encodings () =
 
   (* Test a [None] case for [added_in_p] *)
   let staking_balance_o =
-    Full_staking_balance_repr_oxford.make ~own_frozen ~staked_frozen ~delegated
+    Full_staking_balance_repr_atlas.make ~own_frozen ~staked_frozen ~delegated
   in
-  let encoding_o = Full_staking_balance_repr_oxford.encoding in
+  let encoding_o = Full_staking_balance_repr_atlas.encoding in
   let sb_o_bytes = Binary.to_bytes_exn encoding_o staking_balance_o in
   let* () = equal_full_staking_balance_bytes sb_o_bytes staking_balance in
   return_unit

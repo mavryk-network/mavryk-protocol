@@ -42,7 +42,7 @@ let init ~own_frozen ~staked_frozen ~delegated ~current_level =
 
 let encoding =
   let open Data_encoding in
-  (* This encoding is backward-compatible with the encoding used in Oxford, so
+  (* This encoding is backward-compatible with the encoding used in Atlas, so
      as to avoid a stitching in P. It will act as a lazy migration.
      The case in which [added_in_p] is [None] happen only for pre-existing
      values in the storage.

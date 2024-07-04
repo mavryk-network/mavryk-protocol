@@ -189,7 +189,7 @@ module Slashed_deposits_history = struct
 end
 
 (* TODO #6918: Remove after P *)
-module Slashed_deposits_history__Oxford = struct
+module Slashed_deposits_history__Atlas = struct
   include Slashed_deposits_history
 
   let encoding =
@@ -489,13 +489,13 @@ module Contract = struct
       (Tez_repr)
 
   (* TODO #6918: Remove after P *)
-  module Slashed_deposits__Oxford =
+  module Slashed_deposits__Atlas =
     Indexed_context.Make_map
       (Ghost)
       (struct
         let name = ["slashed_deposits"]
       end)
-      (Slashed_deposits_history__Oxford)
+      (Slashed_deposits_history__Atlas)
 
   module Bond_id_index =
     Make_indexed_subcontext

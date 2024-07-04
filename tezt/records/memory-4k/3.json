@@ -1,26 +1,6 @@
 [
   {
     "file": "tezt/tests/storage_snapshots.ml",
-    "title": "Nairobi: storage snapshot export and import",
-    "tags": [
-      "admin_client",
-      "client",
-      "export",
-      "import",
-      "layer1",
-      "memory_4k",
-      "nairobi",
-      "node",
-      "snapshot",
-      "storage"
-    ],
-    "successful_runs": {
-      "total_time": "53146105",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/storage_snapshots.ml",
     "title": "Atlas: storage snapshot export and import",
     "tags": [
       "admin_client",

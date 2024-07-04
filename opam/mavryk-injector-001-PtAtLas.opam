@@ -14,9 +14,9 @@ depends: [
   "dune" { >= "3.11.1" }
   "ocaml" { >= "4.14" }
   "mavkit-libs" { = version }
-  "mavryk-protocol-018-Proxford" { = version }
+  "mavryk-protocol-001-PtAtLas" { = version }
   "mavkit-injector" { = version }
-  "mavkit-protocol-018-Proxford-libs" { = version }
+  "mavkit-protocol-001-PtAtLas-libs" { = version }
   "mavkit-shell-libs" { = version }
 ]
 build: [

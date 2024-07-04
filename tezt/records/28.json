@@ -2675,7 +2675,7 @@
     "title": "Atlas: bootstrap: test threshold one",
     "tags": [
       "admin_client",
-      "baker_proxford",
+      "baker_ptatlas",
       "bootstrap",
       "client",
       "node",

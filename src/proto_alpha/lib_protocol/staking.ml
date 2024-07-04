@@ -135,7 +135,7 @@ let can_stake_from_unstake ctxt ~for_next_cycle_use_only_after_slashing
   let slashing_history = Option.value slashing_history_opt ~default:[] in
 
   let* slashing_history_opt_o =
-    Storage.Contract.Slashed_deposits__Oxford.find
+    Storage.Contract.Slashed_deposits__Atlas.find
       ctxt
       (Contract_repr.Implicit delegate)
   in

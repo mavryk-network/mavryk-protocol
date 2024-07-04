@@ -846,7 +846,7 @@
   },
   {
     "file": "src/lib_smart_rollup_node/test/test_store_gc.ml",
-    "title": "lib_smart_rollup_node: store_gc (ProxfordYmVf wasm_2_0_0)",
+    "title": "lib_smart_rollup_node: store_gc (PtAtLasYmVf wasm_2_0_0)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1709,7 +1709,7 @@
       "admin_client",
       "apply",
       "baker",
-      "baker_proxford",
+      "baker_ptatlas",
       "client",
       "node",
       "atlas",

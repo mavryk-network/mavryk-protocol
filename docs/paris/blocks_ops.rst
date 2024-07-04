@@ -14,7 +14,7 @@ those available to end-users on Tezos Mainnet. The complete list of
 operations, including those corresponding to features in development
 or available only on test networks, is given in the
 :package-api:`OCaml Documentation
-<mavryk-protocol-019-PtParisB/Mavryk_raw_protocol_019_PtParisB/Operation_repr/index.html>`.
+<mavryk-protocol-020-PsParisC/Mavryk_raw_protocol_020_PsParisC/Operation_repr/index.html>`.
 
 .. _validation_passes_paris:
 

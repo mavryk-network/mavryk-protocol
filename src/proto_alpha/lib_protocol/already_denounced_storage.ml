@@ -29,14 +29,14 @@ let already_denounced ctxt delegate level round kind =
     let* first_level = Storage.Tenderbake.First_level_of_protocol.get ctxt in
     if Raw_level_repr.(level.level >= first_level) then return answer
     else
-      (* Exception related to the migration from Oxford to P: because
-         Oxford doesn't record the round of misbehaviours, all
+      (* Exception related to the migration from Atlas to B: because
+         Atlas doesn't record the round of misbehaviours, all
          misbehaviours present in the storage at stitching time got
          assigned the round zero. So we also check with the round set
          to zero in the specific case where a misbehaviour:
 
          - is old enough to have potentially been denounced during
-         Oxford (ie. its level is before the first level of P),
+         Atlas (ie. its level is before the first level of B),
 
          - has a non-zero round (otherwise the new check is identical
          to the previous one anyway), and

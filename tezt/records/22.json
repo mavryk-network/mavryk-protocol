@@ -870,7 +870,7 @@
   },
   {
     "file": "src/lib_smart_rollup_node/test/canary.ml",
-    "title": "lib_smart_rollup_node: canary (ProxfordYmVf wasm_2_0_0)",
+    "title": "lib_smart_rollup_node: canary (PtAtLasYmVf wasm_2_0_0)",
     "tags": [
       "alcotezt",
       "quick"
@@ -1622,10 +1622,10 @@
       "attesting",
       "baker",
       "baker_alpha",
-      "baker_proxford",
+      "baker_ptatlas",
       "client",
       "fork",
-      "from_oxford",
+      "from_atlas",
       "migration",
       "node",
       "protocol",
@@ -1680,7 +1680,7 @@
     "tags": [
       "admin_client",
       "baker",
-      "baker_proxford",
+      "baker_ptatlas",
       "client",
       "filesystem",
       "layer1",

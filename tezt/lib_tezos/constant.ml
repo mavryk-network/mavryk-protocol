@@ -73,13 +73,13 @@ let smart_rollup_installer =
 let _mavkit_smart_rollup_wasm_debugger =
   Uses.make ~tag:"wasm_debugger" ~path:"./mavkit-smart-rollup-wasm-debugger"
 
-(* To be removed after Oxford is frozen *)
-let _mavkit_accuser_Ptoxford =
-  Uses.make ~tag:"accuser_proxford" ~path:"./mavkit-accuser-Proxford"
+(* To be removed after Atlas is frozen *)
+let _mavkit_accuser_PtAtLas =
+  Uses.make ~tag:"accuser_ptatlas" ~path:"./mavkit-accuser-PtAtLas"
 
-(* To be removed after Oxford is frozen *)
-let _mavkit_baker_Ptoxford =
-  Uses.make ~tag:"baker_proxford" ~path:"./mavkit-baker-Proxford"
+(* To be removed after Atlas is frozen *)
+let _mavkit_baker_PtAtLas =
+  Uses.make ~tag:"baker_ptatlas" ~path:"./mavkit-baker-PtAtLas"
 
 module WASM = struct
   let dal_echo_kernel =

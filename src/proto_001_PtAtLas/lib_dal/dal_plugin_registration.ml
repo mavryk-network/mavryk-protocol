@@ -164,7 +164,7 @@ module Plugin = struct
 
     let cell_hash = Dal.Slots_history.hash
 
-    (* We return the empty list here because DAL is not activated in Oxford2. *)
+    (* We return the empty list here because DAL is not activated in Atlas. *)
     let cells_of_level _block_info _ctxt = Lwt_result_syntax.return []
   end
 

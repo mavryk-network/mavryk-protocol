@@ -143,7 +143,7 @@ val add_contract_delegated_stake :
 val remove_contract_delegated_stake :
   Raw_context.t -> Contract_repr.t -> Tez_repr.t -> Raw_context.t tzresult Lwt.t
 
-val cleanup_values_for_protocol_p :
+val cleanup_values_for_protocol_b :
   Raw_context.t ->
   preserved_cycles:int ->
   consensus_rights_delay:int ->

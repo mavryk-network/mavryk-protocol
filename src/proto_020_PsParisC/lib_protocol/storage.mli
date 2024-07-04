@@ -71,7 +71,7 @@ module Slashed_deposits_history : sig
 end
 
 (* TODO #6918: Remove after P *)
-module Slashed_deposits_history__Oxford :
+module Slashed_deposits_history__Atlas :
     module type of Slashed_deposits_history
 
 module Unstake_request : sig
@@ -265,7 +265,7 @@ module Contract : sig
        and type t := Raw_context.t
 
   (* TODO #6918: Remove after P *)
-  module Slashed_deposits__Oxford :
+  module Slashed_deposits__Atlas :
     Indexed_data_storage
       with type key = Contract_repr.t
        and type value = Slashed_deposits_history.t
@@ -484,9 +484,9 @@ module Slashed_deposits :
      and type key = Signature.public_key_hash
      and type value = Slashed_deposits_history.t
 
-(** Needed for the stitching from Oxford to P.
+(** Needed for the stitching from Atlas to P.
     TODO #6957: Remove this from protocol Q. *)
-type denounced__Oxford = {for_double_attesting : bool; for_double_baking : bool}
+type denounced__Atlas = {for_double_attesting : bool; for_double_baking : bool}
 
 (** This type is used to track which denunciations have already been
     recorded, to avoid slashing multiple times the same event. *)
@@ -507,13 +507,13 @@ module Already_denounced :
       (Raw_level_repr.t * Round_repr.t) * Signature.Public_key_hash.t
      and type value = denounced
 
-(** Needed for the stitching from Oxford to P.
+(** Needed for the stitching from Atlas to P.
     TODO #6957: Remove this from protocol Q. *)
-module Already_denounced__Oxford :
+module Already_denounced__Atlas :
   Indexed_data_storage
     with type t := Raw_context.t * Cycle_repr.t
      and type key = Raw_level_repr.t * Signature.Public_key_hash.t
-     and type value = denounced__Oxford
+     and type value = denounced__Atlas
 
 module Pending_staking_parameters :
   Indexed_data_storage
@@ -866,11 +866,6 @@ module Sc_rollup : sig
   *)
   module Previous_commitment_period :
     Single_data_storage with type value = int and type t := Raw_context.t
-
-  module Parisb2_activation_level :
-    Single_data_storage
-      with type value = Raw_level_repr.t
-       and type t := Raw_context.t
 
   module PVM_kind :
     Non_iterable_indexed_carbonated_data_storage

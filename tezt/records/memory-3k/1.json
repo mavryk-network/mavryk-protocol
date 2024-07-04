@@ -18,29 +18,10 @@
   },
   {
     "file": "tezt/tests/nonce_seed_revelation.ml",
-    "title": "Nairobi: Nonce seed revelation",
-    "tags": [
-      "admin_client",
-      "baker_ptnairob",
-      "client",
-      "memory_3k",
-      "nairobi",
-      "node",
-      "nonce",
-      "revelation",
-      "seed"
-    ],
-    "successful_runs": {
-      "total_time": "17009006",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/nonce_seed_revelation.ml",
     "title": "Atlas: Nonce seed revelation",
     "tags": [
       "admin_client",
-      "baker_proxford",
+      "baker_ptatlas",
       "client",
       "memory_3k",
       "node",
@@ -70,25 +51,6 @@
     ],
     "successful_runs": {
       "total_time": "17231936",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/precheck.ml",
-    "title": "Nairobi: forge fake block",
-    "tags": [
-      "admin_client",
-      "client",
-      "codec",
-      "fake_block",
-      "memory_3k",
-      "nairobi",
-      "node",
-      "precheck",
-      "propagation"
-    ],
-    "successful_runs": {
-      "total_time": "8836864",
       "count": "1"
     }
   },
@@ -132,26 +94,6 @@
   },
   {
     "file": "tezt/tests/precheck.ml",
-    "title": "Nairobi: forge block with wrong payload",
-    "tags": [
-      "admin_client",
-      "client",
-      "codec",
-      "fake_block",
-      "memory_3k",
-      "nairobi",
-      "node",
-      "payload",
-      "precheck",
-      "propagation"
-    ],
-    "successful_runs": {
-      "total_time": "14007325",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/precheck.ml",
     "title": "Atlas: forge block with wrong payload",
     "tags": [
       "admin_client",
@@ -187,25 +129,6 @@
     ],
     "successful_runs": {
       "total_time": "14188608",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/synchronisation_heuristic.ml",
-    "title": "Nairobi: check synchronization state",
-    "tags": [
-      "admin_client",
-      "bootstrap",
-      "client",
-      "flaky",
-      "memory_3k",
-      "nairobi",
-      "node",
-      "sync",
-      "synchronisation_threshold"
-    ],
-    "successful_runs": {
-      "total_time": "11791966",
       "count": "1"
     }
   },

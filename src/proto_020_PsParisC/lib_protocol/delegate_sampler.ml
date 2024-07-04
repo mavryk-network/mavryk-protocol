@@ -246,7 +246,7 @@ let clear_outdated_sampling_data ctxt ~new_cycle =
       let* ctxt = Delegate_sampler_state.remove_existing ctxt outdated_cycle in
       Seed_storage.remove_for_cycle ctxt outdated_cycle
 
-let cleanup_values_for_protocol_p ctxt ~preserved_cycles ~consensus_rights_delay
+let cleanup_values_for_protocol_b ctxt ~preserved_cycles ~consensus_rights_delay
     ~new_cycle =
   let open Lwt_result_syntax in
   assert (Compare.Int.(consensus_rights_delay <= preserved_cycles)) ;

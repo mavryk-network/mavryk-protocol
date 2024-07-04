@@ -18,9 +18,6 @@
   (select void_for_linking-mavkit_injector_PtAtLas from
    (mavkit_injector_PtAtLas -> void_for_linking-mavkit_injector_PtAtLas.empty)
    (-> void_for_linking-mavkit_injector_PtAtLas.empty))
-  (select void_for_linking-mavkit_injector_PtParisB from
-   (mavkit_injector_PtParisB -> void_for_linking-mavkit_injector_PtParisB.empty)
-   (-> void_for_linking-mavkit_injector_PtParisB.empty))
   (select void_for_linking-mavkit_injector_PsParisC from
    (mavkit_injector_PsParisC -> void_for_linking-mavkit_injector_PsParisC.empty)
    (-> void_for_linking-mavkit_injector_PsParisC.empty))
@@ -46,6 +43,5 @@
  (action
   (progn
    (write-file void_for_linking-mavkit_injector_PtAtLas.empty "")
-   (write-file void_for_linking-mavkit_injector_PtParisB.empty "")
    (write-file void_for_linking-mavkit_injector_PsParisC.empty "")
    (write-file void_for_linking-mavkit_injector_alpha.empty ""))))

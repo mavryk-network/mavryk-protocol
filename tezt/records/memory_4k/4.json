@@ -29,21 +29,6 @@
   },
   {
     "file": "tezt/tests/synchronisation_heuristic.ml",
-    "title": "Nairobi: bootstrap: many nodes bootstrap",
-    "tags": [
-      "nairobi",
-      "synchronisation_threshold",
-      "bootstrap",
-      "threshold",
-      "memory_4k"
-    ],
-    "successful_runs": {
-      "total_time": "52823570",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/synchronisation_heuristic.ml",
     "title": "Atlas: bootstrap: many nodes bootstrap",
     "tags": [
       "atlas",

@@ -15,7 +15,7 @@ Description: The baker key to associate to this baker
 
 Template: mavkit-baker/baker-active-protocol
 Type: string
-Default: Proxford
+Default: PtAtLas
 Description: The protocol associated to the baker
  For production bakers this is the protocol of mainnet. Upon activation
  both the baker for the active protocol and the next protocol must be running

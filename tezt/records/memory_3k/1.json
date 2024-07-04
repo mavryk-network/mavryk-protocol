@@ -15,21 +15,6 @@
   },
   {
     "file": "tezt/tests/nonce_seed_revelation.ml",
-    "title": "Nairobi: Nonce seed revelation",
-    "tags": [
-      "nairobi",
-      "nonce",
-      "seed",
-      "revelation",
-      "memory_3k"
-    ],
-    "successful_runs": {
-      "total_time": "20584517",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/nonce_seed_revelation.ml",
     "title": "Atlas: Nonce seed revelation",
     "tags": [
       "atlas",
@@ -55,21 +40,6 @@
     ],
     "successful_runs": {
       "total_time": "19991964",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/precheck.ml",
-    "title": "Nairobi: forge fake block",
-    "tags": [
-      "nairobi",
-      "precheck",
-      "fake_block",
-      "propagation",
-      "memory_3k"
-    ],
-    "successful_runs": {
-      "total_time": "14106458",
       "count": "1"
     }
   },
@@ -105,22 +75,6 @@
   },
   {
     "file": "tezt/tests/precheck.ml",
-    "title": "Nairobi: forge block with wrong payload",
-    "tags": [
-      "nairobi",
-      "precheck",
-      "fake_block",
-      "propagation",
-      "payload",
-      "memory_3k"
-    ],
-    "successful_runs": {
-      "total_time": "21414777",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/precheck.ml",
     "title": "Atlas: forge block with wrong payload",
     "tags": [
       "atlas",
@@ -148,23 +102,6 @@
     ],
     "successful_runs": {
       "total_time": "26430145",
-      "count": "1"
-    }
-  },
-  {
-    "file": "tezt/tests/synchronisation_heuristic.ml",
-    "title": "Nairobi: check synchronization state",
-    "tags": [
-      "nairobi",
-      "ci_disabled",
-      "synchronisation_threshold",
-      "bootstrap",
-      "node",
-      "sync",
-      "memory_3k"
-    ],
-    "successful_runs": {
-      "total_time": "16502947",
       "count": "1"
     }
   },
