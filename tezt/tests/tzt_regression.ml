@@ -43,7 +43,7 @@ let test_tzt protocols =
     ~title:(sf "Run TZT")
     ~tags:["client"; "michelson"; "tzt"]
     ~uses_node:false
-    ~supports:(Protocol.From_protocol 019)
+    ~supports:(Protocol.From_protocol 002)
     (fun protocol ->
       let tests =
         List.map

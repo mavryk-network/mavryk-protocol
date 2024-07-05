@@ -1,0 +1,17 @@
+{0 mavkit-protocol-002-PtBoreas-libs: mavkit protocol 002-PtBoreas libraries}
+
+This is a package containing some libraries related to the Tezos 002-PtBoreas protocol.
+
+It contains the following libraries:
+
+- {{!module-Mavryk_002_PtBoreas_test_helpers}Mavryk_002_PtBoreas_test_helpers}: Protocol testing framework
+- {{!module-Mavryk_baking_002_PtBoreas}Mavryk_baking_002_PtBoreas}: Base library for `mavryk-baker/accuser`
+- {{!module-Mavryk_baking_002_PtBoreas_commands}Mavryk_baking_002_PtBoreas_commands}: Protocol-specific commands for baking
+- {{!module-Mavryk_client_002_PtBoreas}Mavryk_client_002_PtBoreas}: Protocol specific library for `mavkit-client`
+- {{!module-Mavryk_dac_002_PtBoreas}Mavryk_dac_002_PtBoreas}: Protocol specific library for the Data availability Committee
+- {{!module-Mavryk_dal_002_PtBoreas}Mavryk_dal_002_PtBoreas}: Protocol specific library for the Data availability Layer
+- {{!module-Mavryk_layer2_utils_002_PtBoreas}Mavryk_layer2_utils_002_PtBoreas}: Protocol specific library for Layer 2 utils
+- {{!module-Mavryk_protocol_plugin_002_PtBoreas}Mavryk_protocol_plugin_002_PtBoreas}: Protocol plugin
+- {{!module-Mavryk_protocol_plugin_002_PtBoreas_registerer}Mavryk_protocol_plugin_002_PtBoreas_registerer}: Protocol plugin registerer
+- {{!module-Mavryk_smart_rollup_002_PtBoreas}Mavryk_smart_rollup_002_PtBoreas}: Protocol specific library of helpers for `mavryk-smart-rollup`
+- {{!module-Mavryk_smart_rollup_layer2_002_PtBoreas}Mavryk_smart_rollup_layer2_002_PtBoreas}: Protocol specific library for `mavryk-smart-rollup`

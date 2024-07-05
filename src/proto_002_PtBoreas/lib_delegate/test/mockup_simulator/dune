@@ -1,0 +1,33 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name mavryk_002_PtBoreas_mockup_simulator)
+ (public_name mavkit-protocol-002-PtBoreas-libs.bakings.mockup-simulator)
+ (libraries
+  mavkit-libs.base
+  mavryk-protocol-002-PtBoreas.protocol
+  mavkit-protocol-002-PtBoreas-libs.client
+  mavkit-shell-libs.client-commands
+  mavkit-protocol-002-PtBoreas-libs.baking
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.client-base-unix
+  mavryk-protocol-002-PtBoreas.parameters
+  mavkit-shell-libs.mockup
+  mavkit-shell-libs.mockup-proxy
+  mavkit-shell-libs.mockup-commands
+  mavkit-protocol-002-PtBoreas-libs.baking.tenderbrute
+  tezt.core)
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_002_PtBoreas
+  -open Mavryk_protocol_002_PtBoreas.Protocol
+  -open Mavryk_client_002_PtBoreas
+  -open Mavryk_client_commands
+  -open Mavryk_baking_002_PtBoreas
+  -open Mavryk_stdlib_unix
+  -open Mavryk_client_base_unix
+  -open Mavryk_protocol_002_PtBoreas_parameters
+  -open Tenderbrute_002_PtBoreas
+  -open Tezt_core))

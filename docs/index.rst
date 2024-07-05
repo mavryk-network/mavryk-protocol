@@ -217,7 +217,7 @@ Platform developers are also provided reference materials for internal APIs of M
 
    protocols/naming
    protocols/001_atlas
-   protocols/019_paris
+   protocols/002_boreas
    protocols/alpha
    protocols/history
 

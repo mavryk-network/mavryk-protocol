@@ -41,8 +41,8 @@ let test_contract_hash_fun hash_fun_name (hash_fun : bytes -> bytes) =
   Protocol.register_test
     ~__FILE__
     ~title:("Test contract hash function: " ^ hash_fun_name)
-    ~supports:(Protocol.From_protocol 10)
-      (* Instructions SHA3 and KECCAK are both available since protocol 10 *)
+    ~supports:(Protocol.From_protocol 001)
+      (* Instructions SHA3 and KECCAK are both available since protocol 001 *)
     ~tags:["michelson"; "crypto"; "contract"; "hash"; hash_fun_name]
     (fun protocol ->
       let state = Random.State.make [||] in

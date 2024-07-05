@@ -19,9 +19,9 @@ depends: [
   "mavkit-protocol-001-PtAtLas-libs" {with-test}
   "mavkit-smart-rollup-node-PtAtLas" {with-test}
   "mavkit-alcotezt" {with-test}
-  "mavryk-protocol-020-PsParisC" {with-test}
-  "mavkit-protocol-020-PsParisC-libs" {with-test}
-  "mavkit-smart-rollup-node-PsParisC" {with-test}
+  "mavryk-protocol-002-PtBoreas" {with-test}
+  "mavkit-protocol-002-PtBoreas-libs" {with-test}
+  "mavkit-smart-rollup-node-PtBoreas" {with-test}
   "mavryk-protocol-alpha" {with-test}
   "mavkit-protocol-alpha-libs" {with-test}
   "mavkit-smart-rollup-node-alpha" {with-test}

@@ -100,11 +100,11 @@ let network_activation_parameters_templates protocol_hash =
         (Filename.concat
            network_parameters_templates_dir
            "proto_001_PtAtLas_mainnet.json")
-  | Tezt_mavryk.Protocol.ParisC ->
+  | Tezt_mavryk.Protocol.Boreas ->
       Some
         (Filename.concat
            network_parameters_templates_dir
-           "proto_020_PsParisC_mainnet.json")
+           "proto_002_PtBoreas_mainnet.json")
   | Tezt_mavryk.Protocol.Alpha ->
       (* Fetching the network parameters from the src/proto_alpha directory,
          to be sure that we are in synch with current protocl parameters. *)
@@ -378,7 +378,7 @@ let () =
     ~__FILE__
     ~title:"Generate Network Activation Parameters"
     ~tags:["generate_activation_parameters"]
-    (Local.generate_network_activation_parameters Protocol.ParisC) ;
+    (Local.generate_network_activation_parameters Protocol.Boreas) ;
   register
     ~__FILE__
     ~title:"Partition bakers by node"

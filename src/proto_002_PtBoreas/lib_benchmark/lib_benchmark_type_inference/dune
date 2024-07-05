@@ -1,0 +1,23 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name mavryk_benchmark_type_inference_002_PtBoreas)
+ (public_name mavryk-benchmark-type-inference-002-PtBoreas)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-libs.stdlib
+  mavkit-libs.error-monad
+  mavkit-libs.crypto
+  mavkit-libs.micheline
+  mavryk-micheline-rewriting
+  mavryk-protocol-002-PtBoreas.protocol
+  hashcons)
+ (flags
+  (:standard)
+  -open Mavryk_stdlib
+  -open Mavryk_error_monad
+  -open Mavryk_crypto
+  -open Mavryk_micheline
+  -open Mavryk_micheline_rewriting
+  -open Mavryk_protocol_002_PtBoreas))

@@ -1,0 +1,111 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name mavryk_baking_002_PtBoreas)
+ (public_name mavkit-protocol-002-PtBoreas-libs.baking)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-libs.base
+  mavkit-libs.clic
+  mavkit-version.value
+  mavryk-protocol-002-PtBoreas.protocol
+  mavryk-protocol-002-PtBoreas.protocol.lifted
+  mavkit-protocol-002-PtBoreas-libs.plugin
+  mavkit-proto-libs.protocol-environment
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
+  mavkit-protocol-002-PtBoreas-libs.client
+  mavkit-shell-libs.client-commands
+  mavkit-libs.stdlib
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.shell-context
+  mavkit-libs.mavryk-context
+  mavkit-libs.mavryk-context.memory
+  mavkit-libs.rpc-http-client-unix
+  mavkit-shell-libs.context-ops
+  mavkit-libs.rpc
+  mavkit-libs.rpc-http
+  mavkit-libs.crypto-dal
+  mavryk-dal-node-services
+  lwt-canceler
+  lwt-exit
+  uri)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_002_PtBoreas
+  -open Mavryk_protocol_002_PtBoreas_lifted
+  -open Mavryk_protocol_plugin_002_PtBoreas
+  -open Mavryk_shell_services
+  -open Mavryk_client_base
+  -open Mavryk_client_002_PtBoreas
+  -open Mavryk_client_commands
+  -open Mavryk_stdlib
+  -open Mavryk_stdlib_unix
+  -open Mavryk_shell_context
+  -open Mavryk_context
+  -open Mavryk_context_ops
+  -open Mavryk_rpc_http
+  -open Mavryk_crypto_dal)
+ (modules (:standard \ Baking_commands Baking_commands_registration)))
+
+(library
+ (name mavryk_baking_002_PtBoreas_commands)
+ (public_name mavkit-protocol-002-PtBoreas-libs.baking-commands)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-libs.base
+  mavryk-protocol-002-PtBoreas.protocol
+  mavryk-protocol-002-PtBoreas.parameters
+  mavkit-libs.stdlib-unix
+  mavkit-proto-libs.protocol-environment
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
+  mavkit-protocol-002-PtBoreas-libs.client
+  mavkit-shell-libs.client-commands
+  mavkit-protocol-002-PtBoreas-libs.baking
+  mavkit-libs.rpc
+  uri)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_002_PtBoreas
+  -open Mavryk_protocol_002_PtBoreas_parameters
+  -open Mavryk_stdlib_unix
+  -open Mavryk_shell_services
+  -open Mavryk_client_base
+  -open Mavryk_client_002_PtBoreas
+  -open Mavryk_client_commands
+  -open Mavryk_baking_002_PtBoreas)
+ (modules Baking_commands))
+
+(library
+ (name mavryk_baking_002_PtBoreas_commands_registration)
+ (public_name mavkit-protocol-002-PtBoreas-libs.baking-commands.registration)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-libs.base
+  mavryk-protocol-002-PtBoreas.protocol
+  mavkit-proto-libs.protocol-environment
+  mavkit-shell-libs.shell-services
+  mavkit-shell-libs.client-base
+  mavkit-protocol-002-PtBoreas-libs.client
+  mavkit-shell-libs.client-commands
+  mavkit-protocol-002-PtBoreas-libs.baking
+  mavkit-protocol-002-PtBoreas-libs.baking-commands
+  mavkit-libs.rpc)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_002_PtBoreas
+  -open Mavryk_shell_services
+  -open Mavryk_client_base
+  -open Mavryk_client_002_PtBoreas
+  -open Mavryk_client_commands
+  -open Mavryk_baking_002_PtBoreas
+  -open Mavryk_baking_002_PtBoreas_commands)
+ (modules Baking_commands_registration))

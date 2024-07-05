@@ -1,0 +1,12 @@
+
+./mavkit-codec encode 002-PtBoreas.raw_level from 2147483647
+7fffffff
+
+./mavkit-codec decode 002-PtBoreas.raw_level from 7fffffff
+2147483647
+
+./mavkit-codec encode 002-PtBoreas.raw_level from 0
+00000000
+
+./mavkit-codec decode 002-PtBoreas.raw_level from 00000000
+0

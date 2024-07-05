@@ -1,0 +1,6 @@
+
+./mavkit-codec encode 002-PtBoreas.timestamp from '"2020-04-20T16:19:59Z"'
+000000005e9dcbaf
+
+./mavkit-codec decode 002-PtBoreas.timestamp from 000000005e9dcbaf
+"2020-04-20T16:19:59Z"

@@ -18,7 +18,7 @@ depends: [
   "mavryk-dac-lib" { = version }
   "mavryk-dac-client-lib" { = version }
   "mavkit-protocol-001-PtAtLas-libs" { = version }
-  "mavkit-protocol-020-PsParisC-libs" { = version }
+  "mavkit-protocol-002-PtBoreas-libs" { = version }
 ]
 depopts: [
   "mavkit-protocol-alpha-libs"

@@ -1,0 +1,12 @@
+
+./mavkit-codec encode 002-PtBoreas.tez from '"7322135"'
+97f4be03
+
+./mavkit-codec decode 002-PtBoreas.tez from 97f4be03
+"7322135"
+
+./mavkit-codec encode 002-PtBoreas.tez from '"0"'
+00
+
+./mavkit-codec decode 002-PtBoreas.tez from 00
+"0"

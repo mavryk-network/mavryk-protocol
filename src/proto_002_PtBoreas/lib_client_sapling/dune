@@ -1,0 +1,28 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name mavryk_client_sapling_002_PtBoreas)
+ (public_name mavkit-protocol-002-PtBoreas-libs.client.sapling)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-libs.base
+  mavkit-libs.clic
+  mavkit-libs.crypto
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.signer-backends
+  mavkit-protocol-002-PtBoreas-libs.client
+  mavkit-protocol-002-PtBoreas-libs.client.commands
+  mavryk-protocol-002-PtBoreas.protocol
+  mavkit-protocol-002-PtBoreas-libs.plugin)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix
+  -open Mavryk_client_base
+  -open Mavryk_client_002_PtBoreas
+  -open Mavryk_client_002_PtBoreas_commands
+  -open Mavryk_protocol_002_PtBoreas
+  -open Mavryk_protocol_plugin_002_PtBoreas))

@@ -113,7 +113,7 @@ let baker_early_preattestation_test =
     ~title:"Test baker early pre-attestation"
     ~tags:["node"; "baker"; "early"; "preattestation"]
     ~uses:(fun protocol -> [Protocol.baker protocol])
-    ~supports:(Protocol.From_protocol 16)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   Log.info
     "Initialize two connected nodes that activate the protocol %s."

@@ -1,0 +1,38 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name mavryk_002_PtBoreas_test_helpers)
+ (public_name mavkit-protocol-002-PtBoreas-libs.test-helpers)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezt.core
+  tezt
+  qcheck-alcotest
+  mavkit-libs.test-helpers
+  mavkit-libs.base
+  mavkit-libs.micheline
+  mavkit-libs.stdlib-unix
+  mavryk-protocol-002-PtBoreas.protocol
+  mavkit-protocol-002-PtBoreas-libs.client
+  mavryk-protocol-002-PtBoreas.parameters
+  mavkit-proto-libs.protocol-environment
+  mavkit-protocol-002-PtBoreas-libs.plugin
+  mavkit-shell-libs.shell-services
+  mavkit-libs.plompiler
+  mavkit-libs.crypto-dal
+  mavkit-protocol-002-PtBoreas-libs.smart-rollup)
+ (flags
+  (:standard)
+  -open Tezt_core
+  -open Tezt_core.Base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_micheline
+  -open Mavryk_stdlib_unix
+  -open Mavryk_protocol_002_PtBoreas
+  -open Mavryk_client_002_PtBoreas
+  -open Mavryk_protocol_002_PtBoreas_parameters
+  -open Mavryk_protocol_plugin_002_PtBoreas
+  -open Mavryk_shell_services
+  -open Mavryk_crypto_dal
+  -open Mavryk_smart_rollup_002_PtBoreas))

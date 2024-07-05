@@ -98,7 +98,7 @@ let check_vote_error ?__LOC__ expected_error expected_file_path
       baker
 
 let test_all_per_block_votes =
-  (* This test actually supports protocols >= 012. But unfortunately, because
+  (* This test actually supports protocols >= 001. But unfortunately, because
      it creates, uses and then deletes a file at a fixed location ([default_votefile]),
      it cannot be run in parallel with itself for multiple protocols.
      So we only run it on Alpha. *)

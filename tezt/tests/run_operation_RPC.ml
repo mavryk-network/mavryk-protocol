@@ -90,7 +90,7 @@ let run_manager_operations_and_check_proto_error ~expected_proto_error
 (** This test checks that the [run_operation] RPC succeeds on a
     correct [proposals] operation.
 
-    It only supports protocol versions from 015 on. Before that, the
+    It only supports protocol versions from 001 on. Before that, the
     RPC crashed when called both on a non-manager operation and on a
     level 1 block.
 
@@ -100,7 +100,7 @@ let run_manager_operations_and_check_proto_error ~expected_proto_error
 let test_run_proposals =
   Protocol.register_test
     ~__FILE__
-    ~supports:(Protocol.From_protocol 015)
+    ~supports:(Protocol.From_protocol 001)
     ~title:"Run_operation proposals"
     ~tags:(run_operation_tags @ ["voting"; "proposals"])
   @@ fun protocol ->
@@ -315,7 +315,7 @@ let test_inconsistent_counters =
 let test_bad_revelations =
   Protocol.register_test
     ~__FILE__
-    ~supports:(Protocol.From_protocol 014)
+    ~supports:(Protocol.From_protocol 001)
     ~title:"Run_operation bad revelations"
     ~tags:(run_operation_tags @ ["manager"; "reveal"; "bad_revelations"])
   @@ fun protocol ->

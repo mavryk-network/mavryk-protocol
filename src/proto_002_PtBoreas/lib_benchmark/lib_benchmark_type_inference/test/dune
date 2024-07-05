@@ -1,0 +1,29 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(executables
+ (names test_uf test_inference)
+ (libraries
+  mavkit-libs.micheline
+  mavryk-micheline-rewriting
+  mavryk-benchmark-type-inference-002-PtBoreas
+  mavryk-protocol-002-PtBoreas.protocol
+  mavkit-libs.error-monad
+  mavkit-protocol-002-PtBoreas-libs.client)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/macos-link-flags.sexp))
+ (flags
+  (:standard)
+  -open Mavryk_micheline
+  -open Mavryk_benchmark_type_inference_002_PtBoreas))
+
+(rule
+ (alias runtest)
+ (package mavryk-benchmark-type-inference-002-PtBoreas)
+ (action (run %{dep:./test_uf.exe})))
+
+(rule
+ (alias runtest)
+ (package mavryk-benchmark-type-inference-002-PtBoreas)
+ (action (run %{dep:./test_inference.exe})))

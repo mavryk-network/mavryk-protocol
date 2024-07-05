@@ -775,6 +775,6 @@ let register ~protocols =
     ~sig_algs:(Some "p256", Some "ed25519", None)
     protocols ;
   test_multisig
-    ~supports:(Protocol.From_protocol 16)
+    ~supports:(Protocol.From_protocol 001)
     ~sig_algs:(None, Some "bls", None)
     protocols

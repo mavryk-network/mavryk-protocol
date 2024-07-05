@@ -35,7 +35,7 @@ let register_test ~title ?(additionnal_tags = []) ?uses f =
   Protocol.register_test
     ~__FILE__
     ~title
-    ~supports:(Protocol.From_protocol 18)
+    ~supports:(Protocol.From_protocol 001)
     ~tags:(["rpc"; "versioning"] @ additionnal_tags)
     ?uses
     f

@@ -9,8 +9,8 @@
   mavkit-shell-libs.store
   mavryk-protocol-001-PtAtLas.protocol
   mavkit-protocol-001-PtAtLas-libs.client
-  mavryk-protocol-020-PsParisC.protocol
-  mavkit-protocol-020-PsParisC-libs.client
+  mavryk-protocol-002-PtBoreas.protocol
+  mavkit-protocol-002-PtBoreas-libs.client
   mavryk-protocol-alpha.protocol
   mavkit-protocol-alpha-libs.client)
  (library_flags (:standard -linkall))

@@ -71,7 +71,7 @@ specified by the :package-api:`Protocol
 module in the :doc:`protocol
 environment<../shell/protocol_environment>` ``V12``, and it is
 implemented by this protocol in the
-:package-api:`Main<mavryk-protocol-020-PtParisC/Mavryk_raw_protocol_020_PsParisC/Main/index.html>`
+:package-api:`Main<mavryk-protocol-002-PtBoreas/Mavryk_raw_protocol_002_PtBoreas/Main/index.html>`
 module.
 
 The rest of this document is organized as follows: we first describe

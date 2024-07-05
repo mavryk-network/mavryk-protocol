@@ -917,7 +917,7 @@ module Deserialisation = struct
     Protocol.register_test
       ~__FILE__
       ~title:"Contract call with not enough gas to deserialize argument"
-      ~supports:(Protocol.From_protocol 14)
+      ~supports:(Protocol.From_protocol 001)
       ~tags:[Tag.layer1; "precheck"; "gas"; "deserialization"]
       ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
@@ -1140,7 +1140,7 @@ module Reveal = struct
       ~title:"Correct public key revealed twice in a batch"
       ~tags:[Tag.layer1; "reveal"; "revelation"; "batch"]
       ~uses:(fun _protocol -> [Constant.mavkit_codec])
-      ~supports:(Protocol.From_protocol 14)
+      ~supports:(Protocol.From_protocol 001)
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* key = Helpers.init_fresh_account ~protocol nodes ~amount ~fee in
@@ -1183,7 +1183,7 @@ module Reveal = struct
       ~title:"Two reveals in a batch. Second key is wrong"
       ~tags:[Tag.layer1; "reveal"; "revelation"]
       ~uses:(fun _protocol -> [Constant.mavkit_codec])
-      ~supports:(Protocol.From_protocol 14)
+      ~supports:(Protocol.From_protocol 001)
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* key = Helpers.init_fresh_account ~protocol nodes ~amount ~fee in
@@ -1411,7 +1411,7 @@ module Simple_transfers = struct
       ~title:"Simple transfer with not enough gas"
       ~tags:[Tag.layer1; "transaction"; "transfer"]
       ~uses:(fun _protocol -> [Constant.mavkit_codec])
-      ~supports:(Protocol.From_protocol 14)
+      ~supports:(Protocol.From_protocol 001)
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* _ =
@@ -1583,7 +1583,7 @@ module Simple_transfers = struct
     Protocol.register_test
       ~__FILE__
       ~title:"Test succesive injections with same manager"
-      ~supports:(Protocol.From_protocol 14)
+      ~supports:(Protocol.From_protocol 001)
       ~tags:[Tag.layer1; "transaction"; "transfer"; "counters"]
       ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->

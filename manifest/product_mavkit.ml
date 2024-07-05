@@ -1,7 +1,7 @@
 (*****************************************************************************)
 (*                                                                           *)
 (* SPDX-License-Identifier: MIT                                              *)
-(* Copyright (c) 2021-2023 Nomadic Labs <contact@nomadic-labs.com>           *)
+(* Copyright (c) 2003-2023 Nomadic Labs <contact@nomadic-labs.com>           *)
 (* Copyright (c) 2022-2024 TriliTech <contact@trili.tech>                   *)
 (* Copyright (c) 2023 Marigold <contact@marigold.dev>                        *)
 (*                                                                           *)
@@ -4834,9 +4834,9 @@ end = struct
 
        We could instead have defined functions with one argument [number_le], [number_ge],
        [version_ne] and [version_eq] in [register_alpha_family] directly.
-       We chose to use a module instead because [number_le 013] is not as readable as
-       [N.(number <= 013)]. Indeed, is [number_le 013] equivalent to [(<=) 013],
-       meaning "greater than 013", or is [number_le 013] equivalent to [fun x -> x <= 013],
+       We chose to use a module instead because [number_le 001] is not as readable as
+       [N.(number <= 001)]. Indeed, is [number_le 001] equivalent to [(<=) 001],
+       meaning "greater than 001", or is [number_le 001] equivalent to [fun x -> x <= 001],
        meaning the opposite? *)
     let compare_asymmetric a b =
       match a with
@@ -4877,18 +4877,18 @@ end = struct
             "test_deactivation";
             "test_delegation";
             "test_double_baking";
-            (if N.(number >= 018) then "test_double_attestation"
+            (if N.(number >= 001) then "test_double_attestation"
             else "test_double_endorsement");
-            (if N.(number >= 018) then "test_double_preattestation"
+            (if N.(number >= 001) then "test_double_preattestation"
             else "test_double_preendorsement");
-            (if N.(number >= 018) then "test_attestation"
+            (if N.(number >= 001) then "test_attestation"
             else "test_endorsement");
             "test_frozen_deposits";
             "test_helpers_rpcs";
             "test_participation";
-            (if N.(number >= 018) then "test_preattestation_functor"
+            (if N.(number >= 001) then "test_preattestation_functor"
             else "test_preendorsement_functor");
-            (if N.(number >= 018) then "test_preattestation"
+            (if N.(number >= 001) then "test_preattestation"
             else "test_preendorsement");
             "test_seed";
           ]
@@ -4899,7 +4899,7 @@ end = struct
             [
               alcotezt;
               mavkit_base |> open_ ~m:"TzPervasives"
-              |> error_monad_module N.(number <= 018);
+              |> error_monad_module N.(number <= 001);
               main |> open_;
               test_helpers |> if_some |> open_;
               mavkit_base_test_helpers |> open_;
@@ -4917,7 +4917,7 @@ end = struct
             [
               alcotezt;
               mavkit_base |> open_ ~m:"TzPervasives"
-              |> error_monad_module N.(number <= 018);
+              |> error_monad_module N.(number <= 001);
               main |> open_;
               test_helpers |> if_some |> open_;
               mavkit_base_test_helpers |> open_;
@@ -4945,9 +4945,9 @@ end = struct
             ("test_ticket_operations_diff", true);
             ("test_ticket_scanner", true);
             ("test_ticket_storage", true);
-            ("test_ticket_direct_spending", N.(number >= 019));
+            ("test_ticket_direct_spending", N.(number >= 002));
             ("test_typechecking", true);
-            ("test_lambda_normalization", N.(number >= 016));
+            ("test_lambda_normalization", N.(number >= 001));
           ]
           |> conditional_list
         in
@@ -4960,30 +4960,29 @@ end = struct
             (conditional_list
                [
                  ("contracts/*", true);
-                 ("patched_contracts/*", N.(number >= 013));
+                 ("patched_contracts/*", N.(number >= 001));
                ])
           ~dep_globs_rec:
             (conditional_list
                [
                  ( "../../../../../../michelson_test_scripts/*",
-                   N.(number >= 014) );
+                   N.(number >= 001) );
                ])
           ~deps:
             [
               alcotezt;
               mavkit_base |> open_ ~m:"TzPervasives"
-              |> error_monad_module N.(number <= 018);
+              |> error_monad_module N.(number <= 001);
               main |> open_;
               test_helpers |> if_some |> open_;
               mavkit_base_test_helpers |> open_;
-              mavkit_client_base |> if_ N.(number <= 012);
               client |> if_some |> open_;
               mavkit_benchmark;
               mavkit_micheline |> open_;
               benchmark |> if_some |> open_;
               benchmark_type_inference |> if_some |> open_;
               plugin |> if_some |> open_;
-              parameters |> if_some |> if_ N.(number >= 013);
+              parameters |> if_some |> if_ N.(number >= 001);
             ]
       in
       let _integration_operations =
@@ -4995,12 +4994,12 @@ end = struct
             ("test_origination", true);
             ("test_paid_storage_increase", true);
             ("test_reveal", true);
-            ("test_sc_rollup_transfer", N.(number >= 016));
-            ("test_sc_rollup", N.(number >= 016));
+            ("test_sc_rollup_transfer", N.(number >= 001));
+            ("test_sc_rollup", N.(number >= 001));
             ("test_transfer", true);
             ("test_voting", true);
             ("test_zk_rollup", true);
-            ("test_transfer_ticket", N.(number >= 016));
+            ("test_transfer_ticket", N.(number >= 001));
           ]
           |> conditional_list
         in
@@ -5009,21 +5008,21 @@ end = struct
           ~path:(path // "lib_protocol/test/integration/operations")
           ~opam:(sf "mavryk-protocol-%s-tests" name_dash)
           ~with_macos_security_framework:true
-          ~dep_globs:(conditional_list [("contracts/*", N.(number >= 013))])
+          ~dep_globs:(conditional_list [("contracts/*", N.(number >= 001))])
           ~deps:
             [
               alcotezt;
               mavkit_base |> open_ ~m:"TzPervasives"
-              |> error_monad_module N.(number <= 018);
+              |> error_monad_module N.(number <= 001);
               main |> open_;
-              client |> if_some |> if_ N.(number >= 012) |> open_;
+              client |> if_some |> if_ N.(number >= 001) |> open_;
               test_helpers |> if_some |> open_;
               mavkit_base_test_helpers |> open_;
               plugin |> if_some |> open_;
             ]
       in
       let _integration_validate =
-        only_if N.(number >= 014) @@ fun () ->
+        only_if N.(number >= 001) @@ fun () ->
         tezt
           [
             "generator_descriptors";
@@ -5045,14 +5044,14 @@ end = struct
             [
               alcotezt;
               mavkit_base |> open_ ~m:"TzPervasives"
-              |> error_monad_module N.(number <= 018);
+              |> error_monad_module N.(number <= 001);
               main |> open_;
               qcheck_alcotest;
               client |> if_some |> open_;
               mavkit_test_helpers |> open_;
               test_helpers |> if_some |> open_;
               mavkit_base_test_helpers |> open_;
-              parameters |> if_some |> if_ N.(number >= 019) |> open_;
+              parameters |> if_some |> if_ N.(number >= 002) |> open_;
               plugin |> if_some |> open_;
             ]
       in
@@ -5061,16 +5060,16 @@ end = struct
           [
             ("test_constants", true);
             ("test_frozen_bonds", true);
-            ("test_adaptive_issuance_launch", N.(number >= 018));
+            ("test_adaptive_issuance_launch", N.(number >= 001));
             ( "test_adaptive_issuance_roundtrip",
-              N.(number == 018 || number == 019 || number == 020) );
-            ("test_scenario_base", N.(number >= 021));
-            ("test_scenario_stake", N.(number >= 021));
-            ("test_scenario_rewards", N.(number >= 021));
-            ("test_scenario_autostaking", N.(number >= 021));
-            ("test_scenario_slashing", N.(number >= 021));
-            ("test_scenario_slashing_stakers", N.(number >= 021));
-            ("test_scenario_deactivation", N.(number >= 021));
+              N.(number == 001 || number == 002) );
+            ("test_scenario_base", N.(number >= 003));
+            ("test_scenario_stake", N.(number >= 003));
+            ("test_scenario_rewards", N.(number >= 003));
+            ("test_scenario_autostaking", N.(number >= 003));
+            ("test_scenario_slashing", N.(number >= 003));
+            ("test_scenario_slashing_stakers", N.(number >= 003));
+            ("test_scenario_deactivation", N.(number >= 003));
             ("test_liquidity_baking", true);
             ("test_storage_functions", true);
             ("test_storage", true);
@@ -5085,44 +5084,42 @@ end = struct
           ~with_macos_security_framework:true
           ~deps:
             [
-              (if N.(number >= 015) then Some tezt_lib else None) |> if_some;
+              (if N.(number >= 001) then Some tezt_lib else None) |> if_some;
               mavkit_context;
               alcotezt;
               mavkit_base |> open_ ~m:"TzPervasives"
-              |> error_monad_module N.(number <= 018);
+              |> error_monad_module N.(number <= 001);
               client |> if_some |> open_;
-              mavkit_client_base |> if_ N.(number <= 012);
               main |> open_;
               parameters |> if_some |> open_;
               test_helpers |> if_some |> open_;
               mavkit_base_test_helpers |> open_;
             ]
-          ~dep_globs:(if N.(number >= 015) then ["wasm_kernel/*.wasm"] else [])
+          ~dep_globs:(if N.(number >= 001) then ["wasm_kernel/*.wasm"] else [])
       in
       let _pbt =
         let list =
           [
             ("liquidity_baking_pbt", true);
             ("saturation_fuzzing", true);
-            ("test_merkle_list", N.(number >= 013));
+            ("test_merkle_list", N.(number >= 001));
             ("test_gas_properties", true);
-            ("test_sampler", N.(number >= 012));
+            ("test_sampler", N.(number >= 001));
             ("test_script_comparison", true);
-            ("test_script_roundtrip", N.(number >= 019));
+            ("test_script_roundtrip", N.(number >= 002));
             ("test_tez_repr", true);
-            ("test_bitset", N.(number >= 013));
-            ("test_sc_rollup_tick_repr", N.(number >= 016));
-            ("test_sc_rollup_encoding", N.(number >= 016));
-            ("test_sc_rollup_inbox", N.(number >= 017));
-            ("refutation_game_pbt", N.(number == 013));
-            ("test_refutation_game", N.(number >= 016));
-            ("test_carbonated_map", N.(number >= 013));
-            ("test_zk_rollup_encoding", N.(number >= 015));
-            ("test_dal_slot_proof", N.(number >= 016));
-            ("test_compare_operations", N.(number >= 015));
-            ("test_operation_encoding", N.(number >= 016));
-            ("test_balance_updates_encoding", N.(number >= 018));
-            ("test_bytes_conversion", N.(number >= 016));
+            ("test_bitset", N.(number >= 001));
+            ("test_sc_rollup_tick_repr", N.(number >= 001));
+            ("test_sc_rollup_encoding", N.(number >= 001));
+            ("test_sc_rollup_inbox", N.(number >= 001));
+            ("test_refutation_game", N.(number >= 001));
+            ("test_carbonated_map", N.(number >= 001));
+            ("test_zk_rollup_encoding", N.(number >= 001));
+            ("test_dal_slot_proof", N.(number >= 001));
+            ("test_compare_operations", N.(number >= 001));
+            ("test_operation_encoding", N.(number >= 001));
+            ("test_balance_updates_encoding", N.(number >= 001));
+            ("test_bytes_conversion", N.(number >= 001));
           ]
           |> conditional_list
         in
@@ -5134,10 +5131,8 @@ end = struct
           ~with_macos_security_framework:true
           ~deps:
             [
-              mavkit_base
-              |> if_ N.(number <= 14)
-              |> open_ ~m:"TzPervasives"
-              |> error_monad_module N.(number <= 018);
+              mavkit_base |> open_ ~m:"TzPervasives"
+              |> error_monad_module N.(number <= 001);
               mavkit_base |> if_ N.(number >= 15) |> open_ ~m:"TzPervasives";
               mavkit_micheline |> open_;
               client |> if_some |> open_;
@@ -5147,14 +5142,13 @@ end = struct
               test_helpers |> if_some |> open_;
               alcotezt;
               qcheck_alcotest;
-              mavkit_client_base |> if_ N.(number <= 012);
               mavkit_benchmark;
               benchmark |> if_some |> open_;
               benchmark_type_inference |> if_some |> open_;
-              mavkit_sc_rollup |> if_some |> if_ N.(number >= 016) |> open_;
-              mavkit_crypto_dal |> if_ N.(number >= 016) |> open_;
-              mavkit_base_test_helpers |> if_ N.(number >= 016) |> open_;
-              parameters |> if_some |> if_ N.(number >= 016) |> open_;
+              mavkit_sc_rollup |> if_some |> if_ N.(number >= 001) |> open_;
+              mavkit_crypto_dal |> if_ N.(number >= 001) |> open_;
+              mavkit_base_test_helpers |> if_ N.(number >= 001) |> open_;
+              parameters |> if_some |> if_ N.(number >= 001) |> open_;
             ]
       in
       let _unit =
@@ -5176,24 +5170,24 @@ end = struct
             ("test_receipt", true);
             ("test_round_repr", true);
             ("test_saturation", true);
-            ("test_sc_rollup_arith", N.(number >= 016));
-            ("test_sc_rollup_game", N.(number >= 016));
-            ("test_sc_rollup_inbox", N.(number >= 016));
-            ("test_sc_rollup_management_protocol", N.(number >= 016));
-            ("test_sc_rollup_storage", N.(number >= 016));
+            ("test_sc_rollup_arith", N.(number >= 001));
+            ("test_sc_rollup_game", N.(number >= 001));
+            ("test_sc_rollup_inbox", N.(number >= 001));
+            ("test_sc_rollup_management_protocol", N.(number >= 001));
+            ("test_sc_rollup_storage", N.(number >= 001));
             ("test_skip_list_repr", true);
             ("test_tez_repr", true);
             ("test_time_repr", true);
             ("test_zk_rollup_storage", true);
-            ("test_sc_rollup_inbox_legacy", N.(number >= 016));
-            ("test_sc_rollup_wasm", N.(number >= 016));
-            ("test_local_contexts", N.(number >= 016));
-            ("test_dal_slot_proof", N.(number >= 016));
-            ("test_adaptive_issuance", N.(number >= 018));
-            ("test_adaptive_issuance_ema", N.(number >= 018));
-            ("test_percentage", N.(number >= 019));
-            ("test_full_staking_balance_repr", N.(number >= 021));
-            ("test_slashing_percentage", N.(number >= 021));
+            ("test_sc_rollup_inbox_legacy", N.(number >= 001));
+            ("test_sc_rollup_wasm", N.(number >= 001));
+            ("test_local_contexts", N.(number >= 001));
+            ("test_dal_slot_proof", N.(number >= 001));
+            ("test_adaptive_issuance", N.(number >= 001));
+            ("test_adaptive_issuance_ema", N.(number >= 001));
+            ("test_percentage", N.(number >= 002));
+            ("test_full_staking_balance_repr", N.(number >= 003));
+            ("test_slashing_percentage", N.(number >= 003));
           ]
           |> conditional_list
         in
@@ -5205,29 +5199,29 @@ end = struct
           ~deps:
             [
               mavkit_base |> open_ ~m:"TzPervasives"
-              |> error_monad_module N.(number <= 018);
+              |> error_monad_module N.(number <= 001);
               mavkit_base_test_helpers |> open_;
               mavkit_micheline |> open_;
               client |> if_some |> open_;
               mavkit_client_base;
-              parameters |> if_some |> open_if N.(number >= 016);
+              parameters |> if_some |> open_if N.(number >= 001);
               mavkit_protocol_environment;
               mavkit_stdlib_unix;
               main |> open_;
               mavkit_test_helpers |> open_;
               test_helpers |> if_some |> open_;
               alcotezt;
-              mavkit_scoru_wasm_helpers |> if_ N.(number >= 016) |> open_;
-              mavkit_stdlib |> if_ N.(number >= 013) |> open_;
-              mavkit_crypto_dal |> if_ N.(number >= 016) |> open_;
+              mavkit_scoru_wasm_helpers |> if_ N.(number >= 001) |> open_;
+              mavkit_stdlib |> if_ N.(number >= 001) |> open_;
+              mavkit_crypto_dal |> if_ N.(number >= 001) |> open_;
               mavkit_scoru_wasm;
               mavkit_webassembly_interpreter_extra
-              |> if_ N.(number >= 016)
+              |> if_ N.(number >= 001)
               |> open_;
             ]
       in
       let _regresssion =
-        if N.(number >= 014) then
+        if N.(number >= 001) then
           (* About [~dep_globs]: this is only needed so that dune re-runs the tests
              if those files are modified. Dune will also copy those files in [_build],
              but the test uses absolute paths to find those files
@@ -5308,8 +5302,8 @@ end = struct
         | Other | Alpha -> []
         (* [V _] protocols can't be edited to accomodate warnings, we need to disable warnings instead. *)
         | V _ as number ->
-            if N.(number >= 014) then []
-            else if N.(number >= 011) then [51]
+            if N.(number >= 001) then []
+            else if N.(number >= 001) then [51]
             else [6; 7; 9; 16; 29; 32; 51; 68]
       in
       let environment =
@@ -5365,11 +5359,6 @@ include Mavryk_protocol_environment.V%d.Make(Name)()
           ~path:(path // "lib_protocol")
           ~synopsis:
             (match number with
-            | V _ as number when N.(number <= 003) ->
-                sf
-                  "Mavryk/Protocol: %s (economic-protocol definition, functor \
-                   version)"
-                  name_underscore
             | Other ->
                 sf
                   "Mavryk/Protocol: %s economic-protocol definition"
@@ -5487,11 +5476,6 @@ let hash = Protocol.hash
           ~opam:""
           ~synopsis:
             (match number with
-            | V _ as number when N.(number <= 003) ->
-                sf
-                  "Mavryk/Protocol: %s (economic-protocol definition \
-                   parameterized by its environment implementation)"
-                  (if N.(number == 000) then name_dash else name_underscore)
             | Other ->
                 sf
                   "Mavryk/Protocol: %s (economic-protocol definition \
@@ -5537,11 +5521,6 @@ let hash = Protocol.hash
           ~path:(path // "lib_protocol")
           ~synopsis:
             (match number with
-            | V _ as number when N.(number <= 003) ->
-                sf
-                  "Mavryk/Protocol: %s (economic-protocol definition, embedded \
-                   in `mavkit-node`)"
-                  (if N.(number == 000) then name_dash else name_underscore)
             | Other ->
                 sf
                   "Mavryk/Protocol: %s (economic-protocol definition, embedded \
@@ -5700,7 +5679,7 @@ let hash = Protocol.hash
       Lib_protocol.make ~name ~status
     in
     let parameters =
-      only_if (N.(number >= 011) && not_overridden) @@ fun () ->
+      only_if (N.(number >= 001) && not_overridden) @@ fun () ->
       public_lib
         (sf "mavryk-protocol-%s.parameters" name_dash)
         ~path:(path // "lib_parameters")
@@ -5723,7 +5702,7 @@ let hash = Protocol.hash
           [
             mavkit_base |> open_ ~m:"TzPervasives";
             parameters |> open_;
-            main |> if_ N.(number >= 012) |> open_;
+            main |> if_ N.(number >= 001) |> open_;
           ]
         ~modules:["gen"]
         ~linkall:true
@@ -5738,7 +5717,7 @@ let hash = Protocol.hash
             in
             let networks = List.["sandbox"; "test"; "mainnet"] in
             let networks =
-              if N.(number >= 017) then
+              if N.(number >= 001) then
                 networks @ List.["mainnet-with-chain-id"]
               else networks
             in
@@ -5755,7 +5734,7 @@ let hash = Protocol.hash
         ~bisect_ppx:No
     in
     let mavkit_sc_rollup =
-      only_if N.(number >= 016) @@ fun () ->
+      only_if N.(number >= 001) @@ fun () ->
       mavkit_protocol_lib
         "smart-rollup"
         ~internal_name:(sf "mavryk_smart_rollup_%s" name_dash)
@@ -5767,7 +5746,7 @@ let hash = Protocol.hash
         ~linkall:true
     in
     let plugin =
-      only_if (N.(number >= 007) && not_overridden) @@ fun () ->
+      only_if (N.(number >= 001) && not_overridden) @@ fun () ->
       mavkit_protocol_lib
         "plugin"
         ~internal_name:(sf "mavryk_protocol_plugin_%s" name_dash)
@@ -5778,12 +5757,12 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             main |> open_;
-            mavkit_sc_rollup |> if_some |> if_ N.(number >= 016) |> open_;
+            mavkit_sc_rollup |> if_some |> if_ N.(number >= 001) |> open_;
           ]
         ~all_modules_except:["Plugin_registerer"]
-        ~bisect_ppx:(if N.(number >= 008) then Yes else No)
+        ~bisect_ppx:(if N.(number >= 001) then Yes else No)
     in
     let plugin_registerer =
       opt_map plugin @@ fun plugin ->
@@ -5796,16 +5775,16 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             embedded |> open_;
             plugin |> open_;
             mavkit_validation |> open_;
           ]
         ~modules:["Plugin_registerer"]
-        ~bisect_ppx:(if N.(number >= 008) then Yes else No)
+        ~bisect_ppx:(if N.(number >= 001) then Yes else No)
     in
     let client_name =
-      if N.(number >= 015) then "`mavkit-client`" else "`mavryk-client`"
+      if N.(number >= 001) then "`mavkit-client`" else "`mavryk-client`"
     in
     let client =
       only_if not_overridden @@ fun () ->
@@ -5818,25 +5797,25 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             mavkit_clic;
             mavkit_shell_services |> open_;
             mavkit_client_base |> open_;
             main |> open_;
-            lifted |> open_if N.(number >= 018);
-            mavkit_mockup_registration |> if_ N.(number >= 011);
-            mavkit_proxy |> if_ N.(number >= 011);
+            lifted |> open_if N.(number >= 001);
+            mavkit_mockup_registration |> if_ N.(number >= 001);
+            mavkit_proxy |> if_ N.(number >= 001);
             mavkit_signer_backends |> if_ N.(number >= 001);
-            plugin |> if_some |> open_if N.(number >= 008);
-            parameters |> if_some |> if_ N.(number >= 011) |> open_;
+            plugin |> if_some |> open_if N.(number >= 001);
+            parameters |> if_some |> if_ N.(number >= 001) |> open_;
             mavkit_rpc;
             mavkit_client_commands |> if_ N.(number == 000) |> open_;
             mavkit_stdlib_unix |> if_ N.(number == 000);
-            mavkit_sc_rollup |> if_some |> if_ N.(number >= 016) |> open_;
+            mavkit_sc_rollup |> if_some |> if_ N.(number >= 001) |> open_;
             uri |> if_ N.(number >= 001);
           ]
-        ~bisect_ppx:(if N.(number >= 008) then Yes else No)
-        ?inline_tests:(if N.(number >= 009) then Some ppx_expect else None)
+        ~bisect_ppx:(if N.(number >= 001) then Yes else No)
+        ?inline_tests:(if N.(number >= 001) then Some ppx_expect else None)
         ~linkall:true
     in
     let test_helpers =
@@ -5849,15 +5828,15 @@ let hash = Protocol.hash
         ~opam_only_deps:[mavkit_protocol_environment; parameters |> if_some]
         ~deps:
           [
-            tezt_core_lib |> if_ N.(number >= 019) |> open_ |> open_ ~m:"Base";
-            alcotezt |> if_ N.(number == 019);
-            tezt_mavryk |> if_ N.(number >= 021);
-            tezt_lib |> if_ N.(number >= 019);
-            mavkit_base_test_helpers |> if_ N.(number == 019) |> open_;
+            tezt_core_lib |> if_ N.(number >= 002) |> open_ |> open_ ~m:"Base";
+            alcotezt |> if_ N.(number == 002);
+            tezt_mavryk |> if_ N.(number >= 003);
+            tezt_lib |> if_ N.(number >= 002);
+            mavkit_base_test_helpers |> if_ N.(number == 002) |> open_;
             qcheck_alcotest;
             mavkit_test_helpers;
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             mavkit_micheline |> open_;
             mavkit_stdlib_unix |> open_;
             main |> open_;
@@ -5866,9 +5845,9 @@ let hash = Protocol.hash
             mavkit_protocol_environment;
             plugin |> if_some |> open_;
             mavkit_shell_services |> open_;
-            mavkit_plompiler |> if_ N.(number >= 015);
-            mavkit_crypto_dal |> if_ N.(number >= 016) |> open_;
-            mavkit_sc_rollup |> if_some |> if_ N.(number >= 018) |> open_;
+            mavkit_plompiler |> if_ N.(number >= 001);
+            mavkit_crypto_dal |> if_ N.(number >= 001) |> open_;
+            mavkit_sc_rollup |> if_some |> if_ N.(number >= 001) |> open_;
           ]
     in
     let _plugin_tests =
@@ -5888,9 +5867,9 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             mavkit_base_test_helpers |> open_;
-            mavkit_base_unix |> if_ N.(number >= 013);
+            mavkit_base_unix |> if_ N.(number >= 001);
             alcotezt;
             mavkit_test_helpers |> open_;
             qcheck_alcotest;
@@ -5917,7 +5896,7 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             mavkit_micheline |> open_;
             client |> if_some |> open_;
             main |> open_;
@@ -5935,35 +5914,33 @@ let hash = Protocol.hash
         ~path:(path // "lib_client_commands")
         ~deps:
           [
-            mavkit_base
-            |> if_ N.(number <= 14)
-            |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            mavkit_base |> open_ ~m:"TzPervasives"
+            |> error_monad_module N.(number <= 001);
             mavkit_base |> if_ N.(number >= 15) |> open_ ~m:"TzPervasives";
             mavkit_clic;
             main |> open_;
-            parameters |> if_some |> if_ N.(number >= 013) |> open_;
+            parameters |> if_some |> if_ N.(number >= 001) |> open_;
             mavkit_stdlib_unix |> open_;
             mavkit_protocol_environment;
             mavkit_shell_services |> open_;
-            mavkit_mockup |> if_ N.(number >= 011);
-            mavkit_mockup_registration |> if_ N.(number >= 011);
-            mavkit_mockup_commands |> if_ N.(number >= 011);
+            mavkit_mockup |> if_ N.(number >= 001);
+            mavkit_mockup_registration |> if_ N.(number >= 001);
+            mavkit_mockup_commands |> if_ N.(number >= 001);
             mavkit_client_base |> open_;
             client |> if_some |> open_;
             mavkit_client_commands |> open_;
             mavkit_rpc;
-            mavkit_client_base_unix |> if_ N.(number >= 009) |> open_;
-            plugin |> if_some |> if_ N.(number >= 008) |> open_;
-            (* uri used by the stresstest command introduced in 011 *)
-            uri |> if_ N.(number >= 011);
+            mavkit_client_base_unix |> if_ N.(number >= 001) |> open_;
+            plugin |> if_some |> if_ N.(number >= 001) |> open_;
+            (* uri used by the stresstest command introduced in 001 *)
+            uri |> if_ N.(number >= 001);
           ]
-        ~bisect_ppx:(if N.(number >= 008) then Yes else No)
+        ~bisect_ppx:(if N.(number >= 001) then Yes else No)
         ~linkall:true
         ~all_modules_except:["alpha_commands_registration"]
     in
     let client_sapling =
-      only_if (N.(number >= 011) && not_overridden) @@ fun () ->
+      only_if (N.(number >= 001) && not_overridden) @@ fun () ->
       mavkit_protocol_lib
         "client.sapling"
         ~internal_name:(sf "mavryk_client_sapling_%s" name_underscore)
@@ -5971,7 +5948,7 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             mavkit_clic;
             mavkit_crypto;
             mavkit_stdlib_unix |> open_;
@@ -5980,7 +5957,7 @@ let hash = Protocol.hash
             client |> if_some |> open_;
             client_commands |> if_some |> open_;
             main |> open_;
-            plugin |> if_some |> if_ N.(number >= 013) |> open_;
+            plugin |> if_some |> if_ N.(number >= 001) |> open_;
           ]
         ~linkall:true
     in
@@ -5992,25 +5969,23 @@ let hash = Protocol.hash
         ~path:(path // "lib_client_commands")
         ~deps:
           [
-            mavkit_base
-            |> if_ N.(number <= 14)
-            |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            mavkit_base |> open_ ~m:"TzPervasives"
+            |> error_monad_module N.(number <= 001);
             mavkit_base |> if_ N.(number >= 15) |> open_ ~m:"TzPervasives";
             mavkit_clic;
             main |> open_;
-            parameters |> if_some |> if_ N.(number >= 013) |> open_;
+            parameters |> if_some |> if_ N.(number >= 001) |> open_;
             mavkit_protocol_environment;
             mavkit_shell_services |> open_;
             mavkit_client_base |> open_;
             client |> if_some |> open_;
             mavkit_client_commands |> open_;
             client_commands |> if_some |> open_;
-            client_sapling |> if_some |> if_ N.(number >= 011) |> open_;
+            client_sapling |> if_some |> if_ N.(number >= 001) |> open_;
             mavkit_rpc;
-            plugin |> if_some |> if_ N.(number >= 008) |> open_;
+            plugin |> if_some |> if_ N.(number >= 001) |> open_;
           ]
-        ~bisect_ppx:(if N.(number >= 008) then Yes else No)
+        ~bisect_ppx:(if N.(number >= 001) then Yes else No)
         ~linkall:true
         ~modules:["alpha_commands_registration"]
     in
@@ -6021,17 +5996,15 @@ let hash = Protocol.hash
         ~internal_name:("mavryk_baking_" ^ name_dash)
         ~path:(path // "lib_delegate")
         ~synopsis:
-          (if N.(number <= 011) then
-           "Base library for `mavryk-baker/endorser/accuser`"
-          else "Base library for `mavryk-baker/accuser`")
+          ("Base library for `mavryk-baker/accuser`")
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             mavkit_clic;
             mavkit_version_value;
             main |> open_;
-            lifted |> if_ N.(number >= 018) |> open_;
+            lifted |> if_ N.(number >= 001) |> open_;
             plugin |> if_some |> open_;
             mavkit_protocol_environment;
             mavkit_shell_services |> open_;
@@ -6042,25 +6015,23 @@ let hash = Protocol.hash
             mavkit_stdlib_unix |> open_;
             mavkit_shell_context |> open_;
             mavkit_context |> open_;
-            mavkit_context_memory |> if_ N.(number >= 012);
-            mavkit_rpc_http_client_unix |> if_ N.(number >= 011);
-            mavkit_context_ops |> if_ N.(number >= 011) |> open_;
+            mavkit_context_memory |> if_ N.(number >= 001);
+            mavkit_rpc_http_client_unix |> if_ N.(number >= 001);
+            mavkit_context_ops |> if_ N.(number >= 001) |> open_;
             mavkit_rpc;
             mavkit_rpc_http |> open_;
             mavkit_crypto_dal |> open_;
-            mavkit_dal_node_services |> if_ N.(number >= 017);
+            mavkit_dal_node_services |> if_ N.(number >= 001);
             lwt_canceler;
             lwt_exit;
             uri;
           ]
         ~linkall:true
         ~all_modules_except:
-          (if N.(number <= 011) then
-           ["Delegate_commands"; "Delegate_commands_registration"]
-          else ["Baking_commands"; "Baking_commands_registration"])
+          (["Baking_commands"; "Baking_commands_registration"])
     in
     let tenderbrute =
-      only_if (active && N.(number >= 013)) @@ fun () ->
+      only_if (active && N.(number >= 001)) @@ fun () ->
       mavkit_protocol_lib
         "baking.tenderbrute"
         ~internal_name:(sf "tenderbrute_%s" name_underscore)
@@ -6069,7 +6040,7 @@ let hash = Protocol.hash
           [
             data_encoding |> open_;
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018)
+            |> error_monad_module N.(number <= 001)
             |> open_;
             mavkit_base_unix;
             main |> open_;
@@ -6079,7 +6050,7 @@ let hash = Protocol.hash
         ~bisect_ppx:No
     in
     let _tenderbrute_exe =
-      only_if (active && N.(number >= 013)) @@ fun () ->
+      only_if (active && N.(number >= 001)) @@ fun () ->
       test
         "tenderbrute_main"
         ~alias:""
@@ -6089,7 +6060,7 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018)
+            |> error_monad_module N.(number <= 001)
             |> open_;
             mavkit_client_base |> open_;
             client |> if_some |> open_;
@@ -6100,9 +6071,9 @@ let hash = Protocol.hash
     in
     let _baking_tests =
       opt_map (both baking test_helpers) @@ fun (baking, test_helpers) ->
-      only_if N.(number >= 011) @@ fun () ->
+      only_if N.(number >= 001) @@ fun () ->
       let mockup_simulator =
-        only_if N.(number >= 012) @@ fun () ->
+        only_if N.(number >= 001) @@ fun () ->
         mavkit_protocol_lib
           "bakings.mockup-simulator"
           ~internal_name:(sf "mavryk_%s_mockup_simulator" name_underscore)
@@ -6110,7 +6081,7 @@ let hash = Protocol.hash
           ~deps:
             [
               mavkit_base |> open_ ~m:"TzPervasives"
-              |> error_monad_module N.(number <= 018);
+              |> error_monad_module N.(number <= 001);
               main |> open_ |> open_ ~m:"Protocol";
               client |> if_some |> open_;
               mavkit_client_commands |> open_;
@@ -6121,7 +6092,7 @@ let hash = Protocol.hash
               mavkit_mockup;
               mavkit_mockup_proxy;
               mavkit_mockup_commands;
-              tenderbrute |> if_some |> if_ N.(number >= 013) |> open_;
+              tenderbrute |> if_some |> if_ N.(number >= 001) |> open_;
               tezt_core_lib |> open_;
             ]
           ~bisect_ppx:No
@@ -6134,19 +6105,16 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
-            mavkit_protocol_environment |> if_ N.(number <= 011);
+            |> error_monad_module N.(number <= 001);
             mavkit_test_helpers |> open_;
             mavkit_micheline |> open_;
             client |> if_some |> open_;
             main |> open_;
-            test_helpers |> if_ N.(number <= 011) |> open_;
             mavkit_base_test_helpers |> open_;
             mockup_simulator |> if_some |> open_;
-            mavkit_client_base |> if_ N.(number <= 011);
             baking |> open_;
-            parameters |> if_some |> if_ N.(number >= 012);
-            mavkit_crypto |> if_ N.(number >= 012);
+            parameters |> if_some |> if_ N.(number >= 001);
+            mavkit_crypto |> if_ N.(number >= 001);
             mavkit_event_logging_test_helpers |> open_;
             uri;
           ]
@@ -6161,7 +6129,7 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             main |> open_;
             parameters |> if_some |> if_ N.(number >= 18) |> open_;
             mavkit_stdlib_unix |> open_;
@@ -6177,8 +6145,7 @@ let hash = Protocol.hash
         ~linkall:true
         ~modules:
           [
-            (if N.(number <= 011) then "Delegate_commands"
-            else "Baking_commands");
+            ("Baking_commands");
           ]
     in
     let baking_commands_registration =
@@ -6203,8 +6170,7 @@ let hash = Protocol.hash
         ~linkall:true
         ~modules:
           [
-            (if N.(number <= 011) then "Delegate_commands_registration"
-            else "Baking_commands_registration");
+            ("Baking_commands_registration");
           ]
     in
     let daemon daemon =
@@ -6219,7 +6185,7 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             mavkit_clic;
             main |> open_;
             client |> if_some |> open_;
@@ -6231,9 +6197,8 @@ let hash = Protocol.hash
     in
     let _baker = daemon "baker" in
     let _accuser = daemon "accuser" in
-    let _endorser = only_if N.(number <= 011) @@ fun () -> daemon "endorser" in
     let layer2_utils =
-      only_if N.(number >= 016) @@ fun () ->
+      only_if N.(number >= 001) @@ fun () ->
       mavkit_protocol_lib
         "layer2-utils"
         ~internal_name:(sf "mavryk_layer2_utils_%s" name_dash)
@@ -6249,7 +6214,7 @@ let hash = Protocol.hash
         ~linkall:true
     in
     let dal =
-      only_if (active && N.(number >= 016)) @@ fun () ->
+      only_if (active && N.(number >= 001)) @@ fun () ->
       mavkit_protocol_lib
         "dal"
         ~internal_name:(sf "mavryk_dal_%s" name_dash)
@@ -6258,7 +6223,7 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             mavkit_protocol_compiler_registerer |> open_;
             mavkit_stdlib_unix |> open_;
             mavkit_dal_node_lib |> open_;
@@ -6272,23 +6237,17 @@ let hash = Protocol.hash
         ~linkall:true
     in
     let _dal_tests =
-      only_if (active && N.(number >= 016)) @@ fun () ->
+      only_if (active && N.(number >= 001)) @@ fun () ->
       tezt
-        (* test [test_dac_pages_encoding] was removed after 016 *)
-        (if N.(number == 016) then
-         [
-           "test_dal_slot_frame_encoding";
-           "test_dac_pages_encoding";
-           "test_helpers";
-         ]
-        else ["test_dal_slot_frame_encoding"; "test_helpers"])
+        (* test [test_dac_pages_encoding] was removed after 001 *)
+        (["test_dal_slot_frame_encoding"; "test_helpers"])
         ~path:(path // "lib_dal/test")
         ~opam:(sf "mavkit-protocol-%s-libs" name_dash)
         ~with_macos_security_framework:true
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             dal |> if_some |> open_;
             main |> open_;
             mavkit_base_test_helpers |> open_;
@@ -6301,7 +6260,7 @@ let hash = Protocol.hash
          registration happens when running the dal node. Removing this
          option would cause DAL related tezts to fail because the DAC
          plugin cannot be resolved. *)
-      only_if (active && N.(number >= 017)) @@ fun () ->
+      only_if (active && N.(number >= 001)) @@ fun () ->
       mavkit_protocol_lib
         "dac"
         ~internal_name:(sf "mavryk_dac_%s" name_dash)
@@ -6311,7 +6270,7 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             mavkit_protocol_compiler_registerer |> open_;
             mavkit_stdlib_unix |> open_;
             mavkit_dac_lib |> open_;
@@ -6324,7 +6283,7 @@ let hash = Protocol.hash
         ~linkall:true
     in
     let _dac_tests =
-      only_if (active && N.(number >= 017)) @@ fun () ->
+      only_if (active && N.(number >= 001)) @@ fun () ->
       tezt
         [
           "test_dac_pages_encoding";
@@ -6337,7 +6296,7 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             dac |> if_some |> open_;
             main |> open_;
             mavkit_base_test_helpers |> open_;
@@ -6348,7 +6307,7 @@ let hash = Protocol.hash
           ]
     in
     let mavkit_injector =
-      only_if N.(active && number >= 017) @@ fun () ->
+      only_if N.(active && number >= 001) @@ fun () ->
       private_lib
         (sf "mavkit_injector_%s" short_hash)
         ~path:(path // "lib_injector")
@@ -6367,7 +6326,7 @@ let hash = Protocol.hash
         ~linkall:true
     in
     let mavkit_sc_rollup_layer2 =
-      only_if N.(number >= 016) @@ fun () ->
+      only_if N.(number >= 001) @@ fun () ->
       mavkit_protocol_lib
         "smart-rollup-layer2"
         ~internal_name:(sf "mavryk_smart_rollup_layer2_%s" name_dash)
@@ -6386,7 +6345,7 @@ let hash = Protocol.hash
     let mavkit_sc_rollup_node =
       (* For now, we want to keep this for Nairobi and above because Etherlink
          Ghostnet requires it. *)
-      only_if N.(number >= 017) @@ fun () ->
+      only_if N.(number >= 001) @@ fun () ->
       private_lib
         (sf "mavkit_smart_rollup_node_%s" short_hash)
         ~path:(path // "lib_sc_rollup_node")
@@ -6399,12 +6358,12 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_base |> open_ |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             mavkit_stdlib_unix |> open_;
             mavkit_client_base |> open_;
             mavkit_client_base_unix |> open_;
             client |> if_some |> open_;
-            dal |> if_some |> if_ N.(number >= 019) |> open_;
+            dal |> if_some |> if_ N.(number >= 002) |> open_;
             mavkit_context_encoding;
             mavkit_context_helpers;
             main |> open_;
@@ -6418,9 +6377,9 @@ let hash = Protocol.hash
             mavkit_dal_node_lib |> open_;
             (* [dac] is needed for the DAC observer client which is not
                available in Nairobi and earlier. *)
-            dac |> if_some |> if_ N.(number >= 018) |> open_;
+            dac |> if_some |> if_ N.(number >= 001) |> open_;
             mavkit_dac_lib |> open_;
-            mavkit_dac_client_lib |> if_ N.(number >= 018) |> open_;
+            mavkit_dac_client_lib |> if_ N.(number >= 001) |> open_;
             mavkit_shell_services |> open_;
             mavkit_smart_rollup_lib |> open_;
             mavkit_sc_rollup |> if_some |> open_;
@@ -6439,13 +6398,13 @@ let hash = Protocol.hash
             mavkit_smart_rollup_node_lib |> open_;
             mavkit_scoru_wasm;
             mavkit_scoru_wasm_fast;
-            mavkit_crypto_dal |> if_ N.(number >= 016) |> open_;
+            mavkit_crypto_dal |> if_ N.(number >= 001) |> open_;
             mavkit_version_value;
           ]
         ~conflicts:[Conflicts.checkseum]
     in
     let _mavkit_sc_rollup_node_test =
-      only_if (active && N.(number >= 016)) @@ fun () ->
+      only_if (active && N.(number >= 001)) @@ fun () ->
       tezt
         ["serialized_proofs"; "test_mavkit_conversions"]
         ~path:(path // "lib_sc_rollup_node/test")
@@ -6455,7 +6414,7 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             main |> open_;
             mavkit_test_helpers |> open_;
             mavkit_sc_rollup_layer2 |> if_some |> open_;
@@ -6509,7 +6468,7 @@ let hash = Protocol.hash
         ~deps:
           [
             mavkit_stdlib |> open_;
-            mavkit_base |> open_ |> error_monad_module N.(number <= 018);
+            mavkit_base |> open_ |> error_monad_module N.(number <= 001);
             mavkit_error_monad |> open_;
             mavkit_micheline |> open_;
             mavkit_micheline_rewriting |> open_;
@@ -6524,7 +6483,7 @@ let hash = Protocol.hash
           ]
         ~linkall:true
         ~private_modules:["kernel"; "rules"; "state_space"]
-        ~bisect_ppx:(if N.(number <= 012) then Yes else No)
+        ~bisect_ppx:(No)
     in
     let _benchmark_tests =
       opt_map (both benchmark test_helpers) @@ fun (benchmark, test_helpers) ->
@@ -6544,7 +6503,7 @@ let hash = Protocol.hash
         ~opam:(sf "mavryk-benchmark-%s" name_dash)
         ~deps:
           [
-            mavkit_base |> error_monad_module N.(number <= 018);
+            mavkit_base |> error_monad_module N.(number <= 001);
             mavkit_micheline |> open_;
             mavkit_micheline_rewriting;
             main |> open_;
@@ -6580,7 +6539,7 @@ let hash = Protocol.hash
             str;
             mavkit_stdlib |> open_;
             mavkit_base |> open_ |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 018);
+            |> error_monad_module N.(number <= 001);
             mavkit_error_monad |> open_;
             parameters |> if_some |> open_;
             lazy_containers |> open_;
@@ -6664,7 +6623,7 @@ let hash = Protocol.hash
 
   let _001_PtAtLas = frozen (Name.v "PtAtLas" 001)
 
-  let _020_PsParisC = active (Name.v "PsParisC" 020)
+  let _002_PtBoreas = active (Name.v "PtBoreas" 002)
 
   let alpha = active Name.alpha
 
@@ -7422,7 +7381,7 @@ let _mavkit_codec =
              let link =
                match Protocol.number protocol with
                | Alpha -> true
-               | V number -> number >= 005
+               | V number -> number >= 001
                | Other -> false
              in
              if link then Protocol.client protocol else None);

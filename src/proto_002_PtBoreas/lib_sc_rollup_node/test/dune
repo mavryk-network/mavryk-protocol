@@ -1,0 +1,47 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name src_proto_002_PtBoreas_lib_sc_rollup_node_test_tezt_lib)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  tezt.core
+  mavkit-libs.base
+  mavryk-protocol-002-PtBoreas.protocol
+  mavkit-libs.test-helpers
+  mavkit-protocol-002-PtBoreas-libs.smart-rollup-layer2
+  mavkit_smart_rollup_node_PtBoreas
+  mavkit-alcotezt)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Tezt_core
+  -open Tezt_core.Base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_002_PtBoreas
+  -open Mavryk_test_helpers
+  -open Mavryk_smart_rollup_layer2_002_PtBoreas
+  -open Mavkit_smart_rollup_node_PtBoreas
+  -open Mavkit_alcotezt)
+ (modules serialized_proofs test_mavkit_conversions))
+
+(executable
+ (name main)
+ (instrumentation (backend bisect_ppx --bisect-sigterm))
+ (libraries
+  src_proto_002_PtBoreas_lib_sc_rollup_node_test_tezt_lib
+  tezt)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/macos-link-flags.sexp))
+ (modules main))
+
+(rule
+ (alias runtest)
+ (package mavryk-sc-rollup-node-test)
+ (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
+ (action (run %{dep:./main.exe})))
+
+(rule
+ (targets main.ml)
+ (action (with-stdout-to %{targets} (echo "let () = Tezt.Test.run ()"))))

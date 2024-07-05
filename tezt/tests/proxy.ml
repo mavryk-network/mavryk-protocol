@@ -148,7 +148,7 @@ let test_cache_at_most_once ~protocols =
   List.iter
     (fun (sub_path, query_string) ->
       test_cache_at_most_once
-        ~supports:Protocol.(From_protocol 019)
+        ~supports:Protocol.(From_protocol 002)
         ~query_string
         ("chains" :: "main" :: "blocks" :: "head" :: sub_path)
         protocols)

@@ -146,7 +146,7 @@ let register_test chain_id period =
         string_of_chain_id chain_id;
         Voting.period_kind_to_string period;
       ]
-    ~supports:(From_protocol 014)
+    ~supports:(From_protocol 001)
   @@ fun protocol ->
   let* node, client, dictator = init_with_dictator ~chain_id ~protocol in
   let* () = reveal_dictator_key node client dictator in

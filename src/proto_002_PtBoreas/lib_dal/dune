@@ -1,0 +1,31 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name mavryk_dal_002_PtBoreas)
+ (public_name mavkit-protocol-002-PtBoreas-libs.dal)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-libs.base
+  mavkit-protocol-compiler.registerer
+  mavkit-libs.stdlib-unix
+  mavryk-dal-node-lib
+  mavkit-protocol-002-PtBoreas-libs.client
+  mavkit-protocol-002-PtBoreas-libs.plugin
+  mavryk-protocol-002-PtBoreas.embedded-protocol
+  mavkit-protocol-002-PtBoreas-libs.layer2-utils
+  mavryk-protocol-002-PtBoreas.protocol)
+ (inline_tests (flags -verbose) (modes native))
+ (preprocess (pps ppx_expect))
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_registerer
+  -open Mavryk_stdlib_unix
+  -open Mavryk_dal_node_lib
+  -open Mavryk_client_002_PtBoreas
+  -open Mavryk_protocol_plugin_002_PtBoreas
+  -open Mavryk_embedded_protocol_002_PtBoreas
+  -open Mavryk_layer2_utils_002_PtBoreas
+  -open Mavryk_protocol_002_PtBoreas))

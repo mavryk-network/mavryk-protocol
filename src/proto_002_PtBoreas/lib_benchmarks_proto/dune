@@ -1,0 +1,44 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name mavryk_benchmarks_proto_002_PtBoreas)
+ (public_name mavryk-benchmarks-proto-002-PtBoreas)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  str
+  mavkit-libs.stdlib
+  mavkit-libs.base
+  mavkit-libs.error-monad
+  mavryk-protocol-002-PtBoreas.parameters
+  mavkit-libs.lazy-containers
+  mavryk-benchmark
+  mavryk-benchmark-002-PtBoreas
+  mavryk-benchmark-type-inference-002-PtBoreas
+  mavryk-protocol-002-PtBoreas.protocol
+  mavkit-libs.crypto
+  mavkit-shell-libs.shell-benchmarks
+  mavkit-libs.micheline
+  mavkit-protocol-002-PtBoreas-libs.test-helpers
+  mavkit-libs.mavryk-sapling
+  mavkit-protocol-002-PtBoreas-libs.client
+  mavkit-protocol-002-PtBoreas-libs.plugin
+  mavkit-proto-libs.protocol-environment)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Mavryk_stdlib
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_error_monad
+  -open Mavryk_protocol_002_PtBoreas_parameters
+  -open Mavryk_lazy_containers
+  -open Mavryk_benchmark
+  -open Mavryk_benchmark_002_PtBoreas
+  -open Mavryk_benchmark_type_inference_002_PtBoreas
+  -open Mavryk_protocol_002_PtBoreas
+  -open Mavryk_protocol_002_PtBoreas.Protocol
+  -open Mavryk_micheline
+  -open Mavryk_002_PtBoreas_test_helpers
+  -open Mavryk_client_002_PtBoreas
+  -open Mavryk_protocol_plugin_002_PtBoreas))

@@ -26,7 +26,7 @@
   mavkit-internal-libs.irmin_pack.unix
   mavkit-internal-libs.irmin
   mavkit-protocol-001-PtAtLas-libs.dac
-  mavkit-protocol-020-PsParisC-libs.dac
+  mavkit-protocol-002-PtBoreas-libs.dac
   (select void_for_linking-mavkit-protocol-alpha-libs-dac from
    (mavkit-protocol-alpha-libs.dac -> void_for_linking-mavkit-protocol-alpha-libs-dac.empty)
    (-> void_for_linking-mavkit-protocol-alpha-libs-dac.empty)))

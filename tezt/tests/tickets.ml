@@ -194,7 +194,7 @@ let test_send_tickets_to_implicit_account =
     ~__FILE__
     ~title:"Send tickets from contracts to implicit accounts"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 16)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, ticketer =
@@ -347,7 +347,7 @@ let test_direct_transfer_tickets_from_implicit_account_to_originated_with_pair_c
     ~__FILE__
     ~title:"Send Pair tickets from implicit account to originated directly"
     ~tags:["client"; "michelson"; "implicit"; "ticket"; "originated"]
-    ~supports:(Protocol.From_protocol 21)
+    ~supports:(Protocol.From_protocol 003)
   @@ fun protocol ->
   test_direct_transfer_tickets_from_implicit_account_to_originated
     protocol
@@ -361,7 +361,7 @@ let test_direct_transfer_tickets_from_implicit_account_to_originated_with_ticket
       "Send tickets with Ticket constructor from implicit account to \
        originated directly"
     ~tags:["client"; "michelson"; "implicit"; "ticket"; "originated"]
-    ~supports:(Protocol.From_protocol 19)
+    ~supports:(Protocol.From_protocol 002)
   @@ fun protocol ->
   test_direct_transfer_tickets_from_implicit_account_to_originated
     protocol
@@ -537,7 +537,7 @@ let test_direct_transfer_tickets_from_implicit_account_to_originated_complex_wit
       "Send tickets with Ticket constructor (with complex parameters) from \
        implicit account to originated directly"
     ~tags:["client"; "michelson"; "implicit"; "ticket"; "originated"]
-    ~supports:(Protocol.From_protocol 19)
+    ~supports:(Protocol.From_protocol 002)
   @@ fun protocol ->
   test_direct_transfer_tickets_from_implicit_account_to_originated_complex
     protocol
@@ -551,7 +551,7 @@ let test_direct_transfer_tickets_from_implicit_account_to_originated_complex_wit
       "Send Pair tickets (with complex parameters) from implicit account to \
        originated directly"
     ~tags:["client"; "michelson"; "implicit"; "ticket"; "originated"]
-    ~supports:(Protocol.From_protocol 21)
+    ~supports:(Protocol.From_protocol 003)
   @@ fun protocol ->
   test_direct_transfer_tickets_from_implicit_account_to_originated_complex
     protocol
@@ -566,7 +566,7 @@ let test_send_tickets_to_implicit_account_non_zero_amount =
     ~title:
       "Send tickets from contracts to implicit accounts with some Tez along"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 16)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, ticketer =
@@ -614,7 +614,7 @@ let test_send_tickets_to_implicit_with_wrong_type =
       "Send tickets from contracts to implicit accounts with the wrong type \
        must fail"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 16)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, ticketer =
@@ -667,7 +667,7 @@ let test_ticket_transfer_commutative =
     ~__FILE__
     ~title:"Send tickets between originated contracts and implicit accounts"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 16)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, ticketer =
@@ -830,7 +830,7 @@ let test_ticket_transfer_from_storage_to_implicit =
     ~__FILE__
     ~title:"Sending ticket from contract storage to implicit accounts"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 16)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, ticketer =
@@ -951,7 +951,7 @@ let test_zero_ticket_rejection =
     ~__FILE__
     ~title:"Sending zero ticket from implicit accounts must be rejected"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 16)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, ticketer =
@@ -1031,7 +1031,7 @@ let test_ticket_overdraft_rejection =
     ~__FILE__
     ~title:"Overdrafting ticket from implicit accounts must be rejected"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 16)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, ticketer =
@@ -1103,7 +1103,7 @@ let test_ticket_of_wrong_type_rejection =
     ~title:
       "Sending ticket of wrong type from implicit accounts must be rejected"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 16)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, ticketer =
@@ -1150,7 +1150,7 @@ let test_originated_implicit_can_be_equipotent =
       "Sending tickets to either implicit accounts or originated contracts \
        accepting tickets with default entrypoint should equally work"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 16)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, ticketer =
@@ -1252,7 +1252,7 @@ let test_send_tickets_to_sc_rollup =
       "Minting then sending tickets to smart-contract rollup should succeed \
        with appropriate ticket updates field in receipt."
     ~tags:["client"; "michelson"; "sc_rollup"]
-    ~supports:(Protocol.From_protocol 16)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* _node, client, sc_rollup =
     setup_sc_enabled_node protocol ~parameters_ty:"list (ticket string)"
@@ -1339,7 +1339,7 @@ let test_send_tickets_from_storage_to_sc_rollup =
       "Sending tickets from storage to smart-contract rollup should succeed \
        with appropriate ticket updates field in receipt."
     ~tags:["client"; "michelson"; "sc_rollup"]
-    ~supports:(Protocol.From_protocol 16)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* _node, client, sc_rollup =
     setup_sc_enabled_node protocol ~parameters_ty:"list (ticket string)"

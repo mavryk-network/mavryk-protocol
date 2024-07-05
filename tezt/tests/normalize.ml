@@ -76,7 +76,7 @@ let test_normalize_stack =
     ~__FILE__
     ~title:"Test Michelson stack normalization"
     ~tags:["client"; "normalize"]
-    ~supports:(From_protocol 17)
+    ~supports:(From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let stack_elt ty v = sf "Stack_elt %s %s" ty v in

@@ -23,7 +23,7 @@ depends: [
   "mavkit-alcotezt" {with-test}
   "mavkit-shell-libs" {with-test}
   "mavkit-smart-rollup-node-PtAtLas" {with-test}
-  "mavkit-smart-rollup-node-PsParisC" {with-test}
+  "mavkit-smart-rollup-node-PtBoreas" {with-test}
 ]
 depopts: [
   "mavkit-smart-rollup-node-alpha" {with-test}

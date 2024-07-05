@@ -340,7 +340,7 @@ let test_tx_kernel_e2e =
 
 let test_bootstrapped_tx_kernel_e2e =
   register_test
-    ~supports:(Protocol.From_protocol 018)
+    ~supports:(Protocol.From_protocol 001)
     ~__FILE__
     ~tags:["wasm"; "kernel"; "wasm_2_0_0"; "kernel_e2e"; "bootstrap"]
     ~uses:(fun _protocol ->

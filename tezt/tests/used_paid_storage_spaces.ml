@@ -97,7 +97,7 @@ let test_increase_paid_storage =
     ~__FILE__
     ~title:"used and paid storage spaces"
     ~tags:["storage"; "used_storage"; "paid_storage"]
-    ~supports:(Protocol.From_protocol 015)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   (* 1. Originate the smart contract. We arbitrarily picked an existing file. *)
   let* _, client = Client.init_with_protocol ~protocol `Client () in

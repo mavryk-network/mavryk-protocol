@@ -1,7 +1,7 @@
 (*****************************************************************************)
 (*                                                                           *)
 (* Open Source License                                                       *)
-(* Copyright (c) 2020-2021 Nomadic Labs <contact@nomadic-labs.com>           *)
+(* Copyright (c) 2020-2003 Nomadic Labs <contact@nomadic-labs.com>           *)
 (* Copyright (c) 2020 Metastate AG <hello@metastate.dev>                     *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
@@ -25,13 +25,13 @@
 (*****************************************************************************)
 
 (* Declaration order must respect the version order. *)
-type t = Atlas | ParisC | Alpha
+type t = Atlas | Boreas | Alpha
 
-let all = [Atlas; ParisC; Alpha]
+let all = [Atlas; Boreas; Alpha]
 
 let encoding =
   Data_encoding.string_enum
-    [("atlas", Atlas); ("parisc", ParisC); ("alpha", Alpha)]
+    [("atlas", Atlas); ("boreas", Boreas); ("alpha", Alpha)]
 
 type constants =
   | Constants_sandbox
@@ -45,14 +45,14 @@ let constants_to_string = function
   | Constants_mainnet_with_chain_id -> "mainnet-with-chain-id"
   | Constants_test -> "test"
 
-let name = function Alpha -> "Alpha" | Atlas -> "Atlas" | ParisC -> "Parisc"
+let name = function Alpha -> "Alpha" | Atlas -> "Atlas" | Boreas -> "Boreas"
 
-let number = function Atlas -> 019 | ParisC -> 020 | Alpha -> 021
+let number = function Atlas -> 001 | Boreas -> 002 | Alpha -> 003
 
 let directory = function
   | Alpha -> "proto_alpha"
   | Atlas -> "proto_001_PtAtLas"
-  | ParisC -> "proto_020_PsParisC"
+  | Boreas -> "proto_002_PtBoreas"
 
 (* Test tags must be lowercase. *)
 let tag protocol = String.lowercase_ascii (name protocol)
@@ -60,7 +60,7 @@ let tag protocol = String.lowercase_ascii (name protocol)
 let hash = function
   | Alpha -> "ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK"
   | Atlas -> "PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp"
-  | ParisC -> "Pt22HB4SGLVeJVvjpt9pNZWXk6XYfPt3X1QcdMohnZnGk5vpPqf"
+  | Boreas -> "PsnkwyLLmcPZFGRxN2VDgYRJ6xG3Q59eWyzMhNzhTDjhMZEoWbW"
 
 let genesis_hash = "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im"
 
@@ -271,7 +271,7 @@ let write_parameter_file :
 
 let previous_protocol = function
   | Alpha -> Some Atlas
-  | ParisC -> Some Atlas
+  | Boreas -> Some Atlas
   | Atlas -> None
 
 let has_predecessor p = previous_protocol p <> None

@@ -1,0 +1,61 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name mavryk_protocol_002_PtBoreas_parameters)
+ (public_name mavryk-protocol-002-PtBoreas.parameters)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-libs.base
+  mavkit-proto-libs.protocol-environment
+  mavryk-protocol-002-PtBoreas.protocol)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_002_PtBoreas)
+ (modules (:standard \ gen)))
+
+(executable
+ (name gen)
+ (libraries
+  mavkit-libs.base
+  mavryk-protocol-002-PtBoreas.parameters
+  mavryk-protocol-002-PtBoreas.protocol)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/macos-link-flags.sexp)
+  (-linkall))
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_protocol_002_PtBoreas_parameters
+  -open Mavryk_protocol_002_PtBoreas)
+ (modules gen))
+
+(rule
+ (targets sandbox-parameters.json)
+ (deps gen.exe)
+ (action (run %{deps} --sandbox)))
+
+(rule
+ (targets test-parameters.json)
+ (deps gen.exe)
+ (action (run %{deps} --test)))
+
+(rule
+ (targets mainnet-parameters.json)
+ (deps gen.exe)
+ (action (run %{deps} --mainnet)))
+
+(rule
+ (targets mainnet-with-chain-id-parameters.json)
+ (deps gen.exe)
+ (action (run %{deps} --mainnet-with-chain-id)))
+
+(install
+ (package mavryk-protocol-002-PtBoreas)
+ (section lib)
+ (files
+  sandbox-parameters.json test-parameters.json mainnet-parameters.json
+  mainnet-with-chain-id-parameters.json))

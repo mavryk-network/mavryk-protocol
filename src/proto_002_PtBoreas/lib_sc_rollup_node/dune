@@ -1,0 +1,76 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(library
+ (name mavkit_smart_rollup_node_PtBoreas)
+ (package mavkit-smart-rollup-node-PtBoreas)
+ (instrumentation (backend bisect_ppx))
+ (libraries
+  mavkit-libs.base
+  mavkit-libs.stdlib-unix
+  mavkit-shell-libs.client-base
+  mavkit-shell-libs.client-base-unix
+  mavkit-protocol-002-PtBoreas-libs.client
+  mavkit-protocol-002-PtBoreas-libs.dal
+  mavkit-libs.mavryk-context.encoding
+  mavkit-libs.mavryk-context.helpers
+  mavryk-protocol-002-PtBoreas.protocol
+  mavkit-protocol-002-PtBoreas-libs.plugin
+  mavryk-protocol-002-PtBoreas.parameters
+  mavkit-libs.rpc
+  mavkit-libs.rpc-http
+  mavkit-libs.rpc-http-server
+  mavkit-libs.mavryk-workers
+  mavryk-dal-node-services
+  mavryk-dal-node-lib
+  mavkit-protocol-002-PtBoreas-libs.dac
+  mavryk-dac-lib
+  mavryk-dac-client-lib
+  mavkit-shell-libs.shell-services
+  mavkit-l2-libs.smart-rollup
+  mavkit-protocol-002-PtBoreas-libs.smart-rollup
+  mavkit-protocol-002-PtBoreas-libs.smart-rollup-layer2
+  mavkit-protocol-002-PtBoreas-libs.layer2-utils
+  mavkit-l2-libs.layer2_store
+  mavkit-crawler
+  mavkit-libs.tree-encoding
+  data-encoding
+  mavkit-internal-libs.irmin_pack
+  mavkit-internal-libs.irmin_pack.unix
+  mavkit-internal-libs.irmin
+  aches
+  aches-lwt
+  mavkit-injector
+  mavkit-smart-rollup-node-lib
+  mavkit-l2-libs.scoru-wasm
+  mavkit-l2-libs.scoru-wasm-fast
+  mavkit-libs.crypto-dal
+  mavkit-version.value)
+ (library_flags (:standard -linkall))
+ (flags
+  (:standard)
+  -open Mavryk_base
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix
+  -open Mavryk_client_base
+  -open Mavryk_client_base_unix
+  -open Mavryk_client_002_PtBoreas
+  -open Mavryk_dal_002_PtBoreas
+  -open Mavryk_protocol_002_PtBoreas
+  -open Mavryk_protocol_plugin_002_PtBoreas
+  -open Mavryk_protocol_002_PtBoreas_parameters
+  -open Mavryk_workers
+  -open Mavryk_dal_node_lib
+  -open Mavryk_dac_002_PtBoreas
+  -open Mavryk_dac_lib
+  -open Mavryk_dac_client_lib
+  -open Mavryk_shell_services
+  -open Mavkit_smart_rollup
+  -open Mavryk_smart_rollup_002_PtBoreas
+  -open Mavryk_smart_rollup_layer2_002_PtBoreas
+  -open Mavryk_layer2_utils_002_PtBoreas
+  -open Mavryk_layer2_store
+  -open Mavkit_crawler
+  -open Mavkit_injector
+  -open Mavkit_smart_rollup_node
+  -open Mavryk_crypto_dal))

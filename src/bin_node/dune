@@ -47,8 +47,8 @@
   mavryk-protocol-000-Ps9mPmXa.embedded-protocol
   mavryk-protocol-001-PtAtLas.embedded-protocol
   mavkit-protocol-001-PtAtLas-libs.plugin-registerer
-  mavryk-protocol-020-PsParisC.embedded-protocol
-  mavkit-protocol-020-PsParisC-libs.plugin-registerer
+  mavryk-protocol-002-PtBoreas.embedded-protocol
+  mavkit-protocol-002-PtBoreas-libs.plugin-registerer
   (select void_for_linking-mavryk-protocol-alpha-embedded-protocol from
    (mavryk-protocol-alpha.embedded-protocol -> void_for_linking-mavryk-protocol-alpha-embedded-protocol.empty)
    (-> void_for_linking-mavryk-protocol-alpha-embedded-protocol.empty))

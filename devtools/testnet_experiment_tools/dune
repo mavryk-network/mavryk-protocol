@@ -40,10 +40,10 @@
   mavkit-protocol-001-PtAtLas-libs.client
   mavkit-protocol-001-PtAtLas-libs.client.commands
   mavryk-protocol-001-PtAtLas.protocol
-  mavkit-protocol-020-PsParisC-libs.baking
-  mavkit-protocol-020-PsParisC-libs.client
-  mavkit-protocol-020-PsParisC-libs.client.commands
-  mavryk-protocol-020-PsParisC.protocol
+  mavkit-protocol-002-PtBoreas-libs.baking
+  mavkit-protocol-002-PtBoreas-libs.client
+  mavkit-protocol-002-PtBoreas-libs.client.commands
+  mavryk-protocol-002-PtBoreas.protocol
   mavkit-protocol-alpha-libs.baking
   mavkit-protocol-alpha-libs.client
   mavkit-protocol-alpha-libs.client.commands
@@ -62,7 +62,7 @@
  (modules
   sigs
   tool_001_PtAtLas
-  tool_020_PsParisC
+  tool_002_PtBoreas
   tool_alpha))
 
 (executable

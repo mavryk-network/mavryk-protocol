@@ -149,7 +149,7 @@ let make_string_parameter name = function
   | Some value -> [(name, `String value)]
 
 let test ~__FILE__ ?(regression = false) ?(tags = []) ?uses
-    ?(supports = Protocol.From_protocol 19) title f =
+    ?(supports = Protocol.From_protocol 002) title f =
   let tags = Tag.mavryk2 :: "dal" :: tags in
   let register_test =
     if regression then Protocol.register_regression_test
@@ -1886,7 +1886,7 @@ let test_dal_node_startup =
     ~title:"dal node startup"
     ~tags:[Tag.mavryk2; "dal"]
     ~uses:(fun _protocol -> [Constant.mavkit_dal_node])
-    ~supports:(Protocol.From_protocol 20)
+    ~supports:(Protocol.From_protocol 002)
   @@ fun protocol ->
   let run_dal = Dal_node.run ~wait_ready:false in
   let nodes_args = Node.[Synchronisation_threshold 0] in

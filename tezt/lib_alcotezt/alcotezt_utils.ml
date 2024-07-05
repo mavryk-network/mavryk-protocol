@@ -31,5 +31,5 @@ let is_proto_test file =
   | None -> []
   | Some "alpha" -> ["alpha"]
   | Some "001_PtAtLas" -> ["atlas"]
-  | Some "020_PsParisC" -> ["parisc"]
+  | Some "002_PtBoreas" -> ["boreas"]
   | Some _ -> assert false

@@ -87,7 +87,7 @@ let _mavkit_codec_kaitai =
              let link =
                match Protocol.number protocol with
                | Alpha -> true
-               | V number -> number >= 005
+               | V number -> number >= 001
                | Other -> false
              in
              if link then Protocol.client protocol else None);

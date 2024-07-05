@@ -1044,7 +1044,7 @@ let test_protocol_independent =
 
 let test_bitwise =
   register_opcode_tests
-    ~supports:(Protocol.From_protocol 16)
+    ~supports:(Protocol.From_protocol 001)
     [
       (* Bitwise operations on bytes *)
       ("and_bytes", "Unit", "Unit", "Unit");

@@ -61,7 +61,7 @@ let test_protocol_migration_message ~from_version ~to_version
 
 let proto_name : Mavryk_scoru_wasm.Pvm_input_kind.protocol -> string = function
   | Atlas -> "Atlas"
-  | ParisC -> "ParisC"
+  | Boreas -> "Boreas"
   | Proto_alpha -> "Proto_alpha"
 
 let tests =
@@ -84,7 +84,7 @@ let tests =
            ~after_protocol_activation:protocol))
     [
       (V2, V4, Proto_alpha);
-      (V2, V4, ParisC);
+      (V2, V4, Boreas);
       (V1, V2, Atlas);
     ]
 

@@ -1,0 +1,23 @@
+; This file was automatically generated, do not edit.
+; Edit file manifest/main.ml instead.
+
+(executable
+ (name tenderbrute_main)
+ (libraries
+  mavkit-libs.base
+  mavkit-shell-libs.client-base
+  mavkit-protocol-002-PtBoreas-libs.client
+  mavryk-protocol-002-PtBoreas.protocol
+  mavkit-protocol-002-PtBoreas-libs.baking.tenderbrute)
+ (link_flags
+  (:standard)
+  (:include %{workspace_root}/macos-link-flags.sexp)
+  (-linkall))
+ (flags
+  (:standard)
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_base
+  -open Mavryk_client_base
+  -open Mavryk_client_002_PtBoreas
+  -open Mavryk_protocol_002_PtBoreas
+  -open Tenderbrute_002_PtBoreas))

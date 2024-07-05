@@ -145,7 +145,7 @@ Note that Pass ballots do not count towards or against the super-majority;
 they still counts towards participation and quorum.
 
 More details can be found in the file
-:src:`src/proto_020_PsParisC/lib_protocol/amendment.ml`.
+:src:`src/proto_002_PtBoreas/lib_protocol/amendment.ml`.
 
 
 The Hash and the Protocol
@@ -243,7 +243,7 @@ above, the quorum is adaptive and that low participation would lower the
 quorum of the next vote.
 
 More details on the operations can be found in
-:src:`src/proto_020_PsParisC/lib_protocol/operation_repr.ml`.
+:src:`src/proto_002_PtBoreas/lib_protocol/operation_repr.ml`.
 The binary format is described by
 ``mavkit-client describe unsigned operation``.
 

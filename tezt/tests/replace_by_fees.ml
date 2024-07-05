@@ -199,7 +199,7 @@ let replacement_test_helper ~title ~__LOC__ ~op1 ?(size1 = 1) ~op2 ?(size2 = 1)
     ~__FILE__
     ~title
     ~tags:["replace"; "fee"; "manager"]
-    ~supports:(Protocol.From_protocol 015)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* nodes = Helpers.init ~protocol () in
   let client = nodes.main.client in

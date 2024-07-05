@@ -66,7 +66,7 @@ let register843 =
     ~__FILE__
     ~title:"Contract-related non-regressions, Issue 843"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 015)
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   (* https://gitlab.com/tezos/tezos/-/issues/843
 

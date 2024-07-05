@@ -671,7 +671,7 @@ val bake_until_cycle_end :
   target_cycle:int -> ?keys:string list -> ?node:Node.t -> t -> unit Lwt.t
 
 (** Run [mavkit-client attest for]. Run [mavkit-client endorse for] for protocol
-    older than 018.
+    older than 001.
 
     Default [key] is {!Constant.bootstrap1.alias}. *)
 val attest_for :

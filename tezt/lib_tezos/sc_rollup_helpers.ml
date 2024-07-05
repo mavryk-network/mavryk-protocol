@@ -231,7 +231,7 @@ let setup_l1 ?timestamp ?bootstrap_smart_rollups ?bootstrap_contracts
     @ make_string_parameter
         "delay_increment_per_round"
         (Option.map string_of_int minimal_block_delay)
-    @ (if Protocol.number protocol >= 018 then
+    @ (if Protocol.number protocol >= 001 then
        make_bool_parameter "smart_rollup_private_enable" whitelist_enable
       else [])
     @ [(["smart_rollup_arith_pvm_enable"], `Bool true)]

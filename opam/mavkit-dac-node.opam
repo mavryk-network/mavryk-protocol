@@ -20,7 +20,7 @@ depends: [
   "mavkit-l2-libs" { = version }
   "mavkit-internal-libs" { = version }
   "mavkit-protocol-001-PtAtLas-libs" { = version }
-  "mavkit-protocol-020-PsParisC-libs" { = version }
+  "mavkit-protocol-002-PtBoreas-libs" { = version }
 ]
 depopts: [
   "mavkit-protocol-alpha-libs"

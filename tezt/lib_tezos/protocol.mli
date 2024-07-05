@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 (** Protocols we may want to test with. *)
-type t = Atlas | ParisC | Alpha
+type t = Atlas | Boreas | Alpha
 
 val encoding : t Data_encoding.t
 
@@ -45,12 +45,12 @@ val default_constants : constants
 (** Get the name of a protocol, capitalized (e.g. ["Edo"]). *)
 val name : t -> string
 
-(** Get the number of a protocol, e.g. 012 for Ithaca.
+(** Get the number of a protocol, e.g. 001 for Atlas.
 
     The number for [Alpha] is the number it will have once snapshotted.
 
     Use this to specify constraints that should not change once Alpha is snapshotted.
-    For instance, [number protocol >= 012] meant "at least Ithaca" even when
+    For instance, [number protocol >= 001] meant "at least Atlas" even when
     Ithaca was still Alpha, while [number protocol >= number Alpha] stopped being true
     for Ithaca after it was snapshotted. *)
 val number : t -> int
@@ -196,7 +196,7 @@ val all : t list
     even though it actually does.
 
     It is recommended to write protocol numbers with leading zeros.
-    For instance, write [From_protocol 008] instead of [From_protocol 8].*)
+    For instance, write [From_protocol 001] instead of [From_protocol 1].*)
 type supported_protocols =
   | Any_protocol
   | From_protocol of int
