@@ -44,7 +44,7 @@ ALL_EXECUTABLES := $(RELEASED_EXECUTABLES) $(EXPERIMENTAL_EXECUTABLES) $(DEV_EXE
 #Define mavkit only executables by excluding the EVM-node.
 MAVKIT_ONLY_EXECUTABLES := $(filter-out mavkit-evm-node,${ALL_EXECUTABLES})
 
-# Set of Dune targets to build, in addition to OCTEZ_EXECUTABLES, in
+# Set of Dune targets to build, in addition to MAVKIT_EXECUTABLES, in
 # the `build` target's Dune invocation. This is used in the CI to
 # build the TPS evaluation tool, Octogram and the Tezt test suite in the
 # 'build_x86_64-dev-exp-misc' job.
@@ -108,7 +108,7 @@ release:
 
 .PHONY: mavkit
 mavkit:
-	@$(MAKE) build PROFILE=release OCTEZ_EXECUTABLES?="$(OCTEZ_ONLY_EXECUTABLES)"
+	@$(MAKE) build PROFILE=release MAVKIT_EXECUTABLES?="$(MAVKIT_ONLY_EXECUTABLES)"
 
 .PHONY: experimental-release
 experimental-release:

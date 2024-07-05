@@ -9,7 +9,7 @@
 
    This pipeline runs on each push to the [latest_release] branch. The
    goal of this pipeline to update the [latest] Docker tag of the
-   Octez Docker distribution. *)
+   Mavkit Docker distribution. *)
 
 open Mavryk_ci
 open Common

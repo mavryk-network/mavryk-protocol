@@ -11,7 +11,7 @@ This release contains the Atlas protocol proposal itself, as well as its associa
 
 Following the recent `security alert <https://forum.tezosagora.org/t/security-alert-recommendations-for-operators-of-public-rpc-nodes/6003>`_ for RPC nodes (and other public-facing infrastructure) operators, version 19.1 hardens the default RPC ACL whitelist when starting an RPC server. The same document provides further recommendations on operating securely public facing infra.
 
-In addition, Octez v19.1 introduces a ``--max-active-rpc-connections <NUM>`` option, that limits the number
+In addition, Mavkit v19.1 introduces a ``--max-active-rpc-connections <NUM>`` option, that limits the number
 of active RPC connections *per server* to the provided argument. The
 default limit is set to 100.
 
@@ -48,7 +48,7 @@ The rollup client is not released anymore. Equivalent RPCs to the rollup node mu
 The result of encode outbox message ``<transactions>`` can be achieved:
 ``mavkit-codec encode alpha.smart_rollup.outbox.message from <transactions>.``
 
-The keys in the Smart Rollup client use the same format as the Octez client.
+The keys in the Smart Rollup client use the same format as the Mavkit client.
 They can be imported with ``mavkit-client import secret key <sk_uri>``, or by merging the key files
 between the ``mavkit-client`` base directory and the ``smart-rollup-client-<proto>`` base directory.
 
@@ -68,7 +68,7 @@ In addition, it fixes the protocol migration on the rollup node. The constants a
 
 .. warning::
 
-   Due to the :ref:`new default ACL <acl_fix>`, the Octez node requires allowing some specific RPCs from the rollup node if it is running on a remote machine or a different network interface. Check :ref:`the rollup node documentation <smart_rollup_node_prerequisites>` for more details on the prerequisites.
+   Due to the :ref:`new default ACL <acl_fix>`, the Mavkit node requires allowing some specific RPCs from the rollup node if it is running on a remote machine or a different network interface. Check :ref:`the rollup node documentation <smart_rollup_node_prerequisites>` for more details on the prerequisites.
 
 Update Instructions
 -------------------
@@ -83,9 +83,9 @@ To update from sources::
   eval $(opam env)
   make
 
-If you are using Docker instead, use the ``v19.1`` Docker images of Octez.
+If you are using Docker instead, use the ``v19.1`` Docker images of Mavkit.
 
-You can also install Octez using Opam by running ``opam install mavkit``.
+You can also install Mavkit using Opam by running ``opam install mavkit``.
 
 It is now also possible to download experimental Debian and Redhat packages on the `release page <https://gitlab.com/tezos/tezos/-/releases/v19.1>`_  and in the `package registry <https://gitlab.com/tezos/tezos/-/packages>`_.
 

@@ -74,7 +74,7 @@ release-cli create \
   --assets-link="{\"name\":\"Announcement\",\"url\":\"https://tezos.gitlab.io/releases/version-${gitlab_release_major_version}.html\",\"link_type\":\"other\"}" \
   --assets-link="{\"name\":\"Docker image\",\"url\":\"${docker_image_url}\",\"link_type\":\"image\"}" \
   --assets-link="{\"name\":\"Static binaries\",\"url\":\"${gitlab_binaries_url}\",\"link_type\":\"package\"}" \
-  --assets-link="{\"name\":\"Octez source\",\"url\":\"${gitlab_mavkit_source_url}\",\"link_type\":\"other\"}" \
+  --assets-link="{\"name\":\"Mavkit source\",\"url\":\"${gitlab_mavkit_source_url}\",\"link_type\":\"other\"}" \
   --assets-link="{\"name\":\"Debian Bookworm packages\",\"url\":\"${gitlab_debian_bookworm_packages_url}\",\"link_type\":\"package\"}" \
   --assets-link="{\"name\":\"Ubuntu Focal packages\",\"url\":\"${gitlab_ubuntu_focal_packages_url}\",\"link_type\":\"package\"}" \
   --assets-link="{\"name\":\"Ubuntu Jammy packages\",\"url\":\"${gitlab_ubuntu_jammy_packages_url}\",\"link_type\":\"package\"}" \

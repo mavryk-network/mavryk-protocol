@@ -75,15 +75,15 @@ let job_dummy : job =
    pipeline is defined. At the moment, all these pipelines are defined
    manually in .yml, but will eventually be generated. *)
 let () =
-  (* Matches Octez release tags, e.g. [mavkit-v1.2.3] or [mavkit-v1.2.3-rc4]. *)
+  (* Matches Mavkit release tags, e.g. [mavkit-v1.2.3] or [mavkit-v1.2.3-rc4]. *)
   let mavkit_release_tag_re = "/^mavkit-v\\d+\\.\\d+(?:\\-rc\\d+)?$/" in
-  (* Matches Octez beta release tags, e.g. [mavkit-v1.2.3-beta5]. *)
+  (* Matches Mavkit beta release tags, e.g. [mavkit-v1.2.3-beta5]. *)
   let mavkit_beta_release_tag_re = "/^mavkit-v\\d+\\.\\d+\\-beta\\d*$/" in
   (* Matches Etherlink release tags, e.g. [etherlink-v1.2.3] or [etherlink-v1.2.3-rc4]. *)
   let etherlink_release_tag_re = "/^etherlink-v\\d+\\.\\d+(?:\\-rc\\d+)?$/" in
   let open Rules in
   let open Pipeline in
-  (* Matches either Octez release tags or Octez beta release tags,
+  (* Matches either Mavkit release tags or Mavkit beta release tags,
      e.g. [mavkit-v1.2.3], [mavkit-v1.2.3-rc4] or [mavkit-v1.2.3-beta5]. *)
   let has_any_mavkit_release_tag =
     If.(

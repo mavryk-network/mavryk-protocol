@@ -5883,7 +5883,7 @@ mod typecheck_tests {
         );
 
         // Only ID - key mismatch
-        // NB: Octez implementation just says that big map does not exists,
+        // NB: Mavkit implementation just says that big map does not exists,
         // but this difference seems fine.
         assert_eq!(
             typecheck_value(

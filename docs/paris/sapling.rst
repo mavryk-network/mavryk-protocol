@@ -1,7 +1,7 @@
 Sapling support
 ===============
 
-This page first give some details on Sapling and its underlying concepts, and then describes the support for Sapling in Octez and in the Michelson language (part of the Tezos protocol).
+This page first give some details on Sapling and its underlying concepts, and then describes the support for Sapling in Mavkit and in the Michelson language (part of the Tezos protocol).
 For support in high-level smart contract languages, see the `Sapling documentation in OpenTezos <https://opentezos.com/smart-contracts/smart-contracts-concepts/#sapling>`__.
 
 Sapling
@@ -193,9 +193,9 @@ Sapling integration
 
 The reference implementation of Sapling,
 `librustzcash <https://github.com/zcash/librustzcash>`_, has been
-integrated in the Octez codebase, and Sapling features were made available for production use with the Edo protocol amendment in early 2021.
+integrated in the Mavkit codebase, and Sapling features were made available for production use with the Edo protocol amendment in early 2021.
 
-Librustzcash and the Octez integration implement the protocol
+Librustzcash and the Mavkit integration implement the protocol
 described in this `specification
 <https://github.com/zcash/zips/blob/2e26bb072dfd5f842fe9e779bdec8cabeb4fa9bf/protocol/protocol.pdf>`_, version 2020.1.0.
 

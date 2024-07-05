@@ -5,7 +5,7 @@ set -e
 if [ -z "$1" ]; then
   echo "Usage: $0 [x86_64|arm64] <static-binary> [version|node_run ...]"
   echo
-  echo " - version: this test simply verifies that the Octez binaries"
+  echo " - version: this test simply verifies that the Mavkit binaries"
   echo "   execute correctly when passed '--version' and that the"
   echo "   reported version is as expected"
   echo

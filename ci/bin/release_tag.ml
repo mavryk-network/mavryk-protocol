@@ -12,7 +12,7 @@
    language of release tags).
 
    The goal of these pipelines is to create
-   {{:https://gitlab.com/tezos/tezos/-/releases}Octez releases on
+   {{:https://gitlab.com/tezos/tezos/-/releases}Mavkit releases on
    GitLab}, the associated artifacts, and to push releases to opam. *)
 
 open Mavryk_ci
@@ -40,7 +40,7 @@ type release_tag_pipeline_type =
   | Beta_release_tag
   | Non_release_tag
 
-(** Create an Octez release tag pipeline of type {!release_tag_pipeline_type}.
+(** Create an Mavkit release tag pipeline of type {!release_tag_pipeline_type}.
 
     If [test] is true (default is [false]), then the Docker images are
     built of the [Test] type and are published to the GitLab registry

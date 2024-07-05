@@ -32,7 +32,7 @@ oc.build:dpkg:amd64:
   - mv mavkit-*.* packages/$DISTRO/$RELEASE/
   variables:
     TARGET: dpkg
-    OCTEZ_PKGMAINTAINER: nomadic-labs
+    MAVKIT_PKGMAINTAINER: mavrykdynamics
     BLST_PORTABLE: "yes"
     ARCH: amd64
   artifacts:

@@ -24,6 +24,7 @@ COPY --chown=tezos:nogroup script-inputs/dev-executables mavryk/script-inputs/
 COPY --chown=tezos:nogroup dune mavryk
 COPY --chown=tezos:nogroup scripts/version.sh mavryk/scripts/
 COPY --chown=tezos:nogroup src mavryk/src
+COPY --chown=tezos:nogroup irmin mavryk/irmin
 COPY --chown=tezos:nogroup etherlink mavryk/etherlink
 COPY --chown=tezos:nogroup tezt mavryk/tezt
 COPY --chown=tezos:nogroup opam mavryk/opam

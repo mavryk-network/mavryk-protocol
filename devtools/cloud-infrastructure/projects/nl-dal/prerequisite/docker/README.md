@@ -26,7 +26,7 @@ terraform init
 
 4. Create your docker image called `<workspace_name>.Dockerfile` that
    corresponds to your needs. This docker image must provide the
-   minimal setup to run Octez binaries (hence the need for zcash
+   minimal setup to run Mavkit binaries (hence the need for zcash
    parameters) and its entrypoint should run an ssh server to accept
    Octogram commands.
 

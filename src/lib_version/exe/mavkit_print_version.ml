@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 (* This is a script run at build time to print out the current version of the
-   Octez node. *)
+   Mavkit node. *)
 
 open Current_git_info
 

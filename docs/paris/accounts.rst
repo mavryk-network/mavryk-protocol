@@ -38,7 +38,7 @@ different schemes but addresses are always 20 bytes long.
 Addresses that start with the ``tz1`` prefix are hashes of Ed25519 public keys
 and signatures must be produced by using the `EdDSA signature scheme
 <https://datatracker.ietf.org/doc/html/rfc8032>`_ with the `Curve25519 curve
-<https://ed25519.cr.yp.to>`_. This is the default scheme of Octez when, *e.g.*,
+<https://ed25519.cr.yp.to>`_. This is the default scheme of Mavkit when, *e.g.*,
 generating key pairs. It is also the recommended cryptographic scheme to use
 because it offers better security guarantees than EcDSA and has good performance
 on most hardware. It may not be available in all wallets or on all dedicated

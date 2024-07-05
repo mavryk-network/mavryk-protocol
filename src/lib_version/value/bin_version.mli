@@ -32,10 +32,10 @@ val version_string : Mavryk_version_parser.t -> string
     containing only the current version and the abbreviated hash. *)
 val simple_version_string : Mavryk_version_parser.t -> string
 
-(** [version_string] applied to the Version of Octez. *)
+(** [version_string] applied to the Version of Mavkit. *)
 val mavkit_version_string : string
 
-(** [simple_version_string] applied to the Version of Octez. *)
+(** [simple_version_string] applied to the Version of Mavkit. *)
 val mavkit_simple_version_string : string
 
 (** [version_string] applied to the Version of Etherlink. *)

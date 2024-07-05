@@ -5,7 +5,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** A GitLab CI job annotated with Octez-specific meta-data. *)
+(** A GitLab CI job annotated with Mavkit-specific meta-data. *)
 type tezos_job
 
 (** A string that should be prepended to all generated files.

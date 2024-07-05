@@ -3,7 +3,7 @@
     { "title": "Smart Rollup Node RPCs",
       "description":
         "Smart Rollup Node RPC API for protocol PsnkwyLLmcPZFGRxN2VDgYRJ6xG3Q59eWyzMhNzhTDjhMZEoWbW",
-      "version": "Octez 0.0+dev (4fe3cc43)" },
+      "version": "Mavkit 0.0+dev (4fe3cc43)" },
   "paths":
     { "/describe":
         { "get":

@@ -1537,7 +1537,7 @@ deserialisation. This combinator takes a single parameter: a function to
 generate the encoding [(unit -> 'a encoding)] which is called when needed.
 
 The main intended use is for encodings which depend on global mutable state.
-In the Octez code base, this is used to define the encoding of an extensible
+In the Mavkit code base, this is used to define the encoding of an extensible
 variant. The general idea is as follows (although in practice the code is more
 complicated mostly out of efficiency concerns):
 
@@ -1924,7 +1924,7 @@ fields.
 The [Registration] module allows you to build a global registry of encodings.
 These encodings can be queried by names.
 
-In the Octez code base, this is used to build the [tezos-codec] binary. This
+In the Mavkit code base, this is used to build the [tezos-codec] binary. This
 binary can convert between binary and JSON representations (allowing users to
 decode otherwise difficult to read network messages and protocol data). Checkout
 {{: https://tezos.gitlab.io/developer/encodings.html} this brief tutorial on [tezos-codec]}.

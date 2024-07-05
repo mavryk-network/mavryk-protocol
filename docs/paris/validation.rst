@@ -124,7 +124,7 @@ while it is being built, the signature check is disabled, and it will
 be left to the baker to correctly sign the resulting block after its
 construction is finalized.
 
-In Octez, this mode is mainly used by the baker daemon.
+In Mavkit, this mode is mainly used by the baker daemon.
 
 .. _partial_construction_paris:
 
@@ -133,11 +133,11 @@ Partial Construction
 
 The ``Partial construction`` mode, also known as ``Mempool mode`` is
 used by the :doc:`prevalidator component<../shell/prevalidation>` of
-an Octez node to validate incoming operations -- that is, those
+an Mavkit node to validate incoming operations -- that is, those
 not-yet included into blocks. This mode's business-logic is very close
 to the ``Full construction`` mode, and the differences boil down to
 the intended usage. The partial construction mode does not try to
-fully bake a block, but rather to inform the Octez prevalidator on the
+fully bake a block, but rather to inform the Mavkit prevalidator on the
 potential validity of operations (and whether they can safely included
 into a block), so that the latter can **classify** incoming
 operations, and further decide how to process them accordingly.

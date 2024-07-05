@@ -95,7 +95,7 @@ let rec convert_element (element : Json_schema.element) : Openapi.Schema.t =
            Function [is_null] catches both those cases.
 
            FIXME: #3484
-           Remove this encoding of [null] from Octez
+           Remove this encoding of [null] from Mavkit
         *)
         let is_null e =
           let open Json_schema in

@@ -67,7 +67,7 @@ non-abstaining blocks, about 1386 blocks if everyone signals, 1963
 blocks if 80% do, 3583 blocks if 60% do etc. Recall for comparison
 that assuming six blocks per minute there are 8640 blocks per day.
 
-When producing blocks using Octez baking daemon ``mavkit-baker``, there
+When producing blocks using Mavkit baking daemon ``mavkit-baker``, there
 are two command-line options affecting toggle vote. The
 ``--liquidity-baking-toggle-vote <on|off|pass>`` option sets a static
 value to be used in each block. Note that this option must be placed

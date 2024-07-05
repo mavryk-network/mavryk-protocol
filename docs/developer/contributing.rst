@@ -43,7 +43,7 @@ Alternatively, you may of course create your own MRs for submitting your changes
 Other non-code contributions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you acquired a good expertise level in using, configuring, or overcoming problems with the various Octez executables, you may bring useful contributions by providing assistance to others via the different channels (Slack,  StackExchange, etc.) in the :ref:`Mavryk community <mavryk_community>`.
+If you acquired a good expertise level in using, configuring, or overcoming problems with the various Mavkit executables, you may bring useful contributions by providing assistance to others via the different channels (Slack,  StackExchange, etc.) in the :ref:`Mavryk community <mavryk_community>`.
 
 If you want to shape the future of Mavkit, you may consider contributing to Mavryk Improvement Proposals (TZIPs), that specify new features or define standards. These are located in the `TZIP repo <https://gitlab.com/tezos/tzip/>`__.
 

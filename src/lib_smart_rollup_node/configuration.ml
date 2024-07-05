@@ -923,14 +923,14 @@ module Cli = struct
       ~history_mode ~allowed_origins ~allowed_headers ~apply_unsafe_patches =
     let open Lwt_result_syntax in
     let open Filename.Infix in
-    (* Check if the data directory of the smart rollup node is not the one of Octez node *)
+    (* Check if the data directory of the smart rollup node is not the one of Mavkit node *)
     let* () =
       let*! identity_file_in_data_dir_exists =
         Lwt_unix.file_exists (data_dir // "identity.json")
       in
       if identity_file_in_data_dir_exists then
         failwith
-          "Invalid data directory. This is a data directory for an Octez node, \
+          "Invalid data directory. This is a data directory for an Mavkit node, \
            please choose a different directory for the smart rollup node data."
       else return_unit
     in

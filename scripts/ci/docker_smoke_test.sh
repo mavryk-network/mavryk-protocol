@@ -5,9 +5,9 @@ set -e
 if [ -z "$1" ]; then
   echo "Usage: $0 <docker-image> [expected-version-sha] version"
   echo
-  echo 'This script is used to test Octez Docker images. It can run two test cases:'
+  echo 'This script is used to test Mavkit Docker images. It can run two test cases:'
   echo
-  echo " - version: this test simply verifies that the Octez binaries"
+  echo " - version: this test simply verifies that the Mavkit binaries"
   echo "   contained in the image execute when passed '--version' and that the"
   echo "   reported version is as expected"
   exit 1

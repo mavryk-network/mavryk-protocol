@@ -6,7 +6,7 @@
 (*****************************************************************************)
 
 (* This module contains the definition of stages and Docker
-   images used by the Octez CI pipelines.
+   images used by the Mavkit CI pipelines.
 
    It also defines:
     - helpers for defining jobs;
@@ -596,7 +596,7 @@ let job_docker_build ?rules ?dependencies ~__POS__ ~arch ?(external_ = false)
     if with_evm_artifacts then
       [
         (* Always rebuild the rust-toolchain image before
-           building the Octez Docker image. *)
+           building the Mavkit Docker image. *)
         ("RUST_TOOLCHAIN_ALWAYS_REBUILD", "true");
       ]
     else
@@ -726,7 +726,7 @@ let job_build_bin_package ?dependencies ?rules ~__POS__ ~name
     ~variables:
       [
         ("TARGET", target_string);
-        ("OCTEZ_PKGMAINTAINER", "nomadic-labs");
+        ("MAVKIT_PKGMAINTAINER", "nomadic-labs");
         ("BLST_PORTABLE", "yes");
         ("ARCH", arch_string);
       ]

@@ -355,7 +355,7 @@ let tezt_json_lib =
    generate conflicts. *)
 module Conflicts = struct
   (* Checkseum is an irmin-pack dependency, and thus a transitive
-     dependency for Octez. Version 0.5.0 is known to be bugged and
+     dependency for Mavkit. Version 0.5.0 is known to be bugged and
      this release was disabled. *)
   let checkseum = external_lib "checkseum" V.(exactly "0.5.0")
 

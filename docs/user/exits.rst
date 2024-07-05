@@ -3,7 +3,7 @@
 Exit codes and signals
 ======================
 
-This page documents the exit codes possibly returned by the Octez binaries, as well as the signals they handle.
+This page documents the exit codes possibly returned by the Mavkit binaries, as well as the signals they handle.
 
 Exit codes
 ----------

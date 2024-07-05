@@ -84,7 +84,7 @@ WORKDIR /home/tezos
 COPY --chown=tezos:tezos install-nvm.sh /tmp/install-nvm.sh
 RUN /tmp/install-nvm.sh && rm -rf /tmp/install-nvm.sh
 
-# Install the recommended Node version and the Octez JS dependencies.
+# Install the recommended Node version and the Mavkit JS dependencies.
 ARG recommended_node_version=18.18.2
 COPY --chown=tezos:tezos install_build_deps.js.sh /tmp/install_build_deps.js.sh
 COPY --chown=tezos:tezos package.json /home/tezos/package.json

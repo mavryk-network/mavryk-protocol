@@ -37,7 +37,7 @@ let registered_mavkit_evm_node_libs = Sub_lib.make_container ()
 (* Registers a sub-library in the [mavkit-evm-node] package. *)
 let mavkit_evm_node_lib =
   Sub_lib.sub_lib
-    ~package_synopsis:"Octez EVM node libraries"
+    ~package_synopsis:"Mavkit EVM node libraries"
     ~container:registered_mavkit_evm_node_libs
     ~package:"mavkit-evm-node-libs"
 

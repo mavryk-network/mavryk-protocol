@@ -8,7 +8,7 @@ For more background information on time-locks and their uses, see `Timelocks <ht
 Cryptographic design
 --------------------
 
-The time-lock features are supported in Octez by the :package-api:`Mavryk_crypto.Timelock library <mavkit-libs/Mavryk_crypto/Timelock/index.html>`.
+The time-lock features are supported in Mavkit by the :package-api:`Mavryk_crypto.Timelock library <mavkit-libs/Mavryk_crypto/Timelock/index.html>`.
 
 Users first generate a RSA modulus and a symmetric encryption key.
 They use authenticated encryption to encrypt a packed Michelson value (an array of bytes computed with ``PACK``)
@@ -51,7 +51,7 @@ Implementation of the time-lock puzzle
 The implementation of the time-lock puzzle
 and proof scheme is located in :src:`src/lib_crypto/timelock.ml`.
 
-To facilitate the use of time-locks,  commands have also been implemented in Octez client to generate a ``chest`` and ``chest_key`` as well as to open and verify them. An additional command ``precompute`` was implemented to fasten the time-lock ``chest`` generation.
+To facilitate the use of time-locks,  commands have also been implemented in Mavkit client to generate a ``chest`` and ``chest_key`` as well as to open and verify them. An additional command ``precompute`` was implemented to fasten the time-lock ``chest`` generation.
 
 For more information on the client commands, see :doc:`cli-commands<cli-commands>`.
 

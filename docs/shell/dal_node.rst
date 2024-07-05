@@ -84,7 +84,7 @@ Also, in order for the nodes to be able to join the P2P network, a set of bootst
 Monitoring
 ^^^^^^^^^^
 
-As for L1 nodes, to monitor the DAL node, one can inspect the node’s logs, query the node through RPCs, or use the incorporated Octez Metrics server. The usage of metrics is analogous to that for the L1 nodes, and we therefore refer to the :doc:`L1 node’s documentation <../user/node-monitoring>` for details.
+As for L1 nodes, to monitor the DAL node, one can inspect the node’s logs, query the node through RPCs, or use the incorporated Mavkit Metrics server. The usage of metrics is analogous to that for the L1 nodes, and we therefore refer to the :doc:`L1 node’s documentation <../user/node-monitoring>` for details.
 
 The bootstrap mechanism
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -110,7 +110,7 @@ The life cycle of slots and shards is described by the following steps:
 #. The slot producer instructs the DAL node to compute the proof associated with the commitment.
    This is done via the RPC ``GET /commitments/<commitment>/proof``, which returns the corresponding commitment proof.
 #. The slot producer selects a slot index for its slot, and posts the commitment to L1, via the ``publish_commitment`` operation.
-   This can be done via RPCs for injecting an operation into L1, or using the Octez client, via the following command::
+   This can be done via RPCs for injecting an operation into L1, or using the Mavkit client, via the following command::
 
      mavkit-client publish dal commitment <commitment> from <pkh> for slot <slot_index> with proof <proof>
 

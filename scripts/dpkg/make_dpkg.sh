@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Debian/Ubuntu package build for Octez
+# Debian/Ubuntu package build for Mavkit
 #
 # (c) Chris Pinnock 2022-3, Supplied under a MIT license.
 # see ../pkg-common/utils.sh for more detail
@@ -18,7 +18,7 @@ dieonwarn=${dieonwarn:-1}
 protocols=${protocols:?protocols not specified} # Not used?
 
 warnings
-pkg_vers=$(getOctezVersion)
+pkg_vers=$(getMavkitVersion)
 staging_root=_dpkgstage
 
 # Checking prerequisites
@@ -37,14 +37,14 @@ dpkg_arch=$DEB_BUILD_ARCH
 #
 for control_file in "$myhome"/*control.in; do
   pg=$(basename "$control_file" | sed -e 's/-control.in$//g')
-  echo "===> Building package $pg v$pkg_vers rev $OCTEZ_PKGREV"
+  echo "===> Building package $pg v$pkg_vers rev $MAVKIT_PKGREV"
 
   # Derivative variables
   #
-  dpkg_name=${OCTEZ_PKGNAME}-${pg}
-  init_name=${OCTEZ_REALNAME}-${pg}
+  dpkg_name=${MAVKIT_PKGNAME}-${pg}
+  init_name=${MAVKIT_REALNAME}-${pg}
   dpkg_vers=$(echo "${pkg_vers}" | tr '~' '-')
-  dpkg_dir="${dpkg_name}_${dpkg_vers}-${OCTEZ_PKGREV}_${dpkg_arch}"
+  dpkg_dir="${dpkg_name}_${dpkg_vers}-${MAVKIT_PKGREV}_${dpkg_arch}"
   dpkg_fullname="${dpkg_dir}.deb"
 
   binaries=$(fixBinaryList "${common}/${pg}-binaries")
@@ -90,9 +90,9 @@ for control_file in "$myhome"/*control.in; do
   # Edit the control file to contain real values
   #
   sed -e "s/@ARCH@/${dpkg_arch}/g" -e "s/@VERSION@/$pkg_vers/g" \
-    -e "s/@MAINT@/${OCTEZ_PKGMAINTAINER}/g" \
+    -e "s/@MAINT@/${MAVKIT_PKGMAINTAINER}/g" \
     -e "s/@PKG@/${dpkg_name}/g" \
-    -e "s/@DPKG@/${OCTEZ_PKGNAME}/g" \
+    -e "s/@DPKG@/${MAVKIT_PKGNAME}/g" \
     -e "s/@DEPENDS@/${deps}/g" < "$control_file" \
     > "${staging_dir}/DEBIAN/control"
 

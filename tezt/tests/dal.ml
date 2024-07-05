@@ -6070,7 +6070,7 @@ let scenario_tutorial_dal_baker =
       in
 
       (* Launch dal node (Step 4) *)
-      Log.info "Step 4: Run an Octez dal node" ;
+      Log.info "Step 4: Run an Mavkit dal node" ;
       let* dal_node = make_dal_node node in
 
       let* topics = Dal_RPC.Local.call dal_node @@ Dal_RPC.get_topics () in
@@ -6089,7 +6089,7 @@ let scenario_tutorial_dal_baker =
         Account.Bootstrap.keys |> Array.to_list |> List.cons my_baker
         |> List.map (fun key -> key.Account.alias)
       in
-      Log.info "Step 5: Run an Octez baking daemon" ;
+      Log.info "Step 5: Run an Mavkit baking daemon" ;
       let* _baker =
         Baker.init
           ~event_sections_levels:[(Protocol.name protocol ^ ".baker", `Debug)]

@@ -99,7 +99,7 @@ _`Accuser`
 
     The accuser is awarded some funds from the security deposit of the accused.
 
-    When using :ref:`Octez <mavkit>`, accusation operations are emitted by the
+    When using :ref:`Mavkit <mavkit>`, accusation operations are emitted by the
     accuser daemon. Note that this daemon is not associated to a delegate: accusation operations are anonymous, and any delegate can include them in a block.
 
 .. _def_account_paris:
@@ -118,7 +118,7 @@ _`Baker`
     is allowed to bake.
     The baker selects transactions from the mempool_ to be included in the block it bakes.
 
-    When using :ref:`Octez <mavkit>`, baking and other consensus actions are handled by the baker
+    When using :ref:`Mavkit <mavkit>`, baking and other consensus actions are handled by the baker
     daemon, on behalf of one or more delegate_ accounts.
     By extension, a baker designates the owner of such a delegate account, typically running the baker daemon on its behalf.
 

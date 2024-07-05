@@ -767,7 +767,7 @@ let jobs pipeline_type =
         ~rules:(make_rules ~changes:changeset_kaitai_e2e_files ())
         ~before_script:(before_script ~source_version:true ~eval_opam:true [])
         [
-          "make -C ${CI_PROJECT_DIR} check-kaitai-struct-files || (echo 'Octez \
+          "make -C ${CI_PROJECT_DIR} check-kaitai-struct-files || (echo 'Mavkit \
            encodings and Kaitai files seem to be out of sync. You might need \
            to run `make check-kaitai-struct-files` and commit the resulting \
            diff.' ; false)";

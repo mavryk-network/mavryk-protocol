@@ -1,7 +1,7 @@
 # `tezos/tezos` Docker images
 
 This directory contains the definition of Docker images used to build
-the Docker distribution of Octez.
+the Docker distribution of Mavkit.
 
 The images, their content and indented usage, are:
 
@@ -40,7 +40,7 @@ These labels can be extracted from a locally pulled image using
 
 The `rust-toolchain` image is used in the CI to build and test
 kernels, and to build the kernel SDK. It is also used to build the
-`evm_kernel` included in the Octez Docker distribution. To build this
+`evm_kernel` included in the Mavkit Docker distribution. To build this
 image for local use, run `create_rust_toolchain_image.sh`.
 
 # `client-libs-dependencies` image

@@ -250,7 +250,7 @@ The binary format is described by
 Client Commands
 ---------------
 
-The Octez client, ``mavkit-client``, provides commands for basic exploration and
+The Mavkit client, ``mavkit-client``, provides commands for basic exploration and
 interaction with the amendment and voting process.
 
 
@@ -310,7 +310,7 @@ following two conditions:
   its node which performs some checks, compiles and loads the
   protocol.
 
-These are protection measures that the Octez client takes to prevent the
+These are protection measures that the Mavkit client takes to prevent the
 accidental injection of invalid protocols. As mentioned above, it is still
 important to check the validity of the protocols that you vote for as they may
 have been injected via different means.

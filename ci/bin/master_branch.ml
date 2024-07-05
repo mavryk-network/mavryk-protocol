@@ -9,7 +9,7 @@
 
    This pipeline runs for each merge on the [master] branch. To goal
    of this pipeline is to publish artifacts for the development
-   version of Octez, including:
+   version of Mavkit, including:
 
    - docker images,
    - static binaries, and

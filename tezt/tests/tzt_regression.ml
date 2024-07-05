@@ -27,7 +27,7 @@
    -------
    Components: Michelson / TZT
    Invocation: dune exec tezt/tests/main.exe -- --file tzt_regression.ml
-   Subject: Regression testing of the Octez TZT runner on the reference test suite.
+   Subject: Regression testing of the Mavkit TZT runner on the reference test suite.
 *)
 
 (* Using the lighter hook that only scrubs the clients [--base-dir] *)
