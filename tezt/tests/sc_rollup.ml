@@ -4829,7 +4829,7 @@ let test_bootstrap_private_smart_rollup_originated =
 
 let test_rollup_node_missing_preimage_exit_at_initialisation =
   register_test
-    ~supports:(From_protocol 016)
+    ~supports:(From_protocol 001)
     ~__FILE__
     ~tags:["node"; "preimage"; "boot_sector"]
     ~uses:(fun _protocol ->
