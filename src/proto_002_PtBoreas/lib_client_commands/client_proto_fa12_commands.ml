@@ -63,7 +63,7 @@ let amount_param () =
            cctxt#error "invalid amount (must be a non-negative number)"))
 
 let tez_amount_arg =
-  tez_arg ~default:"0" ~parameter:"tez-amount" ~doc:"amount in \xEA\x9C\xA9"
+  tez_arg ~default:"0" ~parameter:"tez-amount" ~doc:"amount in \xE1\xB9\x81"
 
 let implicit_as_arg =
   Client_keys.Public_key_hash.source_arg
