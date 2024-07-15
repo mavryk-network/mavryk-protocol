@@ -29,12 +29,12 @@ docker build \
   --network host \
   --platform $PLATFORM \
   --push \
-  --label "com.tezos.build-pipeline-id"="${CI_PIPELINE_ID}" \
-  --label "com.tezos.build-pipeline-url"="${CI_PIPELINE_URL}" \
-  --label "com.tezos.build-job-id"="${CI_JOB_ID}" \
-  --label "com.tezos.build-job-url"="${CI_JOB_URL}" \
-  --label "com.tezos.build-tezos-revision"="${CI_COMMIT_SHA}" \
-  --label "com.tezos.build-opam_repository_tag"="${opam_repository_tag}" \
+  --label "com.mavryk.build-pipeline-id"="${CI_PIPELINE_ID}" \
+  --label "com.mavryk.build-pipeline-url"="${CI_PIPELINE_URL}" \
+  --label "com.mavryk.build-job-id"="${CI_JOB_ID}" \
+  --label "com.mavryk.build-job-url"="${CI_JOB_URL}" \
+  --label "com.mavryk.build-mavryk-revision"="${CI_COMMIT_SHA}" \
+  --label "com.mavryk.build-opam_repository_tag"="${opam_repository_tag}" \
   -f debian-deps-build.Dockerfile \
   --build-arg=BUILDKIT_INLINE_CACHE=1 \
   --build-arg IMAGE="$DISTRIBUTION:$RELEASE" \

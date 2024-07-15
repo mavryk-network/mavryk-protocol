@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-deps_opam_repository_tag=$(cat /root/tezos/opam_repository_tag)
+deps_opam_repository_tag=$(cat /root/mavryk/opam_repository_tag)
 . scripts/version.sh
 
 if [ "$deps_opam_repository_tag" != "$opam_repository_tag" ]; then
@@ -16,10 +16,10 @@ BUILDDIR=$(pwd)
 # Prepare the building area: copying all files from
 # the dependency image a staging area. This is necessary
 # to build on arm64 where the BUILDDIR is in ram.
-cp -a ./* /root/tezos/
-cd /root/tezos/
+cp -a ./* /root/mavryk/
+cd /root/mavryk/
 
-# Build tezos as usual
+# Build mavryk as usual
 eval "$(opam env)"
 make all
 

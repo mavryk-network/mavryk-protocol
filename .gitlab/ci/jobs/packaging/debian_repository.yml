@@ -1,6 +1,6 @@
 
 variables:
-  DEP_IMAGE: registry.gitlab.com/tezos/tezos/build-$DISTRIBUTION-$RELEASE
+  DEP_IMAGE: registry.gitlab.com/mavryk-network/mavryk-protocol/build-$DISTRIBUTION-$RELEASE
 
 # This is a generic template to build both Debian- and Ubuntu-
 # packages. We use the variable $DISTRIBUTION to discriminate
