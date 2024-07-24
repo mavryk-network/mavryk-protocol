@@ -22,7 +22,7 @@ let project =
     ~section
     ~long:"project"
     ~description:"GitLab project name."
-    "tezos/tezos"
+    "mavryk-network/mavryk-protocol"
 
 let pipeline =
   Clap.mandatory_int
@@ -57,7 +57,7 @@ let () =
        let warnings = List.filter_map (fun line -> line =~* warn_rex) lines in
        if warnings <> [] then (
          Log.warn
-           "Found warnings in: https://gitlab.com/tezos/tezos/-/jobs/%d"
+           "Found warnings in: https://gitlab.com/mavryk-network/mavryk-protocol/-/jobs/%d"
            job_id ;
          List.iter (Log.warn "%s") warnings) ;
        unit

@@ -34,14 +34,14 @@ let jobs =
       job_rule ~changes:changeset_mavkit_docker_changes_or_master ();
     ]
   in
-  let job_docker_amd64_experimental : tezos_job =
+  let job_docker_amd64_experimental : mavryk_job =
     job_docker_build
       ~__POS__
       ~rules:rules_mavkit_docker_changes_or_master
       ~arch:Amd64
       Experimental
   in
-  let job_docker_arm64_experimental : tezos_job =
+  let job_docker_arm64_experimental : mavryk_job =
     job_docker_build
       ~__POS__
       ~rules:rules_mavkit_docker_changes_or_master
@@ -76,7 +76,7 @@ let jobs =
       ~rules:[job_rule ~when_:Always ()]
       ()
   in
-  let job_unified_coverage_default : tezos_job =
+  let job_unified_coverage_default : mavryk_job =
     job
       ~__POS__
       ~image:Images.runtime_build_test_dependencies
@@ -103,7 +103,7 @@ let jobs =
       ]
     |> enable_coverage_location |> enable_coverage_report
   in
-  let job_publish_documentation : tezos_job =
+  let job_publish_documentation : mavryk_job =
     job
       ~__POS__
       ~name:"publish:documentation"
@@ -128,7 +128,7 @@ let jobs =
   (* Smart Rollup: Kernel SDK
 
      See [src/kernel_sdk/RELEASE.md] for more information. *)
-  let job_publish_kernel_sdk : tezos_job =
+  let job_publish_kernel_sdk : mavryk_job =
     job
       ~__POS__
       ~name:"publish_kernel_sdk"

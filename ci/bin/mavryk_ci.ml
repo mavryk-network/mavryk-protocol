@@ -48,16 +48,16 @@ module Cli = struct
       (sf "Usage: %s [options]\n\nOptions are:" Sys.argv.(0))
 end
 
-type tezos_job = {
+type mavryk_job = {
   job : Gitlab_ci.Types.job;
   source_position : string * int * int * int;
 }
 
-let map_job (tezos_job : tezos_job)
-    (f : Gitlab_ci.Types.job -> Gitlab_ci.Types.job) : tezos_job =
-  {tezos_job with job = f tezos_job.job}
+let map_job (mavryk_job : mavryk_job)
+    (f : Gitlab_ci.Types.job -> Gitlab_ci.Types.job) : mavryk_job =
+  {mavryk_job with job = f mavryk_job.job}
 
-let tezos_job_to_config_elements (j : tezos_job) =
+let mavryk_job_to_config_elements (j : mavryk_job) =
   let source_comment =
     if Cli.config.inline_source_info then
       let file, line, _, _ = j.source_position in
@@ -112,7 +112,7 @@ module Pipeline = struct
     name : string;
     if_ : Gitlab_ci.If.t;
     variables : Gitlab_ci.Types.variables option;
-    jobs : tezos_job list;
+    jobs : mavryk_job list;
   }
 
   let pipelines : t list ref = ref []
@@ -139,7 +139,7 @@ module Pipeline = struct
     in
     (* Populate [job_by_name] and check that no two different jobs have the same name. *)
     List.iter
-      (fun ({job; _} : tezos_job) ->
+      (fun ({job; _} : mavryk_job) ->
         match Hashtbl.find_opt job_by_name job.name with
         | None -> Hashtbl.add job_by_name job.name job
         | Some _ ->
@@ -220,17 +220,17 @@ module Pipeline = struct
        | _ :: _ ->
            let filename = filename ~name in
            List.iter
-             (fun tezos_job ->
-               let source_file, source_line, _, _ = tezos_job.source_position in
+             (fun mavryk_job ->
+               let source_file, source_line, _, _ = mavryk_job.source_position in
                Cli.verbose
                  "%s:%d: generates '%s' for pipeline '%s' in %s"
                  source_file
                  source_line
-                 tezos_job.job.name
+                 mavryk_job.job.name
                  name
                  filename)
              jobs ;
-           let config = List.concat_map tezos_job_to_config_elements jobs in
+           let config = List.concat_map mavryk_job_to_config_elements jobs in
            to_file ~filename config
 
   let workflow_includes () :
@@ -286,11 +286,11 @@ let arch_to_string = function Amd64 -> "x86_64" | Arm64 -> "arm64"
 let arch_to_string_alt = function Amd64 -> "amd64" | Arm64 -> "arm64"
 
 type dependency =
-  | Job of tezos_job
-  | Optional of tezos_job
-  | Artifacts of tezos_job
+  | Job of mavryk_job
+  | Optional of mavryk_job
+  | Artifacts of mavryk_job
 
-type dependencies = Staged of tezos_job list | Dependent of dependency list
+type dependencies = Staged of mavryk_job list | Dependent of dependency list
 
 type git_strategy = Fetch | Clone | No_strategy
 
@@ -302,7 +302,7 @@ let enc_git_strategy = function
 let job ?arch ?after_script ?allow_failure ?artifacts ?before_script ?cache
     ?interruptible ?(dependencies = Staged []) ?services ?variables ?rules
     ?timeout ?tags ?git_strategy ?when_ ?coverage ?retry ?parallel ~__POS__
-    ~image ~stage ~name script : tezos_job =
+    ~image ~stage ~name script : mavryk_job =
   (match (rules, when_) with
   | Some _, Some _ ->
       failwith
@@ -418,9 +418,9 @@ let job ?arch ?after_script ?allow_failure ?artifacts ?before_script ?cache
   in
   {job; source_position = __POS__}
 
-let job_external ?directory ?filename_suffix (tezos_job : tezos_job) : tezos_job
+let job_external ?directory ?filename_suffix (mavryk_job : mavryk_job) : mavryk_job
     =
-  let job = tezos_job.job in
+  let job = mavryk_job.job in
   let stage =
     match job.stage with
     | Some stage -> stage
@@ -430,7 +430,7 @@ let job_external ?directory ?filename_suffix (tezos_job : tezos_job) : tezos_job
   in
   let basename =
     match filename_suffix with
-    | None -> tezos_job.job.name
+    | None -> mavryk_job.job.name
     | Some suffix -> job.name ^ "-" ^ suffix
   in
   let directory = ".gitlab/ci/jobs" // Option.value ~default:stage directory in
@@ -441,8 +441,8 @@ let job_external ?directory ?filename_suffix (tezos_job : tezos_job) : tezos_job
       job.name
       directory ;
   let filename = (directory // basename) ^ ".yml" in
-  let config = tezos_job_to_config_elements tezos_job in
-  let source_file, source_line, _, _ = tezos_job.source_position in
+  let config = mavryk_job_to_config_elements mavryk_job in
+  let source_file, source_line, _, _ = mavryk_job.source_position in
   Cli.verbose
     "%s:%d: generates '%s' in %s"
     source_file
@@ -450,17 +450,17 @@ let job_external ?directory ?filename_suffix (tezos_job : tezos_job) : tezos_job
     job.name
     filename ;
   to_file ~filename config ;
-  tezos_job
+  mavryk_job
 
-let jobs_external ~path (tezos_jobs : tezos_job list) : tezos_job list =
+let jobs_external ~path (mavryk_jobs : mavryk_job list) : mavryk_job list =
   let filename = sf ".gitlab/ci/jobs/%s" path in
-  let config = List.map (fun {job; _} -> Gitlab_ci.Types.Job job) tezos_jobs in
+  let config = List.map (fun {job; _} -> Gitlab_ci.Types.Job job) mavryk_jobs in
   to_file ~filename config ;
-  tezos_jobs
+  mavryk_jobs
 
 let add_artifacts ?name ?expose_as ?reports ?expire_in ?when_ paths
-    (tezos_job : tezos_job) =
-  map_job tezos_job @@ fun (job : Gitlab_ci.Types.job) ->
+    (mavryk_job : mavryk_job) =
+  map_job mavryk_job @@ fun (job : Gitlab_ci.Types.job) ->
   match job.artifacts with
   | None ->
       {
@@ -535,8 +535,8 @@ let add_artifacts ?name ?expose_as ?reports ?expire_in ?when_ paths
       }
 
 let append_variables ?(allow_overwrite = false) new_variables
-    (tezos_job : tezos_job) : tezos_job =
-  map_job tezos_job @@ fun job ->
+    (mavryk_job : mavryk_job) : mavryk_job =
+  map_job mavryk_job @@ fun job ->
   let variables =
     let old_variables, new_variables =
       List.fold_left

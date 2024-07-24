@@ -100,7 +100,7 @@ let opam_rules ~only_marge_bot ?batch_index () =
     job_rule ~when_:Never ();
   ]
 
-let job_opam_package ?dependencies {name; group; batch_index} : tezos_job =
+let job_opam_package ?dependencies {name; group; batch_index} : mavryk_job =
   job
     ?dependencies
     ~__POS__
@@ -179,7 +179,7 @@ let read_opam_packages =
 
 let jobs_unit_tests ~job_build_x86_64_release ~job_build_x86_64_exp_dev_extra
     ~job_build_arm64_release ~job_build_arm64_exp_dev_extra pipeline_type :
-    tezos_job list =
+    mavryk_job list =
   let build_dependencies = function
     | Amd64 ->
         Dependent
@@ -201,7 +201,7 @@ let jobs_unit_tests ~job_build_x86_64_release ~job_build_x86_64_exp_dev_extra
   in
   let job_unit_test ~__POS__ ?(image = Images.runtime_build_dependencies)
       ?timeout ?parallel_vector ~arch ~name ?(enable_coverage = true)
-      ~make_targets () : tezos_job =
+      ~make_targets () : mavryk_job =
     let arch_string = arch_to_string arch in
     let script =
       ["make $MAKE_TARGETS"]
@@ -457,7 +457,7 @@ let jobs pipeline_type =
       ~schedule_extended_test:(fun () -> Staged [])
   in
   let sanity =
-    let job_sanity_ci : tezos_job =
+    let job_sanity_ci : mavryk_job =
       job
         ~__POS__
         ~name:"sanity_ci"
@@ -546,10 +546,10 @@ let jobs pipeline_type =
     |> job_external_split
   in
   let build_arm_rules = make_rules ~label:"ci--arm64" ~manual:true () in
-  let job_build_arm64_release : Mavryk_ci.tezos_job =
+  let job_build_arm64_release : Mavryk_ci.mavryk_job =
     job_build_arm64_release ~rules:build_arm_rules () |> job_external_split
   in
-  let job_build_arm64_exp_dev_extra : Mavryk_ci.tezos_job =
+  let job_build_arm64_exp_dev_extra : Mavryk_ci.mavryk_job =
     job_build_arm64_exp_dev_extra ~rules:build_arm_rules ()
     |> job_external_split
   in
@@ -580,7 +580,7 @@ let jobs pipeline_type =
           [job_build_dpkg_amd64; job_build_rpm_amd64]
       | Before_merging -> []
     in
-    let job_ocaml_check : tezos_job =
+    let job_ocaml_check : mavryk_job =
       job
         ~__POS__
         ~name:"ocaml-check"
@@ -597,7 +597,7 @@ let jobs pipeline_type =
         ["dune build @check"]
       |> job_external_split
     in
-    let job_build_kernels : tezos_job =
+    let job_build_kernels : mavryk_job =
       job
         ~__POS__
         ~name:"oc.build_kernels"
@@ -638,7 +638,7 @@ let jobs pipeline_type =
     (* Fetch records for Tezt generated on the last merge request pipeline
        on the most recently merged MR and makes them available in artifacts
        for future merge request pipelines. *)
-    let job_tezt_fetch_records : tezos_job =
+    let job_tezt_fetch_records : mavryk_job =
       job
         ~__POS__
         ~name:"oc.tezt:fetch-records"
@@ -677,7 +677,7 @@ let jobs pipeline_type =
        Fetch records for Tezt generated on the last merge request pipeline
        on the most recently merged MR and makes them available in artifacts
        for future merge request pipelines. *)
-    let job_select_tezts : tezos_job =
+    let job_select_tezts : mavryk_job =
       job
         ~__POS__
         ~name:"select_tezts"
@@ -712,7 +712,7 @@ let jobs pipeline_type =
     @ bin_packages_jobs
   in
   let packaging =
-    let job_opam_prepare : tezos_job =
+    let job_opam_prepare : mavryk_job =
       job
         ~__POS__
         ~name:"opam:prepare"
@@ -730,7 +730,7 @@ let jobs pipeline_type =
         ]
       |> job_external_split
     in
-    let (jobs_opam_packages : tezos_job list) =
+    let (jobs_opam_packages : mavryk_job list) =
       read_opam_packages
       |> List.map
            (job_opam_package
@@ -757,7 +757,7 @@ let jobs pipeline_type =
   in
   let test =
     (* check that ksy files are still up-to-date with mavkit *)
-    let job_kaitai_checks : tezos_job =
+    let job_kaitai_checks : mavryk_job =
       job
         ~__POS__
         ~name:"kaitai_checks"
@@ -831,7 +831,7 @@ let jobs pipeline_type =
         ]
       |> job_external_split
     in
-    let job_oc_misc_checks : tezos_job =
+    let job_oc_misc_checks : mavryk_job =
       job
         ~__POS__
         ~name:"oc.misc_checks"
@@ -860,7 +860,7 @@ let jobs pipeline_type =
         else [])
       |> job_external_split
     in
-    let job_misc_opam_checks : tezos_job =
+    let job_misc_opam_checks : mavryk_job =
       job
         ~__POS__
         ~name:"misc_opam_checks"
@@ -876,7 +876,7 @@ let jobs pipeline_type =
         ]
       |> job_external_split
     in
-    let job_semgrep : tezos_job =
+    let job_semgrep : mavryk_job =
       job
         ~__POS__
         ~name:"oc.semgrep"
@@ -891,7 +891,7 @@ let jobs pipeline_type =
         ]
       |> job_external_split
     in
-    let jobs_unit : tezos_job list =
+    let jobs_unit : mavryk_job list =
       jobs_unit_tests
         ~job_build_x86_64_release
         ~job_build_x86_64_exp_dev_extra
@@ -900,7 +900,7 @@ let jobs pipeline_type =
         pipeline_type
       |> jobs_external_split ~path:"test/oc.unit"
     in
-    let job_oc_integration_compiler_rejections : tezos_job =
+    let job_oc_integration_compiler_rejections : mavryk_job =
       job
         ~__POS__
         ~name:"oc.integration:compiler-rejections"
@@ -914,7 +914,7 @@ let jobs pipeline_type =
         ["dune build @runtest_rejections"]
       |> job_external_split
     in
-    let job_oc_script_test_gen_genesis : tezos_job =
+    let job_oc_script_test_gen_genesis : mavryk_job =
       job
         ~__POS__
         ~name:"oc.script:test-gen-genesis"
@@ -927,7 +927,7 @@ let jobs pipeline_type =
         ["dune build gen_genesis.exe"]
       |> job_external_split
     in
-    let job_oc_script_snapshot_alpha_and_link : tezos_job =
+    let job_oc_script_snapshot_alpha_and_link : mavryk_job =
       job
         ~__POS__
         ~name:"oc.script:snapshot_alpha_and_link"
@@ -945,7 +945,7 @@ let jobs pipeline_type =
         ["./.gitlab/ci/jobs/test/script:snapshot_alpha_and_link.sh"]
       |> job_external_split
     in
-    let job_oc_script_test_release_versions : tezos_job =
+    let job_oc_script_test_release_versions : mavryk_job =
       job
         ~__POS__
         ~name:"oc.script:test_mavkit_release_versions"
@@ -985,7 +985,7 @@ let jobs pipeline_type =
         ]
       |> job_external_split
     in
-    let job_oc_test_liquidity_baking_scripts : tezos_job =
+    let job_oc_test_liquidity_baking_scripts : mavryk_job =
       job
         ~__POS__
         ~name:"oc.test-liquidity-baking-scripts"
@@ -1007,7 +1007,7 @@ let jobs pipeline_type =
       |> job_external_split
     in
     (* The set of installation test jobs *)
-    let jobs_install_mavkit : tezos_job list =
+    let jobs_install_mavkit : mavryk_job list =
       let changeset_install_jobs =
         ["docs/introduction/install*.sh"; "docs/introduction/compile*.sh"]
       in
@@ -1035,7 +1035,7 @@ let jobs pipeline_type =
           ~stage:Stages.test
           [script]
       in
-      let job_install_opam_focal : tezos_job =
+      let job_install_opam_focal : mavryk_job =
         job
           ~__POS__
           ~name:"oc.install_opam_focal"
@@ -1101,20 +1101,20 @@ let jobs pipeline_type =
           ~__POS__
           ~name:"oc.compile_release_sources_bullseye"
           ~image:Images.opam_debian_bullseye
-          ~project:"tezos/tezos"
+          ~project:"mavryk-network/mavryk-protocol"
           ~branch:"latest-release";
         (* Test compiling the [master] branch on Bullseye *)
         job_compile_sources
           ~__POS__
           ~name:"oc.compile_sources_bullseye"
           ~image:Images.opam_debian_bullseye
-          ~project:"${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH:-tezos/tezos}"
+          ~project:"${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH:-mavryk-network/mavryk-protocol}"
           ~branch:"${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-master}";
         job_compile_sources
           ~__POS__
           ~name:"oc.compile_sources_mantic"
           ~image:Images.opam_ubuntu_mantic
-          ~project:"${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH:-tezos/tezos}"
+          ~project:"${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH:-mavryk-network/mavryk-protocol}"
           ~branch:"${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-master}";
       ]
       |> jobs_external_split ~path:"test/install_mavkit"
@@ -1137,7 +1137,7 @@ let jobs pipeline_type =
     @
     match pipeline_type with
     | Before_merging ->
-        let job_commit_titles : tezos_job =
+        let job_commit_titles : mavryk_job =
           job
             ~__POS__
             ~name:"commit_titles"
@@ -1165,7 +1165,7 @@ let jobs pipeline_type =
            already manual, and what's more, puts the pipeline in a
            confusing "pending state" with a yellow "pause" icon on the
            [manual] stage. *)
-        let job_docker_amd64_test_manual : Mavryk_ci.tezos_job =
+        let job_docker_amd64_test_manual : Mavryk_ci.mavryk_job =
           job_docker_build
             ~__POS__
             ~external_:true
@@ -1173,7 +1173,7 @@ let jobs pipeline_type =
             ~dependencies:(Dependent [])
             Test_manual
         in
-        let job_docker_arm64_test_manual : Mavryk_ci.tezos_job =
+        let job_docker_arm64_test_manual : Mavryk_ci.mavryk_job =
           job_docker_build
             ~__POS__
             ~external_:true

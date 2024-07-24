@@ -127,7 +127,7 @@ let () =
     "mavkit_release_tag_test"
     If.(not_on_mavryk_namespace && push && has_any_mavkit_release_tag)
     ~jobs:(Release_tag.mavkit_jobs ~test:true Release_tag) ;
-  (* To test this type of release, push a tag to a fork of [tezos/tezos]
+  (* To test this type of release, push a tag to a fork of [mavryk-network/mavryk-protocol]
      e.g. [nomadic-labs/tezos] project. *)
   register
     "etherlink_release_tag"

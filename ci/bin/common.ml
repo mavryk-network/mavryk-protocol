@@ -225,7 +225,7 @@ let opt_var name f = function Some value -> [(name, f value)] | None -> []
     includes build jobs (like [oc.build_x86_64_*]). It also includes
     OCaml unit test jobs like [oc.unit:*-x86_64] as they build the test
     runners before their execution. *)
-let enable_coverage_instrumentation : tezos_job -> tezos_job =
+let enable_coverage_instrumentation : mavryk_job -> mavryk_job =
   Mavryk_ci.append_variables
     [("COVERAGE_OPTIONS", "--instrument-with bisect_ppx")]
 
@@ -236,7 +236,7 @@ let enable_coverage_instrumentation : tezos_job -> tezos_job =
     traces. In addition to specifying the location of traces, setting
     this variable also _enables_ coverage trace output for
     instrumented binaries. *)
-let enable_coverage_location : tezos_job -> tezos_job =
+let enable_coverage_location : mavryk_job -> mavryk_job =
   Mavryk_ci.append_variables
     [("BISECT_FILE", "$CI_PROJECT_DIR/_coverage_output/")]
 
@@ -245,7 +245,7 @@ let enable_coverage_location : tezos_job -> tezos_job =
 
     This function should be applied to test jobs that produce coverage. *)
 let enable_coverage_output_artifact ?(expire_in = Duration (Days 1)) :
-    tezos_job -> tezos_job =
+    mavryk_job -> mavryk_job =
  fun job ->
   job |> enable_coverage_location
   |> Mavryk_ci.add_artifacts
@@ -254,7 +254,7 @@ let enable_coverage_output_artifact ?(expire_in = Duration (Days 1)) :
        ~when_:On_success
        ["$BISECT_FILE"]
 
-let enable_coverage_report job : tezos_job =
+let enable_coverage_report job : mavryk_job =
   job
   |> Mavryk_ci.add_artifacts
        ~expose_as:"Coverage report"
@@ -276,7 +276,7 @@ let enable_coverage_report job : tezos_job =
     This function should be applied to jobs that build rust files and
     which has a configured sccache Gitlab CI cache. *)
 let enable_sccache ?error_log ?idle_timeout ?log
-    ?(dir = "$CI_PROJECT_DIR/_sccache") : tezos_job -> tezos_job =
+    ?(dir = "$CI_PROJECT_DIR/_sccache") : mavryk_job -> mavryk_job =
   Mavryk_ci.append_variables
     ([("SCCACHE_DIR", dir); ("RUSTC_WRAPPER", "sccache")]
     @ opt_var "SCCACHE_ERROR_LOG" Fun.id error_log
@@ -459,7 +459,7 @@ let changeset_test_liquidity_baking_scripts =
     [CI_DOCKER_AUTH] contains the appropriate credentials. *)
 let job_docker_authenticated ?(skip_docker_initialization = false)
     ?ci_docker_hub ?artifacts ?(variables = []) ?rules ?dependencies ?arch
-    ?when_ ?allow_failure ~__POS__ ~stage ~name script : tezos_job =
+    ?when_ ?allow_failure ~__POS__ ~stage ~name script : mavryk_job =
   let docker_version = "24.0.6" in
   job
     ?rules
@@ -494,7 +494,7 @@ let job_docker_authenticated ?(skip_docker_initialization = false)
    - released variants exist, that are used in release tag pipelines
      (they do not build experimental executables) *)
 let job_build_static_binaries ~__POS__ ~arch ?(release = false) ?rules
-    ?dependencies () : tezos_job =
+    ?dependencies () : mavryk_job =
   let arch_string = arch_to_string arch in
   let name = "oc.build:static-" ^ arch_string ^ "-linux-binaries" in
   let artifacts =
@@ -567,7 +567,7 @@ type docker_build_type = Experimental | Release | Test | Test_manual
     If [external_] is set to true (default [false]), then the job is
     also written to an external file. *)
 let job_docker_build ?rules ?dependencies ~__POS__ ~arch ?(external_ = false)
-    docker_build_type : tezos_job =
+    docker_build_type : mavryk_job =
   let arch_string = arch_to_string_alt arch in
   let ci_docker_hub =
     match docker_build_type with
@@ -665,7 +665,7 @@ let job_docker_build ?rules ?dependencies ~__POS__ ~arch ?(external_ = false)
    [$IMAGE_ARCH_PREFIX] is only used when building Docker images,
    here we handle all architectures so there is no such variable. *)
 let job_docker_merge_manifests ~__POS__ ~ci_docker_hub ~job_docker_amd64
-    ~job_docker_arm64 : tezos_job =
+    ~job_docker_arm64 : mavryk_job =
   job_docker_authenticated
     ~__POS__
     ~stage:Stages.prepare_release
@@ -683,7 +683,7 @@ let bin_package_image =
   Image.register ~name:"generic" ~image_path:"$DISTRIBUTION"
 
 let job_build_bin_package ?dependencies ?rules ~__POS__ ~name
-    ?(stage = Stages.build) ~arch ~target () : tezos_job =
+    ?(stage = Stages.build) ~arch ~target () : mavryk_job =
   let arch_string = arch_to_string_alt arch in
   let target_string = match target with Dpkg -> "dpkg" | Rpm -> "rpm" in
   let image = bin_package_image in
@@ -752,7 +752,7 @@ let job_build_bin_package ?dependencies ?rules ~__POS__ ~name
       "mv mavkit-*.* packages/$DISTRO/$RELEASE/";
     ]
 
-let job_build_dpkg_amd64 : unit -> tezos_job =
+let job_build_dpkg_amd64 : unit -> mavryk_job =
   job_build_bin_package
     ~__POS__
     ~name:"oc.build:dpkg:amd64"
@@ -760,7 +760,7 @@ let job_build_dpkg_amd64 : unit -> tezos_job =
     ~arch:Amd64
     ~dependencies:(Dependent [])
 
-let job_build_rpm_amd64 : unit -> tezos_job =
+let job_build_rpm_amd64 : unit -> mavryk_job =
   job_build_bin_package
     ~__POS__
     ~name:"oc.build:rpm:amd64"
@@ -844,8 +844,8 @@ let job_build_dynamic_binaries ?rules ~__POS__ ~arch ?(release = false)
 
 (** {2 Shared jobs} *)
 
-let job_build_arm64_release ?rules () : tezos_job =
+let job_build_arm64_release ?rules () : mavryk_job =
   job_build_dynamic_binaries ?rules ~__POS__ ~arch:Arm64 ~release:true ()
 
-let job_build_arm64_exp_dev_extra ?rules () : tezos_job =
+let job_build_arm64_exp_dev_extra ?rules () : mavryk_job =
   job_build_dynamic_binaries ?rules ~__POS__ ~arch:Arm64 ~release:false ()

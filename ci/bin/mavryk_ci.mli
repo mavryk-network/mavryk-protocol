@@ -6,7 +6,7 @@
 (*****************************************************************************)
 
 (** A GitLab CI job annotated with Mavkit-specific meta-data. *)
-type tezos_job
+type mavryk_job
 
 (** A string that should be prepended to all generated files.
 
@@ -89,7 +89,7 @@ module Pipeline : sig
       top-level [.gitlab-ci.yml]. *)
   val register :
     ?variables:Gitlab_ci.Types.variables ->
-    ?jobs:tezos_job list ->
+    ?jobs:mavryk_job list ->
     string ->
     Gitlab_ci.If.t ->
     unit
@@ -148,9 +148,9 @@ val arch_to_string_alt : arch -> string
     - A job that depends on [Artefacts j] will not start until [j] finishes
       and will also have the artefacts of [j] available. *)
 type dependency =
-  | Job of tezos_job
-  | Optional of tezos_job
-  | Artifacts of tezos_job
+  | Job of mavryk_job
+  | Optional of mavryk_job
+  | Artifacts of mavryk_job
 
 (** Job dependencies.
 
@@ -164,7 +164,7 @@ type dependency =
     In practice, prefer using [Dependent]. Only use [Staged
     artifact_deps] when the number of dependencies exceed the GitLab
     imposed limit of 50 [needs:] per job. *)
-type dependencies = Staged of tezos_job list | Dependent of dependency list
+type dependencies = Staged of mavryk_job list | Dependent of dependency list
 
 (** Values for the [GIT_STRATEGY] variable.
 
@@ -230,7 +230,7 @@ val job :
   stage:Stage.t ->
   name:string ->
   string list ->
-  tezos_job
+  mavryk_job
 
 (** Generates a job to an external file.
 
@@ -249,7 +249,7 @@ val job :
 
     The returned job is the same as the input, for ease of chaining. *)
 val job_external :
-  ?directory:string -> ?filename_suffix:string -> tezos_job -> tezos_job
+  ?directory:string -> ?filename_suffix:string -> mavryk_job -> mavryk_job
 
 (** Generates a set of jobs to the same external file.
 
@@ -263,7 +263,7 @@ val job_external :
 
     The returned set of jobs is the same as the input, for ease of
     chaining. *)
-val jobs_external : path:string -> tezos_job list -> tezos_job list
+val jobs_external : path:string -> mavryk_job list -> mavryk_job list
 
 (** Adds artifacts to a job without overriding, if possible, existing artifacts.
 
@@ -290,12 +290,12 @@ val add_artifacts :
   ?expire_in:Gitlab_ci.Types.expiration ->
   ?when_:Gitlab_ci.Types.when_artifact ->
   string list ->
-  tezos_job ->
-  tezos_job
+  mavryk_job ->
+  mavryk_job
 
 (** Append the variables [variables] to the variables of [job].
 
     Raises [Failure] if any of the [variables] is already defined for
     [job], unless [allow_overwrite] is true (default is [false]). *)
 val append_variables :
-  ?allow_overwrite:bool -> Gitlab_ci.Types.variables -> tezos_job -> tezos_job
+  ?allow_overwrite:bool -> Gitlab_ci.Types.variables -> mavryk_job -> mavryk_job

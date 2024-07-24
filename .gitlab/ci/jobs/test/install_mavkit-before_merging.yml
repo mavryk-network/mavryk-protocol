@@ -146,7 +146,7 @@ oc.compile_release_sources_bullseye:
   - trigger
   dependencies: []
   script:
-  - ./docs/introduction/compile-sources.sh tezos/tezos latest-release
+  - ./docs/introduction/compile-sources.sh mavryk-network/mavryk-protocol latest-release
 
 oc.compile_sources_bullseye:
   image: ocaml/opam:debian-11
@@ -164,7 +164,7 @@ oc.compile_sources_bullseye:
   - trigger
   dependencies: []
   script:
-  - ./docs/introduction/compile-sources.sh ${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH:-tezos/tezos}
+  - ./docs/introduction/compile-sources.sh ${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH:-mavryk-network/mavryk-protocol}
     ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-master}
 
 oc.compile_sources_mantic:
@@ -183,5 +183,5 @@ oc.compile_sources_mantic:
   - trigger
   dependencies: []
   script:
-  - ./docs/introduction/compile-sources.sh ${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH:-tezos/tezos}
+  - ./docs/introduction/compile-sources.sh ${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH:-mavryk-network/mavryk-protocol}
     ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-master}

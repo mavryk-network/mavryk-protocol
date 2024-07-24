@@ -14,7 +14,7 @@
 open Mavryk_ci
 open Common
 
-let job_docker_promote_to_latest ~ci_docker_hub : tezos_job =
+let job_docker_promote_to_latest ~ci_docker_hub : mavryk_job =
   job_docker_authenticated
     ~__POS__
     ~stage:Stages.publish_release

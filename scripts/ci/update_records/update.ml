@@ -12,13 +12,13 @@ Example: to fetch test result records from https://gitlab.com/tezos/tezos/-/pipe
 
 dune exec scripts/ci/update_records/update.exe -- --from 426773806
 
-You can use the PROJECT environment variable to specify which GitLab repository to fetch records from. Default is: tezos/tezos
+You can use the PROJECT environment variable to specify which GitLab repository to fetch records from. Default is: mavryk-network/mavryk-protocol
 
 The script can also be used to fetch records from the last successful pipeline on the latest MR merged to the default branch (configurable through the DEFAULT_BRANCH environment variable) for a given PROJECT:
 
 dune exec scripts/ci/update_records/update.exe -- --from last-merged-pipeline|}
 
-let project = Sys.getenv_opt "PROJECT" |> Option.value ~default:"tezos/tezos"
+let project = Sys.getenv_opt "PROJECT" |> Option.value ~default:"mavryk-network/mavryk-protocol"
 
 let default_branch =
   Sys.getenv_opt "DEFAULT_BRANCH" |> Option.value ~default:"master"

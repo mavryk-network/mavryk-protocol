@@ -37,9 +37,9 @@ gitlab_ubuntu_jammy_packages_url=$(package_web_path "${gitlab_mavkit_ubuntu_jamm
 gitlab_fedora_packages_url=$(package_web_path "${gitlab_mavkit_fedora_package_name}")
 gitlab_rockylinux_packages_url=$(package_web_path "${gitlab_mavkit_rockylinux_package_name}")
 
-if [ "${CI_PROJECT_NAMESPACE}" = "tezos" ]; then
+if [ "${CI_PROJECT_NAMESPACE}" = "mavryk-network" ]; then
   ## Production => Docker Hub
-  docker_hub_path='tezos/tezos'
+  docker_hub_path='mavrykdynamics/mavryk'
   echo "Query Docker Hub repository to get image URL at https://hub.docker.com/r/${docker_hub_path}"
 
   token=$(curl -fsSL "https://auth.docker.io/token?scope=repository:${docker_hub_path}:pull&service=registry.docker.io" | jq -r '.token')
