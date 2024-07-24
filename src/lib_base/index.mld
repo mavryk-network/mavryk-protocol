@@ -10,12 +10,8 @@ It contains the following libraries:
 - {{!module-Distributed_plonk}Distributed_plonk}
 - {{!module-Epoxy_tx}Epoxy_tx}
 - {{!module-Kzg}Kzg}: Toolbox for KZG polynomial commitment
-- {{!module-Mec}Mec}
 - {{!module-Mavkit_bls12_381_polynomial}Mavkit_bls12_381_polynomial}: Polynomials over BLS12-381 finite field - Temporary vendored version of Mavkit
 - {{!module-Mavkit_srs_extraction}Mavkit_srs_extraction}
-- {{!module-Plompiler}Plompiler}
-- {{!module-Plonk}Plonk}: Plonk zero-knowledge proving system
-- {{!module-Polynomial}Polynomial}: Polynomials over finite fields
 - {{!module-Mavryk_base}Mavryk_base}: Meta-package and pervasive type definitions for Mavryk
 - {{!module-Mavryk_base_test_helpers}Mavryk_base_test_helpers}: Mavkit base test helpers
 - {{!module-Mavryk_clic}Mavryk_clic}
@@ -30,7 +26,7 @@ It contains the following libraries:
 - {{!module-Mavryk_gossipsub}Mavryk_gossipsub}
 - {{!module-Mavryk_hacl}Mavryk_hacl}: Thin layer around hacl-star
 - {{!module-Mavryk_lazy_containers}Mavryk_lazy_containers}: A collection of lazy containers whose contents is fetched from arbitrary backend on-demand
-- {{!page-Mavryk_lwt_result_stdlib}Mavryk_lwt_result_stdlib}: error-aware stdlib replacement
+- {{!page-mavryk_lwt_result_stdlib}Mavryk_lwt_result_stdlib}: error-aware stdlib replacement
 - {{!module-Mavryk_micheline}Mavryk_micheline}: Internal AST and parser for the Michelson language
 - {{!module-Mavryk_p2p_services}Mavryk_p2p_services}: Descriptions of RPCs exported by [mavryk-p2p]
 - {{!module-Mavryk_requester}Mavryk_requester}
@@ -45,5 +41,9 @@ It contains the following libraries:
 - {{!module-Mavryk_test_helpers}Mavryk_test_helpers}
 - {{!module-Mavryk_tree_encoding}Mavryk_tree_encoding}: A general-purpose library to encode arbitrary data in Merkle trees
 - {{!module-Mavryk_version}Mavryk_version}: Version information generated from Git
-- {{!page-Mavryk_workers}Mavryk_workers}: Worker library
+- {{!page-mavryk_workers}Mavryk_workers}: Worker library
+- {{!module-Mec}Mec}
+- {{!module-Plompiler}Plompiler}
+- {{!module-Plonk}Plonk}: Plonk zero-knowledge proving system
+- {{!module-Polynomial}Polynomial}: Polynomials over finite fields
 - {{!module-Tezt_wrapper}Tezt_wrapper}

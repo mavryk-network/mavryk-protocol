@@ -10,7 +10,7 @@
   mavkit-libs.base
   caqti
   caqti-dynload
-  caqti-lwt
+  caqti-lwt.unix
   data-encoding
   lwt
   mavkit-protocol-alpha-libs.baking
