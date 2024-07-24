@@ -108,10 +108,11 @@ let () =
            Tezt worker processes are collected. *)
       ~bisect_ppx:With_sigterm
       ~opam:""
-      ~deps:(deps @ test_libs)
+      ~deps:(tezt_exe_deps @ test_libs)
   in
   generate
     ~make_tezt_exe
+    ~tezt_exe_deps
     ~default_profile:"mavkit-deps"
     ~add_to_meta_package:
       [

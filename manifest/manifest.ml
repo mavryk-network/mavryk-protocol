@@ -457,6 +457,20 @@ module Dune = struct
       [S "target"; S target]
       ~action
 
+  let protobuf_rule filename_without_extension =
+    let proto_filename = filename_without_extension ^ ".proto" in
+    let compiled_filename = filename_without_extension ^ ".ml" in
+    target_rule
+      compiled_filename
+      ~deps:[[S ":proto"; S proto_filename]]
+      ~action:
+        [
+          S "run";
+          H [S "protoc"; S "-I"; S "."];
+          S "--ocaml_out=annot=[@@deriving show { with_path = false }]:.";
+          S "%{proto}";
+        ]
+
   let install ?package files ~section =
     [
       S "install";
@@ -1847,10 +1861,9 @@ module Target = struct
       | Experimental | Released | Auto_opam -> true
     then
       if
+        let prefixes = ["src/"; "tezt/"; "etherlink/"; "irmin/"] in
         not
-          (String.starts_with ~prefix:"src/" path
-          || String.starts_with ~prefix:"tezt/" path
-          || String.starts_with ~prefix:"etherlink/" path)
+          (List.exists (fun prefix -> String.starts_with ~prefix path) prefixes)
       then
         invalid_argf
           "A target has the release status %s but is located at %s which is \
@@ -3871,14 +3884,16 @@ let check_opam_with_test_consistency () =
 
 let usage_msg = "Usage: " ^ Sys.executable_name ^ " [OPTIONS]"
 
-let packages_dir, release, remove_extra_files =
+let packages_dir, release, remove_extra_files, manifezt =
   let packages_dir = ref "packages" in
   let url = ref "" in
   let sha256 = ref "" in
   let sha512 = ref "" in
   let remove_extra_files = ref false in
   let version = ref "" in
-  let anon_fun _args = () in
+  let manifezt = ref false in
+  let anonymous_args = ref [] in
+  let anon_fun arg = anonymous_args := arg :: !anonymous_args in
   let spec =
     Arg.align
       [
@@ -3895,6 +3910,14 @@ let packages_dir, release, remove_extra_files =
         ( "--remove-extra-files",
           Arg.Set remove_extra_files,
           " Remove files that are neither generated nor excluded" );
+        ( "--manifezt",
+          Arg.Set manifezt,
+          " Expect a list of modified files on the command-line. Output a TSL \
+           expression to select Tezt tests that are impacted by those changes, \
+           then exit without generating any file." );
+        ( "--",
+          Arg.Rest anon_fun,
+          " Assume the remaining arguments are anonymous arguments." );
       ]
   in
   Arg.parse spec anon_fun usage_msg ;
@@ -3921,7 +3944,15 @@ let packages_dir, release, remove_extra_files =
         in
         Some {version; url = {url; sha256; sha512}}
   in
-  (!packages_dir, release, !remove_extra_files)
+  let manifezt =
+    match (!manifezt, !anonymous_args) with
+    | false, [] -> None
+    | false, head :: _ ->
+        prerr_endline ("Error: don't know what to do with: " ^ head) ;
+        exit 1
+    | true, files -> Some files
+  in
+  (!packages_dir, release, !remove_extra_files, manifezt)
 
 let generate_opam_ci_input opam_release_graph =
   (* We only need to test released packages, since those are the only one
@@ -4443,11 +4474,17 @@ let precheck () =
   check_opam_with_test_consistency () ;
   if !has_error then exit 1
 
-let generate ~make_tezt_exe ~default_profile ~add_to_meta_package =
+let generate ~make_tezt_exe ~tezt_exe_deps ~default_profile ~add_to_meta_package
+    =
   Printexc.record_backtrace true ;
   try
-    register_tezt_targets ~make_tezt_exe ;
+    let tezt_exe = register_tezt_targets ~make_tezt_exe in
     precheck () ;
+    (match manifezt with
+    | None -> ()
+    | Some changes ->
+        list_tests_to_run_after_changes ~tezt_exe ~tezt_exe_deps changes ;
+        exit 0) ;
     Target.can_register := false ;
     generate_dune_files () ;
     generate_opam_files () ;

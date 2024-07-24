@@ -256,6 +256,9 @@ module Dune : sig
     action:s_expr ->
     s_expr
 
+  (** Makes a rule for compiling protobuf files (.proto) into OCaml files (.ml). *)
+  val protobuf_rule : string -> s_expr
+
   (** Makes an [install] stanza.
 
       Example: [install files ~package ~section] creates a stanza of the form:
@@ -1320,6 +1323,11 @@ val name_for_errors : target -> string
     [make_tezt_exe] is given the list of libraries that register Tezt tests
     and shall create a test executable that links all of them.
 
+    [tezt_exe_deps] is the list of dependencies linked with the executable
+    registered by [make_tezt_exe], not including the libraries that were passed
+    to [make_tezt_exe]. It is the list of dependencies that should trigger
+    all tests to run when they are modified.
+
     [default_profile] is the name of the profile to use for targets that
     were declared without [?profile]. See the documentation of the [?profile]
     argument of type ['a maker].
@@ -1337,6 +1345,7 @@ val name_for_errors : target -> string
       [~opam_with_test]. *)
 val generate :
   make_tezt_exe:(target list -> target) ->
+  tezt_exe_deps:target list ->
   default_profile:string ->
   add_to_meta_package:target list ->
   unit
