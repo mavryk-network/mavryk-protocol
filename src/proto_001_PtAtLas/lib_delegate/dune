@@ -59,6 +59,7 @@
  (libraries
   mavkit-libs.base
   mavryk-protocol-001-PtAtLas.protocol
+  mavryk-protocol-001-PtAtLas.parameters
   mavkit-libs.stdlib-unix
   mavkit-proto-libs.protocol-environment
   mavkit-shell-libs.shell-services
@@ -74,6 +75,7 @@
   -open Mavryk_base.TzPervasives
   -open Mavryk_base.TzPervasives.Error_monad_legacy
   -open Mavryk_protocol_001_PtAtLas
+  -open Mavryk_protocol_001_PtAtLas_parameters
   -open Mavryk_stdlib_unix
   -open Mavryk_shell_services
   -open Mavryk_client_base

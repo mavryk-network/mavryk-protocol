@@ -39,4 +39,5 @@
 
 (rule
  (action
-  (progn (write-file void_for_linking-mavkit-protocol-alpha-libs-dac.empty ""))))
+  (progn
+   (write-file void_for_linking-mavkit-protocol-alpha-libs-dac.empty ""))))

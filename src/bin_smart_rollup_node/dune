@@ -39,5 +39,5 @@
 
 (rule
  (action
-  (progn 
-    (write-file void_for_linking-mavkit_smart_rollup_node_alpha.empty ""))))
+  (progn
+   (write-file void_for_linking-mavkit_smart_rollup_node_alpha.empty ""))))

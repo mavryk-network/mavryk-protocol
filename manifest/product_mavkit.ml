@@ -5827,10 +5827,8 @@ let hash = Protocol.hash
         ~deps:
           [
             tezt_core_lib |> if_ N.(number >= 002) |> open_ |> open_ ~m:"Base";
-            alcotezt |> if_ N.(number == 002);
             tezt_mavryk |> if_ N.(number >= 003);
             tezt_lib |> if_ N.(number >= 002);
-            mavkit_base_test_helpers |> if_ N.(number == 002) |> open_;
             qcheck_alcotest;
             mavkit_test_helpers;
             mavkit_base |> open_ ~m:"TzPervasives"
