@@ -5,7 +5,7 @@ oc.docker:arm64:
   image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: manual
   tags:
-  - gcp_arm64
+  - saas-linux-large-arm64
   needs: []
   dependencies: []
   allow_failure: true

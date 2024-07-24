@@ -5,7 +5,7 @@ kaitai_e2e_checks:
   image: ${client_libs_dependencies_image_name}:${client_libs_dependencies_image_tag}
   stage: test
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - changes:
     - scripts/ci/**/*

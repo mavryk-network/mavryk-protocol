@@ -7,15 +7,15 @@
   # template requiring artifacts from preceeding jobs should declare
   # their dependencies locally.
   dependencies: []
-  tags: ["gcp"]
+  tags: ["saas-linux-2xlarge-amd64"]
 
 # Default runner tags for jobs in the build stage
 .tags_template__build:
-  tags: ["gcp"]
+  tags: ["saas-linux-2xlarge-amd64"]
 
 # Default runner tags for arm64 jobs in the build stage
 .tags_template__build_arm64:
-  tags: ["gcp_arm64"]
+  tags: ["saas-linux-large-arm64"]
 
 # Block the propagation of the GCP tag for standard jobs
 .tags_template__no_gcp:

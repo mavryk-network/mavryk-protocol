@@ -5,7 +5,7 @@ oc.install_bin_fedora_37:
   image: fedora:37
   stage: test
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - changes:
     - docs/introduction/install*.sh
@@ -23,7 +23,7 @@ oc.install_bin_rc_fedora_37:
   image: fedora:37
   stage: test
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - changes:
     - docs/introduction/install*.sh
@@ -41,7 +41,7 @@ oc.install_bin_ubuntu_focal:
   image: public.ecr.aws/lts/ubuntu:20.04_stable
   stage: test
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - changes:
     - docs/introduction/install*.sh
@@ -60,7 +60,7 @@ oc.install_bin_ubuntu_jammy:
   image: public.ecr.aws/lts/ubuntu:22.04_stable
   stage: test
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - changes:
     - docs/introduction/install*.sh
@@ -79,7 +79,7 @@ oc.install_bin_rc_ubuntu_focal:
   image: public.ecr.aws/lts/ubuntu:20.04_stable
   stage: test
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - changes:
     - docs/introduction/install*.sh
@@ -98,7 +98,7 @@ oc.install_bin_rc_ubuntu_jammy:
   image: public.ecr.aws/lts/ubuntu:22.04_stable
   stage: test
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - changes:
     - docs/introduction/install*.sh
@@ -117,7 +117,7 @@ oc.install_opam_focal:
   image: ocaml/opam:ubuntu-20.04
   stage: test
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - when: manual
     allow_failure: true
@@ -134,7 +134,7 @@ oc.compile_release_sources_bullseye:
   image: ocaml/opam:debian-11
   stage: test
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - changes:
     - docs/introduction/install*.sh
@@ -152,7 +152,7 @@ oc.compile_sources_bullseye:
   image: ocaml/opam:debian-11
   stage: test
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - changes:
     - docs/introduction/install*.sh
@@ -171,7 +171,7 @@ oc.compile_sources_mantic:
   image: ocaml/opam:ubuntu-23.10
   stage: test
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - changes:
     - docs/introduction/install*.sh

@@ -5,7 +5,7 @@ oc.docker:amd64:
   image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: manual
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   needs: []
   dependencies: []
   allow_failure: true

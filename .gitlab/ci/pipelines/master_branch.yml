@@ -5,7 +5,7 @@ oc.docker:rust-toolchain:
   image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - when: always
   dependencies: []
@@ -26,7 +26,7 @@ oc.build:static-x86_64-linux-binaries:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: build
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - when: always
   dependencies: []
@@ -46,7 +46,7 @@ oc.build:static-arm64-linux-binaries:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: build
   tags:
-  - gcp_arm64
+  - saas-linux-large-arm64
   rules:
   - when: always
   dependencies: []
@@ -66,7 +66,7 @@ oc.build_arm64-released:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: build
   tags:
-  - gcp_arm64
+  - saas-linux-large-arm64
   rules:
   - when: manual
     allow_failure: true
@@ -95,7 +95,7 @@ oc.build_arm64-exp-dev-extra:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: build
   tags:
-  - gcp_arm64
+  - saas-linux-large-arm64
   rules:
   - when: manual
     allow_failure: true
@@ -126,7 +126,7 @@ oc.docker:amd64:
   image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - if: $CI_COMMIT_BRANCH == "master"
     when: always
@@ -168,7 +168,7 @@ oc.docker:arm64:
   image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
-  - gcp_arm64
+  - saas-linux-large-arm64
   rules:
   - if: $CI_COMMIT_BRANCH == "master"
     when: always
@@ -208,7 +208,7 @@ oc.unified_coverage:
   image: ${build_deps_image_name}:runtime-build-test-dependencies--${build_deps_image_version}
   stage: test_coverage
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   dependencies: []
   allow_failure: true
   before_script:
@@ -241,7 +241,7 @@ publish:documentation:
   image: ${build_deps_image_name}:runtime-build-test-dependencies--${build_deps_image_version}
   stage: doc
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - changes:
     - scripts/**/*/
@@ -272,7 +272,7 @@ docker:merge_manifests:
   image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: prepare_release
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   needs:
   - oc.docker:amd64
   - oc.docker:arm64
@@ -291,7 +291,7 @@ publish_kernel_sdk:
   image: ${rust_toolchain_image_name}:${rust_toolchain_image_tag}
   stage: manual
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - when: manual
     allow_failure: false

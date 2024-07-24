@@ -32,7 +32,7 @@ oc.docker-build-debian-dependencies:
   parallel:
     matrix:
       - RELEASE: [unstable, bookworm]
-        TAGS: [gcp, gcp_arm64]
+        TAGS: [saas-linux-2xlarge-amd64, saas-linux-large-arm64]
 
 oc.docker-build-ubuntu-dependencies:
   extends:
@@ -42,7 +42,7 @@ oc.docker-build-ubuntu-dependencies:
   parallel:
     matrix:
       - RELEASE: [focal, jammy]
-        TAGS: [gcp, gcp_arm64]
+        TAGS: [saas-linux-2xlarge-amd64, saas-linux-large-arm64]
 
 oc.build-debian-based-packages:
   stage: manual
@@ -75,7 +75,7 @@ oc.build-debian:
   parallel:
     matrix:
       - RELEASE: [unstable, bookworm]
-        TAGS: [gcp, gcp_arm64]
+        TAGS: [saas-linux-2xlarge-amd64, saas-linux-large-arm64]
 
 oc.build-ubuntu:
   extends:
@@ -85,4 +85,4 @@ oc.build-ubuntu:
   parallel:
     matrix:
       - RELEASE: [jammy, focal]
-        TAGS: [gcp, gcp_arm64]
+        TAGS: [saas-linux-2xlarge-amd64, saas-linux-large-arm64]

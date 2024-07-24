@@ -5,7 +5,7 @@ oc.build_kernels:
   image: ${rust_toolchain_image_name}:${rust_toolchain_image_tag}
   stage: build
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - changes:
     - images/**/*
