@@ -13,7 +13,6 @@ COPY --chown=tezos:nogroup --from=builder /home/tezos/mavryk/bin /home/tezos/bin
 # Add parameters for active protocols
 COPY --chown=tezos:nogroup --from=builder /home/tezos/mavryk/parameters /home/tezos/scripts/
 # Add EVM kernel artifacts
-RUN ls -la /home/tezos/scripts
 RUN mkdir -p /home/tezos/scripts/evm_kernel
 COPY --chown=tezos:nogroup --from=builder /home/tezos/evm_kernel/evm_installer.wasm* /home/tezos/evm_kernel/_evm_installer_preimages* /home/tezos/scripts/evm_kernel/
 COPY --chown=tezos:nogroup --from=builder /home/tezos/evm_kernel/evm_benchmark_kernel.wasm* /home/tezos/scripts/evm_kernel/
