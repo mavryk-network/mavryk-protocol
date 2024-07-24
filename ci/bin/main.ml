@@ -101,31 +101,31 @@ let () =
   in
   register
     "before_merging"
-    If.(on_tezos_namespace && merge_request)
+    If.(on_mavryk_namespace && merge_request)
     ~jobs:(Code_verification.jobs Before_merging) ;
   register
     "mavkit_latest_release"
     ~jobs:(Mavkit_latest_release.jobs ())
-    If.(on_tezos_namespace && push && on_branch "latest-release") ;
+    If.(on_mavryk_namespace && push && on_branch "latest-release") ;
   register
     "mavkit_latest_release_test"
-    If.(not_on_tezos_namespace && push && on_branch "latest-release-test")
+    If.(not_on_mavryk_namespace && push && on_branch "latest-release-test")
     ~jobs:(Mavkit_latest_release.jobs ~test:true ()) ;
   register
     "master_branch"
-    If.(on_tezos_namespace && push && on_branch "master")
+    If.(on_mavryk_namespace && push && on_branch "master")
     ~jobs:Master_branch.jobs ;
   register
     "mavkit_release_tag"
-    If.(on_tezos_namespace && push && has_tag_match mavkit_release_tag_re)
+    If.(on_mavryk_namespace && push && has_tag_match mavkit_release_tag_re)
     ~jobs:(Release_tag.mavkit_jobs Release_tag) ;
   register
     "mavkit_beta_release_tag"
-    If.(on_tezos_namespace && push && has_tag_match mavkit_beta_release_tag_re)
+    If.(on_mavryk_namespace && push && has_tag_match mavkit_beta_release_tag_re)
     ~jobs:(Release_tag.mavkit_jobs Beta_release_tag) ;
   register
     "mavkit_release_tag_test"
-    If.(not_on_tezos_namespace && push && has_any_mavkit_release_tag)
+    If.(not_on_mavryk_namespace && push && has_any_mavkit_release_tag)
     ~jobs:(Release_tag.mavkit_jobs ~test:true Release_tag) ;
   (* To test this type of release, push a tag to a fork of [tezos/tezos]
      e.g. [nomadic-labs/tezos] project. *)
@@ -135,11 +135,11 @@ let () =
     ~jobs:(Release_tag.etherlink_jobs ()) ;
   register
     "non_release_tag"
-    If.(on_tezos_namespace && push && has_non_release_tag)
+    If.(on_mavryk_namespace && push && has_non_release_tag)
     ~jobs:(Release_tag.mavkit_jobs Non_release_tag) ;
   register
     "non_release_tag_test"
-    If.(not_on_tezos_namespace && push && has_non_release_tag)
+    If.(not_on_mavryk_namespace && push && has_non_release_tag)
     ~jobs:(Release_tag.mavkit_jobs ~test:true Non_release_tag) ;
   register
     "schedule_extended_test"

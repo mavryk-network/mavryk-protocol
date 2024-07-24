@@ -35,10 +35,10 @@ val on_branch : string -> If.t
 val on_master : If.t
 
 (** A rule that is true if [CI_PROJECT_NAMESPACE] is [tezos]. *)
-val on_tezos_namespace : If.t
+val on_mavryk_namespace : If.t
 
 (** A rule that is true if [CI_PROJECT_NAMESPACE] is not [tezos]. *)
-val not_on_tezos_namespace : If.t
+val not_on_mavryk_namespace : If.t
 
 (** A rule that is true if [CI_COMMIT_TAG] matches the given regexp. *)
 val has_tag_match : string -> If.t
