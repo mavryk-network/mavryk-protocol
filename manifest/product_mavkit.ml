@@ -6617,7 +6617,7 @@ let hash = Protocol.hash
 
   let frozen = register_alpha_family Frozen
 
-  let overridden = register_alpha_family Overridden
+  (* let overridden = register_alpha_family Overridden *)
 
   let _000_Ps9mPmXa = frozen (Name.v "Ps9mPmXa" 000)
 
