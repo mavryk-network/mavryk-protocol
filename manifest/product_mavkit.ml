@@ -5070,7 +5070,7 @@ end = struct
             ("test_scenario_slashing", N.(number >= 003));
             ("test_scenario_slashing_stakers", N.(number >= 003));
             ("test_scenario_deactivation", N.(number >= 003));
-            ("; test_liquidity_baking", true);
+            ("test_liquidity_baking", false);
             ("test_storage_functions", true);
             ("test_storage", true);
             ("test_token", true);
@@ -5100,7 +5100,7 @@ end = struct
       let _pbt =
         let list =
           [
-            ("; liquidity_baking_pbt", true);
+            ("liquidity_baking_pbt", false);
             ("saturation_fuzzing", true);
             ("test_merkle_list", N.(number >= 001));
             ("test_gas_properties", true);
