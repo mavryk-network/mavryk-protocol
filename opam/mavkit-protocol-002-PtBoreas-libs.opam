@@ -2,10 +2,7 @@
 # Edit file manifest/main.ml instead.
 opam-version: "2.0"
 maintainer: "info@mavryk.io"
-authors: [
-  "Tezos devteam"
-  "Mavryk Dynamics"
-]
+authors: ["Mavryk Dynamics" "Tezos devteam"]
 homepage: "https://mavrykdynamics.com/"
 bug-reports: "https://gitlab.com/mavryk-network/mavryk-protocol/issues"
 dev-repo: "git+https://gitlab.com/mavryk-network/mavryk-protocol.git"
@@ -19,6 +16,7 @@ depends: [
   "mavkit-shell-libs" { = version }
   "uri" { >= "3.1.0" }
   "tezt" { >= "4.0.0" & < "5.0.0" }
+  "mavkit-alcotezt" { with-test & = version }
   "qcheck-alcotest" { >= "0.20" }
   "mavkit-proto-libs" { = version }
   "mavkit-version" { = version }
@@ -32,7 +30,6 @@ depends: [
   "mavryk-dac-client-lib" { = version }
   "mavkit-injector" { = version }
   "mavkit-l2-libs" { = version }
-  "mavkit-alcotezt" { with-test & = version }
   "mavryk-dac-node-lib" { with-test & = version }
 ]
 build: [

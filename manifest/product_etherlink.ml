@@ -226,7 +226,7 @@ let _tezt_etherlink =
       ]
     ~with_macos_security_framework:true
     ~dep_globs:
-      ["evm_kernel_inputs/*"; "../../tezos_contracts/*"; "../../config/*"]
+      ["evm_kernel_inputs/*"; "../../mavryk_contracts/*"; "../../config/*"]
     ~dep_globs_rec:["../../kernel_evm/*"]
     ~preprocess:[staged_pps [ppx_import; ppx_deriving_show]]
 

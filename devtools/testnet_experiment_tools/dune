@@ -21,8 +21,7 @@
   -open Tezt
   -open Tezt.Base
   -open Mavryk_client_base_unix
-  -open Mavryk_stdlib_unix
-  -open Mavryk_protocol_alpha)
+  -open Mavryk_stdlib_unix)
  (modules testnet_experiment_tools format_baker_accounts))
 
 (library
@@ -145,7 +144,7 @@
  (libraries
   mavkit-libs.base
   mavkit-libs.clic
-  caqti-lwt
+  caqti-lwt.unix
   caqti-dynload
   mavkit-shell-libs.client-base
   mavkit-shell-libs.client-base-unix)
