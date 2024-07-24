@@ -41,7 +41,6 @@ oc.build:static-arm64-linux-binaries:
 
 oc.docker:amd64:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
-  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
   - saas-linux-2xlarge-amd64
@@ -62,7 +61,6 @@ oc.docker:amd64:
 
 oc.docker:arm64:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
-  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
   - saas-linux-large-arm64
@@ -172,7 +170,6 @@ oc.build:rpm:amd64:
 
 docker:merge_manifests:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
-  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: prepare_release
   tags:
   - saas-linux-2xlarge-amd64
@@ -192,7 +189,6 @@ docker:merge_manifests:
 
 gitlab:publish:
   image: registry.gitlab.com/tezos/docker-images/ci-release:v1.4.0
-  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-release:v1.4.0
   stage: publish_package_gitlab
   tags:
   - saas-linux-2xlarge-amd64

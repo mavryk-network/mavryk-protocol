@@ -8,33 +8,34 @@ workflow:
     variables:
       PIPELINE_TYPE: before_merging
     when: always
-  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH
-      == "latest-release"
+  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && $CI_COMMIT_BRANCH == "latest-release"
     variables:
       PIPELINE_TYPE: mavkit_latest_release
     when: always
-  - if: $CI_PROJECT_NAMESPACE != "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH
-      == "latest-release-test"
+  - if: $CI_PROJECT_NAMESPACE != "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && $CI_COMMIT_BRANCH == "latest-release-test"
     variables:
       PIPELINE_TYPE: mavkit_latest_release_test
     when: always
-  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH
-      == "master"
+  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && $CI_COMMIT_BRANCH == "master"
     variables:
       PIPELINE_TYPE: master_branch
     when: always
-  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_TAG
-      =~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/
+  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && $CI_COMMIT_TAG =~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/
     variables:
       PIPELINE_TYPE: mavkit_release_tag
     when: always
-  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_TAG
-      =~ /^mavkit-v\d+\.\d+\-beta\d*$/
+  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && $CI_COMMIT_TAG =~ /^mavkit-v\d+\.\d+\-beta\d*$/
     variables:
       PIPELINE_TYPE: mavkit_beta_release_tag
     when: always
-  - if: $CI_PROJECT_NAMESPACE != "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && ($CI_COMMIT_TAG
-      =~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/ || $CI_COMMIT_TAG =~ /^mavkit-v\d+\.\d+\-beta\d*$/)
+  - if: $CI_PROJECT_NAMESPACE != "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && ($CI_COMMIT_TAG =~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/ || $CI_COMMIT_TAG =~
+      /^mavkit-v\d+\.\d+\-beta\d*$/)
     variables:
       PIPELINE_TYPE: mavkit_release_tag_test
     when: always
@@ -42,15 +43,15 @@ workflow:
     variables:
       PIPELINE_TYPE: etherlink_release_tag
     when: always
-  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_TAG
-      != null && $CI_COMMIT_TAG !~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/ && $CI_COMMIT_TAG
-      !~ /^mavkit-v\d+\.\d+\-beta\d*$/ && $CI_COMMIT_TAG !~ /^etherlink-v\d+\.\d+(?:\-rc\d+)?$/
+  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && $CI_COMMIT_TAG != null && $CI_COMMIT_TAG !~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/
+      && $CI_COMMIT_TAG !~ /^mavkit-v\d+\.\d+\-beta\d*$/ && $CI_COMMIT_TAG !~ /^etherlink-v\d+\.\d+(?:\-rc\d+)?$/
     variables:
       PIPELINE_TYPE: non_release_tag
     when: always
-  - if: $CI_PROJECT_NAMESPACE != "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_TAG
-      != null && $CI_COMMIT_TAG !~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/ && $CI_COMMIT_TAG
-      !~ /^mavkit-v\d+\.\d+\-beta\d*$/ && $CI_COMMIT_TAG !~ /^etherlink-v\d+\.\d+(?:\-rc\d+)?$/
+  - if: $CI_PROJECT_NAMESPACE != "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && $CI_COMMIT_TAG != null && $CI_COMMIT_TAG !~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/
+      && $CI_COMMIT_TAG !~ /^mavkit-v\d+\.\d+\-beta\d*$/ && $CI_COMMIT_TAG !~ /^etherlink-v\d+\.\d+(?:\-rc\d+)?$/
     variables:
       PIPELINE_TYPE: non_release_tag_test
     when: always
@@ -65,11 +66,8 @@ default:
 variables:
   build_deps_image_version: 73427137fb6186c0ba3abd5d93c524023c60fc01
   build_deps_image_name: registry.gitlab.com/tezos/opam-repository
-  # build_deps_image_name: ${GCP_REGISTRY}/tezos/opam-repository
   rust_toolchain_image_name: registry.gitlab.com/tezos/tezos/rust-toolchain
-  # rust_toolchain_image_name: ${GCP_REGISTRY}/${CI_PROJECT_PATH}/rust-toolchain
   client_libs_dependencies_image_name: registry.gitlab.com/tezos/tezos/client-libs-dependencies
-  # client_libs_dependencies_image_name: ${GCP_REGISTRY}/${CI_PROJECT_PATH}/client-libs-dependencies
   GIT_STRATEGY: fetch
   GIT_DEPTH: "1"
   GET_SOURCES_ATTEMPTS: "2"
@@ -109,33 +107,34 @@ include:
     when: always
 - local: .gitlab/ci/pipelines/mavkit_latest_release.yml
   rules:
-  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH
-      == "latest-release"
+  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && $CI_COMMIT_BRANCH == "latest-release"
     when: always
 - local: .gitlab/ci/pipelines/mavkit_latest_release_test.yml
   rules:
-  - if: $CI_PROJECT_NAMESPACE != "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH
-      == "latest-release-test"
+  - if: $CI_PROJECT_NAMESPACE != "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && $CI_COMMIT_BRANCH == "latest-release-test"
     when: always
 - local: .gitlab/ci/pipelines/master_branch.yml
   rules:
-  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH
-      == "master"
+  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && $CI_COMMIT_BRANCH == "master"
     when: always
 - local: .gitlab/ci/pipelines/mavkit_release_tag.yml
   rules:
-  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_TAG
-      =~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/
+  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && $CI_COMMIT_TAG =~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/
     when: always
 - local: .gitlab/ci/pipelines/mavkit_beta_release_tag.yml
   rules:
-  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_TAG
-      =~ /^mavkit-v\d+\.\d+\-beta\d*$/
+  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && $CI_COMMIT_TAG =~ /^mavkit-v\d+\.\d+\-beta\d*$/
     when: always
 - local: .gitlab/ci/pipelines/mavkit_release_tag_test.yml
   rules:
-  - if: $CI_PROJECT_NAMESPACE != "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && ($CI_COMMIT_TAG
-      =~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/ || $CI_COMMIT_TAG =~ /^mavkit-v\d+\.\d+\-beta\d*$/)
+  - if: $CI_PROJECT_NAMESPACE != "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && ($CI_COMMIT_TAG =~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/ || $CI_COMMIT_TAG =~
+      /^mavkit-v\d+\.\d+\-beta\d*$/)
     when: always
 - local: .gitlab/ci/pipelines/etherlink_release_tag.yml
   rules:
@@ -143,15 +142,15 @@ include:
     when: always
 - local: .gitlab/ci/pipelines/non_release_tag.yml
   rules:
-  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_TAG
-      != null && $CI_COMMIT_TAG !~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/ && $CI_COMMIT_TAG
-      !~ /^mavkit-v\d+\.\d+\-beta\d*$/ && $CI_COMMIT_TAG !~ /^etherlink-v\d+\.\d+(?:\-rc\d+)?$/
+  - if: $CI_PROJECT_NAMESPACE == "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && $CI_COMMIT_TAG != null && $CI_COMMIT_TAG !~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/
+      && $CI_COMMIT_TAG !~ /^mavkit-v\d+\.\d+\-beta\d*$/ && $CI_COMMIT_TAG !~ /^etherlink-v\d+\.\d+(?:\-rc\d+)?$/
     when: always
 - local: .gitlab/ci/pipelines/non_release_tag_test.yml
   rules:
-  - if: $CI_PROJECT_NAMESPACE != "mavryk-network" && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_TAG
-      != null && $CI_COMMIT_TAG !~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/ && $CI_COMMIT_TAG
-      !~ /^mavkit-v\d+\.\d+\-beta\d*$/ && $CI_COMMIT_TAG !~ /^etherlink-v\d+\.\d+(?:\-rc\d+)?$/
+  - if: $CI_PROJECT_NAMESPACE != "mavryk-network" && $CI_PIPELINE_SOURCE == "push"
+      && $CI_COMMIT_TAG != null && $CI_COMMIT_TAG !~ /^mavkit-v\d+\.\d+(?:\-rc\d+)?$/
+      && $CI_COMMIT_TAG !~ /^mavkit-v\d+\.\d+\-beta\d*$/ && $CI_COMMIT_TAG !~ /^etherlink-v\d+\.\d+(?:\-rc\d+)?$/
     when: always
 - local: .gitlab/ci/pipelines/schedule_extended_test.yml
   rules:

@@ -5,14 +5,12 @@
   image: alpine:3.18
 .image_template__ci_release:
   image: registry.gitlab.com/tezos/docker-images/ci-release:v1.4.0
-  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-release:v1.4.0
 .image_template__client_libs_dependencies:
   image: ${client_libs_dependencies_image_name}:${client_libs_dependencies_image_tag}
 .image_template__debian_bookworm:
   image: debian:bookworm
 .image_template__docker:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
-  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
 .image_template__fedora_37:
   image: fedora:37
 .image_template__fedora_39:

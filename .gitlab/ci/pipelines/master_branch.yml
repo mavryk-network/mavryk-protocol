@@ -3,7 +3,6 @@
 
 oc.docker:rust-toolchain:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
-  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
   - saas-linux-2xlarge-amd64
@@ -125,7 +124,6 @@ oc.build_arm64-exp-dev-extra:
 
 oc.docker:amd64:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
-  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
   - saas-linux-2xlarge-amd64
@@ -168,7 +166,6 @@ oc.docker:amd64:
 
 oc.docker:arm64:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
-  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
   - saas-linux-large-arm64
@@ -273,7 +270,6 @@ publish:documentation:
 
 docker:merge_manifests:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
-  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: prepare_release
   tags:
   - saas-linux-2xlarge-amd64

@@ -3,7 +3,6 @@
 
 docker:promote_to_latest:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
-  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: publish_release
   tags:
   - saas-linux-2xlarge-amd64

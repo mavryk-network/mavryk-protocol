@@ -9,10 +9,10 @@ opam:bls12-381:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -28,7 +28,7 @@ opam:bls12-381:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - when: never
   needs:
   - opam:prepare
@@ -201,10 +201,10 @@ opam:mavkit-alcotezt:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -220,7 +220,7 @@ opam:mavkit-alcotezt:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - when: never
   needs:
   - opam:prepare
@@ -649,10 +649,10 @@ opam:mavkit-dac-node:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 1 minute
+    start_in: 2 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 1 minute
+    start_in: 2 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -668,7 +668,7 @@ opam:mavkit-dac-node:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event"
     when: delayed
-    start_in: 1 minute
+    start_in: 2 minutes
   - when: never
   needs:
   - opam:prepare
@@ -713,10 +713,10 @@ opam:mavkit-dal-node:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 1 minute
+    start_in: 2 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 1 minute
+    start_in: 2 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -732,7 +732,7 @@ opam:mavkit-dal-node:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event"
     when: delayed
-    start_in: 1 minute
+    start_in: 2 minutes
   - when: never
   needs:
   - opam:prepare
@@ -841,10 +841,10 @@ opam:mavkit-distributed-lwt-internal:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -860,7 +860,7 @@ opam:mavkit-distributed-lwt-internal:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - when: never
   needs:
   - opam:prepare
@@ -905,10 +905,10 @@ opam:mavkit-injector:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 2 minutes
+    start_in: 3 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 2 minutes
+    start_in: 3 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -924,7 +924,7 @@ opam:mavkit-injector:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 2 minutes
+    start_in: 3 minutes
   - when: never
   needs:
   - opam:prepare
@@ -969,10 +969,10 @@ opam:mavkit-internal-libs:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -988,7 +988,7 @@ opam:mavkit-internal-libs:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - when: never
   needs:
   - opam:prepare
@@ -1033,10 +1033,10 @@ opam:mavkit-l2-libs:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -1052,7 +1052,7 @@ opam:mavkit-l2-libs:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - when: never
   needs:
   - opam:prepare
@@ -1097,10 +1097,10 @@ opam:mavkit-libs:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -1116,7 +1116,7 @@ opam:mavkit-libs:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - when: never
   needs:
   - opam:prepare
@@ -1161,10 +1161,10 @@ opam:mavkit-node:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 1 minute
+    start_in: 2 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 1 minute
+    start_in: 2 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -1180,7 +1180,7 @@ opam:mavkit-node:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event"
     when: delayed
-    start_in: 1 minute
+    start_in: 2 minutes
   - when: never
   needs:
   - opam:prepare
@@ -1289,10 +1289,10 @@ opam:mavkit-proto-libs:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -1308,7 +1308,7 @@ opam:mavkit-proto-libs:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - when: never
   needs:
   - opam:prepare
@@ -1481,10 +1481,10 @@ opam:mavkit-protocol-002-PtBoreas-libs:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 2 minutes
+    start_in: 3 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 2 minutes
+    start_in: 3 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -1500,7 +1500,7 @@ opam:mavkit-protocol-002-PtBoreas-libs:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 2 minutes
+    start_in: 3 minutes
   - when: never
   needs:
   - opam:prepare
@@ -1545,10 +1545,10 @@ opam:mavkit-protocol-alpha-libs:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 2 minutes
+    start_in: 3 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 2 minutes
+    start_in: 3 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -1564,7 +1564,7 @@ opam:mavkit-protocol-alpha-libs:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 2 minutes
+    start_in: 3 minutes
   - when: never
   needs:
   - opam:prepare
@@ -1609,10 +1609,10 @@ opam:mavkit-protocol-compiler:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -1628,7 +1628,7 @@ opam:mavkit-protocol-compiler:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - when: never
   needs:
   - opam:prepare
@@ -1673,10 +1673,10 @@ opam:mavkit-proxy-server:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 1 minute
+    start_in: 2 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 1 minute
+    start_in: 2 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -1692,7 +1692,7 @@ opam:mavkit-proxy-server:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event"
     when: delayed
-    start_in: 1 minute
+    start_in: 2 minutes
   - when: never
   needs:
   - opam:prepare
@@ -1737,10 +1737,10 @@ opam:mavkit-rpc-process:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 4 minutes
+    start_in: 3 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 4 minutes
+    start_in: 3 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -1756,7 +1756,7 @@ opam:mavkit-rpc-process:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 4 minutes
+    start_in: 3 minutes
   - when: never
   needs:
   - opam:prepare
@@ -1801,10 +1801,10 @@ opam:mavkit-shell-libs:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -1820,7 +1820,7 @@ opam:mavkit-shell-libs:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - when: never
   needs:
   - opam:prepare
@@ -2185,10 +2185,10 @@ opam:mavkit-smart-rollup-node-lib:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 2 minutes
+    start_in: 3 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 2 minutes
+    start_in: 3 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -2204,7 +2204,7 @@ opam:mavkit-smart-rollup-node-lib:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 2 minutes
+    start_in: 3 minutes
   - when: never
   needs:
   - opam:prepare
@@ -2441,10 +2441,10 @@ opam:mavkit-version:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -2460,7 +2460,7 @@ opam:mavkit-version:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - when: never
   needs:
   - opam:prepare
@@ -2569,10 +2569,10 @@ opam:mavryk-client-demo-counter:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 4 minutes
+    start_in: 3 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 4 minutes
+    start_in: 3 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -2588,7 +2588,7 @@ opam:mavryk-client-demo-counter:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 4 minutes
+    start_in: 3 minutes
   - when: never
   needs:
   - opam:prepare
@@ -2633,10 +2633,10 @@ opam:mavryk-client-genesis:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 4 minutes
+    start_in: 3 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 4 minutes
+    start_in: 3 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -2652,7 +2652,7 @@ opam:mavryk-client-genesis:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 4 minutes
+    start_in: 3 minutes
   - when: never
   needs:
   - opam:prepare
@@ -2825,10 +2825,10 @@ opam:mavryk-dac-node-lib:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 2 minutes
+    start_in: 3 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 2 minutes
+    start_in: 3 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -2844,7 +2844,7 @@ opam:mavryk-dac-node-lib:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 2 minutes
+    start_in: 3 minutes
   - when: never
   needs:
   - opam:prepare
@@ -3145,10 +3145,10 @@ opam:mavryk-protocol-001-PtAtLas:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 6 minutes
+    start_in: 4 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 6 minutes
+    start_in: 4 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -3164,7 +3164,7 @@ opam:mavryk-protocol-001-PtAtLas:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 6 minutes
+    start_in: 4 minutes
   - when: never
   needs:
   - opam:prepare
@@ -3209,10 +3209,10 @@ opam:mavryk-protocol-002-PtBoreas:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 6 minutes
+    start_in: 4 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 6 minutes
+    start_in: 4 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -3228,7 +3228,7 @@ opam:mavryk-protocol-002-PtBoreas:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 6 minutes
+    start_in: 4 minutes
   - when: never
   needs:
   - opam:prepare
@@ -3273,10 +3273,10 @@ opam:mavryk-protocol-alpha:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -3292,7 +3292,7 @@ opam:mavryk-protocol-alpha:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - when: never
   needs:
   - opam:prepare
@@ -3337,10 +3337,10 @@ opam:mavryk-protocol-demo-counter:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -3356,7 +3356,7 @@ opam:mavryk-protocol-demo-counter:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - when: never
   needs:
   - opam:prepare
@@ -3401,10 +3401,10 @@ opam:mavryk-protocol-demo-noops:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -3420,7 +3420,7 @@ opam:mavryk-protocol-demo-noops:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - when: never
   needs:
   - opam:prepare
@@ -3465,10 +3465,10 @@ opam:mavryk-protocol-genesis:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -3484,7 +3484,7 @@ opam:mavryk-protocol-genesis:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 6 minutes
+    start_in: 5 minutes
   - when: never
   needs:
   - opam:prepare
@@ -3593,10 +3593,10 @@ opam:tezt-mavryk:
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - changes:
     - '**/dune'
     - '**/dune.inc'
@@ -3612,7 +3612,7 @@ opam:tezt-mavryk:
     - scripts/version.sh
     if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
     when: delayed
-    start_in: 7 minutes
+    start_in: 6 minutes
   - when: never
   needs:
   - opam:prepare

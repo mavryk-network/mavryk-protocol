@@ -3,7 +3,6 @@
 
 docker:prepare-etherlink-release:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
-  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: prepare_release
   tags:
   - saas-linux-2xlarge-amd64
@@ -23,7 +22,6 @@ docker:prepare-etherlink-release:
 
 gitlab:etherlink-release:
   image: registry.gitlab.com/tezos/docker-images/ci-release:v1.4.0
-  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-release:v1.4.0
   stage: publish_package_gitlab
   tags:
   - saas-linux-2xlarge-amd64
