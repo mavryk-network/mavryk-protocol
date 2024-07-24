@@ -218,7 +218,7 @@ let () =
 
 (* Generate documentation index for [mavkit-evm-node-libs] *)
 let () =
-  write "etherlink/bin_evm_node/index.mld" @@ fun fmt ->
+  write "etherlink/bin_node/index.mld" @@ fun fmt ->
   let header =
     "{0 Mavkit-evm-node-libs: mavkit EVM Node libraries}\n\n\
      This is a package containing some libraries used by the EVM Node of \
