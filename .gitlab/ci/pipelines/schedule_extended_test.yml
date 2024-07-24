@@ -1,4 +1,8 @@
 include:
+  # Stage: sanity
+  - .gitlab/ci/jobs/sanity/sanity_ci.yml
+  - .gitlab/ci/jobs/sanity/docker:hadolint-schedule_extended_test.yml
+
   # Stage: build
   - .gitlab/ci/jobs/build/oc.build_arm64-exp-dev-extra-scheduled_extended_test.yml
   - .gitlab/ci/jobs/build/oc.build_arm64-released-scheduled_extended_test.yml
@@ -53,5 +57,5 @@ include:
   - .gitlab/ci/jobs/test/test_evm_compatibility.yml
 
   # Stage: doc
-  - .gitlab/ci/jobs/doc/linkcheck.yml
-  - .gitlab/ci/jobs/doc/test_install_python.yml
+  - .gitlab/ci/jobs/doc/documentation:linkcheck.yml
+  - .gitlab/ci/jobs/doc/oc.install_python.yml

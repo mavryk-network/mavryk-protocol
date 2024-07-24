@@ -1,7 +1,10 @@
 include:
+  # Stage: trigger
+  - .gitlab/ci/jobs/trigger/trigger.yml
+
   # Stage: sanity
   - .gitlab/ci/jobs/sanity/sanity_ci.yml
-  - .gitlab/ci/jobs/sanity/docker_hadolint.yml
+  - .gitlab/ci/jobs/sanity/docker:hadolint-before_merging.yml
 
   # Stage: package
   - .gitlab/ci/jobs/packaging/opam:prepare-before_merging.yml
@@ -52,10 +55,10 @@ include:
 
   # Stage: test_coverage
   # Only run on merge requests that do not have the label `ci--no-coverage`
-  - local: .gitlab/ci/jobs/coverage/coverage.yml
+  - local: .gitlab/ci/jobs/coverage/oc.unified_coverage-before_merging.yml
     rules:
       - if: '$CI_MERGE_REQUEST_LABELS !~ /(?:^|,)ci--no-coverage(?:$|,)/'
 
   # Stage: doc
-  - .gitlab/ci/jobs/doc/linkcheck.yml
-  - .gitlab/ci/jobs/doc/test_install_python.yml
+  - .gitlab/ci/jobs/doc/documentation:linkcheck.yml
+  - .gitlab/ci/jobs/doc/oc.install_python.yml
