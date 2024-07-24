@@ -58,11 +58,7 @@
   -open Mavryk_store
   -open Mavryk_store_shared
   -open Mavryk_context)
- (modules
-  sigs
-  tool_001_PtAtLas
-  tool_002_PtBoreas
-  tool_alpha))
+ (modules sigs tool_001_PtAtLas tool_002_PtBoreas tool_alpha))
 
 (executable
  (name simulation_scenario)

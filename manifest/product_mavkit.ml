@@ -609,6 +609,10 @@ let mavkit_risc_v_pvm =
           [
             S "progn";
             of_atom_list
+              ["run"; "chmod"; "u+w"; "Cargo.toml"];
+            of_atom_list
+              ["run"; "chmod"; "u+w"; "../Cargo.lock"];
+            of_atom_list
               ["run"; "cargo"; "build"; "--release"; "-p"; "mavkit-risc-v-pvm"];
             transform archive_output_file archive_file;
           ];

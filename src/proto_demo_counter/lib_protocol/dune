@@ -87,7 +87,8 @@
   services.ml services.mli
   main.ml main.mli
   (:src_dir MAVRYK_PROTOCOL))
- (action (run %{bin:mavkit-protocol-compiler} -no-hash-check -warn-error +a .)))
+ (action
+  (run %{bin:mavkit-protocol-compiler} -no-hash-check -warn-error +a .)))
 
 (library
  (name mavryk_protocol_demo_counter_lifted)

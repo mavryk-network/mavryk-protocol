@@ -16,7 +16,6 @@ depends: [
   "mavkit-shell-libs" { = version }
   "uri" { >= "3.1.0" }
   "tezt" { >= "4.0.0" & < "5.0.0" }
-  "mavkit-alcotezt" { = version }
   "qcheck-alcotest" { >= "0.20" }
   "mavkit-proto-libs" { = version }
   "mavkit-version" { = version }
@@ -30,6 +29,7 @@ depends: [
   "mavryk-dac-client-lib" { = version }
   "mavkit-injector" { = version }
   "mavkit-l2-libs" { = version }
+  "mavkit-alcotezt" { with-test & = version }
   "mavryk-dac-node-lib" { with-test & = version }
 ]
 build: [
