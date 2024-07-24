@@ -27,11 +27,14 @@ let variables : variables =
        in GitLab namespaces `nomadic-labs` and `tezos`
        /!\ This value MUST be the same as `opam_repository_tag` in `scripts/version.sh` *)
     ("build_deps_image_version", Common.build_deps_image_version);
-    ("build_deps_image_name", "${GCP_REGISTRY}/tezos/opam-repository");
+    ("build_deps_image_name", "registry.gitlab.com/tezos/opam-repository");
+    (* ("build_deps_image_name", "${GCP_REGISTRY}/tezos/opam-repository"); *)
     ( "rust_toolchain_image_name",
-      "${GCP_REGISTRY}/${CI_PROJECT_PATH}/rust-toolchain" );
+      (* "${GCP_REGISTRY}/${CI_PROJECT_PATH}/rust-toolchain" ); *)
+      "registry.gitlab.com/tezos/tezos/rust-toolchain" );
     ( "client_libs_dependencies_image_name",
-      "${GCP_REGISTRY}/${CI_PROJECT_PATH}/client-libs-dependencies" );
+      (* "${GCP_REGISTRY}/${CI_PROJECT_PATH}/client-libs-dependencies" ); *)
+      "registry.gitlab.com/tezos/tezos/client-libs-dependencies" );  
     ("GIT_STRATEGY", "fetch");
     ("GIT_DEPTH", "1");
     ("GET_SOURCES_ATTEMPTS", "2");
