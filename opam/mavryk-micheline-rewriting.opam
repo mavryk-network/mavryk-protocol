@@ -2,10 +2,7 @@
 # Edit file manifest/main.ml instead.
 opam-version: "2.0"
 maintainer: "info@mavryk.io"
-authors: [
-  "Tezos devteam"
-  "Mavryk Dynamics"
-]
+authors: ["Mavryk Dynamics" "Tezos devteam"]
 homepage: "https://mavrykdynamics.com/"
 bug-reports: "https://gitlab.com/mavryk-network/mavryk-protocol/issues"
 dev-repo: "git+https://gitlab.com/mavryk-network/mavryk-protocol.git"
@@ -17,7 +14,7 @@ depends: [
   "zarith_stubs_js" { >= "0.16.1" }
   "mavkit-libs" { = version }
   "tezt" { with-test & >= "4.0.0" & < "5.0.0" }
-  "tezos-protocol-alpha" { with-test & = version }
+  "mavryk-protocol-alpha" { with-test & = version }
   "mavkit-protocol-alpha-libs" { with-test & = version }
 ]
 build: [

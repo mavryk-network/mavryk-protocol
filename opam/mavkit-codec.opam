@@ -2,10 +2,7 @@
 # Edit file manifest/main.ml instead.
 opam-version: "2.0"
 maintainer: "info@mavryk.io"
-authors: [
-  "Tezos devteam"
-  "Mavryk Dynamics"
-]
+authors: ["Mavryk Dynamics" "Tezos devteam"]
 homepage: "https://mavrykdynamics.com/"
 bug-reports: "https://gitlab.com/mavryk-network/mavryk-protocol/issues"
 dev-repo: "git+https://gitlab.com/mavryk-network/mavryk-protocol.git"
@@ -34,4 +31,4 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos: `mavkit-codec` binary to encode and decode values"
+synopsis: "Mavryk: `mavkit-codec` binary to encode and decode values"
