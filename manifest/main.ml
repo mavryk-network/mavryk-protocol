@@ -116,9 +116,9 @@ let () =
     ~default_profile:"mavkit-deps"
     ~add_to_meta_package:
       [
-        (* [ledgerwallet_mavryk] is an optional dependency, but we want
+        (* [ledgerwallet_tezos] is an optional dependency, but we want
            [opam install mavkit] to always install it. *)
-        ledgerwallet_mavryk;
+        ledgerwallet_tezos;
       ]
 
 (* Generate a dune-workspace file at the root of the repo *)
