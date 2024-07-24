@@ -6070,7 +6070,7 @@ let hash = Protocol.hash
         ~linkall:true
     in
     let _baking_tests =
-      opt_map (both baking _test_helpers) @@ fun (baking, _test_helpers) ->
+      opt_map (both baking) @@ fun (baking) ->
       only_if N.(number >= 001) @@ fun () ->
       let mockup_simulator =
         only_if N.(number >= 001) @@ fun () ->
