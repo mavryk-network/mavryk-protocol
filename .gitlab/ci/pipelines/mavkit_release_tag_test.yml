@@ -40,7 +40,8 @@ oc.build:static-arm64-linux-binaries:
     - mavkit-binaries/$ARCH/*
 
 oc.docker:amd64:
-  image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
+  image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
+  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
   - saas-linux-2xlarge-amd64
@@ -60,7 +61,8 @@ oc.docker:amd64:
     rust_toolchain_image_tag: is-never-pulled
 
 oc.docker:arm64:
-  image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
+  image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
+  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
   - saas-linux-large-arm64
@@ -169,7 +171,8 @@ oc.build:rpm:amd64:
       - rockylinux:9.3
 
 docker:merge_manifests:
-  image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
+  image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
+  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: prepare_release
   tags:
   - saas-linux-2xlarge-amd64
@@ -188,7 +191,8 @@ docker:merge_manifests:
     CI_DOCKER_HUB: "false"
 
 gitlab:release:
-  image: ${GCP_REGISTRY}/tezos/docker-images/ci-release:v1.4.0
+  image: registry.gitlab.com/tezos/docker-images/ci-release:v1.4.0
+  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-release:v1.4.0
   stage: publish_release_gitlab
   tags:
   - saas-linux-2xlarge-amd64

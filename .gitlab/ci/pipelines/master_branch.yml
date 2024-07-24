@@ -2,7 +2,8 @@
 # Edit file ci/bin/main.ml instead.
 
 oc.docker:rust-toolchain:
-  image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
+  image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
+  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
   - saas-linux-2xlarge-amd64
@@ -123,7 +124,8 @@ oc.build_arm64-exp-dev-extra:
     when: on_success
 
 oc.docker:amd64:
-  image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
+  image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
+  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
   - saas-linux-2xlarge-amd64
@@ -165,7 +167,8 @@ oc.docker:amd64:
     RUST_TOOLCHAIN_ALWAYS_REBUILD: "true"
 
 oc.docker:arm64:
-  image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
+  image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
+  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
   - saas-linux-large-arm64
@@ -269,7 +272,8 @@ publish:documentation:
   - ./scripts/ci/doc_publish.sh
 
 docker:merge_manifests:
-  image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
+  image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
+  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: prepare_release
   tags:
   - saas-linux-2xlarge-amd64

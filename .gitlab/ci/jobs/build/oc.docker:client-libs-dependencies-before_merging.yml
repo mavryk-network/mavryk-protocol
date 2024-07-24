@@ -2,7 +2,8 @@
 # Edit file ci/bin/main.ml instead.
 
 oc.docker:client-libs-dependencies:
-  image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
+  image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
+  # image: ${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
   - saas-linux-2xlarge-amd64
