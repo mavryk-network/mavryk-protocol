@@ -728,7 +728,7 @@ let job_build_bin_package ?dependencies ?rules ~__POS__ ~name
     ~variables:
       [
         ("TARGET", target_string);
-        ("MAVKIT_PKGMAINTAINER", "nomadic-labs");
+        ("MAVKIT_PKGMAINTAINER", "mavrykdynamics");
         ("BLST_PORTABLE", "yes");
         ("ARCH", arch_string);
       ]
