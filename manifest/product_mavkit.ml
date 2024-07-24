@@ -6621,7 +6621,7 @@ let hash = Protocol.hash
 
   let _000_Ps9mPmXa = frozen (Name.v "Ps9mPmXa" 000)
 
-  let _001_PtAtLas = frozen (Name.v "PtAtLas" 001)
+  let _001_PtAtLas = active (Name.v "PtAtLas" 001)
 
   let _002_PtBoreas = active (Name.v "PtBoreas" 002)
 
