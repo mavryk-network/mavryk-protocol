@@ -5131,8 +5131,6 @@ end = struct
           ~with_macos_security_framework:true
           ~deps:
             [
-              mavkit_base |> open_ ~m:"TzPervasives"
-              |> error_monad_module N.(number <= 001);
               mavkit_base |> if_ N.(number >= 001) |> open_ ~m:"TzPervasives";
               mavkit_micheline |> open_;
               client |> if_some |> open_;
@@ -5914,9 +5912,7 @@ let hash = Protocol.hash
         ~path:(path // "lib_client_commands")
         ~deps:
           [
-            mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 001);
-            mavkit_base |> if_ N.(number >= 15) |> open_ ~m:"TzPervasives";
+            mavkit_base |> if_ N.(number >= 001) |> open_ ~m:"TzPervasives";
             mavkit_clic;
             main |> open_;
             parameters |> if_some |> if_ N.(number >= 001) |> open_;
@@ -5969,9 +5965,7 @@ let hash = Protocol.hash
         ~path:(path // "lib_client_commands")
         ~deps:
           [
-            mavkit_base |> open_ ~m:"TzPervasives"
-            |> error_monad_module N.(number <= 001);
-            mavkit_base |> if_ N.(number >= 15) |> open_ ~m:"TzPervasives";
+            mavkit_base |> if_ N.(number >= 001) |> open_ ~m:"TzPervasives";
             mavkit_clic;
             main |> open_;
             parameters |> if_some |> if_ N.(number >= 001) |> open_;
@@ -6131,7 +6125,7 @@ let hash = Protocol.hash
             mavkit_base |> open_ ~m:"TzPervasives"
             |> error_monad_module N.(number <= 001);
             main |> open_;
-            parameters |> if_some |> if_ N.(number >= 18) |> open_;
+            parameters |> if_some |> if_ N.(number >= 001) |> open_;
             mavkit_stdlib_unix |> open_;
             mavkit_protocol_environment;
             mavkit_shell_services |> open_;
