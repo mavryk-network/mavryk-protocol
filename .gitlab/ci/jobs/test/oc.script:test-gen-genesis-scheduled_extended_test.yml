@@ -5,7 +5,7 @@ oc.script:test-gen-genesis:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - when: always
   dependencies: []

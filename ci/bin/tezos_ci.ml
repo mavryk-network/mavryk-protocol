@@ -314,11 +314,11 @@ let job ?arch ?after_script ?allow_failure ?artifacts ?before_script ?cache
     Some
       (match (arch, tags) with
       | Some arch, None ->
-          [(match arch with Amd64 -> "gcp" | Arm64 -> "gcp_arm64")]
+          [(match arch with Amd64 -> "saas-linux-2xlarge-amd64" | Arm64 -> "saas-linux-large-arm64")]
       | None, Some tags -> tags
       | None, None ->
-          (* By default, we assume Amd64 runners as given by the [gcp] tag. *)
-          ["gcp"]
+          (* By default, we assume Amd64 runners as given by the [saas-linux-2xlarge-amd64] tag. *)
+          ["saas-linux-2xlarge-amd64"]
       | Some _, Some _ ->
           failwith
             "[job] cannot specify both [arch] and [tags] at the same time in \

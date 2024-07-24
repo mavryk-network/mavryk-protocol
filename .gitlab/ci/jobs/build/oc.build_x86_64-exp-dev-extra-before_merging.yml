@@ -5,7 +5,7 @@ oc.build_x86_64-exp-dev-extra:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: build
   tags:
-  - gcp
+  - saas-linux-2xlarge-amd64
   rules:
   - changes:
     - src/**/*
