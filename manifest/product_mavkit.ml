@@ -2523,7 +2523,7 @@ let mavkit_wasmer =
     ~internal_name:"mavryk_wasmer"
     ~path:"src/lib_wasmer"
     ~synopsis:"Wasmer bindings for SCORU WASM"
-    ~deps:[ctypes; ctypes_foreign; lwt; lwt_unix; mavryk_rust_lib]
+    ~deps:[ctypes; ctypes_foreign; lwt; lwt_unix; tezos_rust_lib]
     ~preprocess:[pps ppx_deriving_show]
     ~flags:(Flags.standard ~disable_warnings:[9; 27] ())
     ~ctypes:
@@ -2756,8 +2756,8 @@ let mavkit_sapling =
         mavkit_stdlib |> open_;
         mavkit_crypto;
         mavkit_error_monad |> open_ |> open_ ~m:"TzLwtreslib";
-        mavryk_rust_lib;
-        mavryk_sapling_parameters;
+        tezos_rust_lib;
+        tezos_sapling_parameters;
         mavkit_lwt_result_stdlib;
       ]
     ~js_of_ocaml:[[S "javascript_files"; S "runtime.js"]]
