@@ -605,7 +605,7 @@ Missing edge cases:
 
 - No test for realistic timestamps producing negative difference
 
-### `SUB_MUTEZ`
+### `SUB_MUMAV`
 
 ***None***, but there are tests for the deprecated `SUB: mumav : mumav`:
 
@@ -1354,7 +1354,7 @@ Instructions with no tests:
 - `SAPLING_VERIFY_UPDATE`
 - `SELF_ADDRESS`
 - `SPLIT_TICKET`
-- `SUB_MUTEZ`
+- `SUB_MUMAV`
 - `SUB: int : nat`
 - `SUB: nat : int`
 - `SUB: nat : nat`

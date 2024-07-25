@@ -363,7 +363,7 @@ macro_rules! micheline_instructions {
                 | Prim::ABS
                 | Prim::NEG
                 | Prim::SUB
-                | Prim::SUB_MUTEZ
+                | Prim::SUB_MUMAV
                 | Prim::MUL
                 | Prim::EDIV
                 | Prim::LSL

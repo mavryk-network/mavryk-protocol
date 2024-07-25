@@ -1824,7 +1824,7 @@
                   "signature", "ticket", "EMPTY_BIG_MAP", "None", "SUB",
                   "key_hash", "ADD", "map", "VOTING_POWER", "big_map", "CDR",
                   "GT", "IF_CONS", "CONS", "LSL", "DUG", "PACK", "SHA3",
-                  "SOURCE", "or", "SUB_MUTEZ", "LAMBDA", "RIGHT",
+                  "SOURCE", "or", "SUB_MUMAV", "LAMBDA", "RIGHT",
                   "CREATE_ACCOUNT", "Unit", "CAST", "NEQ", "ITER",
                   "FAILWITH", "PUSH", "OPEN_CHEST", "SOME", "list",
                   "BALANCE", "NIL", "pair", "CAR", "UPDATE",

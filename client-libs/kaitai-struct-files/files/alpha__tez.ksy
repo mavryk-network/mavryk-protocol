@@ -1,5 +1,5 @@
 meta:
-  id: alpha__tez
+  id: alpha__mav
   endian: be
 doc: ! 'Encoding id: alpha.tez'
 types:

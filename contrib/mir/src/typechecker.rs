@@ -891,14 +891,14 @@ pub(crate) fn typecheck_instruction<'a>(
         (App(SUB, [], _), [] | [_]) => no_overload!(SUB, len 2),
         (App(SUB, expect_args!(0), _), _) => unexpected_micheline!(),
 
-        (App(SUB_MUTEZ, [], _), [.., T::Mutez, T::Mutez]) => {
+        (App(SUB_MUMAV, [], _), [.., T::Mutez, T::Mutez]) => {
             pop!();
             stack[0] = Type::new_option(T::Mutez);
             I::SubMutez
         }
-        (App(SUB_MUTEZ, [], _), [.., _, _]) => no_overload!(SUB_MUTEZ),
-        (App(SUB_MUTEZ, [], _), [] | [_]) => no_overload!(SUB_MUTEZ, len 2),
-        (App(SUB_MUTEZ, expect_args!(0), _), _) => unexpected_micheline!(),
+        (App(SUB_MUMAV, [], _), [.., _, _]) => no_overload!(SUB_MUMAV),
+        (App(SUB_MUMAV, [], _), [] | [_]) => no_overload!(SUB_MUMAV, len 2),
+        (App(SUB_MUMAV, expect_args!(0), _), _) => unexpected_micheline!(),
 
         (App(AND, [], _), [.., T::Nat, T::Nat]) => {
             pop!();
@@ -2975,7 +2975,7 @@ mod typecheck_tests {
             let expected_stack = tc_stk![Type::new_option(Type::Mutez)];
             let mut ctx = Ctx::default();
             assert_eq!(
-                typecheck_instruction(&app!(SUB_MUTEZ), &mut ctx, &mut stack),
+                typecheck_instruction(&app!(SUB_MUMAV), &mut ctx, &mut stack),
                 Ok(SubMutez)
             );
             assert_eq!(stack, expected_stack);
@@ -2987,9 +2987,9 @@ mod typecheck_tests {
             let mut stack = tc_stk![Type::Unit, Type::Mutez];
             let mut ctx = Ctx::default();
             assert_eq!(
-                typecheck_instruction(&app!(SUB_MUTEZ), &mut ctx, &mut stack),
+                typecheck_instruction(&app!(SUB_MUMAV), &mut ctx, &mut stack),
                 Err(TcError::NoMatchingOverload {
-                    instr: Prim::SUB_MUTEZ,
+                    instr: Prim::SUB_MUMAV,
                     stack: stk![Type::Unit, Type::Mutez],
                     reason: None,
                 })
@@ -2998,7 +2998,7 @@ mod typecheck_tests {
 
         #[test]
         fn too_short() {
-            too_short_test(&app!(SUB_MUTEZ), Prim::SUB_MUTEZ, 2);
+            too_short_test(&app!(SUB_MUMAV), Prim::SUB_MUMAV, 2);
         }
     }
 

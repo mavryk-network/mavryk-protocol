@@ -642,7 +642,7 @@ enums:
     146: constant
     147:
       id: sub_mumav
-      doc: SUB_MUTEZ
+      doc: SUB_MUMAV
     148: tx_rollup_l2_address
     149:
       id: min_block_time

@@ -1,5 +1,5 @@
 meta:
-  id: id_001__ptatlas__tez
+  id: id_001__ptatlas__mav
   endian: be
 doc: ! 'Encoding id: 001-PtAtLas.tez'
 types:

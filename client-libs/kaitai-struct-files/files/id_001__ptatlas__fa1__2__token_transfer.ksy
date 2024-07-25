@@ -6,7 +6,7 @@ types:
   bytes_dyn_uint30:
     seq:
     - id: len_bytes_dyn_uint30
-      type: u4
+      type: u4be
       valid:
         max: 1073741823
     - id: bytes_dyn_uint30
@@ -47,12 +47,12 @@ seq:
   type: bytes_dyn_uint30
 - id: amount
   type: z
-- id: tez__amount_tag
+- id: mav__amount_tag
   type: u1
   enum: bool
-- id: tez__amount
+- id: mav__amount
   type: bytes_dyn_uint30
-  if: (tez__amount_tag == bool::true)
+  if: (mav__amount_tag == bool::true)
 - id: fee_tag
   type: u1
   enum: bool

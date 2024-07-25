@@ -156,7 +156,7 @@ Well typed (Gas remaining: 1039933.430 units remaining)	michelson_test_scripts/a
                       /* [ string : mumav : mumav : pair key mumav signature : map key_hash mumav ] */ ;
                       FAILWITH
                       /* [] */ }
-                    { SUB_MUTEZ @new_balance
+                    { SUB_MUMAV @new_balance
                       /* [ option mumav : pair key mumav signature : map key_hash mumav ] */ ;
                       ASSERT_SOME ;
                       DIP { DUP
@@ -1498,7 +1498,7 @@ Well typed (Gas remaining: 1039676.449 units remaining)	michelson_test_scripts/a
                            (pair mumav mumav)
                            (pair address address)
                            address : list operation ] */ ;
-                   SUB_MUTEZ
+                   SUB_MUMAV
                    /* [ option mumav
                       : pair (pair nat mumav mumav)
                            (pair nat timestamp timestamp)
@@ -49529,7 +49529,7 @@ Well typed (Gas remaining: 1039987.541 units remaining)	michelson_test_scripts/o
                /* [ mumav : pair mumav mumav ] */ ;
                DIP { CDR /* [ mumav ] */ }
                /* [ mumav : mumav ] */ ;
-               SUB_MUTEZ
+               SUB_MUMAV
                /* [ option mumav ] */ ;
                ASSERT_SOME }
          /* [ mumav : mumav ] */ ;

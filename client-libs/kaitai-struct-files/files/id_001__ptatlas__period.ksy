@@ -4,4 +4,4 @@ meta:
 doc: ! 'Encoding id: 001-PtAtLas.period'
 seq:
 - id: id_001__ptatlas__period
-  type: s8
+  type: s8be

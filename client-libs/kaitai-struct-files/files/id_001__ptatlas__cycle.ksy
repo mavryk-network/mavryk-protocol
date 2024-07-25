@@ -4,4 +4,4 @@ meta:
 doc: ! 'Encoding id: 001-PtAtLas.cycle'
 seq:
 - id: id_001__ptatlas__cycle
-  type: s4
+  type: s4be

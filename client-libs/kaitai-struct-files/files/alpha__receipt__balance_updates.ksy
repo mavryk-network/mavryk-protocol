@@ -52,61 +52,61 @@ types:
       type: contract
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::contract)
     - id: block_fees
-      type: alpha__operation_metadata__alpha__tez_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::block_fees)
     - id: deposits
       type: deposits
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::deposits)
     - id: nonce_revelation_rewards
-      type: alpha__operation_metadata__alpha__tez_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::nonce_revelation_rewards)
     - id: attesting_rewards
-      type: alpha__operation_metadata__alpha__tez_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::attesting_rewards)
     - id: baking_rewards
-      type: alpha__operation_metadata__alpha__tez_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::baking_rewards)
     - id: baking_bonuses
-      type: alpha__operation_metadata__alpha__tez_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::baking_bonuses)
     - id: storage_fees
-      type: alpha__operation_metadata__alpha__tez_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::storage_fees)
     - id: double_signing_punishments
-      type: alpha__operation_metadata__alpha__tez_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::double_signing_punishments)
     - id: lost_attesting_rewards
       type: lost_attesting_rewards
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::lost_attesting_rewards)
     - id: liquidity_baking_subsidies
-      type: alpha__operation_metadata__alpha__tez_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::liquidity_baking_subsidies)
     - id: burned
-      type: alpha__operation_metadata__alpha__tez_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::burned)
     - id: commitments
       type: commitments
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::commitments)
     - id: bootstrap
-      type: alpha__operation_metadata__alpha__tez_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::bootstrap)
     - id: invoice
-      type: alpha__operation_metadata__alpha__tez_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::invoice)
     - id: initial_commitments
-      type: alpha__operation_metadata__alpha__tez_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::initial_commitments)
     - id: minted
-      type: alpha__operation_metadata__alpha__tez_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::minted)
     - id: frozen_bonds
       type: frozen_bonds
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::frozen_bonds)
     - id: smart_rollup_refutation_punishments
-      type: alpha__operation_metadata__alpha__tez_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::smart_rollup_refutation_punishments)
     - id: smart_rollup_refutation_rewards
-      type: alpha__operation_metadata__alpha__tez_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
       if: (alpha__operation_metadata__alpha__balance_and_update_tag == alpha__operation_metadata__alpha__balance_and_update_tag::smart_rollup_refutation_rewards)
     - id: unstaked_deposits
       type: unstaked_deposits
@@ -141,7 +141,7 @@ types:
     seq:
     - id: change
       type: s8be
-  alpha__operation_metadata__alpha__tez_balance_update:
+  alpha__operation_metadata__alpha__mav_balance_update:
     seq:
     - id: change
       type: s8be
@@ -169,8 +169,8 @@ types:
     seq:
     - id: committer
       size: 20
-    - id: alpha__operation_metadata__alpha__tez_balance_update
-      type: alpha__operation_metadata__alpha__tez_balance_update
+    - id: alpha__operation_metadata__alpha__mav_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
   contract:
     seq:
     - id: contract
@@ -178,8 +178,8 @@ types:
       doc: ! >-
         A contract handle: A contract notation as given to an RPC or inside scripts.
         Can be a base58 implicit contract hash or a base58 originated contract hash.
-    - id: alpha__operation_metadata__alpha__tez_balance_update
-      type: alpha__operation_metadata__alpha__tez_balance_update
+    - id: alpha__operation_metadata__alpha__mav_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
   deposits:
     seq:
     - id: staker
@@ -187,8 +187,8 @@ types:
       doc: ! >-
         frozen_staker: Abstract notion of staker used in operation receipts for frozen
         deposits, either a single staker or all the stakers delegating to some delegate.
-    - id: alpha__operation_metadata__alpha__tez_balance_update
-      type: alpha__operation_metadata__alpha__tez_balance_update
+    - id: alpha__operation_metadata__alpha__mav_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
   frozen_bonds:
     seq:
     - id: contract
@@ -198,8 +198,8 @@ types:
         Can be a base58 implicit contract hash or a base58 originated contract hash.
     - id: bond_id
       type: alpha__bond_id
-    - id: alpha__operation_metadata__alpha__tez_balance_update
-      type: alpha__operation_metadata__alpha__tez_balance_update
+    - id: alpha__operation_metadata__alpha__mav_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
   lost_attesting_rewards:
     seq:
     - id: delegate
@@ -211,8 +211,8 @@ types:
     - id: revelation
       type: u1
       enum: bool
-    - id: alpha__operation_metadata__alpha__tez_balance_update
-      type: alpha__operation_metadata__alpha__tez_balance_update
+    - id: alpha__operation_metadata__alpha__mav_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
   originated:
     seq:
     - id: contract_hash
@@ -273,8 +273,8 @@ types:
         to some delegate.
     - id: cycle
       type: s4be
-    - id: alpha__operation_metadata__alpha__tez_balance_update
-      type: alpha__operation_metadata__alpha__tez_balance_update
+    - id: alpha__operation_metadata__alpha__mav_balance_update
+      type: alpha__operation_metadata__alpha__mav_balance_update
 enums:
   alpha__bond_id_tag:
     1: smart_rollup_bond_id

@@ -1,5 +1,5 @@
 meta:
-  id: id_002__ptboreas__tez
+  id: id_002__ptboreas__mav
   endian: be
 doc: ! 'Encoding id: 002-PtBoreas.tez'
 types:

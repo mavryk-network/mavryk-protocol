@@ -641,7 +641,7 @@ fn interpret_one<'a>(
             }
         },
         I::SubMutez => {
-            ctx.gas.consume(interpret_cost::SUB_MUTEZ)?;
+            ctx.gas.consume(interpret_cost::SUB_MUMAV)?;
             let v1 = pop!(V::Mutez);
             let v2 = pop!(V::Mutez);
             if v1 >= v2 {

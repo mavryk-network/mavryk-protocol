@@ -107,7 +107,7 @@ defprim! {
     SAPLING_EMPTY_STATE, SAPLING_VERIFY_UPDATE, ticket,
     TICKET_DEPRECATED, READ_TICKET, SPLIT_TICKET,
     JOIN_TICKETS, GET_AND_UPDATE, chest, chest_key,
-    OPEN_CHEST, VIEW, view, constant, SUB_MUTEZ,
+    OPEN_CHEST, VIEW, view, constant, SUB_MUMAV,
     tx_rollup_l2_address, MIN_BLOCK_TIME, sapling_transaction,
     EMIT, Lambda_rec, LAMBDA_REC, TICKET, BYTES,
     NAT,

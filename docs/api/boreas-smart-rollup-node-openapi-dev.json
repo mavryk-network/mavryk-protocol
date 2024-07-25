@@ -1881,7 +1881,7 @@
                   "JOIN_TICKETS", "SIZE", "lambda", "AND", "NEQ", "or",
                   "BALANCE", "UNIT", "VOTING_POWER", "OR", "LAMBDA", "chest",
                   "LOOP_LEFT", "True", "Right", "Ticket", "HASH_KEY", "DUG",
-                  "sapling_transaction", "SUB_MUTEZ", "EMPTY_BIG_MAP", "MEM",
+                  "sapling_transaction", "SUB_MUMAV", "EMPTY_BIG_MAP", "MEM",
                   "IF_NONE", "nat", "TOTAL_VOTING_POWER", "LE", "Left",
                   "chest_key", "READ_TICKET", "ticket", "bls12_381_g1",
                   "LEVEL", "VIEW", "string", "PAIRING_CHECK", "LAMBDA_REC",
