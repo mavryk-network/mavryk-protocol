@@ -93,7 +93,7 @@ let mainnet_user_activated_upgrades =
   [
     (28082l, "PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt");
     (204761l, "PsddFKi32cMJ2qPjf43Qv5GDWLDPZb3T3bF6fLKiF5HtvHNU7aP");
-    (5898241l, "PsqBoTUcRjN5eRjzNXSat6ccXduaobrSBZmLNQBdcaiPNvAYFLd");
+    (5898241l, "Pt3wHys5bAWeApkCRJsjpngCpLpDeewoF5VmV4oXUEwG4tnn6wN");
   ]
 
 (* END_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
@@ -163,7 +163,7 @@ let blockchain_network_ghostnet =
         (765952l, "PtJakart2xVj7pYXJBXrqHgd82rdkLey5ZeeGwDgPp9rhQUbSqY");
         (1191936l, "PtKathmankSpLLDALzWw7CGD2j2MtyveTwboEYokqUCP4a1LxMg");
         (1654784l, "PtLimaPtLMwfNinJi9rCfDPWea8dFgTZ1MeJ9f1m2SRic6ayiwW");
-        (6729729l, "PsqBoTUcRjN5eRjzNXSat6ccXduaobrSBZmLNQBdcaiPNvAYFLd");
+        (6729729l, "Pt3wHys5bAWeApkCRJsjpngCpLpDeewoF5VmV4oXUEwG4tnn6wN");
       ]
     ~default_bootstrap_peers:
       [

@@ -2,7 +2,7 @@
   "info":
     { "title": "Smart Rollup Node RPCs",
       "description":
-        "Smart Rollup Node RPC API for protocol PsqBoTUcRjN5eRjzNXSat6ccXduaobrSBZmLNQBdcaiPNvAYFLd",
+        "Smart Rollup Node RPC API for protocol Pt3wHys5bAWeApkCRJsjpngCpLpDeewoF5VmV4oXUEwG4tnn6wN",
       "version": "Mavkit 0.0+dev (4fe3cc43)" },
   "paths":
     { "/describe":

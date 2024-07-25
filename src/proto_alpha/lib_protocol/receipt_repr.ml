@@ -201,9 +201,9 @@ let conv_balance_update encoding =
     (function `Credited v -> Credited v | `Debited v -> Debited v)
     encoding
 
-let tez_balance_update_encoding =
+let mav_balance_update_encoding =
   let open Data_encoding in
-  def "operation_metadata.alpha.tez_balance_update"
+  def "operation_metadata.alpha.mav_balance_update"
   @@ obj1 (req "change" (conv_balance_update Tez_repr.balance_update_encoding))
 
 let staking_pseudotoken_balance_update_encoding =
@@ -230,7 +230,7 @@ let balance_and_update_encoding ~use_legacy_attestation_name =
     case
       ~title
       tag
-      (merge_objs enc tez_balance_update_encoding)
+      (merge_objs enc mav_balance_update_encoding)
       (fun (Ex_token (balance, update)) ->
         match token_of_balance balance with
         | Tez -> proj balance |> Option.map (fun x -> (x, update))
