@@ -35,7 +35,7 @@ let nanomav_enc : nanomav Data_encoding.t =
   def
     "nanomav"
     ~title:"A thousandth of a mumav"
-    ~description:"One thousand nanomav make a mumav (1 tez = 1e9 nanomav)"
+    ~description:"One thousand nanomav make a mumav (1 mav = 1e9 nanomav)"
     (conv
        (fun q -> (q.Q.num, q.Q.den))
        (fun (num, den) -> {Q.num; den})

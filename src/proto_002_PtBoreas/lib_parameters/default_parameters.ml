@@ -75,7 +75,7 @@ let make_sc_rollup_parameter ~dal_activation_level
         cost_per_byte]
 
      With the current values:
-     [maximum_cost_in_storage = 348.3 tez]
+     [maximum_cost_in_storage = 348.3 mav]
   *)
   let max_lookahead_in_blocks =
     let seconds_in_a_month = Int32.of_int (seconds_in_a_day * 30) in
@@ -217,7 +217,7 @@ let constants_mainnet : Constants.Parametric.t =
     issuance_weights =
       {
         base_total_issued_per_minute;
-        (* 80.007812 tez/minute *)
+        (* 80.007812 mav/minute *)
         baking_reward_fixed_portion_weight;
         (* 1/4th of total block rewards *)
         baking_reward_bonus_weight;

@@ -616,7 +616,7 @@ end)
         | Signature_t -> signature
         | String_t -> Michelson_base.string
         | Bytes_t -> Michelson_base.bytes
-        | Mumav_t -> Michelson_base.tez
+        | Mumav_t -> Michelson_base.mav
         | Key_hash_t -> Crypto_samplers.pkh
         | Key_t -> Crypto_samplers.pk
         | Timestamp_t -> Michelson_base.timestamp

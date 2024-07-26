@@ -37,22 +37,22 @@ let ( -? ) t1 t2 = t1 -? t2 |> wrap_tzresult
 let ( *? ) t1 t2 = t1 *? t2 |> wrap_tzresult
 
 let ( +! ) t1 t2 =
-  match t1 +? t2 with Ok r -> r | Error _ -> Pervasives.failwith "adding tez"
+  match t1 +? t2 with Ok r -> r | Error _ -> Pervasives.failwith "adding mav"
 
 let ( -! ) t1 t2 =
   match t1 -? t2 with
   | Ok r -> r
-  | Error _ -> Pervasives.failwith "subtracting tez"
+  | Error _ -> Pervasives.failwith "subtracting mav"
 
 let ( *! ) t1 t2 =
   match t1 *? t2 with
   | Ok r -> r
-  | Error _ -> Pervasives.failwith "multiplying tez"
+  | Error _ -> Pervasives.failwith "multiplying mav"
 
 let ( /! ) t1 t2 =
   match t1 /? t2 with
   | Ok r -> r
-  | Error _ -> Pervasives.failwith "dividing tez"
+  | Error _ -> Pervasives.failwith "dividing mav"
 
 let of_int x =
   match Tez.of_mumav (Int64.mul (Int64.of_int x) 1_000_000L) with

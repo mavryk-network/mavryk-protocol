@@ -38,7 +38,7 @@ let z_mumav_min = Z.zero
 
 let z_mumav_max = Z.of_int64 Int64.max_int
 
-let tez_to_z (tez : Tez.t) : Z.t = Z.of_int64 (Tez.to_mumav tez)
+let tez_to_z (mav : Tez.t) : Z.t = Z.of_int64 (Tez.to_mumav mav)
 
 let z_in_mumav_bounds (z : Z.t) : bool =
   Z.Compare.(z_mumav_min <= z && z <= z_mumav_max)
@@ -53,10 +53,10 @@ let compare (c' : Z.t) (c : Tez.t tzresult) : bool =
         ()
   | true, Error _ ->
       QCheck2.Test.fail_reportf
-        "@[<h 0>Results are in Z bounds, but tez operation fails.@]"
+        "@[<h 0>Results are in Z bounds, but mav operation fails.@]"
   | false, Ok _ ->
       QCheck2.Test.fail_reportf
-        "@[<h 0>Results are not in Z bounds, but tez operation did not fail.@]"
+        "@[<h 0>Results are not in Z bounds, but mav operation did not fail.@]"
   | false, Error _ -> true
 
 (* [prop_binop f f' (a, b)] compares the function [f] in Tez with a model
@@ -96,7 +96,7 @@ let gen_ui64_sizes : int64 QCheck2.Gen.t =
       v)
     gen_int64_sizes
 
-(** Generator for tez based on [gen_tez_sizes] *)
+(** Generator for mav based on [gen_tez_sizes] *)
 let gen_tez_sizes =
   let open QCheck2.Gen in
   map Tez.of_mumav_exn gen_ui64_sizes

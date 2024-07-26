@@ -46,13 +46,13 @@ let apply_limits ctxt staking_parameters staking_balance =
   let limit_of_delegation_over_baking =
     Int64.of_int (Constants_storage.limit_of_delegation_over_baking ctxt)
   in
-  (* Overstaked tez count as delegated.
-     Note that, unlike delegated tez, overstaked tez may not have been staked
+  (* Overstaked mav count as delegated.
+     Note that, unlike delegated mav, overstaked mav may not have been staked
      the whole cycle to contribute to rights, but they are going to be frozen
      for several cycles. *)
   let* overstaked = Tez_repr.(staked_frozen -? allowed_staked_frozen) in
   let* delegated = Tez_repr.(delegated +? overstaked) in
-  (* Overdelegated tez don't count. *)
+  (* Overdelegated mav don't count. *)
   let delegated =
     match Tez_repr.(own_frozen *? limit_of_delegation_over_baking) with
     | Ok max_allowed_delegated -> Tez_repr.min max_allowed_delegated delegated

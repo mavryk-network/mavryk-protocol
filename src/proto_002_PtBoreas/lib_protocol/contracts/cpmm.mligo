@@ -14,7 +14,7 @@ type remove_liquidity =
   [@layout:comb]
   { [@annot:to] to_ : address ; // recipient of the liquidity redemption
     lqtBurned : nat ;  // amount of lqt owned by sender to burn
-    minXtzWithdrawn : tez ; // minimum amount of tez to withdraw
+    minXtzWithdrawn : mav ; // minimum amount of mav to withdraw
     minTokensWithdrawn : nat ; // minimum amount of tokens to whitdw
     deadline : timestamp ; // the time before which the request must be completed
   }
@@ -30,7 +30,7 @@ type token_to_xtz =
   [@layout:comb]
   { [@annot:to] to_ : address ;
     tokensSold : nat ;
-    minXtzBought : tez ;
+    minXtzBought : mav ;
     deadline : timestamp ;
   }
 
@@ -59,7 +59,7 @@ type entrypoint =
 type storage =
   [@layout:comb]
   { tokenPool : nat ;
-    xtzPool : tez ;
+    xtzPool : mav ;
     lqtTotal : nat ;
     tokenAddress : address ;
     lqtAddress : address ;
@@ -137,10 +137,10 @@ let fee = 999n
 (* this is slightly inefficient to inline, but, nice to have a clean stack for 
    the entrypoints for the Coq verification *)
 [@inline]
-let mumav_to_natural (a: tez) : nat =  a / 1mumav
+let mumav_to_natural (a: mav) : nat =  a / 1mumav
 
 [@inline]
-let natural_to_mumav (a: nat): tez = a * 1mumav  
+let natural_to_mumav (a: nat): mav = a * 1mumav  
 
 [@inline]
 let is_a_nat (i : int) : nat option = Michelson.is_nat i
@@ -167,7 +167,7 @@ let token_transfer (storage : storage) (from : address) (to_ : address) (token_a
     Tezos.transaction (from, (to_, token_amount)) 0mumav token_contract
 
 [@inline]
-let xtz_transfer (to_ : address) (amount_ : tez) : operation =
+let xtz_transfer (to_ : address) (amount_ : mav) : operation =
     let to_contract : unit contract =
     match (Tezos.get_contract_opt to_ : unit contract option) with
     | None -> (failwith error_INVALID_TO_ADDRESS : unit contract)
@@ -229,7 +229,7 @@ let remove_liquidity (param : remove_liquidity) (storage : storage) : result =
     else if Tezos.amount > 0mumav then
         (failwith error_AMOUNT_MUST_BE_ZERO : result)
     else begin
-        let xtz_withdrawn    : tez = natural_to_mumav ((lqtBurned * (mumav_to_natural storage.xtzPool)) / storage.lqtTotal) in
+        let xtz_withdrawn    : mav = natural_to_mumav ((lqtBurned * (mumav_to_natural storage.xtzPool)) / storage.lqtTotal) in
         let tokens_withdrawn : nat = lqtBurned * storage.tokenPool /  storage.lqtTotal in
 
         // Check that minimum withdrawal conditions are met
@@ -314,7 +314,7 @@ let token_to_xtz (param : token_to_xtz) (storage : storage) =
        
         let xtz_bought_net_burn =
 	    let bought = (xtz_bought * 999n) / 1000n in
-	    if bought < minXtzBought then (failwith error_XTZ_BOUGHT_MUST_BE_GREATER_THAN_OR_EQUAL_TO_MIN_XTZ_BOUGHT : tez) else bought in
+	    if bought < minXtzBought then (failwith error_XTZ_BOUGHT_MUST_BE_GREATER_THAN_OR_EQUAL_TO_MIN_XTZ_BOUGHT : mav) else bought in
 
         let op_token = token_transfer storage Tezos.sender Tezos.self_address tokensSold in
         let op_tez = xtz_transfer to_ xtz_bought_net_burn in

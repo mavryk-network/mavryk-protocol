@@ -150,7 +150,7 @@ types:
     - id: slot_index
       type: u1
     - id: page_index
-      type: s2
+      type: s2be
   dal_publish_slot_header:
     seq:
     - id: source

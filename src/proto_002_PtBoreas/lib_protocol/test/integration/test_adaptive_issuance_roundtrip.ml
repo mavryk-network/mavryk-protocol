@@ -113,7 +113,7 @@ end
 
 open Log_module
 
-(** Aliases for tez values *)
+(** Aliases for mav values *)
 type tez_quantity =
   | Half
   | All

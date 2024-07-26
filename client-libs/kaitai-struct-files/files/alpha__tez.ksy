@@ -1,7 +1,7 @@
 meta:
   id: alpha__mav
   endian: be
-doc: ! 'Encoding id: alpha.tez'
+doc: ! 'Encoding id: alpha.mav'
 types:
   alpha__mumav:
     seq:

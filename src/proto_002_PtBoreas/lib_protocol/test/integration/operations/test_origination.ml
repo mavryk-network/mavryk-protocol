@@ -53,7 +53,7 @@ let total_fees_for_origination ?(fee = Tez.zero) ?(credit = Tez.zero) b =
 
 (* [test_origination_balances fee credit spendable delegatable] takes four
    optional parameter: fee is the fee that pay if require to create an
-   originated contract; credit is the amount of tez that will send to this
+   originated contract; credit is the amount of mav that will send to this
    contract; delegatable default is set to true meaning that this contract is
    able to delegate.
 
@@ -94,7 +94,7 @@ let test_origination_balances ~loc:_ ?(fee = Tez.zero) ?(credit = Tez.zero) () =
 
 (** [register_origination fee credit spendable delegatable] takes four
     optional parameter: fee for the fee need to be paid if set to
-    create an originated contract; credit is the amount of tez that
+    create an originated contract; credit is the amount of mav that
     send to this originated contract; spendable default is set to true
     meaning that this contract is spendable; delegatable default is
     set to true meaning that this contract is able to delegate. *)
@@ -137,12 +137,12 @@ let register_origination ?(fee = Tez.zero) ?(credit = Tez.zero) () =
     before/after are checked. *)
 let test_balances_simple () = test_origination_balances ~loc:__LOC__ ()
 
-(** Same as [balances_simple] but credits 10 tez to the originated
+(** Same as [balances_simple] but credits 10 mav to the originated
     contract (no fees). *)
 let test_balances_credit () =
   test_origination_balances ~loc:__LOC__ ~credit:ten_tez ()
 
-(** Same as [balances_credit] with 10 tez fees. *)
+(** Same as [balances_credit] with 10 mav fees. *)
 let test_balances_credit_fee () =
   test_origination_balances ~loc:__LOC__ ~credit:(of_int 2) ~fee:ten_tez ()
 
@@ -160,11 +160,11 @@ let test_pay_fee () =
 (******************************************************)
 
 (** Create an originate contract where the contract does not have
-    enough tez to pay for the fee. *)
+    enough mav to pay for the fee. *)
 let test_not_tez_in_contract_to_pay_fee () =
   let open Lwt_result_syntax in
   let* b, (contract_1, contract_2) = Context.init2 ~consensus_threshold:0 () in
-  (* transfer everything but one tez from 1 to 2 and check balance of 1 *)
+  (* transfer everything but one mav from 1 to 2 and check balance of 1 *)
   let* balance = Context.Contract.balance (B b) contract_1 in
   let*? amount = balance -? Tez.one in
   let* operation = Op.transaction (B b) contract_1 contract_2 amount in
@@ -347,7 +347,7 @@ let tests =
     Tztest.tztest "balances_credit_fee" `Quick test_balances_credit_fee;
     Tztest.tztest "pay_fee" `Quick test_pay_fee;
     Tztest.tztest
-      "not enough tez in contract to pay fee"
+      "not enough mav in contract to pay fee"
       `Quick
       test_not_tez_in_contract_to_pay_fee;
     Tztest.tztest "multiple originations" `Quick test_multiple_originations;

@@ -81,96 +81,73 @@ types:
       enum: id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag
     - id: contract
       type: contract
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::contract)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::contract)
     - id: block_fees
       type: id_001__ptatlas__operation_metadata__alpha__tez_balance_update
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::block_fees)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::block_fees)
     - id: deposits
       type: deposits
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::deposits)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::deposits)
     - id: nonce_revelation_rewards
       type: id_001__ptatlas__operation_metadata__alpha__tez_balance_update
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::nonce_revelation_rewards)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::nonce_revelation_rewards)
     - id: attesting_rewards
       type: id_001__ptatlas__operation_metadata__alpha__tez_balance_update
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::attesting_rewards)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::attesting_rewards)
     - id: baking_rewards
       type: id_001__ptatlas__operation_metadata__alpha__tez_balance_update
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::baking_rewards)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::baking_rewards)
     - id: baking_bonuses
       type: id_001__ptatlas__operation_metadata__alpha__tez_balance_update
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::baking_bonuses)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::baking_bonuses)
     - id: storage_fees
       type: id_001__ptatlas__operation_metadata__alpha__tez_balance_update
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::storage_fees)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::storage_fees)
     - id: double_signing_punishments
       type: id_001__ptatlas__operation_metadata__alpha__tez_balance_update
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::double_signing_punishments)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::double_signing_punishments)
     - id: lost_attesting_rewards
       type: lost_attesting_rewards
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::lost_attesting_rewards)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::lost_attesting_rewards)
     - id: liquidity_baking_subsidies
       type: id_001__ptatlas__operation_metadata__alpha__tez_balance_update
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::liquidity_baking_subsidies)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::liquidity_baking_subsidies)
     - id: burned
       type: id_001__ptatlas__operation_metadata__alpha__tez_balance_update
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::burned)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::burned)
     - id: commitments
       type: commitments
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::commitments)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::commitments)
     - id: bootstrap
       type: id_001__ptatlas__operation_metadata__alpha__tez_balance_update
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::bootstrap)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::bootstrap)
     - id: invoice
       type: id_001__ptatlas__operation_metadata__alpha__tez_balance_update
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::invoice)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::invoice)
     - id: initial_commitments
       type: id_001__ptatlas__operation_metadata__alpha__tez_balance_update
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::initial_commitments)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::initial_commitments)
     - id: minted
       type: id_001__ptatlas__operation_metadata__alpha__tez_balance_update
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::minted)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::minted)
     - id: frozen_bonds
       type: frozen_bonds
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::frozen_bonds)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::frozen_bonds)
     - id: smart_rollup_refutation_punishments
       type: id_001__ptatlas__operation_metadata__alpha__tez_balance_update
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::smart_rollup_refutation_punishments)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::smart_rollup_refutation_punishments)
     - id: smart_rollup_refutation_rewards
       type: id_001__ptatlas__operation_metadata__alpha__tez_balance_update
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::smart_rollup_refutation_rewards)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::smart_rollup_refutation_rewards)
     - id: unstaked_deposits
       type: unstaked_deposits
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::unstaked_deposits)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::unstaked_deposits)
     - id: staking_delegator_numerator
       type: staking_delegator_numerator
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::staking_delegator_numerator)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::staking_delegator_numerator)
     - id: staking_delegate_denominator
       type: staking_delegate_denominator
-      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag ==
-        id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::staking_delegate_denominator)
+      if: (id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag == id_001__ptatlas__operation_metadata__alpha__balance_and_update_tag::staking_delegate_denominator)
   id_001__ptatlas__operation_metadata__alpha__balance_updates:
     seq:
     - id: id_001__ptatlas__operation_metadata__alpha__balance_updates_entries

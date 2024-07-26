@@ -356,7 +356,7 @@ module Generated = struct
       issuance_weights =
         {
           base_total_issued_per_minute;
-          (* 80.007812 tez/minute *)
+          (* 80.007812 mav/minute *)
           baking_reward_fixed_portion_weight =
             (* 1/4 or 1/2 *)
             (if Compare.Int.(bonus_committee_size <= 0) then

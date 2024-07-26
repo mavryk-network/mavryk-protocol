@@ -26,8 +26,8 @@
 (** Stake of a delegate.
 
     It has the invariants enforced by {!Stake_context.apply_limits}:
-    [frozen] excludes any overstaked tez, and [weighted_delegated]
-    includes overstaked tez but excludes overdelegated tez. *)
+    [frozen] excludes any overstaked mav, and [weighted_delegated]
+    includes overstaked mav but excludes overdelegated mav. *)
 type t = private {frozen : Tez_repr.t; weighted_delegated : Tez_repr.t}
 
 val zero : t
@@ -40,7 +40,7 @@ val encoding : t Data_encoding.t
 
 (** Returns only the frozen part of a stake. This includes the frozen
     balances from the delegate and any stakers, but excludes any
-    overstaked tez. *)
+    overstaked mav. *)
 val get_frozen : t -> Tez_repr.t
 
 val ( +? ) : t -> t -> t tzresult

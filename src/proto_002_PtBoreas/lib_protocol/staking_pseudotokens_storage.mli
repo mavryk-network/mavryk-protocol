@@ -30,9 +30,9 @@
 (** [stake ctxt ~contract ~delegate amount] credits the [contract]'s
     staking pseudotokens and the [delegate]'s frozen deposits pseudotokens by
     an amount of pseudotokens corresponding to [amount] using [delegate]'s
-    staked frozen deposits pseudotokens/tez rate.
+    staked frozen deposits pseudotokens/mav rate.
 
-    This function must be called on "stake" **before** transferring tez to
+    This function must be called on "stake" **before** transferring mav to
     [delegate]'s frozen deposits.
 
     [delegate] must be [contract]'s delegate. *)
@@ -46,10 +46,10 @@ val stake :
 (** [request_unstake ctxt ~contract ~delegate amount] debits the [contract]'s
     staking pseudotokens and the [delegate]'s frozen deposits pseudotokens by
     an amount of pseudotokens corresponding to [amount] using [delegate]'s
-    staked frozen deposits pseudotokens/tez rate capped by [contract]'s staking
+    staked frozen deposits pseudotokens/mav rate capped by [contract]'s staking
     pseudotokens balance.
 
-    It returns the tez amount corresponding to the debited pseudotokens.
+    It returns the mav amount corresponding to the debited pseudotokens.
 
     Resulting context do not make sense if [delegate] is not [contract]'s
     delegate. *)
@@ -62,10 +62,10 @@ val request_unstake :
 
 module For_RPC : sig
   (** [staked_balance ctxt ~contract ~delegate] returns [contract]'s
-    current staked tez.
+    current staked mav.
     For delegate, it is their own frozen deposits.
-    For delegators, their staking balance in pseudotokens is converted into tez
-    using [delegate]'s staked frozen deposits tez/pseudotokens rate.
+    For delegators, their staking balance in pseudotokens is converted into mav
+    using [delegate]'s staked frozen deposits mav/pseudotokens rate.
 
     The given [delegate] should be [contract]'s delegate. Otherwise the given
     [Tez.t] amount will not make sense. *)

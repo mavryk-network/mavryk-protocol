@@ -25,7 +25,7 @@
 
 (** Simple abstraction from low-level storage to handle unstaked frozen deposits.
 
-    Unstaked frozen deposits are tez coming from frozen deposits that have been
+    Unstaked frozen deposits are mav coming from frozen deposits that have been
     unstaked, either:
     - manually with the "unstake" pseudo-operation,
     - automatically at cycle ends with the auto-staking mechanism, or

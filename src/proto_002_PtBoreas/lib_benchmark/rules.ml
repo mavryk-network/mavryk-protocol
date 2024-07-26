@@ -748,7 +748,7 @@ struct
     in
     let replace_by_mumav rng_state =
       replacement_gen ~fresh:[] ~typ:Type.mumav ~replacement:(fun () ->
-          Mikhailsky.Data.mumav (Michelson_base.tez rng_state))
+          Mikhailsky.Data.mumav (Michelson_base.mav rng_state))
     in
     let replace_by_key_hash rng_state =
       replacement_gen ~fresh:[] ~typ:Type.key_hash ~replacement:(fun () ->

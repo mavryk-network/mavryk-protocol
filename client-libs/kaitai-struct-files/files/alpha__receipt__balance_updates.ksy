@@ -137,11 +137,11 @@ types:
       type: alpha__operation_metadata__alpha__balance_and_update
     - id: alpha__operation_metadata__alpha__update_origin
       type: alpha__operation_metadata__alpha__update_origin
-  alpha__operation_metadata__alpha__staking_abstract_quantity:
+  alpha__operation_metadata__alpha__mav_balance_update:
     seq:
     - id: change
       type: s8be
-  alpha__operation_metadata__alpha__mav_balance_update:
+  alpha__operation_metadata__alpha__staking_abstract_quantity:
     seq:
     - id: change
       type: s8be

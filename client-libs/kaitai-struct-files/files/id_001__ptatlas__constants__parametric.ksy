@@ -29,11 +29,11 @@ types:
       type: u1
       enum: bool
     - id: number_of_slots
-      type: s2
+      type: s2be
     - id: attestation_lag
-      type: s2
+      type: s2be
     - id: attestation_threshold
-      type: s2
+      type: s2be
     - id: blocks_per_epoch
       type: s4be
     - id: redundancy_factor
@@ -204,7 +204,7 @@ seq:
 - id: liquidity_baking_toggle_ema_threshold
   type: s4be
 - id: max_operations_time_to_live
-  type: s2
+  type: s2be
 - id: minimal_block_delay
   type: s8be
 - id: delay_increment_per_round

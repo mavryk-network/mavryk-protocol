@@ -427,7 +427,7 @@ module S = struct
   let min_delegated_in_current_cycle =
     RPC_service.get_service
       ~description:
-        "Returns the minimum of delegated tez (in mumav) over the current \
+        "Returns the minimum of delegated mav (in mumav) over the current \
          cycle and the block level where this value was last updated (* Level \
          is `None` when decoding values from protocol O)."
       ~query:RPC_query.empty

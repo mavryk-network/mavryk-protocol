@@ -195,11 +195,11 @@ types:
       type: id_002__ptboreas__operation_metadata__alpha__balance_and_update
     - id: id_002__ptboreas__operation_metadata__alpha__update_origin
       type: id_002__ptboreas__operation_metadata__alpha__update_origin
-  id_002__ptboreas__operation_metadata__alpha__staking_abstract_quantity:
+  id_002__ptboreas__operation_metadata__alpha__mav_balance_update:
     seq:
     - id: change
       type: s8be
-  id_002__ptboreas__operation_metadata__alpha__mav_balance_update:
+  id_002__ptboreas__operation_metadata__alpha__staking_abstract_quantity:
     seq:
     - id: change
       type: s8be

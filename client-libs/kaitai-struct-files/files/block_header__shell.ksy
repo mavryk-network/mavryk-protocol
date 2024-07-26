@@ -55,7 +55,7 @@ seq:
 - id: fitness
   type: fitness_0
   doc: ! >-
-    Block fitness: The fitness, or score, of a block, that allow the Tezos to decide
+    Block fitness: The fitness, or score, of a block, that allow the Mavryk to decide
     which chain is the best. A fitness value is a list of byte sequences. They are
     compared as follows: shortest lists are smaller; lists of the same length are
     compared according to the lexicographical order.

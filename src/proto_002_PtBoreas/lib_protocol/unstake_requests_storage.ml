@@ -197,7 +197,7 @@ let add ctxt ~contract ~delegate cycle amount =
               (* This would happen if the staker was allowed to stake towards
                  a new delegate while having unfinalizable unstake requests,
                  which is not allowed: it will fail earlier. Also, unstaking
-                 for 0 tez is a noop and does not change the state of the storage,
+                 for 0 mav is a noop and does not change the state of the storage,
                  so it does not allow to reach this error either. *)
               Result_syntax.tzfail
                 Cannot_unstake_with_unfinalizable_unstake_requests_to_another_delegate
