@@ -10,8 +10,8 @@ def b58dec(word):
 
     Examples:
     - b58dec("1") = 0 = 0 * 58 ** 0
-    - b58dec("mv1") = 174870 = 51 * 58**2 + 57 * 58 ** 1 + 0 * 58**0
-                             =     t            z             1
+    - b58dec("mv1") = 151090 = 44 * 58**2 + 53 * 58 ** 1 + 0 * 58**0
+                             =     m            v             1
     """
     x = 0
     for c in word:
@@ -24,7 +24,7 @@ def asciidec(val):
     """
     Convert an integer to ascii, i.e. a list of integers in base 256.
     Examples:
-    - asciidec(434591) = 6 * 256**2 + 161 * 256**1 + 159 * 256**0
+    - asciidec(375492) = 5 * 256**2 + 186 * 256**1 + 196 * 256**0
     - asciidec(797373) = 12 * 256**2 + 42 * 256**1 + 189 * 256**0
     """
     word = []

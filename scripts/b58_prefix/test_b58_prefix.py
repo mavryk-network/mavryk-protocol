@@ -11,13 +11,13 @@ def test_compute_version_bytes(prefix, length, expected_result):
 
 @pytest.mark.parametrize("word,expected_output", [
     ("1", 0),
-    ("mv1", 174870),
+    ("mv1", 151090),
 ])
 def test_b58dec(word, expected_output):
     assert b58_prefix.b58dec(word) == expected_output
 
 @pytest.mark.parametrize("val,expected_output", [
-    (434591, [5, 186, 196]),
+    (375492, [5, 186, 196]),
     (797373, [12, 42, 189]),
 ])
 def test_asciidec(val, expected_output):
