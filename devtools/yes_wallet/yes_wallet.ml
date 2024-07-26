@@ -33,7 +33,7 @@ let run_load_bakers_public_keys ?staking_share_opt ?network_opt ?level base_dir
   let open Mavryk_error_monad in
   match
     Lwt_main.run
-      (load_mainnet_bakers_public_keys
+      (load_bakers_public_keys
          ?staking_share_opt
          ?network_opt
          ?level
@@ -65,6 +65,7 @@ let run_build_yes_wallet ?staking_share_opt ?network_opt base_dir
     Lwt_main.run
       (build_yes_wallet
          ?staking_share_opt
+         ?network_opt
          base_dir
          ~active_bakers_only
          ~aliases)
@@ -199,7 +200,7 @@ let usage () =
      @[<v>@[<v 4>> convert wallet <wallet-dir> inplace@,\
      same as above but overwrite the file in the directory <wallet-dir>@]@,\
      @[<v 4>> create from context <base_dir> in <yes_wallet_dir> [%s] [%s \
-     <NUM>]@,\
+     <NUM>] [%s <%a>]@,\
      creates a yes-wallet with all delegates in the head block of the context \
      in <base_dir> and store it in <yes_wallet_dir>@,\
      if %s is used the deactivated bakers are filtered out@,\
@@ -218,8 +219,20 @@ let usage () =
      is used existing files will be overwritten@]@."
     active_bakers_only_opt_name
     staking_share_opt_name
+    network_opt_name
+    Format.(
+      pp_print_list
+        ~pp_sep:(fun ppf () -> pp_print_string ppf "|")
+        pp_print_string)
+    supported_network
     active_bakers_only_opt_name
     staking_share_opt_name
+    network_opt_name
+    Format.(
+      pp_print_list
+        ~pp_sep:(fun ppf () -> pp_print_string ppf "|")
+        pp_print_string)
+    supported_network
     alias_file_opt_name
     force_opt_name
 
@@ -282,7 +295,8 @@ let () =
         || Str.string_match (Str.regexp "[0-9]+") arg 0
         (* FIME this is an uggly hack, but hey -lets' force alias files
            to have a .json extension.*)
-        || String.ends_with ~suffix:alias_file_extension arg)
+        || String.ends_with ~suffix:alias_file_extension arg
+        || List.mem (String.lowercase_ascii arg) supported_network)
       argv
   in
   let active_bakers_only =
@@ -306,6 +320,10 @@ let () =
       | opt :: file :: t
         when opt = alias_file_opt_name
              && String.ends_with ~suffix:alias_file_extension file ->
+          filter t
+      | opt :: net :: t
+        when opt = network_opt_name
+             && List.mem (String.lowercase_ascii net) supported_network ->
           filter t
       | h :: t -> h :: filter t
     in
@@ -335,6 +353,7 @@ let () =
         let yes_alias_list =
           run_build_yes_wallet
             ~staking_share_opt
+            ?network_opt
             base_dir
             ~active_bakers_only
             ~aliases
@@ -404,7 +423,7 @@ let () =
       | None -> exit 0)
   | [_; "dump"; "staking"; "balances"; "from"; base_dir; "in"; csv_file] ->
       let alias_pkh_pk_list =
-        run_load_mainnet_bakers_public_keys
+        run_load_bakers_public_keys
           ~staking_share_opt
           ?network_opt
           ?level:level_opt

@@ -1487,7 +1487,7 @@ dependencies = [
  "rvemu",
  "mavryk-smart-rollup-constants",
  "mavryk-smart-rollup-encoding",
- "tezos_crypto_rs",
+ "mavryk_crypto_rs",
  "vm-fdt",
 ]
 
@@ -1871,7 +1871,7 @@ dependencies = [
  "regex",
  "mavryk-smart-rollup-core",
  "mavryk-smart-rollup-host",
- "tezos_crypto_rs",
+ "mavryk_crypto_rs",
  "tezos_data_encoding",
  "tezos_data_encoding_derive",
  "thiserror",
@@ -1886,10 +1886,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "tezos_crypto_rs"
+name = "mavryk_crypto_rs"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "284fa6f4be10eff67ca5b2f9e8ec9544be81a07223f6a4c8d3a49a13aecce768"
+checksum = "e87c3213e23367a7a9998611d3f98b5ae0b2385d848cf5ca96b6592bbfa3a64a"
 dependencies = [
  "anyhow",
  "base58",
@@ -1925,7 +1925,7 @@ dependencies = [
  "num-bigint",
  "num-traits",
  "serde",
- "tezos_crypto_rs",
+ "mavryk_crypto_rs",
  "tezos_data_encoding_derive",
  "thiserror",
 ]

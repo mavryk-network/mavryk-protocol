@@ -1,7 +1,7 @@
 meta:
   id: id_001__ptatlas__mav
   endian: be
-doc: ! 'Encoding id: 001-PtAtLas.tez'
+doc: ! 'Encoding id: 001-PtAtLas.mav'
 types:
   id_001__ptatlas__mumav:
     seq:

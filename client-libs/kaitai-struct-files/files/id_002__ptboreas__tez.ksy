@@ -1,7 +1,7 @@
 meta:
   id: id_002__ptboreas__mav
   endian: be
-doc: ! 'Encoding id: 002-PtBoreas.tez'
+doc: ! 'Encoding id: 002-PtBoreas.mav'
 types:
   id_002__ptboreas__mumav:
     seq:

@@ -280,10 +280,9 @@ let scenario_without_rollup_node node dal_node client _network_name
 
 let prepare_installer_kernel rollup_node =
   Sc_rollup_helpers.prepare_installer_kernel
-    ~base_installee:"./"
-    ~preimages_dir:
+  ~preimages_dir:
       (Filename.concat (Sc_rollup_node.data_dir rollup_node) "wasm_2_0_0")
-    "dal_echo_kernel"
+      Constant.WASM.dal_echo_kernel  
 
 (* Originate a rollup with alias [rollup_alias] running the "dal_echo_kernel" on
    the given [rollup_node]. *)
@@ -364,15 +363,7 @@ let scenario_with_rollup_node node dal_node client network_name proto_parameters
       let* _boot_sector = prepare_installer_kernel rollup_node in
       unit
   in
-  let* () =
-    Sc_rollup_node.run rollup_node rollup_alias ["--log-kernel-debug"]
-  in
-  let rollup_client =
-    (* TODO: https://gitlab.com/tezos/tezos/-/issues/6531
-       Weeklynet starts with [Protocol.(previous_protocol Alpha)]. *)
-    Sc_rollup_client.create ~protocol:Protocol.Alpha rollup_node
-  in
-
+  let* () = Sc_rollup_node.run rollup_node rollup_alias [Log_kernel_debug] in
   let* first_level =
     let* crt = Node.get_level node in
     crt + 1 |> return
@@ -402,13 +393,14 @@ let scenario_with_rollup_node node dal_node client network_name proto_parameters
            block. *)
         Sc_rollup_node.wait_for_level rollup_node (queried_level + 1)
       in
-      let*! value =
-        Sc_rollup_client.inspect_durable_state_value
-          rollup_client
-          ~block:(string_of_int queried_level)
-          ~pvm_kind:"wasm_2_0_0"
-          ~operation:Value
-          ~key:"/output/slot-0"
+      let* value =
+        Sc_rollup_node.RPC.call rollup_node
+        @@ Sc_rollup_rpc.get_global_block_durable_state_value
+             ~block:(string_of_int queried_level)
+             ~pvm_kind:"wasm_2_0_0"
+             ~operation:Value
+             ~key:"/output/slot-0"
+             ()
       in
       (match value with
       | None ->

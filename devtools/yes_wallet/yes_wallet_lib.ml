@@ -154,7 +154,7 @@ let filter_up_to_staking_share share total_stake to_mumav keys_list =
   | None ->
       List.map
         (fun (pkh, pk, stb, frz, unstk_frz) ->
-          (pkh, pk, to_mumav stb, to_mumav\ frz, to_mumav unstk_frz))
+          (pkh, pk, to_mumav stb, to_mumav frz, to_mumav unstk_frz))
         keys_list
   | Some share ->
       let staking_amount_limit =
@@ -440,24 +440,23 @@ let genesis ~network =
 let get_context ?level ~network_opt base_dir =
   let open Lwt_result_syntax in
   let open Mavryk_store in
-  let mainnet_genesis =
-    {
-      Genesis.time = Time.Protocol.of_notation_exn "2018-06-30T16:07:32Z";
-      block =
-        Block_hash.of_b58check_exn
-          "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2";
-      protocol =
-        Protocol_hash.of_b58check_exn
-          "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
-    }
-  in
+  let genesis = genesis ~network:network_opt in
   let* store =
-    Mavryk_store.Store.init
-      ~store_dir:(Filename.concat base_dir "store")
-      ~context_dir:(Filename.concat base_dir "context")
-      ~allow_testchains:true
-      ~readonly:true
-      mainnet_genesis
+    Lwt.catch
+      (fun () ->
+        Mavryk_store.Store.init
+          ~store_dir:(Filename.concat base_dir "store")
+          ~context_dir:(Filename.concat base_dir "context")
+          ~allow_testchains:true
+          ~readonly:true
+          genesis)
+      (fun exn ->
+        Format.eprintf
+          "An error occured while initialising the store. It usually happens \
+           when using the wrong network alias.\n\
+           Network alias used was \"%s\".@."
+          network_opt ;
+        tzfail (Exn exn))
   in
   let main_chain_store = Store.main_chain_store store in
   let*! block =
@@ -514,6 +513,21 @@ let load_bakers_public_keys ?(staking_share_opt = None)
          list) =
     match protocol_of_hash protocol_hash with
     | None ->
+      if
+        protocol_hash
+        = Protocol_hash.of_b58check_exn
+            "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
+      then
+        Error_monad.failwith
+          "Context was probably ill loaded, found Genesis protocol.@;\
+           Known protocols are: %a"
+          Format.(
+            pp_print_list
+              ~pp_sep:(fun fmt () -> pp_print_string fmt ", ")
+              Protocol_hash.pp)
+          (List.map (fun (module P : Sigs.PROTOCOL) -> P.hash)
+          @@ Known_protocols.get_all ())
+      else
         Error_monad.failwith
           "Unknown protocol hash: %a.@;Known protocols are: %a"
           Protocol_hash.pp
@@ -600,15 +614,16 @@ let load_contracts ?dump_contracts ?(network_opt = "mainnet") ?level base_dir =
           protocol ;
         get_contracts ?dump_contracts protocol context header
   in
-  let*! () = Mavryk_crypto.Store.close_store store in
+  let*! () = Mavryk_store.Store.close_store store in
   return contracts
 
 let build_yes_wallet ?staking_share_opt ?network_opt base_dir
     ~active_bakers_only ~aliases =
   let open Lwt_result_syntax in
   let+ mainnet_bakers =
-    load_mainnet_bakers_public_keys
+    load_bakers_public_keys
       ?staking_share_opt
+      ?network_opt
       base_dir
       ~active_bakers_only
       aliases
