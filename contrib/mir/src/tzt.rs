@@ -331,8 +331,8 @@ impl fmt::Display for ErrorExpectation<'_> {
 pub enum InterpreterErrorExpectation<'a> {
     /// GeneralOverflow error, which can happen with bit-shift arithmetic.
     GeneralOverflow(BigInt, BigInt),
-    /// MutezOverflow error, which can happen with mumav arithmetic.
-    MutezOverflow(i64, i64),
+    /// MumavOverflow error, which can happen with mumav arithmetic.
+    MumavOverflow(i64, i64),
     /// FailedWith error, which happens when execution reaches `FAILWITH`
     /// instruction.
     FailedWith(Micheline<'a>),
@@ -343,7 +343,7 @@ impl fmt::Display for InterpreterErrorExpectation<'_> {
         use InterpreterErrorExpectation::*;
         match self {
             GeneralOverflow(a1, a2) => write!(f, "General Overflow {} {}", a1, a2),
-            MutezOverflow(a1, a2) => write!(f, "MutezOverflow {} {}", a1, a2),
+            MumavOverflow(a1, a2) => write!(f, "MumavOverflow {} {}", a1, a2),
             FailedWith(v) => write!(f, "FailedWith {:?}", v),
         }
     }

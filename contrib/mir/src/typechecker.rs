@@ -394,7 +394,7 @@ fn parse_ty_with_entrypoints(
         App(bool, [], _) => Type::Bool,
         App(bool, ..) => unexpected()?,
 
-        App(mumav, [], _) => Type::Mutez,
+        App(mumav, [], _) => Type::Mumav,
         App(mumav, ..) => unexpected()?,
 
         App(string, [], _) => Type::String,
@@ -721,9 +721,9 @@ pub(crate) fn typecheck_instruction<'a>(
             pop!();
             I::Add(overloads::Add::NatInt)
         }
-        (App(ADD, [], _), [.., T::Mutez, T::Mutez]) => {
+        (App(ADD, [], _), [.., T::Mumav, T::Mumav]) => {
             pop!();
-            I::Add(overloads::Add::MutezMutez)
+            I::Add(overloads::Add::MumavMumav)
         }
         (App(ADD, [], _), [.., T::Bls12381Fr, T::Bls12381Fr]) => {
             pop!();
@@ -762,19 +762,19 @@ pub(crate) fn typecheck_instruction<'a>(
             pop!();
             I::Mul(overloads::Mul::IntInt)
         }
-        (App(MUL, [], _), [.., T::Mutez, T::Nat]) => {
+        (App(MUL, [], _), [.., T::Mumav, T::Nat]) => {
             pop!();
-            I::Mul(overloads::Mul::NatMutez)
+            I::Mul(overloads::Mul::NatMumav)
         }
         (App(MUL, [], _), [.., T::Nat, T::Int]) => {
             stack.drop_top(2);
             stack.push(T::Int);
             I::Mul(overloads::Mul::IntNat)
         }
-        (App(MUL, [], _), [.., T::Nat, T::Mutez]) => {
+        (App(MUL, [], _), [.., T::Nat, T::Mumav]) => {
             stack.drop_top(2);
-            stack.push(T::Mutez);
-            I::Mul(overloads::Mul::MutezNat)
+            stack.push(T::Mumav);
+            I::Mul(overloads::Mul::MumavNat)
         }
         (App(MUL, [], _), [.., T::Bls12381Fr, T::Bls12381G1]) => {
             stack.drop_top(2);
@@ -832,15 +832,15 @@ pub(crate) fn typecheck_instruction<'a>(
             stack[0] = T::new_option(T::new_pair(T::Int, T::Nat));
             I::EDiv(overloads::EDiv::IntInt)
         }
-        (App(EDIV, [], _), [.., T::Nat, T::Mutez]) => {
+        (App(EDIV, [], _), [.., T::Nat, T::Mumav]) => {
             pop!();
-            stack[0] = T::new_option(T::new_pair(T::Mutez, T::Mutez));
-            I::EDiv(overloads::EDiv::MutezNat)
+            stack[0] = T::new_option(T::new_pair(T::Mumav, T::Mumav));
+            I::EDiv(overloads::EDiv::MumavNat)
         }
-        (App(EDIV, [], _), [.., T::Mutez, T::Mutez]) => {
+        (App(EDIV, [], _), [.., T::Mumav, T::Mumav]) => {
             pop!();
-            stack[0] = T::new_option(T::new_pair(T::Nat, T::Mutez));
-            I::EDiv(overloads::EDiv::MutezMutez)
+            stack[0] = T::new_option(T::new_pair(T::Nat, T::Mumav));
+            I::EDiv(overloads::EDiv::MumavMumav)
         }
         (App(EDIV, [], _), [.., _, _]) => no_overload!(EDIV),
         (App(EDIV, [], _), [_] | []) => no_overload!(EDIV, len 2),
@@ -891,10 +891,10 @@ pub(crate) fn typecheck_instruction<'a>(
         (App(SUB, [], _), [] | [_]) => no_overload!(SUB, len 2),
         (App(SUB, expect_args!(0), _), _) => unexpected_micheline!(),
 
-        (App(SUB_MUMAV, [], _), [.., T::Mutez, T::Mutez]) => {
+        (App(SUB_MUMAV, [], _), [.., T::Mumav, T::Mumav]) => {
             pop!();
-            stack[0] = Type::new_option(T::Mutez);
-            I::SubMutez
+            stack[0] = Type::new_option(T::Mumav);
+            I::SubMumav
         }
         (App(SUB_MUMAV, [], _), [.., _, _]) => no_overload!(SUB_MUMAV),
         (App(SUB_MUMAV, [], _), [] | [_]) => no_overload!(SUB_MUMAV, len 2),
@@ -1518,7 +1518,7 @@ pub(crate) fn typecheck_instruction<'a>(
         (App(COMPARE, expect_args!(0), _), _) => unexpected_micheline!(),
 
         (App(AMOUNT, [], _), ..) => {
-            stack.push(T::Mutez);
+            stack.push(T::Mumav);
             I::Amount
         }
         (App(AMOUNT, expect_args!(0), _), _) => unexpected_micheline!(),
@@ -1779,7 +1779,7 @@ pub(crate) fn typecheck_instruction<'a>(
         (App(UNPACK, [_], _), []) => no_overload!(UNPACK, len 1),
         (App(UNPACK, expect_args!(1), _), _) => unexpected_micheline!(),
 
-        (App(TRANSFER_TOKENS, [], _), [.., T::Contract(ct), T::Mutez, arg_t]) => {
+        (App(TRANSFER_TOKENS, [], _), [.., T::Contract(ct), T::Mumav, arg_t]) => {
             ensure_ty_eq(&mut ctx.gas, ct, arg_t)?;
             stack.drop_top(3);
             stack.push(T::Operation);
@@ -1951,7 +1951,7 @@ pub(crate) fn typecheck_instruction<'a>(
         }
 
         (App(BALANCE, [], _), ..) => {
-            stack.push(T::Mutez);
+            stack.push(T::Mumav);
             I::Balance
         }
         (App(BALANCE, expect_args!(0), _), _) => unexpected_micheline!(),
@@ -2095,7 +2095,7 @@ pub(crate) fn typecheck_instruction<'a>(
         (App(PAIRING_CHECK, [], _), []) => no_overload!(PAIRING_CHECK, len 1),
         (App(PAIRING_CHECK, expect_args!(0), _), _) => unexpected_micheline!(),
 
-        (App(CREATE_CONTRACT, [cs], _), [.., new_storage, T::Mutez, T::Option(opt_keyhash)])
+        (App(CREATE_CONTRACT, [cs], _), [.., new_storage, T::Mumav, T::Option(opt_keyhash)])
             if matches!(opt_keyhash.as_ref(), Type::KeyHash) =>
         {
             let contract_script = cs.typecheck_script(ctx)?;
@@ -2215,7 +2215,7 @@ pub(crate) fn typecheck_value<'a>(
         (T::Int, V::Int(n)) => TV::Int(n.clone()),
         (T::Bool, V::App(Prim::True, [], _)) => TV::Bool(true),
         (T::Bool, V::App(Prim::False, [], _)) => TV::Bool(false),
-        (T::Mutez, V::Int(n)) if !n.is_negative() => TV::Mutez(i64::try_from(n)?),
+        (T::Mumav, V::Int(n)) if !n.is_negative() => TV::Mumav(i64::try_from(n)?),
         (T::String, V::String(s)) => TV::String(s.clone()),
         (T::Unit, V::App(Prim::Unit, [], _)) => TV::Unit,
         (T::Pair(pt), V::App(Prim::Pair, [vl, rest @ ..], _) | V::Seq([vl, rest @ ..]))
@@ -2971,12 +2971,12 @@ mod typecheck_tests {
 
         #[test]
         fn ok() {
-            let mut stack = tc_stk![Type::Mutez, Type::Mutez];
-            let expected_stack = tc_stk![Type::new_option(Type::Mutez)];
+            let mut stack = tc_stk![Type::Mumav, Type::Mumav];
+            let expected_stack = tc_stk![Type::new_option(Type::Mumav)];
             let mut ctx = Ctx::default();
             assert_eq!(
                 typecheck_instruction(&app!(SUB_MUMAV), &mut ctx, &mut stack),
-                Ok(SubMutez)
+                Ok(SubMumav)
             );
             assert_eq!(stack, expected_stack);
             assert!(ctx.gas.milligas() < Gas::default().milligas());
@@ -2984,13 +2984,13 @@ mod typecheck_tests {
 
         #[test]
         fn mismatch() {
-            let mut stack = tc_stk![Type::Unit, Type::Mutez];
+            let mut stack = tc_stk![Type::Unit, Type::Mumav];
             let mut ctx = Ctx::default();
             assert_eq!(
                 typecheck_instruction(&app!(SUB_MUMAV), &mut ctx, &mut stack),
                 Err(TcError::NoMatchingOverload {
                     instr: Prim::SUB_MUMAV,
-                    stack: stk![Type::Unit, Type::Mutez],
+                    stack: stk![Type::Unit, Type::Mumav],
                     reason: None,
                 })
             );
@@ -3030,12 +3030,12 @@ mod typecheck_tests {
 
     #[test]
     fn test_add_mumav_mumav() {
-        let mut stack = tc_stk![Type::Mutez, Type::Mutez];
-        let expected_stack = tc_stk![Type::Mutez];
+        let mut stack = tc_stk![Type::Mumav, Type::Mumav];
+        let expected_stack = tc_stk![Type::Mumav];
         let mut ctx = Ctx::default();
         assert_eq!(
             typecheck_instruction(&app!(ADD), &mut ctx, &mut stack),
-            Ok(Add(overloads::Add::MutezMutez))
+            Ok(Add(overloads::Add::MumavMumav))
         );
         assert_eq!(stack, expected_stack);
         assert_eq!(ctx.gas.milligas(), Gas::default().milligas() - 440);
@@ -4436,7 +4436,7 @@ mod typecheck_tests {
             typecheck_instruction(&parse("AMOUNT").unwrap(), &mut Ctx::default(), &mut stack),
             Ok(Amount)
         );
-        assert_eq!(stack, tc_stk![Type::Mutez]);
+        assert_eq!(stack, tc_stk![Type::Mumav]);
     }
 
     #[test]
@@ -6829,8 +6829,8 @@ mod typecheck_tests {
         test!(NatInt, T::Nat, T::Int, T::Int);
         test!(IntNat, T::Int, T::Nat, T::Int);
         test!(IntInt, T::Int, T::Int, T::Int);
-        test!(MutezNat, T::Mutez, T::Nat, T::Mutez);
-        test!(NatMutez, T::Nat, T::Mutez, T::Mutez);
+        test!(MumavNat, T::Mumav, T::Nat, T::Mumav);
+        test!(NatMumav, T::Nat, T::Mumav, T::Mumav);
 
         #[test]
         fn wrong_type() {
@@ -6914,7 +6914,7 @@ mod typecheck_tests {
 
     #[test]
     fn transfer_tokens() {
-        let stk = &mut tc_stk![Type::new_contract(Type::Nat), Type::Mutez, Type::Int];
+        let stk = &mut tc_stk![Type::new_contract(Type::Nat), Type::Mumav, Type::Int];
         assert_eq!(
             typecheck_instruction(&parse("TRANSFER_TOKENS").unwrap(), &mut Ctx::default(), stk),
             Err(TypesNotEqual(Type::Nat, Type::Int).into())
@@ -6930,12 +6930,12 @@ mod typecheck_tests {
             })
         );
 
-        let stk = &mut tc_stk![Type::Nat, Type::Mutez, Type::Nat];
+        let stk = &mut tc_stk![Type::Nat, Type::Mumav, Type::Nat];
         assert_eq!(
             typecheck_instruction(&parse("TRANSFER_TOKENS").unwrap(), &mut Ctx::default(), stk),
             Err(TcError::NoMatchingOverload {
                 instr: Prim::TRANSFER_TOKENS,
-                stack: stk![Type::Nat, Type::Mutez, Type::Nat],
+                stack: stk![Type::Nat, Type::Mumav, Type::Nat],
                 reason: None
             })
         );
@@ -6950,7 +6950,7 @@ mod typecheck_tests {
             })
         );
 
-        let stk = &mut tc_stk![Type::new_contract(Type::Nat), Type::Mutez, Type::Nat];
+        let stk = &mut tc_stk![Type::new_contract(Type::Nat), Type::Mumav, Type::Nat];
         assert_eq!(
             typecheck_instruction(&parse("TRANSFER_TOKENS").unwrap(), &mut Ctx::default(), stk),
             Ok(Instruction::TransferTokens)
@@ -7515,7 +7515,7 @@ mod typecheck_tests {
             Ok(Balance)
         );
 
-        assert_eq!(stk, &tc_stk![Type::Mutez]);
+        assert_eq!(stk, &tc_stk![Type::Mumav]);
     }
 
     #[test]
@@ -7973,7 +7973,7 @@ mod typecheck_tests {
 
     #[test]
     fn create_contract() {
-        let stk = &mut tc_stk![Type::Unit, Type::Mutez, Type::new_option(Type::KeyHash)];
+        let stk = &mut tc_stk![Type::Unit, Type::Mumav, Type::new_option(Type::KeyHash)];
         let mut ctx = Ctx::default();
         let create_contract_src = "CREATE_CONTRACT { parameter unit; storage unit; code { DROP; UNIT; NIL operation; PAIR; }}";
         let cs_mich =
@@ -7991,7 +7991,7 @@ mod typecheck_tests {
         assert_eq!(stk, &tc_stk![Type::Address, Type::Operation]);
 
         // Stack too short tests
-        let stk = &mut tc_stk![Type::Mutez, Type::new_option(Type::KeyHash)];
+        let stk = &mut tc_stk![Type::Mumav, Type::new_option(Type::KeyHash)];
         assert_eq!(
             typecheck_instruction(
                 &parse(create_contract_src).unwrap(),
@@ -8000,12 +8000,12 @@ mod typecheck_tests {
             ),
             Err(TcError::NoMatchingOverload {
                 instr: Prim::CREATE_CONTRACT,
-                stack: stk![Type::Mutez, Type::new_option(Type::KeyHash)],
+                stack: stk![Type::Mumav, Type::new_option(Type::KeyHash)],
                 reason: Some(NoMatchingOverloadReason::StackTooShort { expected: 3 })
             })
         );
 
-        let stk = &mut tc_stk![Type::Mutez];
+        let stk = &mut tc_stk![Type::Mumav];
         assert_eq!(
             typecheck_instruction(
                 &parse(create_contract_src).unwrap(),
@@ -8014,7 +8014,7 @@ mod typecheck_tests {
             ),
             Err(TcError::NoMatchingOverload {
                 instr: Prim::CREATE_CONTRACT,
-                stack: stk![Type::Mutez],
+                stack: stk![Type::Mumav],
                 reason: Some(NoMatchingOverloadReason::StackTooShort { expected: 3 })
             })
         );

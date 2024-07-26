@@ -35,10 +35,10 @@ pub enum InterpretError<'a> {
     OutOfGas(#[from] OutOfGas),
     /// When performing mumav arithmetic, an overflow occurred.
     #[error("mumav overflow")]
-    MutezOverflow,
+    MumavOverflow,
     /// During a type conversion, a negative mumav was found.
     #[error("negative mumav")]
-    NegativeMutez,
+    NegativeMumav,
     /// Interpreter reached a `FAILWITH` instruction.
     #[error("failed with: {1:?} of type {0:?}")]
     FailedWith(Type, TypedValue<'a>),
@@ -199,12 +199,12 @@ fn interpret_one<'a>(
                 let sum = BigInt::from(o1) + o2;
                 stack.push(V::Int(sum));
             }
-            overloads::Add::MutezMutez => {
-                let o1 = pop!(V::Mutez);
-                let o2 = pop!(V::Mutez);
+            overloads::Add::MumavMumav => {
+                let o1 = pop!(V::Mumav);
+                let o2 = pop!(V::Mumav);
                 ctx.gas.consume(interpret_cost::ADD_TEZ)?;
-                let sum = o1.checked_add(o2).ok_or(InterpretError::MutezOverflow)?;
-                stack.push(V::Mutez(sum));
+                let sum = o1.checked_add(o2).ok_or(InterpretError::MumavOverflow)?;
+                stack.push(V::Mumav(sum));
             }
             overloads::Add::Bls12381Fr => {
                 let o1 = pop!(V::Bls12381Fr);
@@ -308,19 +308,19 @@ fn interpret_one<'a>(
                 let res = x1 * x2;
                 stack.push(V::Int(res));
             }
-            overloads::Mul::MutezNat => {
+            overloads::Mul::MumavNat => {
                 ctx.gas.consume(interpret_cost::MUL_TEZ_NAT)?;
-                let x1 = pop!(V::Mutez);
-                let x2 = i64::try_from(pop!(V::Nat)).map_err(|_| InterpretError::MutezOverflow)?;
-                let res = x1.checked_mul(x2).ok_or(InterpretError::MutezOverflow)?;
-                stack.push(V::Mutez(res));
+                let x1 = pop!(V::Mumav);
+                let x2 = i64::try_from(pop!(V::Nat)).map_err(|_| InterpretError::MumavOverflow)?;
+                let res = x1.checked_mul(x2).ok_or(InterpretError::MumavOverflow)?;
+                stack.push(V::Mumav(res));
             }
-            overloads::Mul::NatMutez => {
+            overloads::Mul::NatMumav => {
                 ctx.gas.consume(interpret_cost::MUL_NAT_TEZ)?;
-                let x1 = i64::try_from(pop!(V::Nat)).map_err(|_| InterpretError::MutezOverflow)?;
-                let x2 = pop!(V::Mutez);
-                let res = x1.checked_mul(x2).ok_or(InterpretError::MutezOverflow)?;
-                stack.push(V::Mutez(res));
+                let x1 = i64::try_from(pop!(V::Nat)).map_err(|_| InterpretError::MumavOverflow)?;
+                let x2 = pop!(V::Mumav);
+                let res = x1.checked_mul(x2).ok_or(InterpretError::MumavOverflow)?;
+                stack.push(V::Mumav(res));
             }
             overloads::Mul::Bls12381G1Bls12381Fr => {
                 ctx.gas.consume(interpret_cost::MUL_BLS_G1)?;
@@ -484,8 +484,8 @@ fn interpret_one<'a>(
                     }
                 }
             }
-            overloads::EDiv::MutezNat => {
-                let x1 = pop!(V::Mutez);
+            overloads::EDiv::MumavNat => {
+                let x1 = pop!(V::Mumav);
                 let x2 = pop!(V::Nat);
                 ctx.gas.consume(interpret_cost::EDIV_TEZ_NAT)?;
                 if x2 == BigUint::zero() {
@@ -496,27 +496,27 @@ fn interpret_one<'a>(
                         Some(x2_i64) => {
                             let (quotient, remainder) = Integer::div_rem(&x1, &x2_i64);
                             stack.push(V::new_option(Some(V::new_pair(
-                                V::Mutez(quotient),
-                                V::Mutez(remainder),
+                                V::Mumav(quotient),
+                                V::Mumav(remainder),
                             ))));
                         }
                         _ => {
-                            stack.push(V::new_option(Some(V::new_pair(V::Mutez(0), V::Mutez(x1)))));
+                            stack.push(V::new_option(Some(V::new_pair(V::Mumav(0), V::Mumav(x1)))));
                         }
                     }
                 }
             }
-            overloads::EDiv::MutezMutez => {
-                let x1 = pop!(V::Mutez);
-                let x2 = pop!(V::Mutez);
+            overloads::EDiv::MumavMumav => {
+                let x1 = pop!(V::Mumav);
+                let x2 = pop!(V::Mumav);
                 ctx.gas.consume(interpret_cost::EDIV_TEZ_TEZ)?;
                 if x2 == 0 {
                     stack.push(V::Option(None));
                 } else {
                     let (quotient, remainder) = Integer::div_rem(&x1, &x2);
                     stack.push(V::new_option(Some(V::new_pair(
-                        V::Nat(BigUint::try_from(quotient).unwrap()), // cannot fail because `x1` and `x2` are of Mutez type and thus non-negative
-                        V::Mutez(remainder),
+                        V::Nat(BigUint::try_from(quotient).unwrap()), // cannot fail because `x1` and `x2` are of Mumav type and thus non-negative
+                        V::Mumav(remainder),
                     ))));
                 }
             }
@@ -640,12 +640,12 @@ fn interpret_one<'a>(
                 stack.push(V::Bytes(result));
             }
         },
-        I::SubMutez => {
+        I::SubMumav => {
             ctx.gas.consume(interpret_cost::SUB_MUMAV)?;
-            let v1 = pop!(V::Mutez);
-            let v2 = pop!(V::Mutez);
+            let v1 = pop!(V::Mumav);
+            let v2 = pop!(V::Mumav);
             if v1 >= v2 {
-                stack.push(V::new_option(Some(V::Mutez(v1 - v2))));
+                stack.push(V::new_option(Some(V::Mumav(v1 - v2))));
             } else {
                 stack.push(V::Option(None));
             }
@@ -1111,7 +1111,7 @@ fn interpret_one<'a>(
         }
         I::Amount => {
             ctx.gas.consume(interpret_cost::AMOUNT)?;
-            stack.push(V::Mutez(ctx.amount));
+            stack.push(V::Mumav(ctx.amount));
         }
         I::Nil => {
             ctx.gas.consume(interpret_cost::NIL)?;
@@ -1372,7 +1372,7 @@ fn interpret_one<'a>(
         }
         I::TransferTokens => {
             let param = pop!();
-            let mumav_amount = pop!(V::Mutez);
+            let mumav_amount = pop!(V::Mumav);
             let contract_address = pop!(V::Contract);
             let counter = ctx.operation_counter();
             ctx.gas.consume(interpret_cost::TRANSFER_TOKENS)?;
@@ -1601,7 +1601,7 @@ fn interpret_one<'a>(
         }
         I::Balance => {
             ctx.gas.consume(interpret_cost::BALANCE)?;
-            stack.push(V::Mutez(ctx.balance));
+            stack.push(V::Mumav(ctx.balance));
         }
         I::Contract(typ, ep) => {
             ctx.gas.consume(interpret_cost::CONTRACT)?;
@@ -1695,7 +1695,7 @@ fn interpret_one<'a>(
             let opt_keyhash = pop!(V::Option)
                 .as_ref()
                 .map(|keyhash| irrefutable_match!(keyhash.as_ref(); V::KeyHash).clone());
-            let amount = pop!(V::Mutez);
+            let amount = pop!(V::Mumav);
             let storage = pop!();
             let origination_counter = ctx.origination_counter();
             stack.push(TypedValue::Address(compute_contract_address(
@@ -1925,40 +1925,40 @@ mod interpreter_tests {
 
     #[test]
     fn test_add_mumav() {
-        let mut stack = stk![V::Mutez(2i64.pow(62)), V::Mutez(20)];
+        let mut stack = stk![V::Mumav(2i64.pow(62)), V::Mumav(20)];
         let mut ctx = Ctx::default();
-        assert!(interpret_one(&Add(overloads::Add::MutezMutez), &mut ctx, &mut stack).is_ok());
+        assert!(interpret_one(&Add(overloads::Add::MumavMumav), &mut ctx, &mut stack).is_ok());
         assert_eq!(ctx.gas.milligas(), Gas::default().milligas() - 20);
-        assert_eq!(stack, stk![V::Mutez(2i64.pow(62) + 20)]);
+        assert_eq!(stack, stk![V::Mumav(2i64.pow(62) + 20)]);
         assert_eq!(
             interpret_one(
-                &Add(overloads::Add::MutezMutez),
+                &Add(overloads::Add::MumavMumav),
                 &mut ctx,
-                &mut stk![V::Mutez(2i64.pow(62)), V::Mutez(2i64.pow(62))]
+                &mut stk![V::Mumav(2i64.pow(62)), V::Mumav(2i64.pow(62))]
             ),
-            Err(InterpretError::MutezOverflow)
+            Err(InterpretError::MumavOverflow)
         );
         assert_eq!(
             interpret_one(
-                &Add(overloads::Add::MutezMutez),
+                &Add(overloads::Add::MumavMumav),
                 &mut ctx,
                 &mut stk![
-                    V::Mutez((2u64.pow(63) - 1).try_into().unwrap()),
-                    V::Mutez(1)
+                    V::Mumav((2u64.pow(63) - 1).try_into().unwrap()),
+                    V::Mumav(1)
                 ]
             ),
-            Err(InterpretError::MutezOverflow)
+            Err(InterpretError::MumavOverflow)
         );
         assert_eq!(
             interpret_one(
-                &Add(overloads::Add::MutezMutez),
+                &Add(overloads::Add::MumavMumav),
                 &mut ctx,
                 &mut stk![
-                    V::Mutez(1),
-                    V::Mutez((2u64.pow(63) - 1).try_into().unwrap())
+                    V::Mumav(1),
+                    V::Mumav((2u64.pow(63) - 1).try_into().unwrap())
                 ]
             ),
-            Err(InterpretError::MutezOverflow)
+            Err(InterpretError::MumavOverflow)
         );
     }
 
@@ -3359,7 +3359,7 @@ mod interpreter_tests {
         let mut ctx = Ctx::default();
         ctx.amount = 100500;
         assert_eq!(interpret(&[Amount], &mut ctx, &mut stack), Ok(()));
-        assert_eq!(stack, stk![V::Mutez(100500)]);
+        assert_eq!(stack, stk![V::Mumav(100500)]);
         assert_eq!(
             ctx.gas.milligas(),
             Gas::default().milligas() - interpret_cost::INTERPRET_RET - interpret_cost::AMOUNT,
@@ -4510,7 +4510,7 @@ mod interpreter_tests {
         };
         let stk = &mut stk![
             V::Contract(tt.destination_address.clone()),
-            V::Mutez(tt.amount),
+            V::Mumav(tt.amount),
             tt.param.clone()
         ];
         let ctx = &mut Ctx::default();
@@ -5154,7 +5154,7 @@ mod interpreter_tests {
         let mut stack = stk![];
         let start_milligas = ctx.gas.milligas();
         assert_eq!(interpret(&[Balance], &mut ctx, &mut stack), Ok(()));
-        assert_eq!(stack, stk![V::Mutez(70),]);
+        assert_eq!(stack, stk![V::Mumav(70),]);
         assert_eq!(
             start_milligas - ctx.gas.milligas(),
             interpret_cost::BALANCE + interpret_cost::INTERPRET_RET
@@ -5775,8 +5775,8 @@ mod interpreter_tests {
             test_nats!(NatInt, V::nat, V::int, V::Int);
             test_nats!(IntNat, V::int, V::nat, V::Int);
             test_nats!(IntInt, V::int, V::int, V::Int);
-            test_nats!(MutezNat, V::Mutez, V::nat, V::Mutez);
-            test_nats!(NatMutez, V::nat, V::Mutez, V::Mutez);
+            test_nats!(MumavNat, V::Mumav, V::nat, V::Mumav);
+            test_nats!(NatMumav, V::nat, V::Mumav, V::Mumav);
         }
         mod negatives {
             use super::*;
@@ -6375,10 +6375,10 @@ mod interpreter_tests {
     #[test]
     fn test_sub_mumav() {
         fn test(v1: i64, v2: i64, res: Option<i64>) {
-            let mut stack = stk![V::Mutez(v2), V::Mutez(v1)];
+            let mut stack = stk![V::Mumav(v2), V::Mumav(v1)];
             let ctx = &mut Ctx::default();
-            assert_eq!(interpret_one(&SubMutez, ctx, &mut stack), Ok(()));
-            assert_eq!(stack, stk![V::new_option(res.map(V::Mutez))]);
+            assert_eq!(interpret_one(&SubMumav, ctx, &mut stack), Ok(()));
+            assert_eq!(stack, stk![V::new_option(res.map(V::Mumav))]);
             // assert some gas is consumed, exact values are subject to change
             assert!(Ctx::default().gas.milligas() > ctx.gas.milligas());
         }
@@ -6460,7 +6460,7 @@ mod interpreter_tests {
         );
         let mut stack = stk![
             TypedValue::Unit,
-            TypedValue::Mutez(100),
+            TypedValue::Mumav(100),
             TypedValue::new_option(None)
         ];
         let start_milligas = ctx.gas.milligas();

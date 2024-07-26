@@ -75,7 +75,7 @@ pub enum Type {
     Nat,
     Int,
     Bool,
-    Mutez,
+    Mumav,
     String,
     Unit,
     Never,
@@ -108,7 +108,7 @@ impl Type {
     pub fn size_for_gas(&self) -> usize {
         use Type::*;
         match self {
-            Nat | Int | Bool | Mutez | String | Unit | Never | Operation | Address | ChainId
+            Nat | Int | Bool | Mumav | String | Unit | Never | Operation | Address | ChainId
             | Bytes | Key | Signature | KeyHash | Timestamp | Bls12381Fr | Bls12381G1
             | Bls12381G2 => 1,
             Pair(p) | Or(p) | Map(p) | BigMap(p) | Lambda(p) => {
@@ -209,7 +209,7 @@ impl<'a> IntoMicheline<'a> for &'_ Type {
             Nat => Micheline::prim0(Prim::nat),
             Int => Micheline::prim0(Prim::int),
             Bool => Micheline::prim0(Prim::bool),
-            Mutez => Micheline::prim0(Prim::mumav),
+            Mumav => Micheline::prim0(Prim::mumav),
             String => Micheline::prim0(Prim::string),
             Unit => Micheline::prim0(Prim::unit),
             Operation => Micheline::prim0(Prim::operation),
@@ -302,7 +302,7 @@ impl<'a> IntoMicheline<'a> for &'_ Type {
 pub enum TypedValue<'a> {
     Int(BigInt),
     Nat(BigUint),
-    Mutez(i64),
+    Mumav(i64),
     Bool(bool),
     String(String),
     Unit,
@@ -342,7 +342,7 @@ impl<'a> IntoMicheline<'a> for TypedValue<'a> {
         match self {
             TV::Int(i) => V::Int(i),
             TV::Nat(u) => V::Int(u.try_into().unwrap()),
-            TV::Mutez(u) => V::Int(u.try_into().unwrap()),
+            TV::Mumav(u) => V::Int(u.try_into().unwrap()),
             TV::Bool(true) => V::prim0(Prim::True),
             TV::Bool(false) => V::prim0(Prim::False),
             TV::String(s) => V::String(s),
@@ -396,7 +396,7 @@ impl<'a> IntoMicheline<'a> for TypedValue<'a> {
                     Prim::Transfer_tokens,
                     go(tt.param),
                     go(TV::Address(tt.destination_address)),
-                    go(TV::Mutez(tt.amount)),
+                    go(TV::Mumav(tt.amount)),
                 ),
                 Operation::SetDelegate(sd) => Micheline::prim1(
                     arena,
@@ -435,7 +435,7 @@ impl<'a> IntoMicheline<'a> for TypedValue<'a> {
                                     entrypoint: Entrypoint::default(),
                                 })
                             }))),
-                            go(TypedValue::Mutez(cc.amount)),
+                            go(TypedValue::Mumav(cc.amount)),
                             go(cc.storage),
                         ],
                     ),
@@ -533,7 +533,7 @@ pub enum Instruction<'a> {
     Neg(overloads::Neg),
     Lsl(overloads::Lsl),
     Lsr(overloads::Lsr),
-    SubMutez,
+    SubMumav,
     Dip(Option<u16>, Vec<Self>),
     Drop(Option<u16>),
     Dup(Option<u16>),
@@ -668,7 +668,7 @@ pub mod test_strategies {
             // Cases that we want to see in tests in the first place - go first
             Just(Int),
             Just(Nat),
-            Just(Mutez),
+            Just(Mumav),
             Just(Timestamp),
             Just(String),
             Just(Bytes),
@@ -732,7 +732,7 @@ pub mod test_strategies {
             // Sometimes generate really large numbers (should take at least several `u64`s)
             T::Int => (-100..100i128).prop_map(V::int).boxed(),
             T::Nat => (0..100u64).prop_map(V::nat).boxed(),
-            T::Mutez => (0..100i64).prop_map(V::Mutez).boxed(),
+            T::Mumav => (0..100i64).prop_map(V::Mumav).boxed(),
             T::Timestamp => (-100i128..100i128).prop_map(V::timestamp).boxed(),
             T::Bool => any::<bool>().prop_map(V::Bool).boxed(),
             // TODO: https://gitlab.com/tezos/tezos/-/issues/6755

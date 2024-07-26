@@ -8,7 +8,7 @@ Usage: $0 [image_base [image_tag [docker build args...]]]
 
 Creates the Rust toolchain from image/rust-toolchain/Dockerfile.  The
 built image is tagged with image_base:image_tag. If omitted, they
-default to 'registry.gitlab.com/tezos/tezos/rust-toolchain'
+default to 'registry.gitlab.com/mavryk-network/mavryk-protocol/rust-toolchain'
 respectively 'latest'.  Remaining arguments, if any, are passed on to
 'docker build'.
 EOT
@@ -27,7 +27,7 @@ if [ $# -gt 0 ]; then
   image_tag="$1"
   shift
 fi
-image_base=${image_base:-registry.gitlab.com/tezos/tezos/rust-toolchain}
+image_base=${image_base:-registry.gitlab.com/mavryk-network/mavryk-protocol/rust-toolchain}
 image_tag=${image_tag:-latest}
 image_name="${image_base}:${image_tag}"
 

@@ -10,9 +10,9 @@ use crate::rvemu_boot::{A0, A1, A2, A3, A6, A7};
 use ed25519_dalek::{Signature, Signer, SigningKey, VerifyingKey};
 use kernel_loader::Memory;
 use mavryk_smart_rollup_constants::riscv::{
-    SBI_CONSOLE_PUTCHAR, SBI_FIRMWARE_TEZOS, SBI_SHUTDOWN, SBI_TEZOS_BLAKE2B_HASH256,
-    SBI_TEZOS_ED25519_SIGN, SBI_TEZOS_ED25519_VERIFY, SBI_TEZOS_INBOX_NEXT, SBI_TEZOS_META_ADDRESS,
-    SBI_TEZOS_META_ORIGINATION_LEVEL,
+    SBI_CONSOLE_PUTCHAR, SBI_FIRMWARE_MAVRYK, SBI_SHUTDOWN, SBI_MAVRYK_BLAKE2B_HASH256,
+    SBI_MAVRYK_ED25519_SIGN, SBI_MAVRYK_ED25519_VERIFY, SBI_MAVRYK_INBOX_NEXT, SBI_MAVRYK_META_ADDRESS,
+    SBI_MAVRYK_META_ORIGINATION_LEVEL,
 };
 use mavryk_smart_rollup_encoding::smart_rollup::SmartRollupAddress;
 use rvemu::cpu::{AccessType, BYTE};
@@ -69,7 +69,7 @@ fn sbi_shutdown() -> ! {
 }
 
 /// Move the Inbox to the next message.
-fn sbi_tezos_inbox_next(emu: &mut Emulator, inbox: &mut Inbox) -> SBIResult {
+fn sbi_mavryk_inbox_next(emu: &mut Emulator, inbox: &mut Inbox) -> SBIResult {
     match inbox.next() {
         Some((level, id, data)) => {
             let dest_addr = read_physical_address(emu, A0)?;
@@ -105,13 +105,13 @@ pub struct RollupMetadata {
 }
 
 /// Provide the rollup's origination level.
-fn sbi_tezos_meta_origination_level(emu: &mut Emulator, meta: &RollupMetadata) -> SBIResult {
+fn sbi_mavryk_meta_origination_level(emu: &mut Emulator, meta: &RollupMetadata) -> SBIResult {
     emu.cpu.xregs.write(A0, meta.origination_level);
     Ok(())
 }
 
 /// Provide the rollup's address.
-fn sbi_tezos_meta_address(emu: &mut Emulator, meta: &RollupMetadata) -> SBIResult {
+fn sbi_mavryk_meta_address(emu: &mut Emulator, meta: &RollupMetadata) -> SBIResult {
     let dest_addr = read_physical_address(emu, A0)?;
     let max_bytes = emu.cpu.xregs.read(A1);
 
@@ -126,7 +126,7 @@ fn sbi_tezos_meta_address(emu: &mut Emulator, meta: &RollupMetadata) -> SBIResul
 }
 
 /// Produce a Ed25519 signature.
-fn sbi_tezos_ed25519_sign(emu: &mut Emulator) -> SBIResult {
+fn sbi_mavryk_ed25519_sign(emu: &mut Emulator) -> SBIResult {
     let sk_addr = read_physical_address(emu, A0)?;
     let sk_bytes = read_memory(emu, sk_addr, 32)?;
     let sk = SigningKey::try_from(sk_bytes.as_slice())?;
@@ -145,7 +145,7 @@ fn sbi_tezos_ed25519_sign(emu: &mut Emulator) -> SBIResult {
 }
 
 /// Verify a Ed25519 signature.
-fn sbi_tezos_ed25519_verify(emu: &mut Emulator) -> SBIResult {
+fn sbi_mavryk_ed25519_verify(emu: &mut Emulator) -> SBIResult {
     let pk_addr = read_physical_address(emu, A0)?;
     let pk_bytes = read_memory(emu, pk_addr, 32)?;
 
@@ -166,7 +166,7 @@ fn sbi_tezos_ed25519_verify(emu: &mut Emulator) -> SBIResult {
 }
 
 /// Compute a BLAKE2B 256-bit digest.
-fn sbi_tezos_blake2b_hash256(emu: &mut Emulator) -> SBIResult {
+fn sbi_mavryk_blake2b_hash256(emu: &mut Emulator) -> SBIResult {
     let msg_addr = read_physical_address(emu, A1)?;
     let msg_len = emu.cpu.xregs.read(A2);
     let msg_bytes = read_memory(emu, msg_addr, msg_len)?;
@@ -190,15 +190,15 @@ pub fn handle_sbi(emu: &mut Emulator, meta: &RollupMetadata, inbox: &mut Inbox) 
     match sbi_extension {
         SBI_CONSOLE_PUTCHAR => sbi_console_putchar(emu),
         SBI_SHUTDOWN => sbi_shutdown(),
-        SBI_FIRMWARE_TEZOS => {
+        SBI_FIRMWARE_MAVRYK => {
             let sbi_function = emu.cpu.xregs.read(A6);
             match sbi_function {
-                SBI_TEZOS_INBOX_NEXT => sbi_tezos_inbox_next(emu, inbox),
-                SBI_TEZOS_META_ORIGINATION_LEVEL => sbi_tezos_meta_origination_level(emu, meta),
-                SBI_TEZOS_META_ADDRESS => sbi_tezos_meta_address(emu, meta),
-                SBI_TEZOS_ED25519_SIGN => sbi_tezos_ed25519_sign(emu),
-                SBI_TEZOS_ED25519_VERIFY => sbi_tezos_ed25519_verify(emu),
-                SBI_TEZOS_BLAKE2B_HASH256 => sbi_tezos_blake2b_hash256(emu),
+                SBI_MAVRYK_INBOX_NEXT => sbi_mavryk_inbox_next(emu, inbox),
+                SBI_MAVRYK_META_ORIGINATION_LEVEL => sbi_mavryk_meta_origination_level(emu, meta),
+                SBI_MAVRYK_META_ADDRESS => sbi_mavryk_meta_address(emu, meta),
+                SBI_MAVRYK_ED25519_SIGN => sbi_mavryk_ed25519_sign(emu),
+                SBI_MAVRYK_ED25519_VERIFY => sbi_mavryk_ed25519_verify(emu),
+                SBI_MAVRYK_BLAKE2B_HASH256 => sbi_mavryk_blake2b_hash256(emu),
                 _ => Err(format!(
                     "Unimplemented Tezos SBI extension ({sbi_extension}) function {sbi_function}"
                 )

@@ -448,7 +448,7 @@ impl<'a> TypedValue<'a> {
         match self {
             Int(_) => {}
             Nat(_) => {}
-            Mutez(_) => {}
+            Mumav(_) => {}
             Bool(_) => {}
             Unit => {}
             String(_) => {}

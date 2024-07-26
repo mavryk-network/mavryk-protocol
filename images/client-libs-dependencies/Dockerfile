@@ -24,7 +24,7 @@ WORKDIR /tmp
 # hadolint ignore=DL3018
 RUN apk update && apk add --no-cache \
     # Install xxd that is required for input generation of e2e kaitai semantic validation.
-    # tezos/tezos CI job 'kaitai_e2e_checks' requires coreutils mktemp
+    # mavryk-network/mavryk-protocol CI job 'kaitai_e2e_checks' requires coreutils mktemp
     xxd coreutils \
     # Required to clone "kaitai-struct-compiler"
     git \

@@ -17,7 +17,7 @@ pub enum Add {
     NatNat,
     IntNat,
     NatInt,
-    MutezMutez,
+    MumavMumav,
     Bls12381G1,
     Bls12381G2,
     Bls12381Fr,
@@ -78,8 +78,8 @@ pub enum Mul {
     NatInt,
     IntNat,
     IntInt,
-    MutezNat,
-    NatMutez,
+    MumavNat,
+    NatMumav,
     Bls12381G1Bls12381Fr,
     Bls12381G2Bls12381Fr,
     Bls12381FrBls12381Fr,
@@ -95,8 +95,8 @@ pub enum EDiv {
     NatInt,
     IntNat,
     IntInt,
-    MutezNat,
-    MutezMutez,
+    MumavNat,
+    MumavMumav,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]

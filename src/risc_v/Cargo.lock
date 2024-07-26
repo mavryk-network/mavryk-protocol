@@ -994,6 +994,110 @@ dependencies = [
 ]
 
 [[package]]
+name = "mavkit-risc-v-pvm"
+version = "0.0.0"
+dependencies = [
+ "cbindgen",
+ "risc-v-interpreter",
+ "rustc_apfloat",
+]
+
+[[package]]
+name = "mavryk-smart-rollup-constants"
+version = "0.2.2"
+
+[[package]]
+name = "mavryk-smart-rollup-core"
+version = "0.2.2"
+dependencies = [
+ "mavryk-smart-rollup-constants",
+]
+
+[[package]]
+name = "mavryk-smart-rollup-encoding"
+version = "0.2.2"
+dependencies = [
+ "hex",
+ "mavryk-smart-rollup-core",
+ "mavryk-smart-rollup-host",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding",
+ "mavryk_data_encoding_derive",
+ "nom",
+ "num-bigint",
+ "num-traits",
+ "regex",
+ "thiserror",
+ "time",
+]
+
+[[package]]
+name = "mavryk-smart-rollup-host"
+version = "0.2.2"
+dependencies = [
+ "mavryk-smart-rollup-core",
+]
+
+[[package]]
+name = "mavryk_crypto_rs"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e87c3213e23367a7a9998611d3f98b5ae0b2385d848cf5ca96b6592bbfa3a64a"
+dependencies = [
+ "anyhow",
+ "base58",
+ "blst",
+ "byteorder",
+ "cryptoxide",
+ "ed25519-dalek",
+ "hex",
+ "libsecp256k1",
+ "num-bigint",
+ "num-traits",
+ "p256",
+ "proptest",
+ "rand 0.7.3",
+ "serde",
+ "strum 0.20.0",
+ "strum_macros 0.20.1",
+ "thiserror",
+ "zeroize",
+]
+
+[[package]]
+name = "mavryk_data_encoding"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8bdc600b4fc14f7e60c595d54edf5a406962fceb5e5ae4195a5630b628433f6f"
+dependencies = [
+ "bit-vec",
+ "bitvec",
+ "hex",
+ "lazy_static",
+ "mavryk_crypto_rs",
+ "mavryk_data_encoding_derive",
+ "nom",
+ "num-bigint",
+ "num-traits",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "mavryk_data_encoding_derive"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "24bcc9ab0e4e37e4790c4d7e630112fea7a17b1a7634be44077c4166b724de88"
+dependencies = [
+ "lazy_static",
+ "once_cell",
+ "parse-display",
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
+]
+
+[[package]]
 name = "memchr"
 version = "2.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1107,15 +1211,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a6a622008b6e321afc04970976f62ee297fdbaa6f95318ca343e3eebb9648441"
 dependencies = [
  "memchr",
-]
-
-[[package]]
-name = "mavkit-risc-v-pvm"
-version = "0.0.0"
-dependencies = [
- "cbindgen",
- "risc-v-interpreter",
- "rustc_apfloat",
 ]
 
 [[package]]
@@ -1482,12 +1577,12 @@ dependencies = [
  "ed25519-dalek",
  "goblin",
  "kernel-loader",
- "ratatui",
- "risc-v-interpreter",
- "rvemu",
  "mavryk-smart-rollup-constants",
  "mavryk-smart-rollup-encoding",
  "mavryk_crypto_rs",
+ "ratatui",
+ "risc-v-interpreter",
+ "rvemu",
  "vm-fdt",
 ]
 
@@ -1848,101 +1943,6 @@ name = "textwrap"
 version = "0.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "222a222a5bfe1bba4a77b45ec488a741b3cb8872e5e499451fd7d0129c9c7c3d"
-
-[[package]]
-name = "mavryk-smart-rollup-constants"
-version = "0.2.2"
-
-[[package]]
-name = "mavryk-smart-rollup-core"
-version = "0.2.2"
-dependencies = [
- "mavryk-smart-rollup-constants",
-]
-
-[[package]]
-name = "mavryk-smart-rollup-encoding"
-version = "0.2.2"
-dependencies = [
- "hex",
- "nom",
- "num-bigint",
- "num-traits",
- "regex",
- "mavryk-smart-rollup-core",
- "mavryk-smart-rollup-host",
- "mavryk_crypto_rs",
- "tezos_data_encoding",
- "tezos_data_encoding_derive",
- "thiserror",
- "time",
-]
-
-[[package]]
-name = "mavryk-smart-rollup-host"
-version = "0.2.2"
-dependencies = [
- "mavryk-smart-rollup-core",
-]
-
-[[package]]
-name = "mavryk_crypto_rs"
-version = "0.5.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e87c3213e23367a7a9998611d3f98b5ae0b2385d848cf5ca96b6592bbfa3a64a"
-dependencies = [
- "anyhow",
- "base58",
- "blst",
- "byteorder",
- "cryptoxide",
- "ed25519-dalek",
- "hex",
- "libsecp256k1",
- "num-bigint",
- "num-traits",
- "p256",
- "proptest",
- "rand 0.7.3",
- "serde",
- "strum 0.20.0",
- "strum_macros 0.20.1",
- "thiserror",
- "zeroize",
-]
-
-[[package]]
-name = "tezos_data_encoding"
-version = "0.5.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "66c34be797025fcab7a9e417a4cc374925ee796af21f8d7df5e2330cdc2595af"
-dependencies = [
- "bit-vec",
- "bitvec",
- "hex",
- "lazy_static",
- "nom",
- "num-bigint",
- "num-traits",
- "serde",
- "mavryk_crypto_rs",
- "tezos_data_encoding_derive",
- "thiserror",
-]
-
-[[package]]
-name = "tezos_data_encoding_derive"
-version = "0.5.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "82e0c104555ce4d8c790567d725dc49f519d721e114202e38e851c1ac5769f08"
-dependencies = [
- "lazy_static",
- "once_cell",
- "parse-display",
- "proc-macro2",
- "quote",
- "syn 1.0.109",
-]
 
 [[package]]
 name = "thiserror"

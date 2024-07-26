@@ -194,7 +194,7 @@ mod tests {
         let ast = ast.typecheck_instruction(&mut ctx, None, &[]).unwrap();
         let mut istack = stk![];
         assert!(ast.interpret(&mut ctx, &temp, &mut istack).is_ok());
-        assert_eq!(istack, stk![TypedValue::Mutez(600)]);
+        assert_eq!(istack, stk![TypedValue::Mumav(600)]);
     }
 
     #[test]
@@ -538,9 +538,9 @@ mod tests {
             &Arena::new(),
             "BALANCE",
             stk![],
-            stk![Type::Mutez],
+            stk![Type::Mumav],
             stk![],
-            stk![TypedValue::Mutez(45),],
+            stk![TypedValue::Mumav(45),],
             {
                 let mut c = Ctx::default();
                 c.balance = 45;
@@ -1073,11 +1073,11 @@ mod tests {
                 storage unit;
                 code { DROP; UNIT; NIL operation; PAIR; }
             }"#,
-            stk![Type::Unit, Type::Mutez, Type::new_option(Type::KeyHash)],
+            stk![Type::Unit, Type::Mumav, Type::new_option(Type::KeyHash)],
             stk![Type::Address, Type::Operation],
             stk![
                 TypedValue::Unit,
-                TypedValue::Mutez(100),
+                TypedValue::Mumav(100),
                 TypedValue::new_option(None)
             ],
             stk![expected_addr, expected_op],

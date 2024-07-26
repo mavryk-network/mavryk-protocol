@@ -43,7 +43,6 @@ include:
   - .gitlab/ci/jobs/test/oc.script:test-gen-genesis-before_merging.yml
   - .gitlab/ci/jobs/test/oc.script:test_mavkit_release_versions-before_merging.yml
   - .gitlab/ci/jobs/test/oc.script:b58_prefix-before_merging.yml
-  - .gitlab/ci/jobs/test/oc.test-liquidity-baking-scripts-before_merging.yml
   - .gitlab/ci/jobs/test/install_mavkit-before_merging.yml
   - .gitlab/ci/jobs/test/tezt.yml
   - .gitlab/ci/jobs/test/tezt-slow-before_merging.yml

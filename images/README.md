@@ -1,4 +1,4 @@
-# `tezos/tezos` Docker images
+# `mavryk-network/mavryk-protocol` Docker images
 
 This directory contains the definition of Docker images used to build
 the Docker distribution of Mavkit.

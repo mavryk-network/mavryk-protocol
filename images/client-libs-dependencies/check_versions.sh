@@ -14,7 +14,7 @@ if [ $# -gt 0 ]; then
   image_base="$1"
   shift
 else
-  image_base="registry.gitlab.com/tezos/tezos/client-lib-dependencies"
+  image_base="registry.gitlab.com/mavryk-network/mavryk-protocol/client-lib-dependencies"
 fi
 if [ $# -gt 0 ]; then
   image_tag="$1"

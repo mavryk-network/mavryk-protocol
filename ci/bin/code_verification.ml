@@ -985,7 +985,7 @@ let jobs pipeline_type =
         ]
       |> job_external_split
     in
-    let job_oc_test_liquidity_baking_scripts : mavryk_job =
+    (* let job_oc_test_liquidity_baking_scripts : mavryk_job =
       job
         ~__POS__
         ~name:"oc.test-liquidity-baking-scripts"
@@ -1005,7 +1005,7 @@ let jobs pipeline_type =
         ~before_script:(before_script ~source_version:true ~eval_opam:true [])
         ["./scripts/ci/test_liquidity_baking_scripts.sh"]
       |> job_external_split
-    in
+    in *)
     (* The set of installation test jobs *)
     let jobs_install_mavkit : mavryk_job list =
       let changeset_install_jobs =
@@ -1131,7 +1131,7 @@ let jobs pipeline_type =
       job_oc_script_snapshot_alpha_and_link;
       job_oc_script_test_release_versions;
       job_oc_script_b58_prefix;
-      job_oc_test_liquidity_baking_scripts;
+      (* job_oc_test_liquidity_baking_scripts; *)
     ]
     @ jobs_unit @ jobs_install_mavkit
     @

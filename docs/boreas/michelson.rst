@@ -2276,7 +2276,7 @@ raise:
    instruction and the topmost element of the stack at this point was
    ``<value>``;
 
- - ``MutezUnderflow``: a mumav subtraction resulted in a negative
+ - ``MumavUnderflow``: a mumav subtraction resulted in a negative
    value. This should only happen in the case of the deprecated
    ``mumav`` case of the ``SUB`` instruction;
 

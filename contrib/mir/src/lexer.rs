@@ -135,7 +135,7 @@ defprim! {
     Failed,
     amount,
     balance,
-    MutezOverflow,
+    MumavOverflow,
     GeneralOverflow,
     StaticError,
     #[token("self")]
