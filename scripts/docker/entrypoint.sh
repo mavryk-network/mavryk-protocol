@@ -5,7 +5,7 @@ set -e
 bin_dir="$(cd "$(dirname "$0")" && echo "$(pwd -P)/")"
 
 : "${BIN_DIR:="/usr/local/bin"}"
-: "${DATA_DIR:="/var/run/tezos"}"
+: "${DATA_DIR:="/var/run/mavryk"}"
 
 : "${NODE_HOST:="node"}"
 : "${NODE_RPC_PORT:="8732"}"
@@ -38,49 +38,49 @@ command=${1:-mavkit-node}
 shift 1
 
 case $command in
-    mavkit-node)
-        launch_node "$@"
-        ;;
-    mavkit-upgrade-storage)
-        upgrade_node_storage
-        ;;
-    mavkit-snapshot-import)
-        snapshot_import "$@"
-        ;;
-    mavkit-baker)
-        launch_baker "$@"
-        ;;
-    mavkit-baker-test)
-        launch_baker_test "$@"
-        ;;
-    mavkit-endorser)
-        launch_endorser "$@"
-        ;;
-    mavkit-endorser-test)
-        launch_endorser_test "$@"
-        ;;
-    mavkit-accuser)
-        launch_accuser "$@"
-        ;;
-    mavkit-accuser-test)
-        launch_accuser_test "$@"
-        ;;
-    mavkit-client)
-        configure_client
-        exec "$client" "$@"
-        ;;
-    mavkit-admin-client)
-        configure_client
-        exec "$admin_client" "$@"
-        ;;
-    mavkit-signer)
-        exec "$signer" "$@"
-        ;;
-    mavkit-smart-rollup-node)
-        launch_smart_rollup_node "$@"
-        ;;
-    *)
-        cat <<EOF
+mavkit-node)
+  launch_node "$@"
+  ;;
+mavkit-upgrade-storage)
+  upgrade_node_storage
+  ;;
+mavkit-snapshot-import)
+  snapshot_import "$@"
+  ;;
+mavkit-baker)
+  launch_baker "$@"
+  ;;
+mavkit-baker-test)
+  launch_baker_test "$@"
+  ;;
+mavkit-endorser)
+  launch_endorser "$@"
+  ;;
+mavkit-endorser-test)
+  launch_endorser_test "$@"
+  ;;
+mavkit-accuser)
+  launch_accuser "$@"
+  ;;
+mavkit-accuser-test)
+  launch_accuser_test "$@"
+  ;;
+mavkit-client)
+  configure_client
+  exec "$client" "$@"
+  ;;
+mavkit-admin-client)
+  configure_client
+  exec "$admin_client" "$@"
+  ;;
+mavkit-signer)
+  exec "$signer" "$@"
+  ;;
+mavkit-smart-rollup-node)
+  launch_smart_rollup_node "$@"
+  ;;
+*)
+  cat << EOF
 Available commands:
 
 The following are wrappers around the mavkit binaries.
@@ -117,5 +117,5 @@ Commands:
        docker run -v <yourfilename>:/snapshot mavrykdynamics/mavryk mavkit-snapshot-import
     <yourfilename> must be an absolute path.
 EOF
-        ;;
+  ;;
 esac

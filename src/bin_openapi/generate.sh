@@ -12,7 +12,7 @@
 cd "$(dirname "$0")"/../.. || exit
 
 # Mavryk binaries.
-tezos_node=./mavkit-node
+mavryk_node=./mavkit-node
 mavryk_client=./mavkit-client
 smart_rollup_node=./mavkit-smart-rollup-node
 dal_node=./mavkit-dal-node
@@ -20,7 +20,7 @@ dal_node=./mavkit-dal-node
 # Protocol configuration.
 protocol_hash=PsqD5QwGGoXnwnQHAPmJLwQ6eAu2BbJ49ngqRU4NyNukZMzu9Vo
 protocol_parameters=src/proto_002_PtBoreas/parameters/sandbox-parameters.json
-protocol_name=paris
+protocol_name=boreas
 
 # Secret key to activate the protocol.
 activator_secret_key="unencrypted:edsk31vznjHSSpGExDMHYASz45VZqXN4DPxvsa4hAyY8dHM28cZzp6"
@@ -40,22 +40,22 @@ mempool_api_json=$tmp/mempool-api.json
 dal_api_json=$tmp/dal-api.json
 
 # Generated files.
-openapi_json=docs/api/rpc-openapi-dev.json
-proto_openapi_json=docs/api/$protocol_name-openapi-dev.json
-mempool_openapi_json=docs/api/$protocol_name-mempool-openapi-dev.json
+openapi_json=docs/api/rpc-openapi-rc.json
+proto_openapi_json=docs/api/$protocol_name-openapi-rc.json
+mempool_openapi_json=docs/api/$protocol_name-mempool-openapi-rc.json
 smart_rollup_node_openapi_json=docs/api/$protocol_name-smart-rollup-node-openapi-rc.json
 dal_node_openapi_json=docs/api/dal-node-openapi-rc.json
 
 # Get version number.
-version=$(dune exec mavryk-version)
+version=$(dune exec mavkit-version -- --full-with-commit)
 
 # Start a sandbox node.
 $mavryk_node config init --data-dir $data_dir \
-    --network sandbox \
-    --expected-pow 0 \
-    --rpc-addr localhost:$rpc_port \
-    --no-bootstrap-peer \
-    --synchronisation-threshold 0
+  --network sandbox \
+  --expected-pow 0 \
+  --rpc-addr localhost:$rpc_port \
+  --no-bootstrap-peer \
+  --synchronisation-threshold 0
 $mavryk_node identity generate --data-dir $data_dir
 $mavryk_node run --data-dir $data_dir --connections 0 &
 node_pid="$!"
@@ -67,10 +67,10 @@ sleep 1
 mkdir $client_dir
 $mavryk_client --base-dir $client_dir import secret key activator $activator_secret_key
 $mavryk_client --base-dir $client_dir activate protocol $protocol_hash \
-    with fitness 1 \
-    and key activator \
-    and parameters $protocol_parameters \
-    --timestamp "$(TZ='AAA+1' date +%FT%TZ)"
+  with fitness 1 \
+  and key activator \
+  and parameters $protocol_parameters \
+  --timestamp "$(TZ='AAA+1' date +%FT%TZ)"
 
 # Wait a bit again...
 sleep 1
@@ -97,16 +97,30 @@ kill -9 "$node_pid"
 kill -9 "$dal_node_pid"
 
 # Remove RPC starting with "/private/"
-clean_private_rpc () {
+clean_private_rpc() {
   jq 'delpaths([paths | select(.[-1] | strings | startswith("/private/"))])'
 }
 
 # Convert the RPC descriptions.
-dune exec src/bin_openapi/rpc_openapi.exe -- "$version" $api_json | clean_private_rpc "$@" > $openapi_json
+dune exec src/bin_openapi/rpc_openapi.exe -- \
+  "$version" \
+  "Mavkit RPC" \
+  "The RPC API served by the Mavkit node." \
+  $api_json |
+  clean_private_rpc "$@" > $openapi_json
 echo "Generated OpenAPI specification: $openapi_json"
-dune exec src/bin_openapi/rpc_openapi.exe -- "$version" $proto_api_json | clean_private_rpc "$@" > $proto_openapi_json
+dune exec src/bin_openapi/rpc_openapi.exe -- \
+  "$version" \
+  "Mavkit Protocol $protocol_name RPC" \
+  "The RPC API for protocol $protocol_name served by the Mavkit node." \
+  $proto_api_json |
+  clean_private_rpc "$@" > $proto_openapi_json
 echo "Generated OpenAPI specification: $proto_openapi_json"
-dune exec src/bin_openapi/rpc_openapi.exe -- "$version" $mempool_api_json | clean_private_rpc "$@" > $mempool_openapi_json
+dune exec src/bin_openapi/rpc_openapi.exe -- \
+  "$version" \
+  "Mavkit Mempool RPC" "The RPC API for the mempool served by the Mavkit node." \
+  $mempool_api_json |
+  clean_private_rpc "$@" > $mempool_openapi_json
 echo "Generated OpenAPI specification: $mempool_openapi_json"
 dune exec src/bin_openapi/rpc_openapi.exe -- \
   "$version" \

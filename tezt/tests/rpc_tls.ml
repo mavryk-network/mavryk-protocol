@@ -31,11 +31,11 @@ let node_tls () =
     ~uses_admin_client:false
     ~__FILE__
   @@ fun () ->
-  let certificate_path = "tezt/tests/tls/tezos.crt" in
-  let key_path = "tezt/tests/tls/tezos.key" in
+  let certificate_path = "tezt/tests/tls/mavryk.crt" in
+  let key_path = "tezt/tests/tls/mavryk.key" in
   let rpc_tls = Node.{certificate_path; key_path} in
   (* We set rpc_host to "localhost" instead of Constant.default_host
-     to conform to the DNS value stored in the tezos.crt. *)
+     to conform to the DNS value stored in the mavryk.crt. *)
   let* node = Node.init ~rpc_host:"localhost" ~rpc_tls [] in
   Log.info "Check that a curl call to a node RPC fails without --cacert" ;
   let get_version_url =

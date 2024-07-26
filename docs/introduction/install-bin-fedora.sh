@@ -1,21 +1,19 @@
 #!/bin/sh
 
-usage () {
-    cat >&2 <<!EOF
+usage() {
+  cat >&2 << !EOF
 usage:
   $0 [rc]
 !EOF
 }
 
-if [ $# -eq 1 ] && [ "$1" = "rc" ]
-then
+if [ $# -eq 1 ] && [ "$1" = "rc" ]; then
   # [setup rc repository]
-  REPO="@Serokell/Mavryk-rc"
+  REPO="@MavrykDynamics/Mavryk-rc"
   # [end]
-elif [ $# -eq 0 ]
-then
+elif [ $# -eq 0 ]; then
   # [setup stable repository]
-  REPO="@Serokell/Mavryk"
+  REPO="@MavrykDynamics/Mavryk"
   # [end]
 else
   usage
