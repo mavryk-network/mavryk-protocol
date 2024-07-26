@@ -249,7 +249,7 @@ check_licenses_git_new() {
   if ! grep '\.mli\?$' "$diff" | xargs --no-run-if-empty ocaml scripts/check_license/main.ml --verbose; then
 
     echo "/!\\ Some files .ml(i) does not have a correct license header /!\\"
-    echo "/!\\ See https://tezos.gitlab.io/developer/guidelines.html#license /!\\"
+    echo "/!\\ See https://protocol.mavryk.org/developer/guidelines.html#license /!\\"
 
     res=1
   else

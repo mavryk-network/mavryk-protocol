@@ -5,11 +5,11 @@ Context library for storing ledger and operations on disk and in memory
 
 ## API Documentation
 
-<https://tezos.gitlab.io/api/odoc/_html/mavkit-libs/Mavryk_context/index.html>
+<https://protocol.mavryk.org/api/odoc/_html/mavkit-libs/Mavryk_context/index.html>
 
 ## Overview
 
-There are two containers that are used to store different things. The reunion of the two is called the [storage](http://tezos.gitlab.io/shell/storage.html). It can be described rapidly like this:
+There are two containers that are used to store different things. The reunion of the two is called the [storage](http://protocol.mavryk.org/shell/storage.html). It can be described rapidly like this:
 
 - storage
   - `store`

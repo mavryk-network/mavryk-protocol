@@ -33,7 +33,7 @@
    Michelson is encoded in a GADT that preserves certain properties about its
    type system. If you haven't read about GADT's, check out the relevant section
    in the Tezos docs:
-   https://tezos.gitlab.io/developer/gadt.html#generalized-algebraic-data-types-gadts
+   https://protocol.mavryk.org/developer/gadt.html#generalized-algebraic-data-types-gadts
 
    The idea is that type representing a Michelson type, ['a ty], is parameterized
    by a type 'a. But that 'a can't be just _any_ type; it must be valid according

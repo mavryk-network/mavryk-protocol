@@ -1942,7 +1942,7 @@ These encodings can be queried by names.
 In the Mavkit code base, this is used to build the `tezos-codec` binary. This
 binary can convert between binary and JSON representations (allowing users to
 decode otherwise difficult to read network messages and protocol data). Checkout
-[this brief tutorial on `tezos-codec`](https://tezos.gitlab.io/developer/encodings.html).
+[this brief tutorial on `tezos-codec`](https://protocol.mavryk.org/developer/encodings.html).
 
 
 ### Slicing

@@ -1,7 +1,7 @@
 <!--
 Thanks you for taking the time to contributing to the Tezos project!
 
-Make sure to read our Contributing guide (https://tezos.gitlab.io/developer/contributing.html) and the Merge process description (https://tezos.gitlab.io/developer/merge_team.html). -->
+Make sure to read our Contributing guide (https://protocol.mavryk.org/developer/contributing.html) and the Merge process description (https://protocol.mavryk.org/developer/merge_team.html). -->
 
 # What
 

@@ -128,7 +128,7 @@ fn check_ep_name(ep: &[u8]) -> Result<(), ByteReprError> {
     let mut first_char = true;
     for c in ep {
         // direct encoding of the regex defined in
-        // https://tezos.gitlab.io/alpha/michelson.html#syntax
+        // https://protocol.mavryk.org/alpha/michelson.html#syntax
         match c {
             b'_' | b'0'..=b'9' | b'a'..=b'z' | b'A'..=b'Z' => Ok(()),
             b'.' | b'%' | b'@' if !first_char => Ok(()),

@@ -29,7 +29,7 @@
 
 (** An [Alpha_context.t] is an immutable snapshot of the ledger state at some block
     height, preserving
-    {{:https://tezos.gitlab.io/developer/entering_alpha.html#the-big-abstraction-barrier-alpha-context}
+    {{:https://protocol.mavryk.org/developer/entering_alpha.html#the-big-abstraction-barrier-alpha-context}
     type-safety and invariants} of the ledger state.
 
     {2 Implementation}
