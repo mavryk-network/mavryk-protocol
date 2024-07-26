@@ -115,8 +115,7 @@ bitstring is the hash of the concatenation of the previous bitstring with the
 iterated revealed nonce.
 
 A *nonce revelation* is an operation and multiple nonce revelations can thus be
-included in a block. A reward ``SEED_NONCE_REVELATION_TIP``, :ref:`potentially adjusted
-by the adaptive issuance coefficient <adaptive_issuance_atlas>`, is given for
+included in a block. A reward ``SEED_NONCE_REVELATION_TIP`` is given for
 including a revelation. Revelations are free operations which do not compete
 with transactions for block space. Up to ``MAX_ANON_OPS_PER_BLOCK`` revelations,
 wallet activations and denunciations can be contained in any given block.
@@ -160,7 +159,7 @@ Randomness generation parameters
    * -  ``MAX_ANON_OPS_PER_BLOCK``
      - 132 revelations
    * - ``SEED_NONCE_REVELATION_TIP``
-     -  1/8 ṁ
+     -  1/8 ꜩ
    * - ``VDF_DIFFICULTY``
      - 8,000,000,000
 

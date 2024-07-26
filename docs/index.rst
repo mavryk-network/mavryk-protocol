@@ -27,7 +27,7 @@ This means that, unlike other blockchains like Bitcoin or Ethereum, Mavryk comes
 This is a fundamental design choice, allowing Mavryk to be seamlessly upgradable and continuosly evolving.
 Due to this feature, Mavryk is built to last, and always stay at the leading edge of blockchain technology.
 
-To learn more about Mavryk, its implementation, and its ecosystem, see :doc:`introduction/tezos`.
+To learn more about Mavryk, its implementation, and its ecosystem, see :doc:`introduction/mavryk`.
 
 .. raw:: html
 
@@ -141,7 +141,7 @@ Platform developers are also provided reference materials for internal APIs of M
    :caption: Introduction
    :hidden:
 
-   introduction/tezos
+   introduction/mavryk
    introduction/howtoget
    introduction/howtouse
    introduction/howtorun
@@ -183,7 +183,7 @@ Platform developers are also provided reference materials for internal APIs of M
    :hidden:
 
    Atlas Protocol Reference <active/index>
-   Paris Protocol Reference <paris/index>
+   Boreas Protocol Reference <boreas/index>
    Alpha Dev Protocol Reference <alpha/index>
 
 .. toctree::

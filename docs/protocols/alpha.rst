@@ -2,9 +2,9 @@ Protocol Alpha
 ==============
 
 This page documents the changes brought by protocol Alpha with respect
-to Paris (see :ref:`naming_convention`).
+to Boreas (see :ref:`naming_convention`).
 
-For changes brought by Paris with respect to Atlas, see :doc:`../protocols/002_boreas`.
+For changes brought by Boreas with respect to Atlas, see :doc:`../protocols/002_boreas`.
 
 The code can be found in directory :src:`src/proto_alpha` of the ``master``
 branch of Mavkit.

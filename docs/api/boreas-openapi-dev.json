@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Mavkit Protocol paris RPC",
-    "description": "The RPC API for protocol paris served by the Mavkit node.",
+    "title": "Mavkit Protocol boreas RPC",
+    "description": "The RPC API for protocol boreas served by the Mavkit node.",
     "version": "Mavkit 0.0+dev (3bf7f9eb)"
   },
   "paths": {

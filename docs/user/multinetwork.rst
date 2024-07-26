@@ -4,7 +4,7 @@ Connecting to a Network
 =======================
 
 Mavryk is run on several networks, such as Mainnet (the main network)
-and various :ref:`test Networks<test-networks>`. Some users may also want to run
+and various :ref:`test Networks<test_networks>`. Some users may also want to run
 their own networks for various reasons. Networks differ in various ways:
 
 - they start from their own genesis block;

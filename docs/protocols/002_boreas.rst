@@ -1,7 +1,7 @@
-Protocol Paris
+Protocol Boreas
 ==============
 
-This page documents the changes brought by protocol Paris with respect
+This page documents the changes brought by protocol Boreas with respect
 to Atlas (see :ref:`naming_convention`).
 
 The code can be found in directory :src:`src/proto_002_PtBoreas` of the ``master``
@@ -41,7 +41,7 @@ Data Availability Layer
   themselves. Instead, it contains the slot index, the commitment over the data,
   and a proof regarding the size for those data. The data must be sent using the
   DAL node. For more information on how it works, please read the `DAL
-  documentation <https://tezos.gitlab.io/shell/dal.html>`_.
+  documentation <https://protocol.mavryk.org/shell/dal.html>`_.
 
 - Optimize the DAL commitment publication operation by memoizing the
   cryptobox. (MR :gl:`!11594`)
@@ -53,7 +53,7 @@ Data Availability Layer
   writing of smart rollups kernels to make them generic over the
   values of those parameters. For more information on how it works,
   please read the `DAL smart rollup integration
-  <https://tezos.gitlab.io/alpha/dal_support.html#smart-rollups-integration>`_.
+  <https://protocol.mavryk.org/alpha/dal_support.html#smart-rollups-integration>`_.
 
 
 Adaptive Issuance
@@ -120,7 +120,7 @@ Breaking Changes
   ``block_metadata`` indicating the attested slots. The slots being
   attested are the slots that were published ``attestation_lag`` levels
   ago (MRs :gl:`!11903`, :gl:`!12063`) (see `DAL documentation
-  <https://tezos.gitlab.io/shell/dal.html>`_ for more context).
+  <https://protocol.mavryk.org/shell/dal.html>`_ for more context).
 
 -  The protocol no longer relies on stake snapshots to compute rights. Instead:
 

@@ -440,7 +440,7 @@ For convenience, Michelson developers can use some compact type notations for ty
 These are just shorthands that are expanded into existing types during the so-called "type normalization".
 
 Currently, the only such notation concerns N-ary pairs (also called tuples), which are expanded into "right combs", that is, nested binary pairs with right associativity.
-See `type pair <https://tezos.gitlab.io/michelson-reference/#type-pair>`__ for details.
+See `type pair <https://protocol.mavryk.org/michelson-reference/#type-pair>`__ for details.
 
 The node RPC ``/helpers/script/normalize_type`` is available to normalize a given Michelson type (see :doc:`../api/openapi`, within the protocol-dependent RPCs).
 This RPC is intended for tool developers wanting to support the type shorthands in their tools without reimplementing their normalization.

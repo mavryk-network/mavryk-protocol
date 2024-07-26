@@ -25,7 +25,7 @@ sequence:
 
 * 000 Genesis
 * 001 Atlas
-* 019 Paris
+* 002 Boreas
 * ...
 
 Due to the evolving nature of the in-use protocols, the above absolute protocol

@@ -68,10 +68,10 @@ messages.
 Address
 ^^^^^^^
 
-When a smart rollup is originated on the Layer 1, a unique address is
+When a Smart Rollup is originated on the Layer 1, a unique address is
 generated to uniquely identify it. A smart rollup address starts with
 the prefix ``sr1``
-(see also the :ref:`kinds of address prefixes in Mavryk <address_prefixes_atlas>`).
+(see also :doc:`./accounts`).
 
 Inputs
 ^^^^^^
@@ -138,7 +138,7 @@ level”. Similarly to “Start of level“, these internal messages does not
 come with any payload.
 
 .. _reveal_data_channel_smart_rollups:
-.. _reveal_data_channel_smart_rollups_atlas:
+.. _reveal_data_channel_smart_rollups_oxford:
 
 Reveal data channel
 """""""""""""""""""
@@ -174,7 +174,7 @@ A smart rollup is characterized by:
 - the Michelson type of the entrypoint used by Layer 1 smart contracts
 to send internal messages to it, and
 - an optional list of addresses used as a white-list of allowed
-stakers (see :ref:`private_rollups_atlas`).
+stakers (see :ref:`private_rollups_oxford`).
 
 All these characteristics are provided when originating a new smart
 rollup.
@@ -230,7 +230,7 @@ commitments are published for the same commitment period, one of them
 must be wrong.
 
 Notice that, to publish a commitment, an operator must provide a
-deposit of 10,000 mav. For this reason, the operator is said to be a
+deposit of 10,000 tez. For this reason, the operator is said to be a
 **staker**. Several users can stake on the same commitment. When a
 staker *S* publishes a new commitment based on a commitment that *S* is staking
 on, *S* does not have to provide a new deposit: the deposit also
@@ -257,14 +257,14 @@ The outbox messages can follow three different formats. Firstly, the
 Layer 1 operations contained in the outbox messages can be left
 untyped, meaning only the Micheline expression is provided by the
 kernel. Before executing the transaction, the Layer 1 typechecks said
-expression against the expected type of the targeted entrypoint. 
-It is also possible for the kernel to provide its expected
+expression against the expected type of the targeted entrypoint. Since
+Nairobi, it is also possible for the kernel to provide its expected
 type of the targeted entrypoint. This additional safety mechanism is
 to avoid type confusion: namely, a kernel transferring a tuple that
 the Layer 1 interprets as a ticket. Lastly, the outbox message can
 contain a white-list update. This message can only be executed for a
 rollup that is private since its origination (see
-:ref:`private_rollups_atlas`).
+:ref:`private_rollups_oxford`).
 
 Refutation
 ^^^^^^^^^^
@@ -315,7 +315,7 @@ an honest participant *H*, then *H* will start the refutation game with all
 concurrent stakers to avoid the rollup getting stuck.
 
 .. _private_rollups:
-.. _private_rollups_atlas:
+.. _private_rollups_oxford:
 
 Private rollups
 ^^^^^^^^^^^^^^^
@@ -370,9 +370,8 @@ Glossary
    commitment. A commitment must be published for each commitment
    period.
 
-#. **Refutation period**: At the end of each commitment period, a
-   period of two weeks starts to allow any commitment related to
-   this commitment period to be challenged.
+#. **Refutation period**: When the first commitment for a commitment period is published, a refutation
+   period of two weeks starts to allow this commitment to be challenged.
 
 #. **Staker**: An implicit account that has made a deposit on a
    commitment.

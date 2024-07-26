@@ -10,7 +10,7 @@ capability. This means that Mavryk not only comes to consensus about the state o
 like Bitcoin or Ethereum. It also attempts to come to consensus about how the
 protocol and the nodes should adapt and upgrade.
 
-.. _tezos_community:
+.. _mavryk_community:
 
 Mavryk is backed up by a vibrant `Mavryk community <https://mavrykdynamics.com/community>`__, which may also be contacted for technical support when needed.
 

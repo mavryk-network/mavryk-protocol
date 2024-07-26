@@ -1,10 +1,9 @@
 Smart rollup node
 =================
 
-:doc:`../active/smart_rollups` come with two executable programs: the Mavkit
-rollup node and the Mavkit rollup client.
+This page describes the Mavkit rollup node, the main executable supporting
+:doc:`../active/smart_rollups`.
 
-This page describes the rollup node, but also uses the rollup client when needed to interact with the rollup node.
 
 The Mavkit rollup node is used by a rollup operator to deploy a
 rollup. The rollup node is responsible for making the rollup progress
@@ -12,8 +11,7 @@ by publishing commitments and by playing refutation games.
 
 Just like the Mavkit node, the Mavkit rollup node provides an :doc:`RPC
 interface<../api/openapi>`. The services of this interface can be
-called directly with HTTP requests or indirectly using the Mavkit
-rollup client.
+called directly with HTTP requests.
 
 We first cover the operation of the rollup node and the corresponding workflow,
 using some predefined rollup logic (called kernel), and then we explain how the
@@ -75,7 +73,7 @@ in a terminal where ``${NETWORK}`` is of the
 form ``https://teztnets.com/weeklynet-YYYY-MM-DD``
 and ``${ONODE_DIR}`` is a path for the Mavkit node store, by default ``~/.mavryk-node``.
 
-The commands will only work when the node is completely boostrapped, and therefore the current protocol on the target network is activated.
+The commands will only work when the node is completely bootstrapped, and therefore the current protocol on the target network is activated.
 This can be checked by:
 
 .. code:: sh
@@ -90,11 +88,11 @@ In case you do not already have an implicit account, you can generate one with:
    mavkit-client gen keys "${ACCOUNT_NAME}"
    mavkit-client show address "${ACCOUNT_NAME}"
 
-Then, the ``${OPERATOR_ADDR}`` can be set to the hash value (``mv1...``) returned.
+Then, the ``${OPERATOR_ADDR}`` can be set to the hash value (``tz1...``) returned.
 
 Finally, you need to check that your balance is greater than 10,000
-mav to make sure that staking is possible. In case your balance is not
-sufficient, you can get test tokens for the ``mv1`` address from :ref:`a faucet <faucet>`,
+tez to make sure that staking is possible. In case your balance is not
+sufficient, you can get test tokens for the ``tz1`` address from :ref:`a faucet <faucet>`,
 after your node gets synchronized with Weeklynet.
 
 
@@ -186,32 +184,7 @@ Deploying a rollup node
 Now that the rollup is originated, anyone can make it progress by deploying a
 rollup node.
 
-First, we need to decide on a directory where the rollup node stores
-its data. Let us assign ``${ROLLUP_NODE_DIR}`` with this path, by default
-``~/.mavryk-smart-rollup-node``.
-
-
-The rollup node can then be run with:
-
-.. code:: sh
-
-   mavkit-smart-rollup-node --base-dir "${OCLIENT_DIR}" \
-                    run operator for "${SR_ALIAS_OR_ADDR}" \
-                    with operators "${OPERATOR_ADDR}" \
-                    --data-dir "${ROLLUP_NODE_DIR}"
-
-where ``${OCLIENT_DIR}`` is the data directory of the Mavkit client, by default  ``~/.mavryk-client``.
-
-The log should show that the rollup node follows the Layer 1 chain and
-processes the inbox of each level.
-
-
-Notice that distinct Layer 1 addresses could be used for the Layer 1
-operations issued by the rollup node simply by editing the
-:ref:`configuration file <rollup_node_config_file>` to set different addresses for ``publish``,
-``add_messages``, ``cement``, and ``refute``.
-
-In addition, a rollup node can run under different modes:
+First, we need to decide on a mode the rollup node will run:
 
 #. ``operator`` activates a full-fledged rollup node. This means that
    the rollup node will do everything needed to make the rollup
@@ -220,6 +193,8 @@ In addition, a rollup node can run under different modes:
    regularly, and playing the refutation games. In this mode, the
    rollup node will accept transactions in its queue and batch them on
    the Layer 1.
+
+.. _rollup_batcher:
 
 #. ``batcher`` means that the rollup node will accept transactions in
    its queue and batch them on the Layer 1. In this mode, the rollup
@@ -247,31 +222,107 @@ In addition, a rollup node can run under different modes:
    operation when the operator is no longer staked on any commitment. If the node detects that this
    operation has been successful, it can gratefully exit.
 
-#. ``custom`` mode refers to a mode where the users individually selects which
+#. ``custom`` mode refers to a mode where the users individually select which
    kinds of operations the rollup node injects. It provides tailored control and
    flexibility customized to specific requirements, and is mostly used for tests.
 
-The following table summarizes the operation modes, focusing on the L1
-operations which are injected by the rollup node in each mode.
+To each mode corresponds a set of purposes where each purpose is a set
+of L1 operations which are injected by the rollup node.
 
-+-------------+--------------+-----------+------------+------------+
-|             | Add messages | Publish   | Cement     | Refute     |
-+=============+==============+===========+============+============+
-| Operator    | Yes          | Yes       | Yes        | Yes        |
-+-------------+--------------+-----------+------------+------------+
-| Batcher     | Yes          | No        | No         | No         |
-+-------------+--------------+-----------+------------+------------+
-| Observer    | No           | No        | No         | No         |
-+-------------+--------------+-----------+------------+------------+
-| Maintenance | No           | Yes       | Yes        | Yes        |
-+-------------+--------------+-----------+------------+------------+
-| Accuser     | No           | Yes [*]_  | No         | Yes        |
-+-------------+--------------+-----------+------------+------------+
-| Bailout     | No           | No        | Yes        | Yes        |
-+-------------+--------------+-----------+------------+------------+
+The following table links each purpose to its corresponding L1 operations.
 
-.. [*] An accuser node will publish commitments only when it detects
-       conflicts; for such cases it must make a deposit of 10,000 mav.
++-------------------+-----------------------------------------------------------------+
+| Operating         | smart_rollup_publish, smart_rollup_refute, smart_rollup_timeout |
++-------------------+-----------------------------------------------------------------+
+| Batching          | smart_rollup_add_messages                                       |
++-------------------+-----------------------------------------------------------------+
+| Cementing         | smart_rollup_cement                                             |
++-------------------+-----------------------------------------------------------------+
+| Recovering        | smart_rollup_recover                                            |
++-------------------+-----------------------------------------------------------------+
+| Executing_outbox  | smart_rollup_execute_outbox_message                             |
++-------------------+-----------------------------------------------------------------+
+
+The table below summarises the modes and their associated purposes:
+
++-------------+------------+----------+------------+------------+------------------+
+|             | Operating  | Batching | Cementing  | Recovering | Executing_outbox |
++=============+============+==========+============+============+==================+
+| Operator    | Yes        | Yes      | Yes        | No         | Yes[^1]_         |
++-------------+------------+----------+------------+------------+------------------+
+| Maintenance | Yes        | No       | Yes        | No         | Yes[^1]_         |
++-------------+------------+----------+------------+------------+------------------+
+| Bailout     | Yes[^2]_   | No       | Yes        | Yes        | No               |
++-------------+------------+----------+------------+------------+------------------+
+| Accuser     | Yes [^3]_  | No       | No         | No         | No               |
++-------------+------------+----------+------------+------------+------------------+
+| Batcher     | No         | Yes      | No         | No         | No               |
++-------------+------------+----------+------------+------------+------------------+
+| Observer    | No         | No       | No         | No         | No               |
++-------------+------------+----------+------------+------------+------------------+
+
+.. [^1] If and only it's a private rollup. In that case, only the
+       whitelist update outbox message are injected.
+.. [^2] A rollup node in bailout mode won't publish any new commitments but only
+       defends the one published by the operator if they are refuted.
+.. [^3] An accuser node will publish commitments only when it detects
+       conflicts; for such cases it must make a deposit of 10,000 tez.
+
+
+Then to run the rollup node, use the following command:
+
+.. code:: sh
+
+   mavkit-smart-rollup-node --base-dir "${OCLIENT_DIR}" \
+                    run "${ROLLUP_NODE_MODE}" \
+                    for "${SR_ALIAS_OR_ADDR}" \
+                    with operators "${OPERATOR_ADDR}" \
+                    --data-dir "${ROLLUP_NODE_DIR}"
+
+where ``${OCLIENT_DIR}`` is the data directory of the Mavkit client, by
+default ``~/.mavryk-client``, and ``${ROLLUP_NODE_DIR}`` is the data
+directory of the Mavkit smart rollup node, by default
+``~/.mavryk-smart-rollup-node``.
+
+The log should show that the rollup node follows the Layer 1 chain and
+processes the inbox of each level.
+
+Distinct Layer 1 signers can be used for each purpose of the mode by
+either editing the :ref:`configuration file <rollup_node_config_file>`
+or by listing multiple operators on the command line.
+
+For example for the ``operator`` mode we can replace
+``${OPERATOR_ADDR}`` by ``default:${OPERATOR_ADDR1}
+batching:${OPERATOR_ADDR2}``.  Where the rollup node will use
+``${OPERATOR_ADDR2}`` for the batching purpose and
+``${OPERATOR_ADDR1}`` for everything else.
+
+The L1 chain has a limitation of one manager operation per key per
+block (see :doc:`../active/precheck`). In the case of a high
+throughput rollup, this limitation could slow down the rollup by
+capping the number of L2 messages that the rollup node's batcher
+purpose can inject per block to the maximum size of one L1 operation's
+maximal size (e.g., 32kb on mainnet).
+
+To bypass that limitation and inject multiple
+``smart_rollup_add_messages`` L1 operations within a single L1 block,
+it is possible to provide multiple keys for the batcher purpose of a
+rollup node. At each block, the rollup node will use as many keys as
+possible to inject a corresponding number of queued L2 messages into
+the L1 rollup inbox[^1].
+
+[^1]: The order of the batches of L2 messages is not guaranteed to be
+preserved by the rollup node nor by the mavkit node mempool.
+
+The way to provide multiple batcher keys on the command line is:
+
+.. code:: sh
+
+   mavkit-smart-rollup-node run ${ROLLUP_NODE_MODE} for "${SR_ALIAS_OR_ADDR}" \
+                    with operators default:${DEFAULT_ADDR} \
+                    batching:${BATCHER_ADDR1} \
+                    batching:${BATCHER_ADDR2} ...
+
 
 .. _rollup_node_config_file:
 
@@ -284,7 +335,8 @@ uses the same arguments as the ``run`` command:
 .. code:: sh
 
    mavkit-smart-rollup-node --base-dir "${OCLIENT_DIR}" \
-                    init operator config for "${SR_ALIAS_OR_ADDR}" \
+                    init "${ROLLUP_NODE_MODE}" config \
+                    for "${SR_ALIAS_OR_ADDR}" \
                     with operators "${OPERATOR_ADDR}" \
                     --data-dir "${ROLLUP_NODE_DIR}"
 
@@ -301,13 +353,13 @@ Here is the content of the file:
 ::
 
   {
-    "data-dir": "${ROLLUP_NODE_DIR}",
-    "smart-rollup-address": "${SR_ADDR}",
-    "smart-rollup-node-operator": {
-      "publish": "${OPERATOR_ADDR}",
-      "add_messages": "${OPERATOR_ADDR}",
-      "cement": "${OPERATOR_ADDR}",
-      "refute": "${OPERATOR_ADDR}"
+    "smart-rollup-address": "${SR_ALIAS_OR_ADDR}",
+    "smart-rollup-node-operator":
+    {
+      "operating": "${OPERATOR_ADDR}",
+      "batching": [ "${OPERATOR_ADDR}" ],
+      "cementing": "${OPERATOR_ADDR}",
+      "executing_outbox": "${OPERATOR_ADDR}"
     },
     "fee-parameters": {},
     "mode": "operator"
@@ -317,7 +369,7 @@ The rollup node can now be run with just:
 
 .. code:: sh
 
-   mavkit-smart-rollup-node -d "${OCLIENT_DIR}" run --data-dir ${ROLLUP_NODE_DIR}
+   mavkit-smart-rollup-node --base-dir "${OCLIENT_DIR}" run --data-dir ${ROLLUP_NODE_DIR}
 
 The configuration will be read from ``${ROLLUP_NODE_DIR}/config.json``.
 
@@ -330,6 +382,7 @@ Once you initialized the "sandboxed" client data with ``./src/bin_client/mavkit-
 
 A temporary directory ``/tmp/mavryk-smart-rollup-node.xxxxxxxx`` will be used. However, a specific data directory can be set with the environment variable ``SCORU_DATA_DIR``.
 
+.. _rollup_history_mode:
 
 History modes
 -------------
@@ -363,7 +416,7 @@ Archive mode
 When configured in *archive* mode, a rollup node will keep all history since the
 origination of the rollup. This mode can be useful for
 applications that require to regularly access historical data before the LCC,
-i.e. for application that need more than two weeks of history.
+i.e. for applications that need more than two weeks of history.
 
 This mode can be chosen e.g. on the command line with ``--history-mode
 archive``.
@@ -587,7 +640,7 @@ representation of the message payload, one can do:
 
 to inject such an external message,  where ``${PROTO_HASH}`` is the hash of your
 protocol (e.g. ``ProtoALphaAL`` for Alpha; see :ref:`how to obtain it <mavkit_client_protocol>`).
-So let us focus now on producing a viable content for ``${EMESSAGE}``.
+So let us focus now on producing viable content for ``${EMESSAGE}``.
 
 The kernel used previously in our running example is a simple "echo"
 kernel that copies its input as a new message to its outbox.
@@ -604,20 +657,22 @@ originated a Layer 1 smart contract as follows:
 
 and that this contract is identified by an address ``${CONTRACT}``
 (a ``KT1...`` address), then one can encode an
-outbox transaction using the Mavkit rollup client as follows:
+outbox transaction using the ``mavkit-codec`` as follows:
 
 .. code:: sh
 
-    MESSAGE='[ { \
-      "destination" : "KT1...", \
-      "parameters" : "\"Hello world\"", \
-      "entrypoint" : "%default" } ]'
+    MESSAGE='{
+        "transactions": [
+          {
+            "parameters": {"int": "37"},
+            "destination": "KT1VD4SdQF2ruNNTCE1aTWErmGz9tN4Mg8F5",
+            "entrypoint": "%default"
+          }
+        ],
+        "kind": "untyped"
+      }'
 
-
-    EMESSAGE=$(mavkit-smart-rollup-client-${PROTO} encode outbox message "${MESSAGE}")
-
-where ``${PROTO}`` is the suffix of the executables corresponding to your protocol
-(e.g., ``-alpha``).
+    EMESSAGE=$(mavkit-codec encode alpha.smart_rollup.outbox.message from "${MESSAGE}")
 
 .. _triggering_execution_outbox_message:
 
@@ -635,8 +690,14 @@ populated as follows:
 
 .. code:: sh
 
-   mavkit-smart-rollup-client-${PROTO} rpc get \
-     /global/block/cemented/outbox/${L}/messages
+    curl -i "${ROLLUP_NODE_ENDPOINT}/global/block/cemented/outbox/${L}/messages"
+
+where:
+
+- ${ROLLUP_NODE_ENDPOINT} represents the address of the Rollup node server.
+  It can be set to a specific server address such as "http://localhost:36149".
+- ${L} denotes the block level for which one wants to retrieve information
+  from the Rollup node.
 
 Here is the output for this command:
 
@@ -645,10 +706,9 @@ Here is the output for this command:
    [ { "outbox_level": ${L}, "message_index": "0",
     "message":
       { "transactions":
-          [ { "parameters": { "string": "Hello world" },
+          [ { "parameters": { "int": "37" },
               "destination": "${CONTRACT}",
               "entrypoint": "%default" } ] } } ]
-
 
 At this point, the actual execution of a given outbox message can be
 triggered. This requires precomputing a proof that this outbox message
@@ -657,8 +717,8 @@ proof is retrieved as follows:
 
 .. code:: sh
 
-   PROOF=$(mavkit-smart-rollup-client-${PROTO} get proof for message 0 \
-     of outbox at level "${L}")
+  PROOF=$(curl -i "${ROLLUP_NODE_ENDPOINT}/global/block/head/helpers/\
+             proofs/outbox/${L}/messages?index=0)"
 
 Finally, the execution of the outbox message is done as follows:
 
@@ -674,10 +734,10 @@ Notice that anyone can trigger the execution of an outbox message
 (not only an operator as in this example).
 
 One can check in the receipt that the contract has indeed been called
-with the parameter ``"Hello world"`` through an internal
-operation. More complex parameters, typically containing assets
-represented as tickets, can be used as long as they match the type of
-the entrypoint of the destination smart contract.
+with the parameter ``"37"`` through an internal operation. More complex
+parameters, typically containing assets represented as tickets, can be
+used as long as they match the type of the entrypoint of the destination
+smart contract.
 
 .. _sending_internal_inbox_message:
 
@@ -721,7 +781,7 @@ to the rollup.
             PUSH address "${SR_ADDR}";
             CONTRACT bytes;
             IF_NONE { PUSH string "Invalid address"; FAILWITH } {};
-            PUSH mumav 0;
+            PUSH mutez 0;
             DIG 2;
             TRANSFER_TOKENS;
             NIL operation;
@@ -736,7 +796,7 @@ Populating the reveal channel
 """""""""""""""""""""""""""""
 
 It is the responsibility of rollup node operators to get the data
-passed through the reveal data channel when the rollup requested it.
+passed through the reveal data channel when the rollup requests it.
 
 To answer a request for a page of hash ``H``, the rollup node tries to
 read the content of a file ``H`` named
@@ -748,6 +808,29 @@ through hashes. It is up to the kernel to decide how to implement
 this. For instance, one can classify pages into two categories: index
 pages that are hashes for other pages and leaf pages that contain
 actual payloads.
+
+In addition to data stored locally on disk in the data directory, the rollup
+node can also fetch missing pages to be revealed from an external source.
+Data fetched from a remote pre-images service will be cached on disk (in the
+``${ROLLUP_NODE_DIR}/wasm_2_0_0``).
+
+To configure a remote source (whose server can be contacted over HTTP at
+``${PRE_IMAGES_URL}``) for pre-images, one can either pass the option
+``--pre-images-endpoint ${PRE_IMAGES_URL}``
+to the ``run`` command or add the following in the configuration file
+``${ROLLUP_NODE_DIR}/config.json``:
+
+.. code:: json
+
+   {
+     "pre-images-endpoint" : "${PRE_IMAGES_URL}"
+   }
+
+.. note::
+
+   One does not need to trust the provider service for pre-images because the
+   rollup node will ensure that the content matches the requested hash before using
+   it.
 
 .. _configure_fast_exec:
 
@@ -861,7 +944,7 @@ The rest of the section proceeds as follows.
 
 #. First, we explain the execution environment of a WASM kernel: when
    it is parsed, executed, etc.
-#. Then, we explain in more details the API at the disposal of WASM
+#. Then, we explain in more detail the API at the disposal of WASM
    kernel developers.
 #. Finally, we demonstrate how Rust in particular can be used to
    implement a WASM kernel.
@@ -929,7 +1012,9 @@ upgrades. The WASM PVM will upgrade itself when it reads the
 +--------------+----------------+
 | Protocol     | Version        |
 +==============+================+
-| Atlas        | 2.0.0-r1       |
+| Mumbai       | 2.0.0          |
++--------------+----------------+
+| Nairobi      | 2.0.0-r1       |
 +--------------+----------------+
 | Alpha        | 2.0.0-r1       |
 +--------------+----------------+
@@ -943,7 +1028,7 @@ When a new block is published on Mavryk, the inbox exposed to the smart
 rollup is populated with all the inputs published on Mavryk in this
 block. It is important to keep in mind that all the smart rollups
 which are originated on Mavryk share the same inbox. As a consequence,
-a WASM kernel has to filter the inputs that are relevant for its
+a WASM kernel has to filter the inputs that are relevant to its
 purpose from the ones it does not need to process.
 
 Once the inbox has been populated with the inputs of the Mavryk block,
@@ -1097,7 +1182,7 @@ conveying errors, as shown in the next table.
 ======= =======================================================================================================
 
 Implementing a WASM Kernel in Rust
-----------------------------------
+""""""""""""""""""""""""""""""""""
 
 Though WASM is a good fit for efficiently executing computation-intensive, arbitrary
 programs, it is a low-level, stack-based, memory unsafe language.
@@ -1110,8 +1195,10 @@ WASM as a first class citizen when it comes to compilation targets,
 but its approach to memory safety eliminates large classes of bugs and
 vulnerabilities that arbitrary WASM programs may suffer from.
 
+Additionally there is support for implementing kernels in Rust, in the form of the `Smart Rollup Kernel SDK <https://crates.io/crates/mavryk-smart-rollup>`__.
+
 Setting-up Rust
-"""""""""""""""
+~~~~~~~~~~~~~~~
 
 `rustup <https://rustup.rs>`_ is the standard way to get Rust. Once
 ``rustup`` is installed, enabling WASM as a compilation target is as
@@ -1123,7 +1210,7 @@ simple as running the following command.
 
 Rust also proposes the ``wasm64-unknown-unknown`` compilation
 target. This target is **not** compatible with Mavryk smart rollups,
-which only provides a 32bit address space.
+which only provide a 32bit address space.
 
 .. note::
 
@@ -1206,7 +1293,7 @@ deploy in our rollup. For instance, our “noop” kernel weighs
 kernel (down to 115 bytes in our case).
 
 Host Functions in Rust
-""""""""""""""""""""""
+~~~~~~~~~~~~~~~~~~~~~~
 
 The host functions exported by the WASM runtime to Rust programs
 are exposed by the following API. The ``link`` pragma is used to specify the
@@ -1359,6 +1446,11 @@ WASM memory.
 Testing your Kernel
 """""""""""""""""""
 
+.. note::
+
+   ``mavkit-smart-rollup-wasm-debugger`` is available in the Mavkit
+   distribution starting with :doc:`/releases/version-16`.
+
 Testing a kernel without having to start a rollup node on a test
 network is very convenient. We provide a debugger as a means to
 evaluate the WASM PVM without relying on any node and network:
@@ -1412,7 +1504,7 @@ two messages:
       {
         "payload" : "0",
         "sender" : "KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq",
-        "source" : "mv1E7Ms4p1e3jV2WMehLB3FBFwbV56GiRQfe",
+        "source" : "tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w",
         "destination" : "sr1RYurGZtN8KNSpkMcCt9CgWeUaNkzsAfXf"
       },
       { "payload" : "Pair Unit False" }
@@ -1422,7 +1514,7 @@ two messages:
 Note that the ``sender``, ``source`` and ``destination`` fields are optional
 and will be given default values by the debugger, respectively
 ``KT18amZmM5W7qDWVt2pH6uj7sCEd3kbzLrHT``,
-``mv1CQJA6XDWcpVgVbxgSCTa69AW1y8iHbLx5`` and
+``tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU`` and
 ``sr163Lv22CdE8QagCwf48PWDTquk6isQwv57``. If no input file is given, the
 inbox will be assumed empty. If the option ``--rollup`` is given, it
 replaces the default value for the rollup address.
@@ -1542,7 +1634,7 @@ take care of the possible reboots asked by the kernel (through the usage of the
   Internal state: Collect
 
 To obtain more information on the execution, the command ``profile`` will also run
-the kernel on a full inbox, consumed all inputs, run until more inputs are
+the kernel on a full inbox, consume all inputs, run until more inputs are
 required, and output some information about the run.
 
 .. code::
@@ -1606,7 +1698,7 @@ Metadata are automatically filled with level ``0`` as origination level
 and the configured smart rollup address (or the default one).
 
 Note that when stepping tick by tick (using the ``step tick`` command), it is
-possible to end up in a situation were the evaluation stops on ``Waiting for
+possible to end up in a situation where the evaluation stops on ``Waiting for
 reveal``. If the expected value is a metadata, the command ``reveal metadata``
 will give the default metadata to the kernel. If the value expected is the
 preimage of a given hash, there are two possible solutions:

@@ -56,6 +56,7 @@ Here is a quick description of each file in this environment, all located under
 
 The API can be found in :package-api:`mavryk-protocol-environment <mavkit-proto-libs/Mavryk_protocol_environment/index.html>`
 
+.. _environment_versions:
 
 Environment versions
 --------------------
@@ -65,12 +66,16 @@ to the protocol. And so when a new protocol needs new functions, types, or value
 this protocol must use a new environment. This is why the environments are
 versioned.
 
-A protocol's manifest (e.g., :src:`src/proto_alpha/lib_protocol/MAVRYK_PROTOCOL`)
+A protocol's manifest (e.g., :src:`src/proto_alpha/lib_protocol/TEZOS_PROTOCOL`)
 includes a field named ``expected_env_version``. This field specifies the
 environment used to compile the protocol.
 
 Protocol environments can only ever increase in version. Specifically, from
 within a protocol P1 built on environment version X, the activation of a
 protocol P2 built on environment Y fails unless X ≤ Y.
+
+Some examples of prior environment switches can be found within past protocol changelogs:
+
+ - :doc:`Atlasn - environment V1 <../protocols/001_atlas>`
 
 For how to prepare and implement an environment switch, see :doc:`../developer/protocol_environment_upgrade`.
