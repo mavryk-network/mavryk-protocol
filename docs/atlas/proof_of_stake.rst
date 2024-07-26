@@ -12,12 +12,12 @@ Mavryk :doc:`governance <voting>`.
 
 If one does not have enough stake to participate on its own or does not want to
 set up the needed infrastructure, (s)he can use :ref:`delegation
-<delegating_coins>`. Therefore, in Mavryk, it is the :ref:`delegates<def_delegate_oxford>`
+<delegating_coins>`. Therefore, in Mavryk, it is the :ref:`delegates<def_delegate_atlas>`
 that may participate in consensus.
 However, at each level, not all delegates necessarily participate, and their participation weight may differ.
 The selection of the delegates' participation rights at a level is done by running a
 PRNG (pseudo-random number generator).
-The PRNG's :ref:`seeds <random_seed_oxford>` are obtained from random
+The PRNG's :ref:`seeds <random_seed_atlas>` are obtained from random
 data that are regularly produced and stored on the blockchain. Thus,
 the procedure is deterministic in that delegates' rights are uniquely
 determined from the seed; and it is random, in that its seed (and hence its results) cannot
@@ -27,18 +27,18 @@ be predicted too much in advance.
 Delegation and Staking
 ----------------------
 
-A *delegate* is any :ref:`implicit account <def_implicit_account_oxford>` registered as
+A *delegate* is any :ref:`implicit account <def_implicit_account_atlas>` registered as
 such. This is done by *self-delegating*, that is, emitting a delegation
 operation (see below) in which the specified delegate is the same as the
 operation emitter (its signer). Note that ``tz4`` accounts cannot be registered
 as delegates.
 
-Any :ref:`account <def_account_oxford>` (implicit or originated) can specify a delegate
+Any :ref:`account <def_account_atlas>` (implicit or originated) can specify a delegate
 through a delegation operation.  Any account can change or revoke its delegate
 at any time, again through a delegation operation. However, the change only
-becomes effective after ``PRESERVED_CYCLES + 2`` :ref:`cycles <def_cycle_oxford>`.  The
+becomes effective after ``PRESERVED_CYCLES + 2`` :ref:`cycles <def_cycle_atlas>`.  The
 value ``PRESERVED_CYCLES`` is a :ref:`protocol constant
-<protocol_constants_oxford>`.
+<protocol_constants_atlas>`.
 
 A delegate participates in consensus and in governance with a weight
 proportional to their *delegated stake* -- that is, the balance
@@ -46,9 +46,9 @@ of all the accounts that delegate to it, including the balance of the delegate i
 participate in consensus or in governance, a
 delegate needs to have at least a minimal stake, which is given by the
 ``MINIMAL_STAKE`` :ref:`protocol constant
-<protocol_constants_oxford>` and a minimal frozen stake given by the
+<protocol_constants_atlas>` and a minimal frozen stake given by the
 ``MINIMAL_FROZEN_STAKE`` :ref:`protocol constant
-<protocol_constants_oxford>`.
+<protocol_constants_atlas>`.
 
 Delegates place security deposits that may be forfeited in case they do not
 follow (some particular rules of) the protocol. Security deposits are deduced
@@ -75,7 +75,7 @@ Active and passive delegates
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. _active_delegate:
-.. _active_delegate_oxford:
+.. _active_delegate_atlas:
 
 A delegate can be marked as either active or passive. A passive
 delegate cannot participate in the consensus algorithm.
@@ -94,7 +94,7 @@ Mavryk being proof-of-stake, the delegates' rights are selected at random based 
 stake. In what follows we detail the selection mechanism used in Mavryk.
 
 .. _random_seed:
-.. _random_seed_oxford:
+.. _random_seed_atlas:
 
 Random seed
 ^^^^^^^^^^^
@@ -106,14 +106,14 @@ values in the protocol, in particular for selecting delegates to participate in 
 For more information on randomness generation, see :doc:`randomness-generation<randomness_generation>`.
 
 .. _snapshots:
-.. _snapshots_oxford:
+.. _snapshots_atlas:
 
 Stake snapshots
 ^^^^^^^^^^^^^^^
 
 Before turning to the rights selection mechanism, we first introduce a new
 terminology, *stake snapshot*, to denote the stake distribution for a given block,
-as stored in the :ref:`context<def_context_oxford>`.
+as stored in the :ref:`context<def_context_atlas>`.
 Stake snapshots are taken (and stored) every ``BLOCKS_PER_STAKE_SNAPSHOT`` levels.
 More precisely, a snapshot is taken at a level if and only if its cycle
 position modulo ``BLOCKS_PER_STAKE_SNAPSHOT`` is ``BLOCKS_PER_STAKE_SNAPSHOT - 1``.
@@ -123,14 +123,14 @@ BLOCKS_PER_STAKE_SNAPSHOT`` stored snapshots.
 At the end of cycle ``n-1-PRESERVED_CYCLES``, the snapshot for cycle
 ``n`` is randomly selected from the snapshots stored in cycle
 ``n-1-PRESERVED_CYCLES``. The selection is done through a very simple
-PRNG having as seed the :ref:`random seed<random_seed_oxford>` for
+PRNG having as seed the :ref:`random seed<random_seed_atlas>` for
 cycle ``n``.
 
 Only the stake of active delegates with the minimal stake of ``MINIMAL_STAKE``
 and frozen deposits greater than ``MINIMAL_FROZEN_STAKE`` is snapshotted.
 
 .. _rights:
-.. _rights_oxford:
+.. _rights_atlas:
 
 Slot selection
 ^^^^^^^^^^^^^^
@@ -155,15 +155,15 @@ mentioned above.
 More precisely, given a level and a slot (which is just a non-negative integer),
 the mentioned algorithm is invoked to assign a delegate to the given slot.
 Its input is the probability distribution given by the :ref:`stake
-snapshot<snapshots_oxford>` for the cycle to which the level belongs.
+snapshot<snapshots_atlas>` for the cycle to which the level belongs.
 And whenever the algorithm needs to draw a random value, this is obtained using a
 simple procedure which has as its initial state: the level, the
-:ref:`random seed<random_seed_oxford>` for the cycle to which the
+:ref:`random seed<random_seed_atlas>` for the cycle to which the
 level belongs, and the slot.
 
 
 .. _ps_constants:
-.. _ps_constants_oxford:
+.. _ps_constants_atlas:
 
 Proof-of-stake parameters
 -------------------------

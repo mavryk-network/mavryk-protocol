@@ -6,7 +6,7 @@ Some of these tools are included in the Mavkit repository, because of a close co
 They provide, for example, support for profiling or for benchmarking different subsystems of Mavkit.
 
 On the other hand, contributing to the development of the Mavkit repository requires installing some additional infrastructure, which is not needed by regular Mavkit users.
-For instance, developers need Python for building the documentation, and also because :src:`the pre-commit hook <scripts/pre_commit/pre_commit.py>` (which executes some custom checks before committing changes) is currently written in Python.
+For instance, developers need Python for building the documentation.
 
 The tools for platform developers, as well as the configuration of the additional infrastructure, are documented in the following pages.
 

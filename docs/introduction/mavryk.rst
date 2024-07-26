@@ -1,7 +1,7 @@
 .. _mavkit:
 
 Mavkit & Protocol overview
--------------------------
+--------------------------
 
 Mavkit, bundled with the Mavryk protocol, is a complete implementation of the `Mavryk blockchain <https://mavrykdynamics.com>`__.
 
@@ -20,7 +20,7 @@ is available at https://gitlab.com/mavryk-network/mavryk-protocol.
 
 This website contains technical documentation about both Mavkit and the Mavryk protocol.
 
-The current release of Mavkit is :doc:`../releases/version-19`.
+The current release of Mavkit is :doc:`../releases/version-2`.
 
 For installing instructions, see :doc:`./howtoget`.
 

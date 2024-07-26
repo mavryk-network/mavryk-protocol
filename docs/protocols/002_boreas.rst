@@ -1,5 +1,5 @@
 Protocol Boreas
-==============
+===============
 
 This page documents the changes brought by protocol Boreas with respect
 to Atlas (see :ref:`naming_convention`).

@@ -3,23 +3,24 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root ``toctree`` directive.
 
-.. TODO https://gitlab.com/mavryk-network/mavryk-protocol/-/issues/2170:
+.. TODO https://gitlab.com/tezos/tezos/-/issues/2170:
    search shifted protocol name/number & adapt
 
-Welcome to the Mavryk Technical Documentation!
-==============================================
+Welcome to the Mavkit and Protocol Documentation!
+================================================
 
 To start browsing, either follow one of the guided paths below, or directly pick any topics in the documentation menu.
 
 .. raw:: html
 
     <details>
-    <summary><img alt="Discover Mavryk" class="normal" src="discover_mavryk_1.png" style="width:min(95%,1000px); cursor: pointer;" />
+    <summary><img alt="Discover Mavkit & the Mavryk protocol" class="normal" src="discover_tezos_1.png" style="width:min(95%,1000px); cursor: pointer;" />
     </summary><div style="max-width:min(90%,1000px); margin-top:1em; margin-left:2em">
 
-**Never heard of Mavryk?** Let's get acquainted!
+**Never heard of Mavkit?** Let's get acquainted!
 
-Mavryk is a distributed consensus platform (a blockchain) with meta-consensus
+Mavkit & the Mavryk protocol are an implementation of the `Mavryk blockchain <https://mavryk.org>`__ , a
+distributed consensus platform with meta-consensus
 capability.
 
 This means that, unlike other blockchains like Bitcoin or Ethereum, Mavryk comes to consensus not only about the state of its ledger, but also about how the protocol and the nodes should adapt and upgrade.
@@ -27,7 +28,9 @@ This means that, unlike other blockchains like Bitcoin or Ethereum, Mavryk comes
 This is a fundamental design choice, allowing Mavryk to be seamlessly upgradable and continuosly evolving.
 Due to this feature, Mavryk is built to last, and always stay at the leading edge of blockchain technology.
 
-To learn more about Mavryk, its implementation, and its ecosystem, see :doc:`introduction/mavryk`.
+To learn more about Mavryk, the `Mavryk documentation <https://mavryk.org>`__.
+
+To learn more about how Mavkit & the protocol fit into Mavryk and its ecosystem, see :doc:`introduction/mavryk`.
 
 .. raw:: html
 
@@ -37,7 +40,7 @@ To learn more about Mavryk, its implementation, and its ecosystem, see :doc:`int
     <summary><img alt="Getting started" class="normal" src="getting_started_2.png" style="width:min(95%,1000px); cursor: pointer;" />
     </summary><div style="max-width:min(90%,1000px); margin-top:1em; margin-left:2em">
 
-**Newcomer to Mavryk?** Come and participate!
+**Newcomer to Mavkit?** Start participating to Mavryk using Mavkit!
 
 Start participating to Mavryk by following the ``Introduction`` section in the documentation menu.
 
@@ -59,13 +62,13 @@ and more.
 
 **Already a user?** Here is everything you need to know!
 
-If you already installed Mavkit and can participate in the Mavryk blockchain, the most useful resources are grouped in the ``User`` section in the documentation menu.
+If you already installed Mavkit and can participate in the Mavryk blockchain, the most useful resources are grouped in the ``User manual`` section in the documentation menu.
 These pages:
 
-- present the key concepts and mechanisms for setting up Mavkit, including :doc:`user/setup-client`, :doc:`user/setup-node`, and so on;
+- present the key concepts and mechanisms for setting up Mavkit, including :doc:`user/setup-client`, :doc:`user/setup-node`, for different production or testing configurations;
 - empowers you to take advantage of Mavkit' basic and more advanced features, such as :doc:`user/key-management`, :doc:`user/multisig`, :doc:`user/logging`, and much more.
 
-If you intend to participate to Mavryk not just as a mere user, but also as a baker, you could also check more specialized resources such as the `NL Knowledge Center <https://docs.nomadic-labs.com/nomadic-labs-knowledge-center/>`__ or `Open Mavryk <https://documentation.mavryk.org>`__.
+If you intend to participate to Mavryk not just as a user, but rather as a baker, you should also check more specialized documentation such as the  `Baking section on the Mavryk Documentation <https://documentation.mavryk.org/node-baking/overview/>`__.
 
 .. raw:: html
 
@@ -77,33 +80,34 @@ If you intend to participate to Mavryk not just as a mere user, but also as a ba
 
 **Want to know how it works?** It's no secret, let us explain!
 
-If you want to know more about the Mavryk *technology*, there are several sections in the documentation presenting the main design principles of Mavryk, and some high-level implementation principles of Mavkit:
+If you want to know more about the *technology* underlying Mavkit and the Mavryk protocol, the ``Reference manual`` section in the documentation present their rationale, main design principles, and some high-level implementation principles:
 
-- Section ``Shell`` introduces the common :ref:`architectural principles of any Mavryk implementation <the_big_picture>`, mainly consisting of a "shell" and a "protocol". It also presents in particular the :ref:`architectural principles of the Mavkit implementation <packages>`. A group of pages in this section detail some major subsystems of :doc:`shell/shell`.
+- Page ``Mavkit software architecture`` explains how the :ref:`architecture of the Mavkit implementation <packages>` instantiates the high-level :ref:`architectural principles of any Mavryk implementation <the_big_picture>`, consisting in a "shell" and a "protocol" .
 
-- Sections named ``<name> Protocol`` explain the design principles and the salient features of several Mavryk protocols, current or upcoming, such as: the :doc:`active protocol <active/protocol>`, a :doc:`protocol proposal under development <alpha/protocol>`, and possibly some protocol(s) that are currently candidate(s) for future adoption.
+- Page ``Mavkit Shell`` details some major subsystems of :doc:`shell/shell`.
 
+- Page ``Mavkit Protocol`` explains the design principles and the salient features of the Mavryk protocol. In fact, these pages are versioned for several Mavryk protocols, current or upcoming, such as: the :doc:`active protocol <active/protocol>`, a :doc:`protocol proposal under development <alpha/protocol>`, and possibly some protocol(s) that are currently candidate(s) for future adoption.
+
+- Other pages are related to the important Smart Rollups feature, and present tools such as the Smart rollup node and Data Availability Committees.
 
 .. raw:: html
 
     </div></details><br/>
 
     <details>
-    <summary><img alt="Building on Mavryk" class="normal" src="building_on_mavryk_5.png" style="width:min(95%,1000px); cursor: pointer;" />
+    <summary><img alt="Developer reference" class="normal" src="building_on_tezos_5.png" style="width:min(95%,1000px); cursor: pointer;" />
     </summary><div style="max-width:min(90%,1000px); margin-top:1em; margin-left:2em">
 
-**Are you an application developer?** Find how to program with Mavryk!
+**Are you a Mavryk developer?** Find here some useful reference pages!
 
-Mavryk is an open platform. As any programmable blockchain, its value lies in the increasing base of smart contracts and distributed applications covering various domains, but also in the tools that make the ecosystem easier to use and more efficient, such as wallets, indexers, and many others.
+If you are a developer on the Mavryk platform, you must know the `Mavryk Developer Portal <https://mavryk.org/developers/>`__ or `Open Mavryk <https://openmavryk.org>`__, giving accessible and pedagogical expositions on how to write smart contracts or Dapps.
 
-If you are looking for an accessible and pedagogical exposition on how to write smart contracts or Dapps, there are many great resources out there for developing on Mavryk, such as the `Mavryk Developer Portal <https://tezos.com/developers/>`__ and `Open Mavryk <https://documentation.mavryk.org>`__.
+This website complements those resources with reference documentation, mostly in section ``Developer reference``, including:
 
-For Mavryk developers, this website mostly provides reference and API documentation, but also some guidelines, including:
-
+- Principles of the RPC interface such as the :doc:`developer/rpc`
+- RPC references such as :doc:`shell/rpc`, :doc:`api/openapi`, or :doc:`api/errors`
 - A complete reference of :doc:`active/michelson`
-- Important API concepts such as the :doc:`developer/rpc`
-- API references such as :doc:`shell/rpc`, :doc:`api/openapi`, or :doc:`api/errors`
-- Guidelines for writing smart contracts in Michelson, such as :doc:`alpha/michelson_anti_patterns`.
+- Guidelines for writing smart contracts in Michelson, such as :doc:`active/michelson_anti_patterns`.
 
 .. raw:: html
 
@@ -115,9 +119,9 @@ For Mavryk developers, this website mostly provides reference and API documentat
 
 **Are you a platform developer?** Here are the nuts and bolts!
 
-The main focus of this technical documentation website is on resources for platform developers, that is, those contributing to the Mavryk platform, including contributors to its Mavkit implementation (Mavkit developers) and contributors to the Mavryk protocol (protocol developers).
+One major focus of this website is on resources for platform developers, that is, contributors to Mavkit (Mavkit developers) and contributors to the Mavryk protocol (protocol developers).
 
-Platform developers can find a rich set of explanations, tutorials, and howtos, mainly in the ``Platform Developer`` section, including:
+Platform developers can find a rich set of explanations, tutorials, and howtos, mainly in the ``Contributing`` section, including:
 
 - a tutorial on the various forms of contributing (:doc:`developer/contributing`), and guidelines such as :doc:`developer/guidelines`
 - programming tutorials covering various libraries and frameworks specific to the Mavkit OCaml implementation, such as using :doc:`developer/gadt`, using :doc:`developer/error_monad`, using :doc:`developer/clic`, :doc:`developer/event_logging_framework`, etc.
@@ -145,27 +149,24 @@ Platform developers are also provided reference materials for internal APIs of M
    introduction/howtoget
    introduction/howtouse
    introduction/howtorun
-   introduction/test_networks
-   introduction/get_troubleshooting
-   introduction/support
+   introduction/versioning
    BREAKING CHANGES <introduction/breaking_changes>
 
 .. toctree::
    :maxdepth: 2
-   :caption: User doc
+   :caption: Mavkit User manual
    :hidden:
 
-   user/versioning
    user/setup-client
    user/setup-node
    user/multisig
    user/fa12
    user/logging
-   user/various
+   user/exits
 
 .. toctree::
    :maxdepth: 2
-   :caption: Shell doc
+   :caption: Mavkit Reference manual
    :hidden:
 
    shell/the_big_picture
@@ -188,7 +189,7 @@ Platform developers are also provided reference materials for internal APIs of M
 
 .. toctree::
    :maxdepth: 2
-   :caption: Mavryk developer doc
+   :caption: Mavryk developer Reference
    :hidden:
 
    developer/rpc
@@ -197,22 +198,16 @@ Platform developers are also provided reference materials for internal APIs of M
 
 .. toctree::
    :maxdepth: 2
-   :caption: Platform developer doc
+   :caption: Changes in Mavkit releases
    :hidden:
 
-   developer/contributing_index
-   developer/programming
-   developer/testing_index
-   developer/maintaining
-   README
-   developer/tools
-   developer/encodings
-   developer/merkle-proof-encoding-formats
-   api/api-inline
+   releases/releases
+   releases/version-2
+   releases/history
 
 .. toctree::
    :maxdepth: 2
-   :caption: Protocols
+   :caption: Changes in protocol versions
    :hidden:
 
    protocols/naming
@@ -223,7 +218,7 @@ Platform developers are also provided reference materials for internal APIs of M
 
 .. toctree::
    :maxdepth: 2
-   :caption: Releases
+   :caption: Contributing
    :hidden:
 
    developer/contributing_index

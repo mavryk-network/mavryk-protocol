@@ -86,6 +86,7 @@ The field ``kind`` allows to identify the type of container account, it can have
   - ``"deposits"`` represents the accounts of frozen deposits.
     Accounts in this category are further identified by the additional field
     ``"staker"`` whose value is either
+
     - a ``"contract"`` field, that contains the public key hash of the staker
       owning the funds and a ``"delegate"`` (public key hash) which gets staking power
       from the deposit,
@@ -97,7 +98,13 @@ The field ``kind`` allows to identify the type of container account, it can have
   - ``"unstaked_deposits"`` represents the accounts of unstaked frozen tokens.
     Accounts in this category are further identified by the following additional fields:
 
-    - the field ``"staker"`` contains the public key hash of the staker who owns the frozen funds
+    - the field ``"staker"``  whose value is either
+
+      - a ``"contract"`` field, that contains the public key hash of the staker
+        owning the funds and a ``"delegate"`` (public key hash) which gets staking power
+        from the deposit,
+      - just a ``"delegate"`` to designate collectively the deposits of all
+        stakers and the delegate itself.
     - the field ``"cycle"`` contains either the cycle at which the funds have been
       unstaked or the last unslashable cycle (``MAX_SLASHING_PERIOD +
       CONSENSUS_RIGHTS_DELAY`` before current cycle) if it is greater than the unstaking
@@ -176,7 +183,9 @@ When all operations of a block have been applied baking fees rewards and bonuses
 The total amount of fees collected and the baking rewards are transferred from the container account ``"block fees"`` and the source account ``"baking rewards"``, respectively, to the contract of the payload producer that selected the transactions to be included in the block.
 So, for a total amount of ``1000`` mumav in fees collected and an amount of
 ``500`` mumav in baking rewards, assuming that the staking parameter of the
-delegate are such that 50 mumav are frozen and 450 are spendable,
+delegate are such that 50 mumav are frozen -- with 5 mumav being the delegates
+edge, 10 mumav being the delegates share, and 35 mumav going to the stakers --
+and 450 are spendable,
 the following balance updates are generated:
 
 ::
@@ -196,7 +205,8 @@ The baking bonus go to the block proposer that signed and injected the block.
 Hence the amount of the bonus is transferred from the source account ``"baking
 bonuses"`` to the contract of the block producer and/or to its frozen balance.
 For example, the balance updates generated for an amount of ``100`` mumav in
-baking bonus with 100% sent to spendable balance (``edge_of_baking_over_staking`` set to 1) are:
+baking bonus with 90% sent to spendable balance and 10% to bakers frozen deposit
+(case with no stakers and mainnet ratios) are:
 
 ::
 

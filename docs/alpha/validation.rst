@@ -71,7 +71,7 @@ specified by the :package-api:`Protocol
 module in the :doc:`protocol
 environment<../shell/protocol_environment>` ``V12``, and it is
 implemented by this protocol in the
-:package-api:`Main<tezos-protocol-alpha/Mavryk_raw_protocol_alpha/Main/index.html>`
+:package-api:`Main<mavryk-protocol-alpha/Mavryk_raw_protocol_alpha/Main/index.html>`
 module.
 
 The rest of this document is organized as follows: we first describe

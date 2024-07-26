@@ -138,7 +138,7 @@ level”. Similarly to “Start of level“, these internal messages does not
 come with any payload.
 
 .. _reveal_data_channel_smart_rollups:
-.. _reveal_data_channel_smart_rollups_oxford:
+.. _reveal_data_channel_smart_rollups_atlas:
 
 Reveal data channel
 """""""""""""""""""
@@ -174,7 +174,7 @@ A smart rollup is characterized by:
 - the Michelson type of the entrypoint used by Layer 1 smart contracts
 to send internal messages to it, and
 - an optional list of addresses used as a white-list of allowed
-stakers (see :ref:`private_rollups_oxford`).
+stakers (see :ref:`private_rollups_atlas`).
 
 All these characteristics are provided when originating a new smart
 rollup.
@@ -264,7 +264,7 @@ to avoid type confusion: namely, a kernel transferring a tuple that
 the Layer 1 interprets as a ticket. Lastly, the outbox message can
 contain a white-list update. This message can only be executed for a
 rollup that is private since its origination (see
-:ref:`private_rollups_oxford`).
+:ref:`private_rollups_atlas`).
 
 Refutation
 ^^^^^^^^^^
@@ -315,7 +315,7 @@ an honest participant *H*, then *H* will start the refutation game with all
 concurrent stakers to avoid the rollup getting stuck.
 
 .. _private_rollups:
-.. _private_rollups_oxford:
+.. _private_rollups_atlas:
 
 Private rollups
 ^^^^^^^^^^^^^^^

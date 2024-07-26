@@ -66,7 +66,7 @@ to the protocol. And so when a new protocol needs new functions, types, or value
 this protocol must use a new environment. This is why the environments are
 versioned.
 
-A protocol's manifest (e.g., :src:`src/proto_alpha/lib_protocol/TEZOS_PROTOCOL`)
+A protocol's manifest (e.g., :src:`src/proto_alpha/lib_protocol/MAVRYK_PROTOCOL`)
 includes a field named ``expected_env_version``. This field specifies the
 environment used to compile the protocol.
 

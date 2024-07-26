@@ -16,7 +16,7 @@ else
   usage
 fi
 
-if [ "$(find $trash_bin -maxdepth 1 -type f | wc -l)" -gt 0 ]; then
+if [ "$(find "$trash_bin" -maxdepth 1 -type f | wc -l)" -gt 0 ]; then
   for protocol in "$trash_bin"/*; do
     echo mv "$protocol" src
     mv "$protocol" src

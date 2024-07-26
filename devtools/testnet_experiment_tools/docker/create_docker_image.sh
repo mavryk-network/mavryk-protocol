@@ -2,7 +2,6 @@
 
 set -e
 
-
 devtools_docker_dir="$(cd "$(dirname "$0")" && echo "$(pwd -P)/")"
 echo "devtools docker dir: $(pwd - P)"
 
@@ -38,7 +37,7 @@ build_image_name="${image_name}build"
 
 echo "Executables to include in Docker images:"
 for executable in $executables; do
-    echo "- $executable"
+  echo "- $executable"
 done
 
 echo "### Building mavryk..."
@@ -83,4 +82,3 @@ docker build \
 rm -rf "$tmp_dir"
 
 echo "### Successfully built docker image: ${image_name}bare:$image_version"
-
