@@ -31,7 +31,7 @@ all_protocols=$(find src -maxdepth 1 -type d -regex 'src/proto.*' |
 to_be_removed=$(echo "$all_protocols" |
   grep -wvFf script-inputs/active_protocol_versions |
   grep -wvFf script-inputs/active_testing_protocol_versions |
-  sed 's/-/_/g')
+  sed 's/-/_/g' || true)
 
 for proto in $to_be_removed; do
   if [ -z "$trash_bin" ]; then

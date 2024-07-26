@@ -16,7 +16,9 @@ else
   usage
 fi
 
-for protocol in "$trash_bin"/*; do
-  echo mv "$protocol" src
-  mv "$protocol" src
-done
+if [ "$(ls -A $trash_bin | wc -l)" -gt 0 ]; then
+  for protocol in "$trash_bin"/*; do
+    echo mv "$protocol" src
+    mv "$protocol" src
+  done
+fi
