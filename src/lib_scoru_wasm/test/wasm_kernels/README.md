@@ -31,7 +31,7 @@ used with the *gather-floppies* mechanism, and aims to test the `Stuck` state of
 
 To build the `unreachable.wasm` kernel, run the following from the checked-out `tezos/kernel` repo:
 ``` shell
-git checkout 5440400a7340ff60af1166c875fce2f5ca0afda0
+git checkout mavryk-unreachable
 
 # Load the required rust toolchain dockerfile
 source scripts/cargo-docker.sh
@@ -54,7 +54,7 @@ optionally dumps inputs it gets to the output buffer.
 It can be reproduced in the kernel repository like so:
 
 ```
-git checkout tx-kernel-vRAM
+git checkout mavryk-tx-kernel-vRAM
 ./scripts/build-unit-kernel.sh "test-kernel,wee_alloc"
 mv test-kernel,wee_alloc.wasm computation.wasm
 ```
@@ -67,7 +67,7 @@ bls signature-verification, which otherwise take too long in the slow-PVM to run
 It can be reproduced in the kernel repository like so:
 
 ```
-git checkout 69f69144764dcd59dcc1fd144bf6e8f707f0431e
+git checkout mavryk-tx-kernel-vRAM
 
 cargo make wasm-tx-kernel-no-sig-verif
 cp target/wasm32-unknown-unknown/release/kernel_core.wasm tx-kernel-no-sig-verif.wasm
