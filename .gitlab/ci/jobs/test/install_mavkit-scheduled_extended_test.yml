@@ -1,19 +1,30 @@
 # This file was automatically generated, do not edit.
 # Edit file ci/bin/main.ml instead.
 
-oc.install_bin_fedora_37:
-  image: fedora:37
-  stage: test
-  tags:
-  - saas-linux-2xlarge-amd64
-  rules:
-  - when: always
-  dependencies: []
-  script:
-  - ./docs/introduction/install-bin-fedora.sh
+# oc.install_bin_fedora_37:
+#   image: fedora:37
+#   stage: test
+#   tags:
+#   - saas-linux-2xlarge-amd64
+#   rules:
+#   - when: always
+#   dependencies: []
+#   script:
+#   - ./docs/introduction/install-bin-fedora.sh
 
-oc.install_bin_rc_fedora_37:
-  image: fedora:37
+# oc.install_bin_rc_fedora_37:
+#   image: fedora:37
+#   stage: test
+#   tags:
+#   - saas-linux-2xlarge-amd64
+#   rules:
+#   - when: always
+#   dependencies: []
+#   script:
+#   - ./docs/introduction/install-bin-fedora.sh rc
+
+oc.install_bin_rc_fedora_39:
+  image: fedora:39
   stage: test
   tags:
   - saas-linux-2xlarge-amd64
