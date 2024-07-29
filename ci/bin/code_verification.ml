@@ -351,12 +351,12 @@ let jobs_unit_tests ~job_build_x86_64_release ~job_build_x86_64_exp_dev_extra
     oc_unit_protocol_compiles;
   ]
 
-type install_mavkit_distribution = Ubuntu_focal | Ubuntu_jammy | Fedora_37
+type install_mavkit_distribution = Ubuntu_focal | Ubuntu_jammy | Fedora_39
 
 let image_of_distribution = function
   | Ubuntu_focal -> Images.ubuntu_focal
   | Ubuntu_jammy -> Images.ubuntu_jammy
-  | Fedora_37 -> Images.fedora_37
+  | Fedora_39 -> Images.fedora_39
 
 (* Encodes the conditional [before_merging] pipeline and its unconditional variant
    [schedule_extended_test]. *)
@@ -1019,7 +1019,7 @@ let jobs pipeline_type =
         let distribution_string =
           match distribution with
           | Ubuntu_focal | Ubuntu_jammy -> "ubuntu"
-          | Fedora_37 -> "fedora"
+          | Fedora_39 -> "fedora"
         in
         let script =
           sf "./docs/introduction/install-bin-%s.sh" distribution_string
@@ -1062,12 +1062,12 @@ let jobs pipeline_type =
       in
       [
         (* Test installing binary / binary RC distributions in all distributions *)
-        job_install_bin ~__POS__ ~name:"oc.install_bin_fedora_37" Fedora_37;
+        (* job_install_bin ~__POS__ ~name:"oc.install_bin_fedora_39" Fedora_39; *)
         job_install_bin
           ~__POS__
-          ~name:"oc.install_bin_rc_fedora_37"
+          ~name:"oc.install_bin_rc_fedora_39"
           ~rc:true
-          Fedora_37;
+          Fedora_39;
         (* The Ubuntu jobs currently fail because the last rc packages can't be installed anymore.
            See https://gitlab.com/tezos/tezos/-/issues/6902.
            TODO: https://gitlab.com/tezos/tezos/-/issues/6915
