@@ -31,7 +31,7 @@ let variables : variables =
     (* ("build_deps_image_name", "${GCP_REGISTRY}/tezos/opam-repository"); *)
     ( "rust_toolchain_image_name",
       (* "${GCP_REGISTRY}/${CI_PROJECT_PATH}/rust-toolchain" ); *)
-      "registry.gitlab.com/tezos/tezos/rust-toolchain" );
+      "registry.gitlab.com/mavryk-network/mavryk-protocol/rust-toolchain" );
     ( "client_libs_dependencies_image_name",
       (* "${GCP_REGISTRY}/${CI_PROJECT_PATH}/client-libs-dependencies" ); *)
       "registry.gitlab.com/mavryk-network/mavryk-protocol/client-libs-dependencies" );  
