@@ -32,7 +32,7 @@ pk1=$4
 addr1=$5
 pk2=$6
 addr2=$7
-node=https://node.ghostnet.etherlink.com
+node=https://node.basenet.etherlink.com
 explorer=https://testnet-explorer.etherlink.com
 
 # 3 mn
@@ -59,7 +59,7 @@ send_msg() {
 add_timeout_msg() {
   network="$1"
   network_name="${network#https://}"
-  network_name="${network_name%.ghostnet.etherlink.com}"
+  network_name="${network_name%.basenet.etherlink.com}"
   add_report_msg "• <!here> 🚨 *$2 timeouted with endpoint* <${network}|${network_name}>"
 }
 
@@ -67,7 +67,7 @@ add_failed_tx_msg() {
   network="$1"
   op_type="${2}"
   network_name="${network#https://}"
-  network_name="${network_name%.ghostnet.etherlink.com}"
+  network_name="${network_name%.basenet.etherlink.com}"
   add_report_msg "• <!here> 🚨 *${op_type} failed with endpoint* <${network}|${network_name}>"
 }
 
@@ -86,7 +86,7 @@ add_good_health_msg() {
   hash_suffix=$(echo "${hash}" | cut -c 63-66)
   network="$2"
   network_name="${network#https://}"
-  network_name="${network_name%.ghostnet.etherlink.com}"
+  network_name="${network_name%.basenet.etherlink.com}"
 
   add_report_msg "• ✅ $3 transaction <${explorer}/tx/$hash|${hash_prefix}...${hash_suffix}> using <${network}|${network_name}>"
 }

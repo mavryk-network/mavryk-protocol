@@ -19,7 +19,7 @@ To ensure everything works properly, both the node and the rollup node will need
 
 - Create a snapshot of the node at the retrieved level.
 
-> mavkit-node snapshot export --block <retrieved-level> --data-dir ~/evm-test/ghostnet-node
+> mavkit-node snapshot export --block <retrieved-level> --data-dir ~/evm-test/basenet-node
 
 - Get a "snapshot" of the EVM rollup (basically all its data directory) and store it somewhere.
 
@@ -27,7 +27,7 @@ To ensure everything works properly, both the node and the rollup node will need
 
 Fork the chain to make the tests in our deviated chain.
 
-- Setup the yes-node/wallet on ghostnet:
+- Setup the yes-node/wallet on basenet:
 
 ```
 # TODO: remove the following line. Should hopefully be merged to master soon, in the meantime:
@@ -48,9 +48,9 @@ Fork the chain to make the tests in our deviated chain.
 ```
 
 ```
-Retrieve the list of bakers, here is an example for Ghostnet:
+Retrieve the list of bakers, here is an example for Basenet:
 
-> curl https://api.ghostnet.tzkt.io/v1/delegates\?limit\=5000 | jq 'map(select ((.alias?) and .active) |{ "alias" : .alias, "address" : .address , "publicKey" : .publicKey})' > aliases.json
+> curl https://api.basenet.tzkt.io/v1/delegates\?limit\=5000 | jq 'map(select ((.alias?) and .active) |{ "alias" : .alias, "address" : .address , "publicKey" : .publicKey})' > aliases.json
 ```
 
 ```

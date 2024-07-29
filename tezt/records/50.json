@@ -2723,13 +2723,13 @@
   },
   {
     "file": "tezt/tests/testnet_dictator.ml",
-    "title": "Nairobi: testnet dictator (ghostnet, exploration)",
+    "title": "Nairobi: testnet dictator (basenet, exploration)",
     "tags": [
       "admin_client",
       "amendment",
       "client",
       "exploration",
-      "ghostnet",
+      "basenet",
       "nairobi",
       "node"
     ],

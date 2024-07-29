@@ -2627,13 +2627,13 @@
   },
   {
     "file": "tezt/tests/testnet_dictator.ml",
-    "title": "Alpha: testnet dictator (ghostnet, promotion)",
+    "title": "Alpha: testnet dictator (basenet, promotion)",
     "tags": [
       "admin_client",
       "alpha",
       "amendment",
       "client",
-      "ghostnet",
+      "basenet",
       "node",
       "promotion"
     ],

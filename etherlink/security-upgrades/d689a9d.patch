@@ -78,7 +78,7 @@ index 5e269e8c12..04ff0e151d 100644
 -            b"KT1ECwsLV29BjuuzHtFeNs84tarB7ryYcpRR",
 -        )?;
  
--        // If it exists, we are on ghostnet.
+-        // If it exists, we are on basenet.
 -        let mut index = init_blocks_index()?;
 -        if let Ok(block_813) = read_block(host, &mut index, 1232813) {
 -            log!(host, Info, "Block 813: {:?}", block_813);

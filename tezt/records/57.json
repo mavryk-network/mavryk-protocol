@@ -1369,7 +1369,7 @@
   },
   {
     "file": "etherlink/tezt/tests/evm_rollup.ml",
-    "title": "Alpha: Regression test for Ghostnet kernel",
+    "title": "Alpha: Regression test for Basenet kernel",
     "tags": [
       "regression",
       "admin_client",

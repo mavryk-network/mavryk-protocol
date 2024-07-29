@@ -85,7 +85,7 @@ let delayed_inbox_min_levels = evm "/delayed_inbox_min_levels"
 
 let reveal_config = "/__tmp/reveal_config"
 
-module Ghostnet = struct
+module Basenet = struct
   let eth_accounts = evm "/eth_accounts"
 
   let eth_account addr = sf "%s/%s" eth_accounts (normalize addr)

@@ -2065,13 +2065,13 @@
   },
   {
     "file": "tezt/tests/testnet_dictator.ml",
-    "title": "Atlas: testnet dictator (ghostnet, cooldown)",
+    "title": "Atlas: testnet dictator (basenet, cooldown)",
     "tags": [
       "admin_client",
       "amendment",
       "client",
       "cooldown",
-      "ghostnet",
+      "basenet",
       "node",
       "atlas"
     ],

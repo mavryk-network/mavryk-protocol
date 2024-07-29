@@ -2694,14 +2694,14 @@
   },
   {
     "file": "tezt/tests/testnet_dictator.ml",
-    "title": "Alpha: testnet dictator (ghostnet, cooldown)",
+    "title": "Alpha: testnet dictator (basenet, cooldown)",
     "tags": [
       "admin_client",
       "alpha",
       "amendment",
       "client",
       "cooldown",
-      "ghostnet",
+      "basenet",
       "node"
     ],
     "successful_runs": {

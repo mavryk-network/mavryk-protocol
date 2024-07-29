@@ -29,10 +29,10 @@ dune exec mavkit-node -- snapshot import <snapshot-file> --data-dir /path/to/the
 ```
 
 If you are trying to import a testnet snapshot, you need to configure your node
-with the appropriate network name, e.g. `ghostnet`, with
+with the appropriate network name, e.g. `basenet`, with
 
 ```shell
-dune exec mavkit-node -- config init --network=ghostnet --data-dir /path/to/the/context
+dune exec mavkit-node -- config init --network=basenet --data-dir /path/to/the/context
 ```
 
 This script was originally developed as a protocol-specific binary on

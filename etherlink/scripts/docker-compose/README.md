@@ -15,7 +15,7 @@ First step is to create an `.env` containing all necessary variables:
 ```
 # network to use
 # warning: date dependent variables won't be correctly interpreted in compose.yml
-TZNETWORK=${TZNETWORK:-"ghostnet"}
+TZNETWORK=${TZNETWORK:-"basenet"}
 
 # tag to use for the mavryk docker. default to `master`
 MAVKIT_TAG=${MAVKIT_TAG:-master}

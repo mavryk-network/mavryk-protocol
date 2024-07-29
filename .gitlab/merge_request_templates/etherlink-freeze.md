@@ -1,12 +1,12 @@
 # What
 
-The commit for the next ghostnet upgrade is: RELEASE_COMMIT
+The commit for the next basenet upgrade is: RELEASE_COMMIT
 
 # Steps
 
 ## Freeze the kernel
 
-Prepare the ghostnet kernel:
+Prepare the basenet kernel:
 ```
 $ git checkout RELEASE_COMMIT
 $ etherlink/scripts/build-wasm.sh

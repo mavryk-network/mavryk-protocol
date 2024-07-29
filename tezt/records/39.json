@@ -2621,13 +2621,13 @@
   },
   {
     "file": "tezt/tests/testnet_dictator.ml",
-    "title": "Nairobi: testnet dictator (ghostnet, adoption)",
+    "title": "Nairobi: testnet dictator (basenet, adoption)",
     "tags": [
       "admin_client",
       "adoption",
       "amendment",
       "client",
-      "ghostnet",
+      "basenet",
       "nairobi",
       "node"
     ],

@@ -2652,13 +2652,13 @@
   },
   {
     "file": "tezt/tests/testnet_dictator.ml",
-    "title": "Atlas: testnet dictator (ghostnet, exploration)",
+    "title": "Atlas: testnet dictator (basenet, exploration)",
     "tags": [
       "admin_client",
       "amendment",
       "client",
       "exploration",
-      "ghostnet",
+      "basenet",
       "node",
       "atlas"
     ],

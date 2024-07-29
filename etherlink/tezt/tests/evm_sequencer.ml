@@ -1950,11 +1950,11 @@ let test_no_automatic_block_production =
 let test_migration_from_ghostnet =
   Protocol.register_test
     ~__FILE__
-    ~tags:["evm"; "sequencer"; "upgrade"; "migration"; "ghostnet"]
-    ~title:"Sequencer can upgrade from ghostnet"
+    ~tags:["evm"; "sequencer"; "upgrade"; "migration"; "basenet"]
+    ~title:"Sequencer can upgrade from basenet"
     ~uses:(fun protocol -> Constant.WASM.ghostnet_evm_kernel :: uses protocol)
   @@ fun protocol ->
-  (* Creates a sequencer using prod version and ghostnet kernel. *)
+  (* Creates a sequencer using prod version and basenet kernel. *)
   let* {
          sequencer;
          client;

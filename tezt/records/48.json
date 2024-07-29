@@ -2663,13 +2663,13 @@
   },
   {
     "file": "tezt/tests/testnet_dictator.ml",
-    "title": "Nairobi: testnet dictator (ghostnet, cooldown)",
+    "title": "Nairobi: testnet dictator (basenet, cooldown)",
     "tags": [
       "admin_client",
       "amendment",
       "client",
       "cooldown",
-      "ghostnet",
+      "basenet",
       "nairobi",
       "node"
     ],

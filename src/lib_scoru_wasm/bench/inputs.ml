@@ -27,7 +27,7 @@
 
 module Kernels = struct
   let tx_kernel_dac =
-    "src/lib_scoru_wasm/bench/kernels/tx_kernel/tx_kernel_dac_20221216.wasm"
+    "src/lib_scoru_wasm/bench/kernels/tx_kernel/tx-kernel-no-verif.wasm"
 
   (** taken from unit test,
       reads input, execute without taking them into account *)

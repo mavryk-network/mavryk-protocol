@@ -101,7 +101,7 @@ val delayed_inbox_min_levels : path
 (** [reveal_config] is the path to the storage configuration. *)
 val reveal_config : path
 
-module Ghostnet : sig
+module Basenet : sig
   val eth_accounts : path
 
   val eth_account : path -> path

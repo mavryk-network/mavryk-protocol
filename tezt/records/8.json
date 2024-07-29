@@ -2683,14 +2683,14 @@
   },
   {
     "file": "tezt/tests/testnet_dictator.ml",
-    "title": "Alpha: testnet dictator (ghostnet, exploration)",
+    "title": "Alpha: testnet dictator (basenet, exploration)",
     "tags": [
       "admin_client",
       "alpha",
       "amendment",
       "client",
       "exploration",
-      "ghostnet",
+      "basenet",
       "node"
     ],
     "successful_runs": {

@@ -19,7 +19,7 @@ Default: mainnet
 Description: The network you want to connect to
  - mainnet:
  - testnet:
- - ghostnet:
+ - basenet:
 
 Template: mavkit-node/purge_warning
 Type: string

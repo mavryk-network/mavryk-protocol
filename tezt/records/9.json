@@ -2702,12 +2702,12 @@
   },
   {
     "file": "tezt/tests/testnet_dictator.ml",
-    "title": "Nairobi: testnet dictator (ghostnet, promotion)",
+    "title": "Nairobi: testnet dictator (basenet, promotion)",
     "tags": [
       "admin_client",
       "amendment",
       "client",
-      "ghostnet",
+      "basenet",
       "nairobi",
       "node",
       "promotion"

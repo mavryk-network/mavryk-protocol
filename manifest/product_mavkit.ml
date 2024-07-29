@@ -6340,7 +6340,7 @@ let hash = Protocol.hash
     in
     let mavkit_sc_rollup_node =
       (* For now, we want to keep this for Nairobi and above because Etherlink
-         Ghostnet requires it. *)
+         Basenet requires it. *)
       only_if N.(number >= 001) @@ fun () ->
       private_lib
         (sf "mavkit_smart_rollup_node_%s" short_hash)

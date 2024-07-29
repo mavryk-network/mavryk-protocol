@@ -31,7 +31,7 @@
 
 - Delayed EVM transactions no longer pay data-availability fee. (!12401)
 - Raise minimum gas price to **1 gwei**. (!12514)
-- Set a delayed bridge for Ghostnet. (!12485)
+- Set a delayed bridge for Basenet. (!12485)
 
 ### Bug fixes
 

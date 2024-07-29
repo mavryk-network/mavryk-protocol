@@ -254,7 +254,7 @@ let () =
     ~versions
     ~hash_frequency:10_037L
     ~proof_frequency:(3L, 30_893L)
-    tx_no_verify_kernel ;
+    tx_no_verify_kernel ; *)
   register
     ~name:"link_store_create"
     ~fail_on_stuck:false
@@ -307,4 +307,4 @@ let () =
     ~versions
     ~hash_frequency:0L
     ~proof_frequency:(1L, 0L)
-    (link_kernel "reveal" ["i32"; "i32"; "i32"; "i32"] ["i32"]) *)
+    (link_kernel "reveal" ["i32"; "i32"; "i32"; "i32"] ["i32"])

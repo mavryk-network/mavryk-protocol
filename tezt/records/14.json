@@ -2627,12 +2627,12 @@
   },
   {
     "file": "tezt/tests/testnet_dictator.ml",
-    "title": "Nairobi: testnet dictator (ghostnet, proposal)",
+    "title": "Nairobi: testnet dictator (basenet, proposal)",
     "tags": [
       "admin_client",
       "amendment",
       "client",
-      "ghostnet",
+      "basenet",
       "nairobi",
       "node",
       "proposal"

@@ -76,7 +76,7 @@ let parameter_file ?(constants = default_constants) protocol =
   let name = constants_to_string constants in
   sf "src/%s/parameters/%s-parameters.json" (directory protocol) name
 
-let daemon_name = function Alpha -> "alpha" | p -> String.sub (hash p) 0 8
+let daemon_name = function Alpha -> "alpha" | Atlas -> "PtAtLas" | Boreas -> "PtBoreas"
 
 let protocol_dependent_uses ~tag ~path =
   let make protocol =
@@ -96,7 +96,8 @@ let baker = protocol_dependent_uses ~tag:"baker_" ~path:"./mavkit-baker-"
 
 let encoding_prefix = function
   | Alpha -> "alpha"
-  | p -> sf "%03d-%s" (number p) (String.sub (hash p) 0 8)
+  | Atlas -> "001-PtAtLas"
+  | Boreas -> "002-PtBoreas"
 
 type parameter_overrides =
   (string list * [`None | `Int of int | `String_of_int of int | JSON.u]) list

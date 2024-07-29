@@ -2395,12 +2395,12 @@
   },
   {
     "file": "tezt/tests/testnet_dictator.ml",
-    "title": "Atlas: testnet dictator (ghostnet, proposal)",
+    "title": "Atlas: testnet dictator (basenet, proposal)",
     "tags": [
       "admin_client",
       "amendment",
       "client",
-      "ghostnet",
+      "basenet",
       "node",
       "atlas",
       "proposal"

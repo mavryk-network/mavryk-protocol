@@ -16,17 +16,17 @@ poetry run pytest
 
 ### Deploy Kernel Governance contract
 ```
-poetry run deploy_contract --rpc-url https://rpc.tzkt.io/ghostnet --contract kernel_regular_governance --upvoting_limit 20 --period_length 128 --adoption_period_sec 57600 --proposal_quorum_percent 10.5 --promotion_quorum_percent 15.5 --promotion_supermajority_percent 95.7
+poetry run deploy_contract --rpc-url https://rpc.tzkt.io/basenet --contract kernel_regular_governance --upvoting_limit 20 --period_length 128 --adoption_period_sec 57600 --proposal_quorum_percent 10.5 --promotion_quorum_percent 15.5 --promotion_supermajority_percent 95.7
 ```
 
 ### Deploy Kernel Security Governance contract
 ```
-poetry run deploy_contract --rpc-url https://rpc.tzkt.io/ghostnet --contract kernel_security_governance --upvoting_limit 20 --period_length 128 --adoption_period_sec 57600 --proposal_quorum_percent 10.5 --promotion_quorum_percent 15.5 --promotion_supermajority_percent 95.7
+poetry run deploy_contract --rpc-url https://rpc.tzkt.io/basenet --contract kernel_security_governance --upvoting_limit 20 --period_length 128 --adoption_period_sec 57600 --proposal_quorum_percent 10.5 --promotion_quorum_percent 15.5 --promotion_supermajority_percent 95.7
 ```
 
 ### Deploy Sequencer Committee Governance contract
 ```
-poetry run deploy_contract --rpc-url https://rpc.tzkt.io/ghostnet --contract sequencer_governance --upvoting_limit 20 --period_length 128 --adoption_period_sec 57600 --proposal_quorum_percent 10.5 --promotion_quorum_percent 15.5 --promotion_supermajority_percent 95.7
+poetry run deploy_contract --rpc-url https://rpc.tzkt.io/basenet --contract sequencer_governance --upvoting_limit 20 --period_length 128 --adoption_period_sec 57600 --proposal_quorum_percent 10.5 --promotion_quorum_percent 15.5 --promotion_supermajority_percent 95.7
 ```
 
 ## Kernel governance contract
@@ -181,9 +181,9 @@ mavkit-client transfer 0 from mv1P1rnCm28CwG2Yz44Mv8eFJLW4eJDiRLsn to KT1Bda2EHR
 **Note: Don't use just the storage to get the actual state**
 
 
-Use the [get_voting_state](https://better-call.dev/ghostnet/KT1JA6kdnWJqXRpKKHU5e99yuE3Yd1X5KyrL/views) view to obtain the actual state of current voting process at the time of the call. This returns the actual recalculated `voting_context` value as well as pending `voting_finished` event payload in case if the latest voting period is finished but the event was not sent to blockchain yet. The event will be sent after the next successful call to any entrypoint.
+Use the [get_voting_state](https://better-call.dev/basenet/KT1JA6kdnWJqXRpKKHU5e99yuE3Yd1X5KyrL/views) view to obtain the actual state of current voting process at the time of the call. This returns the actual recalculated `voting_context` value as well as pending `voting_finished` event payload in case if the latest voting period is finished but the event was not sent to blockchain yet. The event will be sent after the next successful call to any entrypoint.
 
-Use the [contract events](https://better-call.dev/ghostnet/KT1JA6kdnWJqXRpKKHU5e99yuE3Yd1X5KyrL/events) to see the history of voting epochs 
+Use the [contract events](https://better-call.dev/basenet/KT1JA6kdnWJqXRpKKHU5e99yuE3Yd1X5KyrL/events) to see the history of voting epochs 
 
 
 ## Config

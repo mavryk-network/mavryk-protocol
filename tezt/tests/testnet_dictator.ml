@@ -85,7 +85,7 @@ let init_with_dictator ~chain_id ~protocol =
     | Chain_id_basenet ->
         ( Some (Node.Config_file.set_basenet_sandbox_network ()),
           Some
-            (* Ghostnet was started at 2022-01-25 (as Ithacanet) and the
+            (* Basenet was started at 2022-01-25 (as Ithacanet) and the
                default timestamp is one year ago. This ad-hoc case could
                be removed after 2023-01-25. *)
             (Client.At

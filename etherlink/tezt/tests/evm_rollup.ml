@@ -2686,7 +2686,7 @@ type storage_migration_results = {
 (* This is the test generator that will trigger the sanity checks for migration
    tests.
    Note that:
-   - it uses the latest version of the ghostnet EVM rollup as a starter kernel.
+   - it uses the latest version of the basenet EVM rollup as a starter kernel.
    - the upgrade of the kernel during the test will always target the latest one
      on master.
    - everytime a new path/rpc/object is stored in the kernel, a new sanity check
@@ -4761,7 +4761,7 @@ let test_migrate_proxy_to_sequencer_past =
 let test_ghostnet_kernel =
   Protocol.register_test
     ~__FILE__
-    ~tags:["evm"; "ghostnet"; "version"]
+    ~tags:["evm"; "basenet"; "version"]
     ~uses:(fun _protocol ->
       [
         Constant.mavkit_evm_node;
@@ -4769,7 +4769,7 @@ let test_ghostnet_kernel =
         Constant.smart_rollup_installer;
         Constant.WASM.ghostnet_evm_kernel;
       ])
-    ~title:"Regression test for Ghostnet kernel"
+    ~title:"Regression test for Basenet kernel"
   @@ fun protocol ->
   let* {evm_node; _} =
     setup_evm_kernel
@@ -4779,7 +4779,7 @@ let test_ghostnet_kernel =
   in
   let*@ version = Rpc.tez_kernelVersion evm_node in
   Check.((version = Constant.WASM.ghostnet_evm_commit) string)
-    ~error_msg:"The ghostnet kernel has version %L but constant says %R" ;
+    ~error_msg:"The basenet kernel has version %L but constant says %R" ;
   unit
 
 let test_estimate_gas_out_of_ticks =

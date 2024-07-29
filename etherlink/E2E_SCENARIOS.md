@@ -34,7 +34,7 @@ The code for the actions can be found in [BasicTestToken.ts](https://github.com/
 
 Follow [these instructions](https://github.com/trilitech/live-testing-protocols/tree/main#tests) specialized with the ERC-20 test.
 * Local: `npx hardhat test test/ERC20/BasicTestToken.ts`.
-* Ghostnet: `npx hardhat test --network etherlink test/ERC20/BasicTestToken.ts`.
+* Basenet: `npx hardhat test --network etherlink test/ERC20/BasicTestToken.ts`.
 
 ## Scenario 2: ERC-721 (NFT)
 
@@ -59,7 +59,7 @@ The code for the actions can be found in [BasicNFT.ts](https://github.com/trilit
 Follow [these instructions](https://github.com/trilitech/live-testing-protocols/tree/main#tests) specialized with the ERC-721 test.
 
 * Local: `npx hardhat test test/ERC721/BasicNFT.ts`.
-* Ghostnet: `npx hardhat test --network etherlink test/ERC721/BasicNFT.ts`.
+* Basenet: `npx hardhat test --network etherlink test/ERC721/BasicNFT.ts`.
 
 ## Scenario 3: ERC-1967 (transparent proxy pattern)
 
@@ -97,7 +97,7 @@ Important to know:
 
 Follow [these instructions](https://github.com/trilitech/live-testing-protocols/tree/main#tests) specialized with the ERC-1967 test.
 * Local: `npx hardhat test test/proxies/transparent/logicPositiveAndNegative.ts`.
-* Ghostnet: `npx hardhat test --network etherlink test/proxies/transparent/logicPositiveAndNegative.ts`.
+* Basenet: `npx hardhat test --network etherlink test/proxies/transparent/logicPositiveAndNegative.ts`.
 
 The test should go through, even if the interaction actually fails because of some issues in Etherlink, not the scenario. (Fixing Etherlink would be the purpose of the next task.)
 
@@ -115,7 +115,7 @@ The code of the Marketplace contract is in [NFTMarketplace.sol](https://github.c
    * Developer can connect the Marketplace easily by changing only the connection button to fit the network
 1. Users can connect their Metamask wallet to see the list of the NFTs and interact with the dApp
    * Basic connection between the Metamask and the dApp
-   * Add and/or switch the good network setup for the dApp (Nightly or Etherlink ghostnet)
+   * Add and/or switch the good network setup for the dApp (Nightly or Etherlink basenet)
 2. Users can create a token and list it on the dApp
    * The token is created with the good URL (the good image, name, price and description)
    * The owner can see the NFT on his profile and on the explorer
