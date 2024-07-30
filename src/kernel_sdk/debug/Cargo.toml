@@ -13,7 +13,7 @@ authors = [
 ]
 repository = "https://gitlab.com/mavryk-network/mavryk-protocol.git"
 description = "Output formatted messages to Mavryk Smart Rollup debug log."
-keywords = ["tezos", "smart", "rollup"]
+keywords = ["mavryk", "smart", "rollup"]
 categories = ["no-std", "no-std::no-alloc", "api-bindings", "wasm"]
 
 [dependencies.mavryk-smart-rollup-core]

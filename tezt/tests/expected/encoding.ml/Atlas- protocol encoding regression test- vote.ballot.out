@@ -1,0 +1,18 @@
+
+./mavkit-codec encode 001-PtAtLas.vote.ballot from '"nay"'
+01
+
+./mavkit-codec decode 001-PtAtLas.vote.ballot from 01
+"nay"
+
+./mavkit-codec encode 001-PtAtLas.vote.ballot from '"pass"'
+02
+
+./mavkit-codec decode 001-PtAtLas.vote.ballot from 02
+"pass"
+
+./mavkit-codec encode 001-PtAtLas.vote.ballot from '"yay"'
+00
+
+./mavkit-codec decode 001-PtAtLas.vote.ballot from 00
+"yay"

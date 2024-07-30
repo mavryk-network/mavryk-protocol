@@ -14,7 +14,7 @@ authors = [
 ]
 repository = "https://gitlab.com/mavryk-network/mavryk-protocol.git"
 description = "Data Encodings used by Mavryk Smart Rollup kernels."
-keywords = ["tezos", "smart", "rollup"]
+keywords = ["mavryk", "smart", "rollup"]
 categories = ["no-std", "no-std::no-alloc", "encoding", "wasm"]
 
 [lib]

@@ -1,7 +1,7 @@
 (*****************************************************************************)
 (*                                                                           *)
 (* Open Source License                                                       *)
-(* Copyright (c) 2018 Dynamic Ledger Solutions, Inc. <contact@tezos.com>     *)
+(* Copyright (c) 2018 Dynamic Ledger Solutions, Inc. <contact@mavryk.com>     *)
 (* Copyright (c) 2019-2020 Nomadic Labs, <contact@nomadic-labs.com>          *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
@@ -159,10 +159,6 @@ let blockchain_network_ghostnet =
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
     ~user_activated_upgrades:
       [
-        (8191l, "Psithaca2MLRFYargivpo7YvUr7wUDqyxrdhC5CQq78mRvimz6A");
-        (765952l, "PtJakart2xVj7pYXJBXrqHgd82rdkLey5ZeeGwDgPp9rhQUbSqY");
-        (1191936l, "PtKathmankSpLLDALzWw7CGD2j2MtyveTwboEYokqUCP4a1LxMg");
-        (1654784l, "PtLimaPtLMwfNinJi9rCfDPWea8dFgTZ1MeJ9f1m2SRic6ayiwW");
         (6729729l, "PsejoCFVKUtTFNEQL3QC6sKwxT3bLxKs1G2sJwCHWQ5sNVgHCyg");
       ]
     ~default_bootstrap_peers:
@@ -483,7 +479,7 @@ let p2p =
           (opt
              "bootstrap-peers"
              ~description:
-               "List of hosts. Tezos can connect to both IPv6 and IPv4 hosts. \
+               "List of hosts. Mavryk can connect to both IPv6 and IPv4 hosts. \
                 If the port is not specified, default port 9732 will be \
                 assumed."
              (list string))

@@ -1,7 +1,7 @@
 
 ./mavkit-client rpc get /chains/main/blocks/head/metadata
-{ "protocol": "PsejoCFVKUtTFNEQL3QC6sKwxT3bLxKs1G2sJwCHWQ5sNVgHCyg",
-  "next_protocol": "PsejoCFVKUtTFNEQL3QC6sKwxT3bLxKs1G2sJwCHWQ5sNVgHCyg",
+{ "protocol": "PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp",
+  "next_protocol": "PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp",
   "test_chain_status": { "status": "not_running" }, "max_operations_ttl": 2,
   "max_operation_data_length": 32768, "max_block_header_length": 289,
   "max_operation_list_length":
@@ -15,30 +15,25 @@
   "voting_period_info":
     { "voting_period":
         { "index": 0, "kind": "proposal", "start_position": 0 },
-      "position": 1, "remaining": 122878 }, "nonce_hash": null,
+      "position": 1, "remaining": 81918 }, "nonce_hash": null,
   "deactivated": [],
   "balance_updates":
     [ { "kind": "minted", "category": "bootstrap",
         "change": "-20000000000000", "origin": "migration" },
       { "kind": "freezer", "category": "deposits",
-        "staker":
-          { "baker_own_stake": "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7" },
+        "staker": { "baker": "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7" },
         "change": "400000000000", "origin": "migration" },
       { "kind": "freezer", "category": "deposits",
-        "staker":
-          { "baker_own_stake": "mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ" },
+        "staker": { "baker": "mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ" },
         "change": "400000000000", "origin": "migration" },
       { "kind": "freezer", "category": "deposits",
-        "staker":
-          { "baker_own_stake": "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx" },
+        "staker": { "baker": "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx" },
         "change": "400000000000", "origin": "migration" },
       { "kind": "freezer", "category": "deposits",
-        "staker":
-          { "baker_own_stake": "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn" },
+        "staker": { "baker": "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn" },
         "change": "400000000000", "origin": "migration" },
       { "kind": "freezer", "category": "deposits",
-        "staker":
-          { "baker_own_stake": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" },
+        "staker": { "baker": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe" },
         "change": "400000000000", "origin": "migration" },
       { "kind": "contract",
         "contract": "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
@@ -55,19 +50,17 @@
       { "kind": "contract",
         "contract": "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe",
         "change": "3600000000000", "origin": "migration" },
-      { "kind": "minted", "category": "baking rewards", "change": "-333334",
+      { "kind": "minted", "category": "baking rewards", "change": "-500000",
         "origin": "block" },
       { "kind": "freezer", "category": "deposits",
-        "staker":
-          { "baker_own_stake": "mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ" },
-        "change": "333334", "origin": "block" },
-      { "kind": "minted", "category": "baking rewards", "change": "-2999999",
+        "staker": { "baker": "mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ" },
+        "change": "500000", "origin": "block" },
+      { "kind": "minted", "category": "baking rewards", "change": "-4499999",
         "origin": "block" },
       { "kind": "contract",
         "contract": "mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ",
-        "change": "2999999", "origin": "block" } ],
+        "change": "4499999", "origin": "block" } ],
   "liquidity_baking_toggle_ema": 0, "adaptive_issuance_vote_ema": 0,
-  "adaptive_issuance_activation_cycle": 5,
   "implicit_operations_results":
     [ { "kind": "origination",
         "balance_updates":
@@ -131,12 +124,12 @@
         "storage":
           { "bytes": "000055b89499feb92ad172435bb8ec189ae0fd241079" },
         "balance_updates":
-          [ { "kind": "minted", "category": "subsidy", "change": "-833333",
+          [ { "kind": "minted", "category": "subsidy", "change": "-1249999",
               "origin": "subsidy" },
             { "kind": "contract",
               "contract": "[CONTRACT_HASH]",
-              "change": "833333", "origin": "subsidy" } ],
+              "change": "1249999", "origin": "subsidy" } ],
         "consumed_milligas": "1131991", "storage_size": "223" } ],
   "proposer_consensus_key": "mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ",
   "baker_consensus_key": "mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ",
-  "consumed_milligas": "0", "dal_attestation": "0" }
+  "consumed_milligas": "0" }

@@ -13,7 +13,7 @@ authors = [
 ]
 repository = "https://gitlab.com/mavryk-network/mavryk-protocol.git"
 description = "Safe Runtime trait for Mavryk Smart Rollups host functions."
-keywords = ["tezos", "smart", "rollup"]
+keywords = ["mavryk", "smart", "rollup"]
 categories = ["no-std", "no-std::no-alloc", "api-bindings", "wasm"]
 
 [lib]

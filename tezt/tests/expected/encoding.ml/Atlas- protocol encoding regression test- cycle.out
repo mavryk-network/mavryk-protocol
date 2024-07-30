@@ -1,0 +1,12 @@
+
+./mavkit-codec encode 001-PtAtLas.cycle from 2147483647
+7fffffff
+
+./mavkit-codec decode 001-PtAtLas.cycle from 7fffffff
+2147483647
+
+./mavkit-codec encode 001-PtAtLas.cycle from 0
+00000000
+
+./mavkit-codec decode 001-PtAtLas.cycle from 00000000
+0
