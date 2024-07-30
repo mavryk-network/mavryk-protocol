@@ -147,12 +147,12 @@ fn parser_riscv_test_suite() {
 
 #[ignore]
 #[test]
-fn parser_riscv_jstz() {
-    // Test currently disabled in CI because running objdump on the jstz kernel
+fn parser_riscv_jsmv() {
+    // Test currently disabled in CI because running objdump on the jsmv kernel
     // is slow (~15 min) and the resulting file is very large (~110MB).
-    // To run locally, generate a dump on the compiled jstz kernel:
-    // `objdump -d -M no-aliases jstz/target/riscv64gc-unknown-hermit/release/jstz > interpreter/tests/jstz_objdump`
-    let fname = "tests/jstz_objdump";
+    // To run locally, generate a dump on the compiled jsmv kernel:
+    // `objdump -d -M no-aliases jsmv/target/riscv64gc-unknown-hermit/release/jsmv > interpreter/tests/jsmv_objdump`
+    let fname = "tests/jsmv_objdump";
     let instructions = objdump(fname, true);
     check_instructions(fname, instructions)
 }

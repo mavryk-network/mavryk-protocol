@@ -4,4 +4,4 @@
 
 use mavryk_smart_rollup::kernel_entry;
 
-kernel_entry!(jstz_kernel::entry);
+kernel_entry!(jsmv_kernel::entry);

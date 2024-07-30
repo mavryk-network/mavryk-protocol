@@ -15,7 +15,7 @@ endif
 .PHONY: build
 build: risc-v-dummy.elf risc-v-sandbox
 	@cargo build --release --workspace $(NATIVE_OPT)
-	@make -C jstz build
+	@make -C jsmv build
 	@make -C tests build
 
 .PHONY: risc-v-sandbox
@@ -43,7 +43,7 @@ endif
 test: build
 	@cargo test --workspace
 	@make -C dummy_kernel test
-	@make -C jstz test
+	@make -C jsmv test
 
 .PHONY: check
 check:
@@ -52,7 +52,7 @@ check:
 	@cargo clippy --workspace --all-targets -- --deny warnings
 	@taplo format --check $(shell git ls-files '**/Cargo.toml')
 	@make -C dummy_kernel check
-	@make -C jstz check
+	@make -C jsmv check
 	@make -C tests check
 
 	# Check format of all crates
@@ -72,6 +72,6 @@ audit:
 clean:
 	@cargo clean
 	@make -C dummy_kernel clean
-	@make -C jstz clean
+	@make -C jsmv clean
 	@make -C tests clean
 	@rm -f risc-v-sandbox risc-v-dummy.elf
