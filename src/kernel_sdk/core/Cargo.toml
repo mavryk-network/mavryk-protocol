@@ -25,6 +25,7 @@ version = "0.11.0"
 optional = true
 
 [target.'cfg(target_arch = "riscv64")'.dependencies.mavryk-smart-rollup-constants]
+version = "0.2.2"
 path = "../constants"
 
 [features]

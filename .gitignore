@@ -49,8 +49,6 @@ __pycache__
 /mavryk-smart-rollup-node-*
 /mavkit-smart-rollup-node*
 /mavkit-smart-rollup-sequencer-node
-/mavryk-smart-rollup-client-*
-/mavkit-smart-rollup-client-*
 /mavkit-smart-rollup-wasm-*
 /mavkit-evm-node
 /mavryk-dal-node
@@ -103,7 +101,6 @@ evm_kernel.wasm
 evm_installer.wasm
 evm_kernel_unstripped.wasm
 evm-evaluation-assessor
-sequenced_kernel.wasm
 smart-rollup-installer
 _evm_installer_preimages/
 tx_kernel.wasm

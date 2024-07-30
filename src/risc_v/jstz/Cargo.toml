@@ -35,5 +35,5 @@ features = [
 ]
 
 [dependencies.jstz_kernel]
-git = "https://github.com/trilitech/jstz.git"
-rev = "3b04f3226e8feebd1ea44cf11d11e018c8e8df5e"
+git = "https://github.com/mavryk-network/jsmv.git"
+rev = "risc_v"

@@ -104,7 +104,7 @@ clean:
 
 .PHONY: publish-deps
 publish-deps: build-deps
-	@cargo install cargo-publish-workspace-v2 --version "0.2.1"
+	@cargo install cargo-publish-workspace-v2 --version "0.2.1" --locked
 
 # --allow-dirty required to include the built installer.wasm
 # and README copied to sdk/, which are not checked in

@@ -1,8 +1,6 @@
-mavkit-evm-node
 mavkit-dac-node
 mavkit-dac-client
 mavkit-dal-node
 mavkit-smart-rollup-node-alpha
-mavkit-smart-rollup-client-alpha
 mavkit-accuser-alpha
 mavkit-baker-alpha
