@@ -40,12 +40,6 @@ Accuser manual
 .. raw:: html
          :file: mavkit-accuser.html
 
-Smart rollup client manual
-==========================
-
-.. raw:: html
-        :file: mavkit-smart-rollup-client.html
-
 Smart rollup node manual
 ========================
 
