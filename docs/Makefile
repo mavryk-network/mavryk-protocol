@@ -55,15 +55,12 @@ html: mavkit-gen docexes-gen
 	@../mavkit-accuser-$($(@D)_short) man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > $@
 %/mavkit-smart-rollup-node.html:
 	@../mavkit-smart-rollup-node-$($(@D)_short) man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > $@
-%/mavkit-smart-rollup-client.html:
-	@../mavkit-smart-rollup-client-$($(@D)_short) man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > $@
 
 manuals: \
 	 $(PROTOCOLS:%=%/mavkit-client.html) \
 	 $(PROTOCOLS:%=%/mavkit-baker.html) \
 	 $(PROTOCOLS:%=%/mavkit-accuser.html) \
-	 $(PROTOCOLS:%=%/mavkit-smart-rollup-node.html) \
-	 $(PROTOCOLS:%=%/mavkit-smart-rollup-client.html)
+	 $(PROTOCOLS:%=%/mavkit-smart-rollup-node.html)
 	# generic
 	@../mavkit-admin-client man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/mavkit-admin-client.html
 	@../mavkit-signer man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/mavkit-signer.html
@@ -72,19 +69,24 @@ manuals: \
 	@ ../mavkit-dac-node man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/mavkit-dac-node.html
 	@ ../mavkit-dac-client man -verbosity 3 -format html | sed "s#${HOME}#\$$HOME#g" > api/mavkit-dac-client.html
 	@../mavkit-node --help | grep -v '^Mavkit-node' | grep -v 'MAVKIT-NODE(1)' | \
-		./scripts/man2txt.py > api/mavkit-node.txt
+		./scripts/man2txt.py -r > api/mavkit-node.txt
 	@../mavkit-proxy-server --help | grep -v '^Mavkit-proxy-server' | grep -v 'MAVKIT-PROXY-SERVER(1)' | \
-		./scripts/man2txt.py > api/mavkit-proxy-server.txt
+		./scripts/man2txt.py -r > api/mavkit-proxy-server.txt
 	@../mavkit-smart-rollup-node man -verbosity 3 -format html | \
 		sed "s#${HOME}#\$$HOME#g" > api/mavkit-smart-rollup-node.html
+	@../mavkit-dal-node --help | grep -v '^Mavkit-dal-node' | grep -v 'MAVKIT-DAL-NODE(1)' | \
+		./scripts/man2txt.py -r > api/mavkit-dal-node.txt
+	@../mavkit-dal-node config init --help | grep -v '^Mavkit-dal-node' | grep -v 'MAVKIT-DAL-NODE(1)' | \
+		./scripts/man2txt.py > api/mavkit-dal-node-config-init.txt
 
 .PHONY: odoc
 odoc:
 	cd $$(pwd)/.. ; dune build @doc >docs/odoc.log 2>&1; \
-	  RESULT=$$?; (grep '^Error:' docs/odoc.log || true); exit $$RESULT
+	  RESULT=$$?; (grep -B1 '^Error:' docs/odoc.log || true); exit $$RESULT
 	@rm -rf $$(pwd)/_build/api/odoc
 	@mkdir -p $$(pwd)/_build/api
 	@cp -r $$(pwd)/../_build/default/_doc $$(pwd)/_build/api/odoc
+	@rm -rf $(CURDIR)/_build/api/odoc/_odocls
 
 odoc-lite:
 	rm -rf $(TMPDOCDIR)/
@@ -95,11 +97,12 @@ odoc-lite:
 	@echo "Running odoc in $(TMPDOCDIR), with build directory $(TOPBUILDDIR_ABS) and outputs in $(TMPDOCDIR)/odoc.log"
 	ODOC_WARN_ERROR=true dune build @doc --build-dir=$(TOPBUILDDIR_ABS) --root=$(TMPDOCDIR) >$(TMPDOCDIR)/odoc.log 2>&1; \
 		RESULT=$$?; \
-		(grep '^Error:' $(TMPDOCDIR)/odoc.log || true) ; \
+		(grep -B1 '^Error:' $(TMPDOCDIR)/odoc.log || true) ; \
 		exit $$RESULT
 	rm -rf $(CURDIR)/_build/api/odoc
 	mkdir -p $(CURDIR)/_build/api
 	cp -r $(TOPBUILDDIR_ABS)/default/_doc $(CURDIR)/_build/api/odoc
+	rm -rf $(CURDIR)/_build/api/odoc/_odocls
 
 .PHONY: linkcheck
 # Run this after make html
@@ -139,6 +142,7 @@ installcheck:
 	scripts/test_install_scripts.sh install-opam-focal
 	scripts/test_install_scripts.sh compile-release-sources-bullseye
 	scripts/test_install_scripts.sh compile-sources-bullseye
+	scripts/test_install_scripts.sh compile-sources-mantic
 
 # build dune targets together to avoid concurrent dunes
 docexes:
@@ -196,7 +200,7 @@ sphinx: install-dependencies
 # In pylint, we ignore the following additional errors:
 # - C0330: pylint is wrong (https://github.com/psf/black/issues/48)
 PYLINTRC?=../.pylintrc
-PYLINT=PYLINTRC=${PYLINTRC} poetry run pylint --disable C0330
+PYLINT=PYLINTRC=${PYLINTRC} poetry run pylint
 
 # pycodestyle does not support pyproject.toml configuration for now
 # https://github.com/PyCQA/pydocstyle/issues/447

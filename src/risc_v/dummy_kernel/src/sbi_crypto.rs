@@ -6,7 +6,8 @@
 // Move host crypto functionality into Kernel SDK!
 
 use mavryk_smart_rollup_constants::riscv::{
-    SBI_FIRMWARE_MAVRYK, SBI_MAVRYK_BLAKE2B_HASH256, SBI_MAVRYK_ED25519_SIGN, SBI_MAVRYK_ED25519_VERIFY,
+    SBI_FIRMWARE_MAVRYK, SBI_MAVRYK_BLAKE2B_HASH256, SBI_MAVRYK_ED25519_SIGN,
+    SBI_MAVRYK_ED25519_VERIFY,
 };
 
 pub unsafe fn ed25519_verify(pk: &[u8; 32], sig: &[u8; 64], msg: &[u8]) -> bool {

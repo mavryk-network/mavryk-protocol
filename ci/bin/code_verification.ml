@@ -1072,7 +1072,7 @@ let jobs pipeline_type =
            See https://gitlab.com/tezos/tezos/-/issues/6902.
            TODO: https://gitlab.com/tezos/tezos/-/issues/6915
            This should be removed after the next release candidate. *)
-        job_install_bin
+        (* job_install_bin
           ~__POS__
           ~name:"oc.install_bin_ubuntu_focal"
           ~allow_failure:Yes
@@ -1081,7 +1081,7 @@ let jobs pipeline_type =
           ~__POS__
           ~name:"oc.install_bin_ubuntu_jammy"
           ~allow_failure:Yes
-          Ubuntu_jammy;
+          Ubuntu_jammy; *)
         job_install_bin
           ~__POS__
           ~name:"oc.install_bin_rc_ubuntu_focal"
