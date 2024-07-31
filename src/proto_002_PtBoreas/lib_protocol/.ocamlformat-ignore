@@ -174,11 +174,6 @@ liquidity_baking_migration.ml
 liquidity_baking_migration.mli
 liquidity_baking_storage.ml
 liquidity_baking_storage.mli
-protocol_treasury_buffer.ml
-protocol_treasury_migration.ml
-protocol_treasury_migration.mli
-protocol_treasury_storage.ml
-protocol_treasury_storage.mli
 local_gas_counter.ml
 local_gas_counter.mli
 main.ml
@@ -227,6 +222,11 @@ percentage.ml
 percentage.mli
 period_repr.ml
 period_repr.mli
+protocol_treasury_buffer.ml
+protocol_treasury_migration.ml
+protocol_treasury_migration.mli
+protocol_treasury_storage.ml
+protocol_treasury_storage.mli
 ratio_repr.ml
 ratio_repr.mli
 raw_context.ml
