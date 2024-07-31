@@ -76,7 +76,8 @@ module type M = sig
       Mavryk_client_base.Client_context.full Mavryk_clic.command list ->
     builtin_commands:
       Mavryk_client_base.Client_context.full Mavryk_clic.command list ->
-    other_commands:Mavryk_client_base.Client_context.full Mavryk_clic.command list ->
+    other_commands:
+      Mavryk_client_base.Client_context.full Mavryk_clic.command list ->
     require_auth:bool ->
     Mavryk_client_base.Client_context.full Mavryk_clic.command list
 

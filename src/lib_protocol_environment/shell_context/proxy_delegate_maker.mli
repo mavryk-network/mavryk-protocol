@@ -46,7 +46,8 @@ val of_memory_tree :
     it requires a full-fledged context instead of a tree (a context contains
     a tree, so a context is harder to obtain). *)
 val of_memory_context :
-  Mavryk_context_memory.Context.t -> Mavryk_protocol_environment.Proxy_delegate.t
+  Mavryk_context_memory.Context.t ->
+  Mavryk_protocol_environment.Proxy_delegate.t
 
 (** [make_index context_path] creates an index that is suitable for being
     passed to {!of_index}. *)

@@ -63,7 +63,9 @@ let evm_node_lib_prod_encoding =
       "EVM encodings for the EVM node and plugin for the WASM Debugger [prod \
        version]"
     ~deps:
-      [mavkit_base |> open_ ~m:"TzPervasives"; mavkit_scoru_wasm_debugger_plugin]
+      [
+        mavkit_base |> open_ ~m:"TzPervasives"; mavkit_scoru_wasm_debugger_plugin;
+      ]
 
 let _evm_node_sequencer_protobuf =
   let protobuf_rules =
@@ -153,7 +155,9 @@ let evm_node_lib_dev_encoding =
       "EVM encodings for the EVM node and plugin for the WASM Debugger [dev \
        version]"
     ~deps:
-      [mavkit_base |> open_ ~m:"TzPervasives"; mavkit_scoru_wasm_debugger_plugin]
+      [
+        mavkit_base |> open_ ~m:"TzPervasives"; mavkit_scoru_wasm_debugger_plugin;
+      ]
 
 let evm_node_lib_dev =
   mavkit_evm_node_lib

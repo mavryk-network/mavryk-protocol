@@ -23,7 +23,8 @@ let public_key_hash =
 let block_hash =
   Caqti_type.custom
     ~encode:(fun t -> Result.Ok (Mavryk_crypto.Hashed.Block_hash.to_string t))
-    ~decode:(fun s -> decode_error (Mavryk_crypto.Hashed.Block_hash.of_string s))
+    ~decode:(fun s ->
+      decode_error (Mavryk_crypto.Hashed.Block_hash.of_string s))
     Caqti_type.octets
 
 (* Create tables queries *)

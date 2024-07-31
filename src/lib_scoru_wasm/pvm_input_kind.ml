@@ -90,8 +90,7 @@ let from_raw_input payload =
 
 module Internal_for_tests = struct
   let proto_to_binary = function
-    | Atlas ->
-        Data_encoding.(Binary.to_string_exn string Constants.atlas_name)
+    | Atlas -> Data_encoding.(Binary.to_string_exn string Constants.atlas_name)
     | Boreas ->
         Data_encoding.(Binary.to_string_exn string Constants.boreas_name)
     | Proto_alpha ->

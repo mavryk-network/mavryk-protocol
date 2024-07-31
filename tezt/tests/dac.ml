@@ -277,7 +277,8 @@ let check_certificate
      presence of two variants `Bls12_381` and `Unknown), the actual byte
      representation needs to be checked.*)
   let raw_signature s =
-    Data_encoding.Binary.to_string_exn Mavryk_crypto.Aggregate_signature.encoding
+    Data_encoding.Binary.to_string_exn
+      Mavryk_crypto.Aggregate_signature.encoding
     @@ Mavryk_crypto.Aggregate_signature.of_b58check_exn s
   in
   Check.(
@@ -1545,7 +1546,8 @@ module Tx_kernel_e2e = struct
     (* Construct withdrawal mesage to send to rollup. *)
     (* pk withdraws part of their tickets, pk2 withdraws all of their tickets *)
     let sc_rollup_hash =
-      Mavryk_crypto.Hashed.Smart_rollup_address.of_b58check_exn sc_rollup_address
+      Mavryk_crypto.Hashed.Smart_rollup_address.of_b58check_exn
+        sc_rollup_address
     in
     let withdraw_message =
       Transaction_batch.(

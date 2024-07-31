@@ -132,7 +132,9 @@ module Make (Client : Resto_cohttp_client.Client.CALL) = struct
   type content = Cohttp_lwt.Body.t * content_type option * Media_type.t option
 
   let request_failed meth uri error =
-    let meth = (meth : [< Mavryk_rpc.Service.meth] :> Mavryk_rpc.Service.meth) in
+    let meth =
+      (meth : [< Mavryk_rpc.Service.meth] :> Mavryk_rpc.Service.meth)
+    in
     Lwt_result_syntax.tzfail
       (RPC_client_errors.Request_failed {meth; uri; error})
 

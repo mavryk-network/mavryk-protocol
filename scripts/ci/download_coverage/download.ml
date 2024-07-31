@@ -24,7 +24,9 @@ dune exec scripts/ci/download_coverage/download.exe -- -a from=last-merged-pipel
 |} ;
   exit 1
 
-let project = Sys.getenv_opt "PROJECT" |> Option.value ~default:"mavryk-network/mavryk-protocol"
+let project =
+  Sys.getenv_opt "PROJECT"
+  |> Option.value ~default:"mavryk-network/mavryk-protocol"
 
 let default_branch =
   Sys.getenv_opt "DEFAULT_BRANCH" |> Option.value ~default:"master"

@@ -7,7 +7,7 @@
 
 (** [get_wasm_pvm_state ~l2_header data_dir] reads the WASM PVM state in
     [data_dir] for the given [l2_header].*)
-    let get_wasm_pvm_state (module Plugin : Protocol_plugin_sig.S)
+let get_wasm_pvm_state (module Plugin : Protocol_plugin_sig.S)
     ~(l2_header : Sc_rollup_block.header) data_dir =
   let open Lwt_result_syntax in
   let context_hash = l2_header.context in

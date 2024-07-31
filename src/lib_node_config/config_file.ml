@@ -120,8 +120,7 @@ let blockchain_network_mainnet =
     ~incompatible_chain_name:"INCOMPATIBLE"
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK_MAINNET"
     ~user_activated_upgrades:mainnet_user_activated_upgrades
-    ~user_activated_protocol_overrides:
-      []
+    ~user_activated_protocol_overrides:[]
     ~default_bootstrap_peers:
       ["boot.tzinit.org"; "boot.tzboot.net"; "boot.tzbeta.net"]
     ~dal_config:
@@ -158,9 +157,7 @@ let blockchain_network_ghostnet =
     ~chain_name:"MAVRYK_ITHACANET_2022-01-25T15:00:00Z"
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
     ~user_activated_upgrades:
-      [
-        (6729729l, "PsejoCFVKUtTFNEQL3QC6sKwxT3bLxKs1G2sJwCHWQ5sNVgHCyg");
-      ]
+      [(6729729l, "PsejoCFVKUtTFNEQL3QC6sKwxT3bLxKs1G2sJwCHWQ5sNVgHCyg")]
     ~default_bootstrap_peers:
       [
         "ghostnet.teztnets.com";

@@ -114,12 +114,12 @@ let participation_info_encoding =
     (fun Delegate.For_RPC.
            {
              expected_cycle_activity;
-           minimal_cycle_activity;
-           missed_slots;
-           missed_levels;
-           remaining_allowed_missed_slots;
-           expected_attesting_rewards;
-         } ->
+             minimal_cycle_activity;
+             missed_slots;
+             missed_levels;
+             remaining_allowed_missed_slots;
+             expected_attesting_rewards;
+           } ->
       ( expected_cycle_activity,
         minimal_cycle_activity,
         missed_slots,

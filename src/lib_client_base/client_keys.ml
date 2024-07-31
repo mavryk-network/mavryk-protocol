@@ -1163,7 +1163,11 @@ module Make (Signature : Signature_S) :
     | Error _ -> return_none
 
   let force_switch () =
-    Mavryk_clic.switch ~long:"force" ~short:'f' ~doc:"overwrite existing keys" ()
+    Mavryk_clic.switch
+      ~long:"force"
+      ~short:'f'
+      ~doc:"overwrite existing keys"
+      ()
 end
 
 module V0 = Make (struct
@@ -1173,7 +1177,8 @@ module V0 = Make (struct
 
   module Adapter = struct
     let public_key_hash :
-        Mavryk_crypto.Signature.Public_key_hash.t -> Public_key_hash.t tzresult =
+        Mavryk_crypto.Signature.Public_key_hash.t -> Public_key_hash.t tzresult
+        =
       let open Result_syntax in
       function
       | Bls _ ->

@@ -28,7 +28,10 @@ module Make (Wasm : Wasm_utils_intf.S) = struct
 
   let parse_binary_module name module_ =
     let bytes = Mavryk_lazy_containers.Chunked_byte_vector.of_string module_ in
-    Mavryk_webassembly_interpreter.Decode.decode ~allow_floats:false ~name ~bytes
+    Mavryk_webassembly_interpreter.Decode.decode
+      ~allow_floats:false
+      ~name
+      ~bytes
 
   (* [typecheck_module module_ast] runs the typechecker on the module, which is
      not done by the PVM. *)

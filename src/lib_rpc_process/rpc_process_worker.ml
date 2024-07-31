@@ -172,7 +172,9 @@ let run_server t () =
            when binding Unix sockets. *)
         assert false
   in
-  let* () = Mavryk_base_unix.Socket.handshake init_socket_fd Main.socket_magic in
+  let* () =
+    Mavryk_base_unix.Socket.handshake init_socket_fd Main.socket_magic
+  in
   let* () =
     Socket.send
       init_socket_fd

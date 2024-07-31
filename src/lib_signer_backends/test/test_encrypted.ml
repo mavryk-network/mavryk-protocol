@@ -214,7 +214,9 @@ let test_vectors_aggregate () =
       let open Lwt_result_syntax in
       let ctx = fake_ctx () in
       let sks =
-        List.map Mavryk_crypto.Aggregate_signature.Secret_key.of_b58check_exn sks
+        List.map
+          Mavryk_crypto.Aggregate_signature.Secret_key.of_b58check_exn
+          sks
       in
       let*? l = encrypted_sks in
       let* decs = List.map_es (decrypt_aggregate ctx) l in

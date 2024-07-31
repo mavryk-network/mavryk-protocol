@@ -221,7 +221,9 @@ module Pipeline = struct
            let filename = filename ~name in
            List.iter
              (fun mavryk_job ->
-               let source_file, source_line, _, _ = mavryk_job.source_position in
+               let source_file, source_line, _, _ =
+                 mavryk_job.source_position
+               in
                Cli.verbose
                  "%s:%d: generates '%s' for pipeline '%s' in %s"
                  source_file
@@ -314,7 +316,11 @@ let job ?arch ?after_script ?allow_failure ?artifacts ?before_script ?cache
     Some
       (match (arch, tags) with
       | Some arch, None ->
-          [(match arch with Amd64 -> "saas-linux-2xlarge-amd64" | Arm64 -> "saas-linux-large-arm64")]
+          [
+            (match arch with
+            | Amd64 -> "saas-linux-2xlarge-amd64"
+            | Arm64 -> "saas-linux-large-arm64");
+          ]
       | None, Some tags -> tags
       | None, None ->
           (* By default, we assume Amd64 runners as given by the [saas-linux-2xlarge-amd64] tag. *)
@@ -418,8 +424,8 @@ let job ?arch ?after_script ?allow_failure ?artifacts ?before_script ?cache
   in
   {job; source_position = __POS__}
 
-let job_external ?directory ?filename_suffix (mavryk_job : mavryk_job) : mavryk_job
-    =
+let job_external ?directory ?filename_suffix (mavryk_job : mavryk_job) :
+    mavryk_job =
   let job = mavryk_job.job in
   let stage =
     match job.stage with

@@ -38,7 +38,8 @@ val connect :
   #simple -> timeout:Ptime.Span.t -> P2p_point.Id.t -> unit tzresult Lwt.t
 
 module S : sig
-  val self : ([`GET], unit, unit, unit, unit, P2p_peer.Id.t) Mavryk_rpc.Service.t
+  val self :
+    ([`GET], unit, unit, unit, unit, P2p_peer.Id.t) Mavryk_rpc.Service.t
 
   val stat : ([`GET], unit, unit, unit, unit, P2p_stat.t) Mavryk_rpc.Service.t
 
@@ -74,7 +75,13 @@ module Connections : sig
 
   module S : sig
     val list :
-      ([`GET], unit, unit, unit, unit, connection_info list) Mavryk_rpc.Service.t
+      ( [`GET],
+        unit,
+        unit,
+        unit,
+        unit,
+        connection_info list )
+      Mavryk_rpc.Service.t
 
     val info :
       ( [`GET],
@@ -237,7 +244,13 @@ module Peers : sig
       Mavryk_rpc.Service.service
 
     val banned :
-      ([`GET], unit, unit * P2p_peer.Id.t, unit, unit, bool) Mavryk_rpc.Service.t
+      ( [`GET],
+        unit,
+        unit * P2p_peer.Id.t,
+        unit,
+        unit,
+        bool )
+      Mavryk_rpc.Service.t
   end
 end
 

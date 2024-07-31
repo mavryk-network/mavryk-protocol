@@ -266,7 +266,9 @@ let pp_diff ppf (l1, l2) =
 let vectors () =
   ListLabels.iteri vectors ~f:(fun _ {entropy; words; seed} ->
       let words = String.split_on_char ' ' words in
-      let mnemonic = Bip39.of_entropy (Mavryk_stdlib.Hex.to_bytes_exn entropy) in
+      let mnemonic =
+        Bip39.of_entropy (Mavryk_stdlib.Hex.to_bytes_exn entropy)
+      in
       let words_computed = Bip39.to_words mnemonic in
       if words <> words_computed then (
         Format.printf "%a\n" pp_diff (words, words_computed) ;

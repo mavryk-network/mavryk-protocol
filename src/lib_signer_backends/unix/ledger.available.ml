@@ -88,7 +88,9 @@ let () =
 let () =
   let description ledger_hash computed_hash =
     let paren fmt hash_opt =
-      match Base.Option.bind ~f:Mavryk_crypto.Blake2B.of_string_opt hash_opt with
+      match
+        Base.Option.bind ~f:Mavryk_crypto.Blake2B.of_string_opt hash_opt
+      with
       | None -> ()
       | Some hash ->
           Format.fprintf fmt " (%a)" Mavryk_crypto.Blake2B.pp_short hash
@@ -860,7 +862,8 @@ module Signer_implementation : Client_keys.SIGNER = struct
     let open Lwt_result_syntax in
     let* nonce = deterministic_nonce sk msg in
     return
-      (Mavryk_crypto.Blake2B.to_bytes (Mavryk_crypto.Blake2B.hash_bytes [nonce]))
+      (Mavryk_crypto.Blake2B.to_bytes
+         (Mavryk_crypto.Blake2B.hash_bytes [nonce]))
 
   let supports_deterministic_nonces _ = Lwt_result_syntax.return_true
 end
@@ -1394,8 +1397,8 @@ let high_water_mark_commands group watermark_spelling =
               match version.app_class with
               | Tezos ->
                   failwith
-                    "Fatal: this operation is only valid with the Mavryk Baking \
-                     application"
+                    "Fatal: this operation is only valid with the Mavryk \
+                     Baking application"
               | TezBake when (not no_legacy_apdu) && version.major < 2 ->
                   let* hwm, hwm_round_opt =
                     Ledger_commands.wrap_ledger_cmd (fun pp ->

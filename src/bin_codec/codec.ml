@@ -138,7 +138,8 @@ let main commands =
       Mavryk_clic.add_manual
         ~executable_name
         ~global_options
-        (if Unix.isatty Unix.stdout then Mavryk_clic.Ansi else Mavryk_clic.Plain)
+        (if Unix.isatty Unix.stdout then Mavryk_clic.Ansi
+        else Mavryk_clic.Plain)
         Format.std_formatter
         commands
     in

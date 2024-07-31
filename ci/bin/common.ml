@@ -134,7 +134,7 @@ module Images = struct
     Image.register
       ~name:"docker"
       ~image_path:"registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0"
-      (* ~image_path:"${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0" *)
+  (* ~image_path:"${GCP_REGISTRY}/tezos/docker-images/ci-docker:v1.10.0" *)
 
   (* The Alpine version should be kept up to date with the version
      used for the [build_deps_image_name] images and specified in the
@@ -179,7 +179,7 @@ module Images = struct
     Image.register
       ~name:"ci_release"
       ~image_path:"registry.gitlab.com/tezos/docker-images/ci-release:v1.4.0"
-      (* ~image_path:"${GCP_REGISTRY}/tezos/docker-images/ci-release:v1.4.0" *)
+  (* ~image_path:"${GCP_REGISTRY}/tezos/docker-images/ci-release:v1.4.0" *)
 
   let hadolint =
     Image.register ~name:"hadolint" ~image_path:"hadolint/hadolint:2.9.3-debian"

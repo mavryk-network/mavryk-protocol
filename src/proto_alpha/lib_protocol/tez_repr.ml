@@ -301,7 +301,7 @@ let () =
         opb)
     ~description:
       ("Multiplication of a " ^ id ^ " amount by a non positive integer")
-      (obj2 (req "amount" encoding) (req "divisor" z))
+    (obj2 (req "amount" encoding) (req "divisor" z))
     (function Invalid_divisor (a, b) -> Some (a, b) | _ -> None)
     (fun (a, b) -> Invalid_divisor (a, b))
 

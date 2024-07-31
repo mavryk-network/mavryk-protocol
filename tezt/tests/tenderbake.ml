@@ -55,7 +55,8 @@ let init ?(overrides = default_overrides) protocol =
   in
   Log.info "Activated protocol." ;
   return
-  @@ ( Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn (Protocol.hash protocol),
+  @@ ( Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn
+         (Protocol.hash protocol),
        sandbox_endpoint,
        sandbox_client,
        sandbox_node )

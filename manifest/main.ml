@@ -211,7 +211,8 @@ let () =
   write "src/lib_smart_rollup/index.mld" @@ fun fmt ->
   let header =
     "{0 Mavkit-l2-libs: mavkit layer2 libraries}\n\n\
-     This is a package containing some libraries used by the layer 2 of Mavkit.\n\n\
+     This is a package containing some libraries used by the layer 2 of \
+     Mavkit.\n\n\
      It contains the following libraries:\n\n"
   in
   Sub_lib.pp_documentation_of_container ~header fmt registered_mavkit_l2_libs

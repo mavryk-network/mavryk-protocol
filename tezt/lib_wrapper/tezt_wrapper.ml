@@ -54,7 +54,8 @@ module Uses = struct
 
   let mavkit_client = make ~tag:"client" ~path:"./mavkit-client"
 
-  let mavkit_admin_client = make ~tag:"admin_client" ~path:"./mavkit-admin-client"
+  let mavkit_admin_client =
+    make ~tag:"admin_client" ~path:"./mavkit-admin-client"
 
   let register_meta_test () =
     Regression.register

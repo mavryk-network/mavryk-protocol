@@ -154,7 +154,8 @@ let () =
       Format.fprintf ppf "Unreliable Mavryk node. %s" description)
     Data_encoding.unit
     (function
-      | Unreliable_mavryk_node_returning_inconsistent_game -> Some () | _ -> None)
+      | Unreliable_mavryk_node_returning_inconsistent_game -> Some ()
+      | _ -> None)
     (fun () -> Unreliable_mavryk_node_returning_inconsistent_game) ;
 
   register_error_kind

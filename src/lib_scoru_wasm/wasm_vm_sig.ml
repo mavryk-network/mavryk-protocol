@@ -130,5 +130,7 @@ module type S = sig
       [Sc_rollup_PVM_sem.output_encoding]. Raises an exception if the output is
       not present. *)
   val get_output :
-    output_info -> Mavryk_webassembly_interpreter.Output_buffer.t -> string Lwt.t
+    output_info ->
+    Mavryk_webassembly_interpreter.Output_buffer.t ->
+    string Lwt.t
 end

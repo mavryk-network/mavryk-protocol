@@ -34,9 +34,11 @@ let on_master = Predefined_vars.ci_commit_branch == str "master"
 
 let on_branch branch = Predefined_vars.ci_commit_branch == str branch
 
-let on_mavryk_namespace = Predefined_vars.ci_project_namespace == str "mavryk-network"
+let on_mavryk_namespace =
+  Predefined_vars.ci_project_namespace == str "mavryk-network"
 
-let not_on_mavryk_namespace = Predefined_vars.ci_project_namespace != str "mavryk-network"
+let not_on_mavryk_namespace =
+  Predefined_vars.ci_project_namespace != str "mavryk-network"
 
 let has_tag_match tag = Predefined_vars.ci_commit_tag =~ tag
 

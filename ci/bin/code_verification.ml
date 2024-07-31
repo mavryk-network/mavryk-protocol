@@ -767,10 +767,10 @@ let jobs pipeline_type =
         ~rules:(make_rules ~changes:changeset_kaitai_e2e_files ())
         ~before_script:(before_script ~source_version:true ~eval_opam:true [])
         [
-          "make -C ${CI_PROJECT_DIR} check-kaitai-struct-files || (echo 'Mavkit \
-           encodings and Kaitai files seem to be out of sync. You might need \
-           to run `make check-kaitai-struct-files` and commit the resulting \
-           diff.' ; false)";
+          "make -C ${CI_PROJECT_DIR} check-kaitai-struct-files || (echo \
+           'Mavkit encodings and Kaitai files seem to be out of sync. You \
+           might need to run `make check-kaitai-struct-files` and commit the \
+           resulting diff.' ; false)";
         ]
         ~artifacts:
           (artifacts
@@ -986,26 +986,26 @@ let jobs pipeline_type =
       |> job_external_split
     in
     (* let job_oc_test_liquidity_baking_scripts : mavryk_job =
-      job
-        ~__POS__
-        ~name:"oc.test-liquidity-baking-scripts"
-        ~stage:Stages.test
-        ~image:Images.runtime_build_dependencies
-        ~dependencies:
-          (Dependent
-             [
-               Artifacts job_build_x86_64_release;
-               Artifacts job_build_x86_64_exp_dev_extra;
-             ])
-        ~rules:
-          (make_rules
-             ~dependent:true
-             ~changes:changeset_test_liquidity_baking_scripts
-             ())
-        ~before_script:(before_script ~source_version:true ~eval_opam:true [])
-        ["./scripts/ci/test_liquidity_baking_scripts.sh"]
-      |> job_external_split
-    in *)
+         job
+           ~__POS__
+           ~name:"oc.test-liquidity-baking-scripts"
+           ~stage:Stages.test
+           ~image:Images.runtime_build_dependencies
+           ~dependencies:
+             (Dependent
+                [
+                  Artifacts job_build_x86_64_release;
+                  Artifacts job_build_x86_64_exp_dev_extra;
+                ])
+           ~rules:
+             (make_rules
+                ~dependent:true
+                ~changes:changeset_test_liquidity_baking_scripts
+                ())
+           ~before_script:(before_script ~source_version:true ~eval_opam:true [])
+           ["./scripts/ci/test_liquidity_baking_scripts.sh"]
+         |> job_external_split
+       in *)
     (* The set of installation test jobs *)
     let jobs_install_mavkit : mavryk_job list =
       let changeset_install_jobs =
@@ -1073,15 +1073,15 @@ let jobs pipeline_type =
            TODO: https://gitlab.com/tezos/tezos/-/issues/6915
            This should be removed after the next release candidate. *)
         (* job_install_bin
-          ~__POS__
-          ~name:"oc.install_bin_ubuntu_focal"
-          ~allow_failure:Yes
-          Ubuntu_focal;
-        job_install_bin
-          ~__POS__
-          ~name:"oc.install_bin_ubuntu_jammy"
-          ~allow_failure:Yes
-          Ubuntu_jammy; *)
+             ~__POS__
+             ~name:"oc.install_bin_ubuntu_focal"
+             ~allow_failure:Yes
+             Ubuntu_focal;
+           job_install_bin
+             ~__POS__
+             ~name:"oc.install_bin_ubuntu_jammy"
+             ~allow_failure:Yes
+             Ubuntu_jammy; *)
         job_install_bin
           ~__POS__
           ~name:"oc.install_bin_rc_ubuntu_focal"
@@ -1108,13 +1108,15 @@ let jobs pipeline_type =
           ~__POS__
           ~name:"oc.compile_sources_bullseye"
           ~image:Images.opam_debian_bullseye
-          ~project:"${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH:-mavryk-network/mavryk-protocol}"
+          ~project:
+            "${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH:-mavryk-network/mavryk-protocol}"
           ~branch:"${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-master}";
         job_compile_sources
           ~__POS__
           ~name:"oc.compile_sources_mantic"
           ~image:Images.opam_ubuntu_mantic
-          ~project:"${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH:-mavryk-network/mavryk-protocol}"
+          ~project:
+            "${CI_MERGE_REQUEST_SOURCE_PROJECT_PATH:-mavryk-network/mavryk-protocol}"
           ~branch:"${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-master}";
       ]
       |> jobs_external_split ~path:"test/install_mavkit"

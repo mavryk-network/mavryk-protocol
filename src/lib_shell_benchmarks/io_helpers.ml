@@ -54,7 +54,9 @@ let prepare_genesis base_dir =
       return (index, context, context_hash)
 
 let commit context =
-  let context = Mavryk_shell_context.Shell_context.unwrap_disk_context context in
+  let context =
+    Mavryk_shell_context.Shell_context.unwrap_disk_context context
+  in
   Mavryk_context.Context.commit
     ~time:
       (Time.Protocol.of_seconds
@@ -63,7 +65,9 @@ let commit context =
 
 let flush context =
   let open Lwt.Syntax in
-  let context = Mavryk_shell_context.Shell_context.unwrap_disk_context context in
+  let context =
+    Mavryk_shell_context.Shell_context.unwrap_disk_context context
+  in
   let+ context = Mavryk_context.Context.flush context in
   Mavryk_shell_context.Shell_context.wrap_disk_context context
 

@@ -10,5 +10,5 @@
 *)
 val build_rpc_directory :
   Mavryk_version.Mavkit_node_version.t ->
-    Mavkit_node_config.Config_file.t ->
+  Mavkit_node_config.Config_file.t ->
   unit Mavryk_rpc.Directory.t

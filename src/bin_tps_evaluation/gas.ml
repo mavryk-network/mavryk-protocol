@@ -23,7 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Contracts = Mavryk_client_alpha_commands.Client_proto_stresstest_contracts
+module Contracts =
+  Mavryk_client_alpha_commands.Client_proto_stresstest_contracts
 
 let weighted_average (xs : (float * float) list) =
   let total_weight, total_sum =

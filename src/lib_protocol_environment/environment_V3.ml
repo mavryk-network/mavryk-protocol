@@ -685,7 +685,8 @@ struct
   module Block_hash = Mavryk_crypto.Hashed.Block_hash
   module Operation_hash = Mavryk_crypto.Hashed.Operation_hash
   module Operation_list_hash = Mavryk_crypto.Hashed.Operation_list_hash
-  module Operation_list_list_hash = Mavryk_crypto.Hashed.Operation_list_list_hash
+  module Operation_list_list_hash =
+    Mavryk_crypto.Hashed.Operation_list_list_hash
   module Context_hash = Mavryk_crypto.Hashed.Context_hash
   module Protocol_hash = Mavryk_crypto.Hashed.Protocol_hash
   module Blake2B = Mavryk_crypto.Blake2B

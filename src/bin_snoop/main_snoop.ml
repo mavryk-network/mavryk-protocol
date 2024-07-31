@@ -928,7 +928,8 @@ module Auto_build = struct
 
   let get_head_context_hash data_dir =
     match
-      Lwt_main.run @@ Mavryk_shell_benchmarks.Io_helpers.load_head_block data_dir
+      Lwt_main.run
+      @@ Mavryk_shell_benchmarks.Io_helpers.load_head_block data_dir
     with
     | Error e ->
         Format.eprintf

@@ -213,7 +213,8 @@ let gen_slot_header =
   let* published_level = gen_level in
   let* index = gen_slot_index in
   let+ commitment = gen_slot_header_commitment in
-  Mavkit_smart_rollup.Dal.Slot_header.{id = {published_level; index}; commitment}
+  Mavkit_smart_rollup.Dal.Slot_header.
+    {id = {published_level; index}; commitment}
 
 let compare_slot_header_id (s1 : Mavkit_smart_rollup.Dal.Slot_header.id)
     (s2 : Mavkit_smart_rollup.Dal.Slot_header.id) =

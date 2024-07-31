@@ -286,7 +286,9 @@ let info =
   let man =
     [
       `S Manpage.s_bugs;
-      `P "Report issues to https://gitlab.com/mavryk-network/mavryk-protocol/-/issues";
+      `P
+        "Report issues to \
+         https://gitlab.com/mavryk-network/mavryk-protocol/-/issues";
     ]
   in
   let version = Mavryk_version_value.Bin_version.mavkit_version_string in

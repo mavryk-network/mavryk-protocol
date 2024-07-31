@@ -34,7 +34,8 @@ let variables : variables =
       "registry.gitlab.com/mavryk-network/mavryk-protocol/rust-toolchain" );
     ( "client_libs_dependencies_image_name",
       (* "${GCP_REGISTRY}/${CI_PROJECT_PATH}/client-libs-dependencies" ); *)
-      "registry.gitlab.com/mavryk-network/mavryk-protocol/client-libs-dependencies" );  
+      "registry.gitlab.com/mavryk-network/mavryk-protocol/client-libs-dependencies"
+    );
     ("GIT_STRATEGY", "fetch");
     ("GIT_DEPTH", "1");
     ("GET_SOURCES_ATTEMPTS", "2");

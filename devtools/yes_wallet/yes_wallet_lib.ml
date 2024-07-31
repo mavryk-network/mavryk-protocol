@@ -513,31 +513,31 @@ let load_bakers_public_keys ?(staking_share_opt = None)
          list) =
     match protocol_of_hash protocol_hash with
     | None ->
-      if
-        protocol_hash
-        = Protocol_hash.of_b58check_exn
-            "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
-      then
-        Error_monad.failwith
-          "Context was probably ill loaded, found Genesis protocol.@;\
-           Known protocols are: %a"
-          Format.(
-            pp_print_list
-              ~pp_sep:(fun fmt () -> pp_print_string fmt ", ")
-              Protocol_hash.pp)
-          (List.map (fun (module P : Sigs.PROTOCOL) -> P.hash)
-          @@ Known_protocols.get_all ())
-      else
-        Error_monad.failwith
-          "Unknown protocol hash: %a.@;Known protocols are: %a"
-          Protocol_hash.pp
+        if
           protocol_hash
-          Format.(
-            pp_print_list
-              ~pp_sep:(fun fmt () -> pp_print_string fmt ", ")
-              Protocol_hash.pp)
-          (List.map (fun (module P : Sigs.PROTOCOL) -> P.hash)
-          @@ Known_protocols.get_all ())
+          = Protocol_hash.of_b58check_exn
+              "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
+        then
+          Error_monad.failwith
+            "Context was probably ill loaded, found Genesis protocol.@;\
+             Known protocols are: %a"
+            Format.(
+              pp_print_list
+                ~pp_sep:(fun fmt () -> pp_print_string fmt ", ")
+                Protocol_hash.pp)
+            (List.map (fun (module P : Sigs.PROTOCOL) -> P.hash)
+            @@ Known_protocols.get_all ())
+        else
+          Error_monad.failwith
+            "Unknown protocol hash: %a.@;Known protocols are: %a"
+            Protocol_hash.pp
+            protocol_hash
+            Format.(
+              pp_print_list
+                ~pp_sep:(fun fmt () -> pp_print_string fmt ", ")
+                Protocol_hash.pp)
+            (List.map (fun (module P : Sigs.PROTOCOL) -> P.hash)
+            @@ Known_protocols.get_all ())
     | Some protocol ->
         Format.printf
           "@[<h>Detected protocol:@;<10 0>%a@]@."

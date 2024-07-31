@@ -30,7 +30,7 @@ module S : sig
       unit,
       unit,
       Mavkit_node_version.t )
-      Mavryk_rpc.Service.service
+    Mavryk_rpc.Service.service
 end
 
 val version :

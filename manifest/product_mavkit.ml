@@ -608,10 +608,8 @@ let mavkit_risc_v_pvm =
           S "no-infer";
           [
             S "progn";
-            of_atom_list
-              ["run"; "chmod"; "u+w"; "Cargo.toml"];
-            of_atom_list
-              ["run"; "chmod"; "u+w"; "../Cargo.lock"];
+            of_atom_list ["run"; "chmod"; "u+w"; "Cargo.toml"];
+            of_atom_list ["run"; "chmod"; "u+w"; "../Cargo.lock"];
             of_atom_list
               ["run"; "cargo"; "build"; "--release"; "-p"; "mavkit-risc-v-pvm"];
             transform archive_output_file archive_file;
@@ -3378,7 +3376,9 @@ let mavkit_shell =
       "Core of `mavkit-node` (gossip, validation scheduling, mempool, ...)"
     ~documentation:
       Dune.
-        [[S "package"; S "mavkit-shell-libs"]; [S "mld_files"; S "mavkit_shell"]]
+        [
+          [S "package"; S "mavkit-shell-libs"]; [S "mld_files"; S "mavkit_shell"];
+        ]
     ~inline_tests:ppx_expect
     ~deps:
       [
@@ -3413,7 +3413,8 @@ let mavkit_rpc_http =
     ~internal_name:"mavryk-rpc-http"
     ~path:"src/lib_rpc_http"
     ~synopsis:"Library of auto-documented RPCs (http server and client)"
-    ~deps:[mavkit_base |> open_ ~m:"TzPervasives"; mavkit_rpc; resto_cohttp; uri]
+    ~deps:
+      [mavkit_base |> open_ ~m:"TzPervasives"; mavkit_rpc; resto_cohttp; uri]
     ~modules:["RPC_client_errors"; "media_type"]
 
 let mavkit_rpc_http_client =
@@ -5261,7 +5262,9 @@ end = struct
       let path = Name.base_path name in
       let dirname = path // "lib_protocol" in
       let mavryk_protocol_filename = dirname // "MAVRYK_PROTOCOL" in
-      let mavryk_protocol = Mavryk_protocol.of_file_exn mavryk_protocol_filename in
+      let mavryk_protocol =
+        Mavryk_protocol.of_file_exn mavryk_protocol_filename
+      in
       (* Container of the registered sublibraries of [mavkit-protocol-libs] *)
       let registered_mavryk_protocol = Sub_lib.make_container () in
       let mavryk_protocol_sub_lib =
@@ -5484,8 +5487,8 @@ let hash = Protocol.hash
                    parameterized by its environment implementation)"
                   name_underscore
             | Alpha | V _ ->
-                "Mavryk/Protocol: economic-protocol definition parameterized by \
-                 its environment implementation")
+                "Mavryk/Protocol: economic-protocol definition parameterized \
+                 by its environment implementation")
           ~modules:["Functor"]
             (* The instrumentation is removed as it can lead to a stack overflow *)
             (* https://gitlab.com/tezos/tezos/-/issues/1927 *)
@@ -5581,7 +5584,8 @@ let hash = Protocol.hash
       public_lib
         (sf "mavryk-client-%s" (Name.name_dash name))
         ~path:(Name.base_path name // "lib_client")
-        ~synopsis:"Mavryk/Protocol: protocol specific library for `mavkit-client`"
+        ~synopsis:
+          "Mavryk/Protocol: protocol specific library for `mavkit-client`"
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
@@ -5615,7 +5619,8 @@ let hash = Protocol.hash
       public_lib
         (sf "mavryk-client-%s" (Name.name_dash name))
         ~path:(Name.base_path name // "lib_client")
-        ~synopsis:"Mavryk/Protocol: protocol specific library for `mavkit-client`"
+        ~synopsis:
+          "Mavryk/Protocol: protocol specific library for `mavkit-client`"
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
@@ -5991,8 +5996,7 @@ let hash = Protocol.hash
         "baking"
         ~internal_name:("mavryk_baking_" ^ name_dash)
         ~path:(path // "lib_delegate")
-        ~synopsis:
-          ("Base library for `mavryk-baker/accuser`")
+        ~synopsis:"Base library for `mavryk-baker/accuser`"
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
@@ -6023,8 +6027,7 @@ let hash = Protocol.hash
             uri;
           ]
         ~linkall:true
-        ~all_modules_except:
-          (["Baking_commands"; "Baking_commands_registration"])
+        ~all_modules_except:["Baking_commands"; "Baking_commands_registration"]
     in
     let tenderbrute =
       only_if (active && N.(number >= 001)) @@ fun () ->
@@ -6139,10 +6142,7 @@ let hash = Protocol.hash
             uri;
           ]
         ~linkall:true
-        ~modules:
-          [
-            ("Baking_commands");
-          ]
+        ~modules:["Baking_commands"]
     in
     let baking_commands_registration =
       only_if active @@ fun () ->
@@ -6164,10 +6164,7 @@ let hash = Protocol.hash
             mavkit_rpc;
           ]
         ~linkall:true
-        ~modules:
-          [
-            ("Baking_commands_registration");
-          ]
+        ~modules:["Baking_commands_registration"]
     in
     let daemon daemon =
       only_if active @@ fun () ->
@@ -6236,7 +6233,7 @@ let hash = Protocol.hash
       only_if (active && N.(number >= 001)) @@ fun () ->
       tezt
         (* test [test_dac_pages_encoding] was removed after 001 *)
-        (["test_dal_slot_frame_encoding"; "test_helpers"])
+        ["test_dal_slot_frame_encoding"; "test_helpers"]
         ~path:(path // "lib_dal/test")
         ~opam:(sf "mavkit-protocol-%s-libs" name_dash)
         ~with_macos_security_framework:true
@@ -6479,7 +6476,7 @@ let hash = Protocol.hash
           ]
         ~linkall:true
         ~private_modules:["kernel"; "rules"; "state_space"]
-        ~bisect_ppx:(No)
+        ~bisect_ppx:No
     in
     let _benchmark_tests =
       opt_map (both benchmark test_helpers) @@ fun (benchmark, test_helpers) ->
@@ -6574,8 +6571,8 @@ let hash = Protocol.hash
       let header =
         sf
           "{0 Mavkit-protocol-%s-libs: mavkit protocol %s libraries}\n\n\
-           This is a package containing some libraries related to the Mavryk %s \
-           protocol.\n\n\
+           This is a package containing some libraries related to the Mavryk \
+           %s protocol.\n\n\
            It contains the following libraries:\n\n"
           name_dash
           name_dash

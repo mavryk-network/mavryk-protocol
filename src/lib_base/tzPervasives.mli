@@ -104,8 +104,10 @@ module Operation_list_list_hash = Mavryk_crypto.Hashed.Operation_list_list_hash
 module Operation_metadata_hash = Mavryk_crypto.Hashed.Operation_metadata_hash
 module Operation_metadata_list_hash =
   Mavryk_crypto.Hashed.Operation_metadata_list_hash
+
 module Operation_metadata_list_list_hash =
   Mavryk_crypto.Hashed.Operation_metadata_list_list_hash
+
 module Protocol_hash = Mavryk_crypto.Hashed.Protocol_hash
 module Signature = Mavryk_crypto.Signature
 module Skip_list = Skip_list

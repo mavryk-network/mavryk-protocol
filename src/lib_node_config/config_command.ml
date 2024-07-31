@@ -182,8 +182,8 @@ module Manpage = struct
   let command_description =
     "The $(b,config) command is meant to inspect and amend the configuration \
      of the Mavryk node. This command is complementary to manually editing the \
-     mavryk node configuration file. Its arguments are a subset of the $(i,run) \
-     command ones."
+     mavryk node configuration file. Its arguments are a subset of the \
+     $(i,run) command ones."
 
   let options =
     let schema = Data_encoding.Json.schema Config_file.encoding in

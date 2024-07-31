@@ -67,7 +67,7 @@ end
 module Protocol_treasury : sig
   val get_protocol_treasury_address :
     'a #RPC_context.simple -> 'a -> Contract_hash.t shell_tzresult Lwt.t
-    
+
   val get_buffer_address :
     'a #RPC_context.simple -> 'a -> Contract_hash.t shell_tzresult Lwt.t
 end

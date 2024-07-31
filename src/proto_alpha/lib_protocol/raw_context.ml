@@ -1152,8 +1152,7 @@ let prepare_first_block ~level ~timestamp _chain_id ctxt =
             {
               consensus_rights_delay;
               blocks_preservation_cycles = 1;
-              delegate_parameters_activation_delay =
-                c.preserved_cycles;
+              delegate_parameters_activation_delay = c.preserved_cycles;
               blocks_per_cycle = c.blocks_per_cycle;
               blocks_per_commitment = c.blocks_per_commitment;
               nonce_revelation_threshold = c.nonce_revelation_threshold;

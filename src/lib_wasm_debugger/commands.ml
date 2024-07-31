@@ -770,7 +770,9 @@ module Make (Wasm_utils : Wasm_utils_intf.S) = struct
     let open Lwt_syntax in
     let* output_buffer = Wasm.Internal_for_tests.get_output_buffer tree in
     let* level_vector =
-      Mavryk_webassembly_interpreter.Output_buffer.get_outbox output_buffer level
+      Mavryk_webassembly_interpreter.Output_buffer.get_outbox
+        output_buffer
+        level
     in
     let* messages =
       Mavryk_lazy_containers.Lazy_vector.(level_vector |> ZVector.to_list)

@@ -4939,7 +4939,11 @@ let test_private_rollup_node_publish_in_whitelist =
   let levels = commitment_period in
   Log.info "Baking at least %d blocks for commitment of first message" levels ;
   let* _new_level =
-    bake_until_lpc_updated ~at_least:levels ~timeout:5. mavryk_client rollup_node
+    bake_until_lpc_updated
+      ~at_least:levels
+      ~timeout:5.
+      mavryk_client
+      rollup_node
   in
   bake_levels levels mavryk_client
 

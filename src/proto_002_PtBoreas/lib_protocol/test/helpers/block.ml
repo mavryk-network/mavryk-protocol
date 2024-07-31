@@ -193,7 +193,8 @@ module Forge = struct
 
   let make_contents
       ?(proof_of_work_threshold =
-        Mavryk_protocol_002_PtBoreas_parameters.Default_parameters.constants_test
+        Mavryk_protocol_002_PtBoreas_parameters.Default_parameters
+        .constants_test
           .proof_of_work_threshold) ~payload_hash ~payload_round
       ?(liquidity_baking_toggle_vote = Per_block_votes.Per_block_vote_pass)
       ?(adaptive_issuance_vote = Per_block_votes.Per_block_vote_pass)
@@ -230,7 +231,8 @@ module Forge = struct
 
   let set_seed_nonce_hash
       ?(proof_of_work_threshold =
-        Mavryk_protocol_002_PtBoreas_parameters.Default_parameters.constants_test
+        Mavryk_protocol_002_PtBoreas_parameters.Default_parameters
+        .constants_test
           .proof_of_work_threshold) seed_nonce_hash
       {baker; consensus_key; shell; contents} =
     let open Lwt_result_syntax in
@@ -340,7 +342,8 @@ module Forge = struct
   (* compatibility only, needed by incremental *)
   let contents
       ?(proof_of_work_threshold =
-        Mavryk_protocol_002_PtBoreas_parameters.Default_parameters.constants_test
+        Mavryk_protocol_002_PtBoreas_parameters.Default_parameters
+        .constants_test
           .proof_of_work_threshold) ?seed_nonce_hash
       ?(liquidity_baking_toggle_vote = Per_block_votes.Per_block_vote_pass)
       ?(adaptive_issuance_vote = Per_block_votes.Per_block_vote_pass)

@@ -40,7 +40,8 @@ val encoding : t Data_encoding.t
 
     The argument [yield_every] (defaults to [500]) introduces a call to
     [Lwt.pause] every that many operations. *)
-val generate : ?yield_every:int -> Mavryk_crypto.Crypto_box.pow_target -> t Lwt.t
+val generate :
+  ?yield_every:int -> Mavryk_crypto.Crypto_box.pow_target -> t Lwt.t
 
 (** [generate_with_bound pow_target] is a freshly minted identity whose proof of
     work stamp difficulty is at least equal to [pow_target].

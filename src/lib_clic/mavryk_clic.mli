@@ -112,7 +112,7 @@ val multiple_arg :
   long:string ->
   placeholder:string ->
   ('a, 'ctx) parameter ->
-  ('a list option, 'ctx) arg  
+  ('a list option, 'ctx) arg
 
 (** Create an argument that will contain the [~default] value if it is not provided. *)
 val default_arg :

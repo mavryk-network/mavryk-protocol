@@ -405,9 +405,8 @@ let register ~testnet =
     ~title:"Rejection with proof"
     ~tags:["rejection"]
     (rejection_with_proof ~testnet) ;
-    Test.register
-      ~__FILE__
-      ~title:"Simple rollup use case"
-      ~tags:["rollup"; "accuser"; "node"; "batcher"]
-      (simple_use_case_rollup ~testnet)
-  
+  Test.register
+    ~__FILE__
+    ~title:"Simple rollup use case"
+    ~tags:["rollup"; "accuser"; "node"; "batcher"]
+    (simple_use_case_rollup ~testnet)

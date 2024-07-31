@@ -106,7 +106,8 @@ module type T = sig
        and module Sapling = Mavryk_sapling.Core.Validator
        and type ('a, 'b) Either.t = ('a, 'b) Stdlib.Either.t
        and type Bls.Primitive.Fr.t = Bls12_381.Fr.t
-       and type Plonk.proof = Mavryk_protocol_environment_structs.V10.Plonk.proof
+       and type Plonk.proof =
+        Mavryk_protocol_environment_structs.V10.Plonk.proof
        and type Plonk.public_parameters =
         Mavryk_protocol_environment_structs.V10.Plonk.verifier_public_parameters
        and type Dal.parameters = Mavryk_crypto_dal.Cryptobox.Verifier.parameters
@@ -1137,7 +1138,8 @@ struct
       message_index : Z.t;
     }
 
-    type reveal_hash = Mavryk_scoru_wasm.Wasm_pvm_state.Compatibility.reveal_hash
+    type reveal_hash =
+      Mavryk_scoru_wasm.Wasm_pvm_state.Compatibility.reveal_hash
 
     type reveal = Mavryk_scoru_wasm.Wasm_pvm_state.Compatibility.reveal =
       | Reveal_raw_data of reveal_hash
@@ -1174,7 +1176,8 @@ struct
       end)
 
       let compute_step =
-        compute_step ~wasm_entrypoint:Mavryk_scoru_wasm.Constants.wasm_entrypoint
+        compute_step
+          ~wasm_entrypoint:Mavryk_scoru_wasm.Constants.wasm_entrypoint
 
       let reveal_compat reveal =
         match
@@ -1192,7 +1195,8 @@ struct
             Reveal_raw_data "this line costs 10k XTZ to execute"
 
       let input_request_compat = function
-        | Mavryk_scoru_wasm.Wasm_pvm_state.No_input_required -> No_input_required
+        | Mavryk_scoru_wasm.Wasm_pvm_state.No_input_required ->
+            No_input_required
         | Input_required -> Input_required
         | Reveal_required req -> Reveal_required (reveal_compat req)
 

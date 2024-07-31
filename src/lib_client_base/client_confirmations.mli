@@ -57,7 +57,8 @@ val lookup_operation_in_previous_blocks :
 val wait_for_bootstrapped :
   ?retry:
     (((#Client_context.full as 'a) ->
-     ((Block_hash.t * Time.Protocol.t) Lwt_stream.t * Mavryk_rpc.Context.stopper)
+     ((Block_hash.t * Time.Protocol.t) Lwt_stream.t
+     * Mavryk_rpc.Context.stopper)
      tzresult
      Lwt.t) ->
     'a ->

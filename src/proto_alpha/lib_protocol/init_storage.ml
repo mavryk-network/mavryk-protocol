@@ -178,8 +178,8 @@ let prepare_first_block chain_id ctxt ~typecheck_smart_contract
         in
         let* ctxt, buffer_operation_results =
           Protocol_treasury_migration.init
-          ctxt
-          ~typecheck:typecheck_smart_contract
+            ctxt
+            ~typecheck:typecheck_smart_contract
         in
         let* ctxt =
           Storage.Pending_migration.Operation_results.init

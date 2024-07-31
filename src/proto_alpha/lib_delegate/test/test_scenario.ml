@@ -1962,25 +1962,25 @@ let () =
   in
   List.iter
     register_test
-       [
-         (Protocol.name ^ ": reaches level 5", test_level_5);
-         ( Protocol.name ^ ": cannot progress without new head",
-           test_preattest_on_valid );
-         (Protocol.name ^ ": reset delayed pqc", test_reset_delayed_pqc);
-         (Protocol.name ^ ": scenario t1", test_scenario_t1);
-         (Protocol.name ^ ": scenario t2", test_scenario_t2);
-         (Protocol.name ^ ": scenario t3", test_scenario_t3);
-         (Protocol.name ^ ": scenario t4", test_scenario_t4);
-         (Protocol.name ^ ": scenario f1", test_scenario_f1);
-         (Protocol.name ^ ": scenario f2", test_scenario_f2);
-         (Protocol.name ^ ": scenario m1", test_scenario_m1);
-         (Protocol.name ^ ": scenario m2", test_scenario_m2);
-         (Protocol.name ^ ": scenario m3", test_scenario_m3);
-         (Protocol.name ^ ": scenario m4", test_scenario_m4);
-         (Protocol.name ^ ": scenario m5", test_scenario_m5);
-         (Protocol.name ^ ": scenario m6", test_scenario_m6);
-         (Protocol.name ^ ": scenario m7", test_scenario_m7);
-         (Protocol.name ^ ": scenario m8", test_scenario_m8);
-         (Protocol.name ^ ": scenario m9", test_scenario_m9);
-         (Protocol.name ^ ": scenario m10", test_scenario_m10);
-       ]
+    [
+      (Protocol.name ^ ": reaches level 5", test_level_5);
+      ( Protocol.name ^ ": cannot progress without new head",
+        test_preattest_on_valid );
+      (Protocol.name ^ ": reset delayed pqc", test_reset_delayed_pqc);
+      (Protocol.name ^ ": scenario t1", test_scenario_t1);
+      (Protocol.name ^ ": scenario t2", test_scenario_t2);
+      (Protocol.name ^ ": scenario t3", test_scenario_t3);
+      (Protocol.name ^ ": scenario t4", test_scenario_t4);
+      (Protocol.name ^ ": scenario f1", test_scenario_f1);
+      (Protocol.name ^ ": scenario f2", test_scenario_f2);
+      (Protocol.name ^ ": scenario m1", test_scenario_m1);
+      (Protocol.name ^ ": scenario m2", test_scenario_m2);
+      (Protocol.name ^ ": scenario m3", test_scenario_m3);
+      (Protocol.name ^ ": scenario m4", test_scenario_m4);
+      (Protocol.name ^ ": scenario m5", test_scenario_m5);
+      (Protocol.name ^ ": scenario m6", test_scenario_m6);
+      (Protocol.name ^ ": scenario m7", test_scenario_m7);
+      (Protocol.name ^ ": scenario m8", test_scenario_m8);
+      (Protocol.name ^ ": scenario m9", test_scenario_m9);
+      (Protocol.name ^ ": scenario m10", test_scenario_m10);
+    ]

@@ -89,7 +89,7 @@ module Simple = struct
           Data_encoding.Json.(
             construct
               (Data_encoding.list
-                Mavkit_smart_rollup.Game.dissection_chunk_encoding)
+                 Mavkit_smart_rollup.Game.dissection_chunk_encoding)
               d))
 
   module Worker (ARG : sig

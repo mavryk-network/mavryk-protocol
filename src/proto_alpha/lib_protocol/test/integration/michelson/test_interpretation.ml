@@ -347,7 +347,7 @@ let fail_with_trace trace =
 
 let test_contract_success path storage param expected_storage_str
     ?entrypoint_str () =
-    let open Lwt_result_syntax in
+  let open Lwt_result_syntax in
   let expected_storage = Expr.from_string expected_storage_str in
   test_contract
     path

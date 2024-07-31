@@ -357,8 +357,8 @@ let run_command =
   command
     ~group
     ~desc:
-      "Run the DAC node. Use --endpoint to configure the Mavkit node to connect \
-       to (See Global options)."
+      "Run the DAC node. Use --endpoint to configure the Mavkit node to \
+       connect to (See Global options)."
     (args1 data_dir_arg)
     (prefixes ["run"] @@ stop)
     (fun data_dir cctxt ->

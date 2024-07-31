@@ -18,7 +18,9 @@ The script can also be used to fetch records from the last successful pipeline o
 
 dune exec scripts/ci/update_records/update.exe -- --from last-merged-pipeline|}
 
-let project = Sys.getenv_opt "PROJECT" |> Option.value ~default:"mavryk-network/mavryk-protocol"
+let project =
+  Sys.getenv_opt "PROJECT"
+  |> Option.value ~default:"mavryk-network/mavryk-protocol"
 
 let default_branch =
   Sys.getenv_opt "DEFAULT_BRANCH" |> Option.value ~default:"master"

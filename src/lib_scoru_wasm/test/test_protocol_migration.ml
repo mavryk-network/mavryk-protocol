@@ -82,11 +82,7 @@ let tests =
            ~from_version
            ~to_version
            ~after_protocol_activation:protocol))
-    [
-      (V2, V4, Proto_alpha);
-      (V2, V4, Boreas);
-      (V1, V2, Atlas);
-    ]
+    [(V2, V4, Proto_alpha); (V2, V4, Boreas); (V1, V2, Atlas)]
 
 let () =
   Alcotest_lwt.run

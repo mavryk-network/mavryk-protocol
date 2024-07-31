@@ -52,7 +52,8 @@ let test_equal () =
   assert (Poly.(equal zero (make [|0; 0|])))
 
 let test_copy () =
-  let module C = Mavkit_bls12_381_polynomial.Internal_for_tests.Polynomial_unsafe
+  let module C =
+    Mavkit_bls12_381_polynomial.Internal_for_tests.Polynomial_unsafe
   in
   let make a = C.of_dense (Array.map Scalar.of_string a) in
   let p = make [|"0"; "1"; "2"; "0"|] in

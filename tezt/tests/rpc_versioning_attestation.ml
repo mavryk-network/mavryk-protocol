@@ -416,7 +416,7 @@ module Parse = struct
     register_test
       ~title:"Parse raw consensus operations"
       ~additionnal_tags:["parse"; "raw"; "operations"; "consensus"]
-      ~uses:(fun _protocol -> [Constant. mavkit_codec])
+      ~uses:(fun _protocol -> [Constant.mavkit_codec])
     @@ fun protocol ->
     test_parse (Operation.Attestation {with_dal = false}) protocol
 

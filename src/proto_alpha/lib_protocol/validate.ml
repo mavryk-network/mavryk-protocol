@@ -819,8 +819,8 @@ module Consensus = struct
     (* We do not remove the attestation power because it is not
        relevant for the mempool mode. *)
     let (Single
-    (Attestation
-      {consensus_content = {slot; level; round; _}; dal_content = _})) =
+          (Attestation
+            {consensus_content = {slot; level; round; _}; dal_content = _})) =
       operation.protocol_data.contents
     in
     let attestations_seen =

@@ -247,14 +247,14 @@ let () =
     ~proof_frequency:(11L, 23L)
     echo_kernel ;
   (* register
-    ~name:"tx_no_verify"
-    ~from_binary:true
-    ~ticks_per_snapshot:6_000_000L
-    ~inputs:tx_no_verify_inputs
-    ~versions
-    ~hash_frequency:10_037L
-    ~proof_frequency:(3L, 30_893L)
-    tx_no_verify_kernel ; *)
+     ~name:"tx_no_verify"
+     ~from_binary:true
+     ~ticks_per_snapshot:6_000_000L
+     ~inputs:tx_no_verify_inputs
+     ~versions
+     ~hash_frequency:10_037L
+     ~proof_frequency:(3L, 30_893L)
+     tx_no_verify_kernel ; *)
   register
     ~name:"link_store_create"
     ~fail_on_stuck:false

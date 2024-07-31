@@ -163,7 +163,9 @@ module Powers_of_tau = struct
       let size = 1 lsl power in
       let points = Array.init size (fun _i -> read ic) |> of_array in
       close_in ic ;
-      let domain = Mavkit_bls12_381_polynomial.Domain.build_power_of_two power in
+      let domain =
+        Mavkit_bls12_381_polynomial.Domain.build_power_of_two power
+      in
       let points = evaluation_ecfft ~domain ~points in
       points
     with e ->

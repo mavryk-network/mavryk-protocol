@@ -1026,7 +1026,9 @@ module Activate_protocol = struct
     let path_client =
       Remote_procedure.file_agent_uri ~self ~resolver base.path_client
     in
-    let endpoint = resolve_mavkit_rpc_global_uri ~self ~resolver base.endpoint in
+    let endpoint =
+      resolve_mavkit_rpc_global_uri ~self ~resolver base.endpoint
+    in
     let parameter_file =
       resolve_mavkit_rpc_global_uri ~self ~resolver base.parameter_file
     in
@@ -1694,7 +1696,9 @@ module Start_rollup_node = struct
     let path_client =
       Remote_procedure.file_agent_uri ~self ~resolver args.path_client
     in
-    let endpoint = resolve_mavkit_rpc_global_uri ~self ~resolver args.endpoint in
+    let endpoint =
+      resolve_mavkit_rpc_global_uri ~self ~resolver args.endpoint
+    in
     {args with path_rollup_node; path_client; endpoint}
 
   let run state args =
@@ -1731,7 +1735,7 @@ module Start_rollup_node = struct
       (Rollup_node_k (Sc_rollup_node.name rollup_node))
       rollup_node
       state ;
-      let _metric_addr, metrics_port = Sc_rollup_node.metrics rollup_node in
+    let _metric_addr, metrics_port = Sc_rollup_node.metrics rollup_node in
     return
       {
         name = Sc_rollup_node.name rollup_node;
@@ -2237,7 +2241,9 @@ module Start_dac_node = struct
     let path_client =
       Remote_procedure.file_agent_uri ~self ~resolver args.path_client
     in
-    let endpoint = resolve_mavkit_rpc_global_uri ~self ~resolver args.endpoint in
+    let endpoint =
+      resolve_mavkit_rpc_global_uri ~self ~resolver args.endpoint
+    in
     let mode = resolve_dac_mode ~self resolver args.mode in
     {args with path_dac_node; path_client; endpoint; mode}
 

@@ -70,7 +70,9 @@ let () =
         Stdlib.exit 1
   in
   let hash, protocol =
-    match Lwt_main.run (Mavryk_base_unix.Protocol_files.read_dir source_dir) with
+    match
+      Lwt_main.run (Mavryk_base_unix.Protocol_files.read_dir source_dir)
+    with
     | Ok (None, proto) -> (Protocol.hash proto, proto)
     | Ok (Some hash, proto) -> (hash, proto)
     | Error err ->

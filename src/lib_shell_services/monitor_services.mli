@@ -142,7 +142,8 @@ module S : sig
   val protocols :
     ([`GET], unit, unit, unit, unit, Protocol_hash.t) Mavryk_rpc.Service.t
 
-  val commit_hash : ([`GET], unit, unit, unit, unit, string) Mavryk_rpc.Service.t
+  val commit_hash :
+    ([`GET], unit, unit, unit, unit, string) Mavryk_rpc.Service.t
 
   val active_chains :
     ([`GET], unit, unit, unit, unit, chain_status list) Mavryk_rpc.Service.t

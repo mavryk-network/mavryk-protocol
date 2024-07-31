@@ -1087,7 +1087,8 @@ module Make
       dir :=
         Mavryk_rpc.Directory.gen_register
           !dir
-          (Proto_services.S.Mempool.pending_operations Mavryk_rpc.Path.open_root)
+          (Proto_services.S.Mempool.pending_operations
+             Mavryk_rpc.Path.open_root)
           (fun pv params () ->
             let validated =
               if params#validated then
@@ -1161,14 +1162,16 @@ module Make
       dir :=
         Mavryk_rpc.Directory.register
           !dir
-          (Proto_services.S.Mempool.request_operations Mavryk_rpc.Path.open_root)
+          (Proto_services.S.Mempool.request_operations
+             Mavryk_rpc.Path.open_root)
           (fun pv t () ->
             pv.shell.parameters.tools.send_get_current_head ?peer:t#peer_id () ;
             return_unit) ;
       dir :=
         Mavryk_rpc.Directory.gen_register
           !dir
-          (Proto_services.S.Mempool.monitor_operations Mavryk_rpc.Path.open_root)
+          (Proto_services.S.Mempool.monitor_operations
+             Mavryk_rpc.Path.open_root)
           (fun pv params () ->
             Lwt_mutex.with_lock pv.lock @@ fun () ->
             let op_stream, stopper =
@@ -1625,7 +1628,8 @@ let pipeline_length (t : t) =
 let empty_rpc_directory : unit Mavryk_rpc.Directory.t =
   Mavryk_rpc.Directory.gen_register
     Mavryk_rpc.Directory.empty
-    (Block_services.Empty.S.Mempool.pending_operations Mavryk_rpc.Path.open_root)
+    (Block_services.Empty.S.Mempool.pending_operations
+       Mavryk_rpc.Path.open_root)
     (fun _pv params () ->
       let pending_operations =
         {

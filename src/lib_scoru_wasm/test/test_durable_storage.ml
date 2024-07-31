@@ -1227,7 +1227,9 @@ let test_store_create ~version =
     | None -> Stdlib.failwith "The value has not been encoded"
     | Some tree -> tree
   in
-  let* encoded_value = Mavryk_tree_encoding.Wrapped.list encoded_value_tree [] in
+  let* encoded_value =
+    Mavryk_tree_encoding.Wrapped.list encoded_value_tree []
+  in
   assert (
     List.for_all (fun (key, _) -> key = "length") encoded_value
     && encoded_value <> []) ;

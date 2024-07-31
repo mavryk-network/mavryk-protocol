@@ -95,7 +95,8 @@ module Make (E : MENV) = struct
     let open Mavryk_p2p in
     let peer_meta_config =
       {
-        P2p_params.peer_meta_encoding = Mavryk_p2p_services.Peer_metadata.encoding;
+        P2p_params.peer_meta_encoding =
+          Mavryk_p2p_services.Peer_metadata.encoding;
         peer_meta_initial = Mavryk_p2p_services.Peer_metadata.empty;
         score = (fun _ -> 0.0);
       }
@@ -103,7 +104,8 @@ module Make (E : MENV) = struct
     let message_config : unit P2p_params.message_config =
       {
         encoding = [];
-        chain_name = Distributed_db_version.Name.of_string "MAVRYK_CLIENT_MOCKUP";
+        chain_name =
+          Distributed_db_version.Name.of_string "MAVRYK_CLIENT_MOCKUP";
         (* The following cannot be empty. *)
         distributed_db_versions = Distributed_db_version.[zero; one];
       }

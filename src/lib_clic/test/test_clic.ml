@@ -192,7 +192,8 @@ let test_dispatch_advanced () =
       (Mavryk_clic.non_terminal_seq
          ~suffix:["the"; "end"]
          (abcd_param ~name:"item")
-      @@ Mavryk_clic.prefix "of" @@ efgh_param ~name:"last" @@ Mavryk_clic.stop)
+      @@ Mavryk_clic.prefix "of" @@ efgh_param ~name:"last" @@ Mavryk_clic.stop
+      )
       (fun () l p () ->
         return
           ("E" ^ String.concat "" (List.map string_of_abcd l) ^ string_of_efgh p))
@@ -237,7 +238,8 @@ let test_dispatch_advanced () =
       ~desc:"neg-param"
       Mavryk_clic.no_options
       (Mavryk_clic.prefixes ["the"; "start"]
-      @@ neg_param ~name:"neg" @@ Mavryk_clic.prefix "done" @@ Mavryk_clic.stop)
+      @@ neg_param ~name:"neg" @@ Mavryk_clic.prefix "done" @@ Mavryk_clic.stop
+      )
       (fun () i () -> return ("E" ^ string_of_int i))
   in
   let enp_prefix_stop return =

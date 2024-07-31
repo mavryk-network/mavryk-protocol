@@ -119,8 +119,8 @@ module Term = struct
         (Cmdliner.Cmd.info
            ~doc:
              "reads, parses and displays the current identity of the node. Use \
-              this command to see what identity will be used by Mavryk. This is \
-              the default operation"
+              this command to see what identity will be used by Mavryk. This \
+              is the default operation"
            "show")
         Cmdliner.Term.(
           ret

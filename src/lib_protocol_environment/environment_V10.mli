@@ -106,7 +106,8 @@ module type T = sig
        and module Sapling = Mavryk_sapling.Core.Validator
        and type ('a, 'b) Either.t = ('a, 'b) Stdlib.Either.t
        and type Bls.Primitive.Fr.t = Bls12_381.Fr.t
-       and type Plonk.proof = Mavryk_protocol_environment_structs.V10.Plonk.proof
+       and type Plonk.proof =
+        Mavryk_protocol_environment_structs.V10.Plonk.proof
        and type Plonk.public_parameters =
         Mavryk_protocol_environment_structs.V10.Plonk.verifier_public_parameters
        and type Dal.parameters = Mavryk_crypto_dal.Cryptobox.Verifier.parameters

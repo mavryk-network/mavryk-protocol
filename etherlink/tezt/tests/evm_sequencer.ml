@@ -799,7 +799,9 @@ let wait_for_delayed_inbox_add_tx_and_injected ~sequencer ~sc_rollup_node
 
 let check_delayed_inbox_is_empty ~sc_rollup_node =
   let* subkeys =
-    Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Mavryk_regression.rpc_hooks
+    Sc_rollup_node.RPC.call
+      sc_rollup_node
+      ~rpc_hooks:Mavryk_regression.rpc_hooks
     @@ Sc_rollup_rpc.get_global_block_durable_state_value
          ~pvm_kind:"wasm_2_0_0"
          ~operation:Sc_rollup_rpc.Subkeys

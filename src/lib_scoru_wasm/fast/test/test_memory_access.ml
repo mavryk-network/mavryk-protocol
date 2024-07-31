@@ -33,6 +33,7 @@
 module Wasmer = Mavryk_wasmer
 module Preimage_map = Map.Make (String)
 module Memory_access_fast = Mavryk_scoru_wasm_fast.Memory_access.Wasmer
+
 module Memory_access_slow =
   Mavryk_scoru_wasm.Host_funcs.Memory_access_interpreter
 

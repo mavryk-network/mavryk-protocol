@@ -28,7 +28,8 @@ let block_param ~name ~desc t =
   Mavryk_clic.param
     ~name
     ~desc
-    (Mavryk_clic.parameter (fun _ str -> Lwt.return (Block_hash.of_b58check str)))
+    (Mavryk_clic.parameter (fun _ str ->
+         Lwt.return (Block_hash.of_b58check str)))
     t
 
 let operation_param ~name ~desc t =

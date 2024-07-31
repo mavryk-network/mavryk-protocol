@@ -461,7 +461,10 @@ module Make (Ctx : Mavryk_tree_encoding.Encodings_util.S) :
     | Eval
         {
           config =
-            {step_kont = Mavryk_webassembly_interpreter.Eval.(SK_Trapped msg); _};
+            {
+              step_kont = Mavryk_webassembly_interpreter.Eval.(SK_Trapped msg);
+              _;
+            };
           _;
         } ->
         Format.fprintf fmt "Evaluation failed (%s)" msg.it

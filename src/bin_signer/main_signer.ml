@@ -107,8 +107,8 @@ let may_setup_pidfile pidfile_opt f =
         ~filename:pidfile
         f
 
-let commands base_dir require_auth : Client_context.full Mavryk_clic.command list
-    =
+let commands base_dir require_auth :
+    Client_context.full Mavryk_clic.command list =
   let open Mavryk_clic in
   let open Lwt_result_syntax in
   Mavryk_signer_backends_unix.Ledger.commands ()

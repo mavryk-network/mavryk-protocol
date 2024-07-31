@@ -26,7 +26,13 @@ module S : sig
   val gc : ([`GET], unit, unit, unit, unit, Gc.stat) Mavryk_rpc.Service.service
 
   val memory :
-    ([`GET], unit, unit, unit, unit, Memory.mem_stats) Mavryk_rpc.Service.service
+    ( [`GET],
+      unit,
+      unit,
+      unit,
+      unit,
+      Memory.mem_stats )
+    Mavryk_rpc.Service.service
 end
 
 val gc : #Mavryk_rpc.Context.simple -> Gc.stat Error_monad.tzresult Lwt.t

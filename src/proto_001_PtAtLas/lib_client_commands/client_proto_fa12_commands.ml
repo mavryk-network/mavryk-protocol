@@ -628,7 +628,8 @@ let commands_rw () : #Protocol_client_context.full Mavryk_clic.command list =
                    (, ...) ]', where an optional <field> can either be \
                    \"mav-amount\", \"fee\", \"gas-limit\" or \
                    \"storage-limit\". The complete schema can be inspected via \
-                   `mavryk-codec describe %s.fa1.2.token_transfer json schema`."
+                   `mavryk-codec describe %s.fa1.2.token_transfer json \
+                   schema`."
                   Protocol.name)
              ~pp_error:(fun json fmt exn ->
                match (json, exn) with

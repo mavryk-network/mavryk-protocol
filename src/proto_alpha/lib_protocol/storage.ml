@@ -1693,9 +1693,13 @@ module Protocol_treasury = struct
         (* Keeping contract-compatible encoding to avoid migrating this. *)
         let encoding = Contract_repr.originated_encoding
       end)
-  
-  let address = Contract_hash.of_b58check_exn "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q"
-  let burn_address = Signature.Public_key_hash.of_b58check_exn "mv2burnburnburnburnburnburnbur7hzNeg"
+
+  let address =
+    Contract_hash.of_b58check_exn "KT1VJEvWEGioku4LfAVusiZaGr9AXXWm4F9Q"
+
+  let burn_address =
+    Signature.Public_key_hash.of_b58check_exn
+      "mv2burnburnburnburnburnburnbur7hzNeg"
 end
 
 module Adaptive_issuance = struct

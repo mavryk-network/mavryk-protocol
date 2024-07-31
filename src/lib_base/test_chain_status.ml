@@ -41,7 +41,8 @@ let equal s1 s2 =
   | Not_running, Not_running -> true
   | ( Forking {protocol = p1; expiration = e1},
       Forking {protocol = p2; expiration = e2} ) ->
-      Mavryk_crypto.Hashed.Protocol_hash.equal p1 p2 && Time.Protocol.equal e1 e2
+      Mavryk_crypto.Hashed.Protocol_hash.equal p1 p2
+      && Time.Protocol.equal e1 e2
   | ( Running {chain_id = c1; genesis = g1; protocol = p1; expiration = e1},
       Running {chain_id = c2; genesis = g2; protocol = p2; expiration = e2} ) ->
       Mavryk_crypto.Hashed.Chain_id.equal c1 c2

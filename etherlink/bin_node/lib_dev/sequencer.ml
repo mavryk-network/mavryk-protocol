@@ -39,7 +39,8 @@ end) : Services_backend_sig.Backend = struct
   end
 
   let smart_rollup_address =
-    Mavryk_crypto.Hashed.Smart_rollup_address.to_string Ctxt.smart_rollup_address
+    Mavryk_crypto.Hashed.Smart_rollup_address.to_string
+      Ctxt.smart_rollup_address
 end
 
 module Make (Ctxt : sig

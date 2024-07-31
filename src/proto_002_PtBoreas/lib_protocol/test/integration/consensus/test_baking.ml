@@ -231,7 +231,12 @@ let test_rewards_block_and_payload_producer () =
   let fee_to_protocol_treasury = fee /! 4L in
   let fee_to_burn = fee -! (fee_to_producer *! 2L) in
   let* tx =
-    Op.transaction (B b1) ~fee baker_b1_contract baker_b1_contract fee_to_producer
+    Op.transaction
+      (B b1)
+      ~fee
+      baker_b1_contract
+      baker_b1_contract
+      fee_to_producer
   in
   let* b2 =
     Block.bake ~policy:(By_round 0) ~operations:(attestations @ [tx]) b1
@@ -259,124 +264,143 @@ let test_rewards_block_and_payload_producer () =
   in
   let* () = Assert.equal_mav ~loc:__LOC__ bal expected_balance in
   (* the protocol treasury is currently the buffer address *)
-  let protocol_treasury_contract_result = Contract.of_b58check "KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH" in
+  let protocol_treasury_contract_result =
+    Contract.of_b58check "KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH"
+  in
   match protocol_treasury_contract_result with
-  | Error _ -> 
-      failwith ("Error invalid contract address")
-  | Ok protocol_treasury_contract ->
-
+  | Error _ -> failwith "Error invalid contract address"
+  | Ok protocol_treasury_contract -> (
       let* initial_protocol_treasury_balance =
         Context.Contract.balance (B b1) protocol_treasury_contract
       in
       let* protocol_treasury_balance =
         Context.Contract.balance (B b2) protocol_treasury_contract
       in
-      Log.info "------";
-      Log.info "fee_to_protocol_treasury is: %s" (Tez.to_string fee_to_protocol_treasury);
-      Log.info "initial_protocol_treasury_balance is: %s" (Tez.to_string initial_protocol_treasury_balance);
-      Log.info "protocol_treasury_balance is: %s" (Tez.to_string protocol_treasury_balance);
-      Log.info "------";
+      Log.info "------" ;
+      Log.info
+        "fee_to_protocol_treasury is: %s"
+        (Tez.to_string fee_to_protocol_treasury) ;
+      Log.info
+        "initial_protocol_treasury_balance is: %s"
+        (Tez.to_string initial_protocol_treasury_balance) ;
+      Log.info
+        "protocol_treasury_balance is: %s"
+        (Tez.to_string protocol_treasury_balance) ;
+      Log.info "------" ;
+
       (* let expected_protocol_treasury_balance =
-        let open Test_tez in
-        initial_protocol_treasury_balance +! fee_to_protocol_treasury
+           let open Test_tez in
+           initial_protocol_treasury_balance +! fee_to_protocol_treasury
+         in
+         let* () = Assert.equal_mav ~loc:__LOC__ burn_address_balance expected_burn_address_balance in *)
+      let cpmm_contract_result =
+        Contract.of_b58check "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"
       in
-      let* () = Assert.equal_mav ~loc:__LOC__ burn_address_balance expected_burn_address_balance in *)
+      match cpmm_contract_result with
+      | Error _ -> failwith "Error invalid contract address"
+      | Ok cpmm_contract -> (
+          let* initial_cpmm_balance =
+            Context.Contract.balance (B b1) cpmm_contract
+          in
+          let* cpmm_balance = Context.Contract.balance (B b2) cpmm_contract in
+          Log.info "------" ;
+          Log.info
+            "initial_cpmm_balance is: %s"
+            (Tez.to_string initial_cpmm_balance) ;
+          Log.info "cpmm_balance is: %s" (Tez.to_string cpmm_balance) ;
+          Log.info "------" ;
 
-  let cpmm_contract_result = Contract.of_b58check "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5" in
-    match cpmm_contract_result with
-    | Error _ -> 
-        failwith ("Error invalid contract address")
-    | Ok cpmm_contract ->
-  
-      let* initial_cpmm_balance =
-        Context.Contract.balance (B b1) cpmm_contract
-      in
-      let* cpmm_balance =
-        Context.Contract.balance (B b2) cpmm_contract
-      in
-      Log.info "------";
-        Log.info "initial_cpmm_balance is: %s" (Tez.to_string initial_cpmm_balance);
-        Log.info "cpmm_balance is: %s" (Tez.to_string cpmm_balance);
-        Log.info "------";
+          let burn_address_result =
+            Contract.of_b58check "mv2burnburnburnburnburnburnbur7hzNeg"
+          in
+          match burn_address_result with
+          | Error _ -> failwith "Error invalid contract address"
+          | Ok burn_address ->
+              let* initial_burn_address_balance =
+                Context.Contract.balance (B b1) burn_address
+              in
+              let* burn_address_balance =
+                Context.Contract.balance (B b2) burn_address
+              in
+              let expected_burn_address_balance =
+                let open Test_tez in
+                initial_burn_address_balance +! fee_to_burn
+              in
+              let* () =
+                Assert.equal_mav
+                  ~loc:__LOC__
+                  burn_address_balance
+                  expected_burn_address_balance
+              in
 
-  let burn_address_result = Contract.of_b58check "mv2burnburnburnburnburnburnbur7hzNeg" in
-  match burn_address_result with
-    | Error _ -> 
-        failwith ("Error invalid contract address")
-    | Ok burn_address ->
-  
-        let* initial_burn_address_balance =
-          Context.Contract.balance (B b1) burn_address
-        in
-        let* burn_address_balance =
-          Context.Contract.balance (B b2) burn_address
-        in
-        let expected_burn_address_balance =
-          let open Test_tez in
-          initial_burn_address_balance +! fee_to_burn
-        in
-        let* () = Assert.equal_mav ~loc:__LOC__ burn_address_balance expected_burn_address_balance in
-
-  (* Some new baker [baker_b2'] bakes b2' at the first round which does not
-     correspond to a slot of [baker_b2] and it includes the PQC for [b2]. We
-     check that the fixed baking reward goes to the payload producer [baker_b2],
-     while the bonus goes to the the block producer (aka baker) [baker_b2']. *)
-  let* attesters = Context.get_attesters (B b2) in
-  let* preattesters =
-    List.map_es
-      (function
-        | {Plugin.RPC.Validators.delegate; slots; _} -> return (delegate, slots))
-      attesters
-  in
-  let* preattestations =
-    List.map_ep
-      (fun (attester, _slots) -> Op.preattestation ~delegate:attester b2)
-      preattesters
-  in
-  let* baker_b2 = Context.get_baker (B b1) ~round:Round.zero in
-  let* bakers = Context.get_bakers (B b1) in
-  let baker_b2' = Context.get_first_different_baker baker_b2 bakers in
-  let* b2' =
-    Block.bake
-      ~payload_round:(Some Round.zero)
-      ~locked_round:(Some Round.zero)
-      ~policy:(By_account baker_b2')
-      ~operations:(preattestations @ attestations @ [tx])
-      b1
-  in
-  (* [baker_b2], as payload producer, gets the block reward and the fees *)
-  let* bal = Context.Contract.balance (B b2') baker_b2_contract in
-  let* frozen_deposit =
-    Context.Delegate.current_frozen_deposits (B b2') baker_b2
-  in
-  let reward_for_b1 =
-    if Signature.Public_key_hash.equal baker_b2 baker_b1 then baking_reward
-    else Tez.zero
-  in
-  let expected_balance =
-    let open Test_tez in
-    Account.default_initial_balance +! baking_reward -! frozen_deposit
-    +! reward_for_b1 +! fee_to_producer
-  in
-  let* () = Assert.equal_mav ~loc:__LOC__ bal expected_balance in
-  (* [baker_b2'] gets the bonus because he is the one who included the
-     attestations *)
-  let* baker_b2'_contract = get_contract_for_pkh contracts baker_b2' in
-  let* bal' = Context.Contract.balance (B b2') baker_b2'_contract in
-  let* frozen_deposits' =
-    Context.Delegate.current_frozen_deposits (B b2') baker_b2'
-  in
-  let* baker_b1 = Context.get_baker (B genesis) ~round:Round.zero in
-  let reward_for_b1' =
-    if Signature.Public_key_hash.equal baker_b2' baker_b1 then baking_reward
-    else Tez.zero
-  in
-  let expected_balance' =
-    let open Test_tez in
-    Account.default_initial_balance +! bonus_reward +! reward_for_b1'
-    -! frozen_deposits'
-  in
-  Assert.equal_mav ~loc:__LOC__ bal' expected_balance'
+              (* Some new baker [baker_b2'] bakes b2' at the first round which does not
+                 correspond to a slot of [baker_b2] and it includes the PQC for [b2]. We
+                 check that the fixed baking reward goes to the payload producer [baker_b2],
+                 while the bonus goes to the the block producer (aka baker) [baker_b2']. *)
+              let* attesters = Context.get_attesters (B b2) in
+              let* preattesters =
+                List.map_es
+                  (function
+                    | {Plugin.RPC.Validators.delegate; slots; _} ->
+                        return (delegate, slots))
+                  attesters
+              in
+              let* preattestations =
+                List.map_ep
+                  (fun (attester, _slots) ->
+                    Op.preattestation ~delegate:attester b2)
+                  preattesters
+              in
+              let* baker_b2 = Context.get_baker (B b1) ~round:Round.zero in
+              let* bakers = Context.get_bakers (B b1) in
+              let baker_b2' =
+                Context.get_first_different_baker baker_b2 bakers
+              in
+              let* b2' =
+                Block.bake
+                  ~payload_round:(Some Round.zero)
+                  ~locked_round:(Some Round.zero)
+                  ~policy:(By_account baker_b2')
+                  ~operations:(preattestations @ attestations @ [tx])
+                  b1
+              in
+              (* [baker_b2], as payload producer, gets the block reward and the fees *)
+              let* bal = Context.Contract.balance (B b2') baker_b2_contract in
+              let* frozen_deposit =
+                Context.Delegate.current_frozen_deposits (B b2') baker_b2
+              in
+              let reward_for_b1 =
+                if Signature.Public_key_hash.equal baker_b2 baker_b1 then
+                  baking_reward
+                else Tez.zero
+              in
+              let expected_balance =
+                let open Test_tez in
+                Account.default_initial_balance +! baking_reward
+                -! frozen_deposit +! reward_for_b1 +! fee_to_producer
+              in
+              let* () = Assert.equal_mav ~loc:__LOC__ bal expected_balance in
+              (* [baker_b2'] gets the bonus because he is the one who included the
+                 attestations *)
+              let* baker_b2'_contract =
+                get_contract_for_pkh contracts baker_b2'
+              in
+              let* bal' = Context.Contract.balance (B b2') baker_b2'_contract in
+              let* frozen_deposits' =
+                Context.Delegate.current_frozen_deposits (B b2') baker_b2'
+              in
+              let* baker_b1 = Context.get_baker (B genesis) ~round:Round.zero in
+              let reward_for_b1' =
+                if Signature.Public_key_hash.equal baker_b2' baker_b1 then
+                  baking_reward
+                else Tez.zero
+              in
+              let expected_balance' =
+                let open Test_tez in
+                Account.default_initial_balance +! bonus_reward
+                +! reward_for_b1' -! frozen_deposits'
+              in
+              Assert.equal_mav ~loc:__LOC__ bal' expected_balance'))
 
 (** We test that:
     - a delegate that has active stake can bake;

@@ -492,7 +492,8 @@ end
 
 module Proof32_V1 = struct
   include
-    Proof32 (Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V1.Tree32)
+    Proof32
+      (Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V1.Tree32)
 
   let expected_encoding_size :
       tree Mavryk_context_sigs.Context.Proof_types.t -> int =
@@ -581,7 +582,8 @@ let () =
   let module Proof2_V1 =
     Proof2 (Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V1.Tree2) in
   let module Proof32_V2 =
-    Proof32 (Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree32) in
+    Proof32
+      (Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree32) in
   let module Proof2_V2 =
     Proof2 (Mavryk_context_merkle_proof_encoding.Merkle_proof_encoding.V2.Tree2) in
   Alcotest.run

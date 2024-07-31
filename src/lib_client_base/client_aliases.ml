@@ -416,7 +416,11 @@ module Alias (Entity : Entity) = struct
         Entity.name
         Entity.name
     in
-    Mavryk_clic.param ~name ~desc (Mavryk_clic.parameter parse_source_string) next
+    Mavryk_clic.param
+      ~name
+      ~desc
+      (Mavryk_clic.parameter parse_source_string)
+      next
 
   let source_arg ?(long = "source " ^ Entity.name) ?(placeholder = "src")
       ?(doc = "") () =

@@ -112,8 +112,8 @@ let () =
     ~pp:(fun ppf reveal_data_path ->
       Format.fprintf
         ppf
-        "Expected one of these protocol names: \"atlas\" or \
-         \"alpha\". %s was provided instead"
+        "Expected one of these protocol names: \"atlas\" or \"alpha\". %s was \
+         provided instead"
         reveal_data_path)
     Data_encoding.(obj1 (req "arg" string))
     (function Invalid_protocol_parameter s -> Some s | _ -> None)
@@ -197,8 +197,8 @@ let protocol_hash_arg =
     ~doc:
       "Protocol for the network. Once a block from a different protocol is \
        encountered, the safety-checker ends. Options available are: atlas, \
-       alpha. If this argument is not provided, the protocol will not \
-       be checked."
+       alpha. If this argument is not provided, the protocol will not be \
+       checked."
     ~long:"protocol"
     ~placeholder:"protocol"
     protocol_hash_parameter

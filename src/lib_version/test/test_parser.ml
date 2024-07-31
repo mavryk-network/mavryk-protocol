@@ -14,7 +14,7 @@
     Subject: Test versions parser
  *)
 
- let mavkit_legal_versions =
+let mavkit_legal_versions =
   [
     ( "mavkit-10.93",
       {

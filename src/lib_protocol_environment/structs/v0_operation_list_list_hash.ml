@@ -32,7 +32,8 @@ module Set = struct
     Data_encoding.conv
       elements
       (fun l -> List.fold_left (fun m x -> add x m) empty l)
-      Data_encoding.(list Mavryk_crypto.Hashed.Operation_list_list_hash.encoding)
+      Data_encoding.(
+        list Mavryk_crypto.Hashed.Operation_list_list_hash.encoding)
 end
 
 module Map = struct

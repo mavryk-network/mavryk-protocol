@@ -54,5 +54,6 @@ module Crypto : sig
   (** [equal_block_descriptor msg bd0 bd1] checks that the block descriptors [bd0] and [bd1] are
         equal. Will fail with the message [msg] otherwise *)
   val equal_block_descriptor :
-    (int32 * Mavryk_crypto.Hashed.Block_hash.t) Mavryk_test_helpers.Assert.check2
+    (int32 * Mavryk_crypto.Hashed.Block_hash.t)
+    Mavryk_test_helpers.Assert.check2
 end

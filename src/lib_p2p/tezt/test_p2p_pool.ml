@@ -269,8 +269,9 @@ module Overcrowded = struct
         [
           (( Mavryk_p2p_services.P2p_errors.Connection_failed
            | Mavryk_p2p_services.P2p_errors.Pending_connection
-           | Mavryk_p2p_services.P2p_errors.Rejected_socket_connection | Canceled
-           | Timeout | Mavryk_p2p_services.P2p_errors.Rejected _ ) as err);
+           | Mavryk_p2p_services.P2p_errors.Rejected_socket_connection
+           | Canceled | Timeout | Mavryk_p2p_services.P2p_errors.Rejected _ ) as
+          err);
         ] ->
         Tezt.Log.debug
           "Connection to%a %a failed (%a)@."
@@ -573,8 +574,9 @@ module No_common_network = struct
         [
           (( Mavryk_p2p_services.P2p_errors.Connection_failed
            | Mavryk_p2p_services.P2p_errors.Pending_connection
-           | Mavryk_p2p_services.P2p_errors.Rejected_socket_connection | Canceled
-           | Timeout | Mavryk_p2p_services.P2p_errors.Rejected _ ) as err);
+           | Mavryk_p2p_services.P2p_errors.Rejected_socket_connection
+           | Canceled | Timeout | Mavryk_p2p_services.P2p_errors.Rejected _ ) as
+          err);
         ] ->
         Tezt.Log.debug
           "Connection to%a %a failed (%a)@."

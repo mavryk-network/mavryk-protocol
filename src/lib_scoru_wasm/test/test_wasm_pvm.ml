@@ -621,7 +621,9 @@ let build_snapshot_wasm_state_from_set_input
   (* Since we start directly after reading an inbox. *)
   let* previous_top_level_call =
     Encodings_util.Tree_encoding_runner.decode
-      (Mavryk_tree_encoding.value ["pvm"; "last_top_level_call"] Data_encoding.n)
+      (Mavryk_tree_encoding.value
+         ["pvm"; "last_top_level_call"]
+         Data_encoding.n)
       tree
   in
 
@@ -636,7 +638,9 @@ let build_snapshot_wasm_state_from_set_input
   let* tree = Wasm.Internal_for_tests.reset_reboot_counter tree in
   let* tree =
     Encodings_util.Tree_encoding_runner.encode
-      (Mavryk_tree_encoding.value ["pvm"; "last_top_level_call"] Data_encoding.n)
+      (Mavryk_tree_encoding.value
+         ["pvm"; "last_top_level_call"]
+         Data_encoding.n)
       new_last_top_level_call
       tree
   in

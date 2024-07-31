@@ -222,7 +222,8 @@ let compute ~get_predecessor ~caboose ~size head_hash head_header seed =
           then Lwt.return acc
           else Lwt.return (caboose :: acc)
       | Some predecessor ->
-          if Mavryk_crypto.Hashed.Block_hash.equal predecessor current_block_hash
+          if
+            Mavryk_crypto.Hashed.Block_hash.equal predecessor current_block_hash
           then (* caboose or genesis reached *)
             Lwt.return acc
           else loop (predecessor :: acc) (pred size) state predecessor

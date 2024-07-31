@@ -46,7 +46,11 @@ let test_l1_migration_scenario ?parameters_ty ?(src = Constant.bootstrap1.alias)
       migrate_from
   in
   let* sc_rollup =
-    Sc_rollup_helpers.originate_sc_rollup ?parameters_ty ~kind ~src mavryk_client
+    Sc_rollup_helpers.originate_sc_rollup
+      ?parameters_ty
+      ~kind
+      ~src
+      mavryk_client
   in
   let* prior_res = scenario_prior mavryk_client ~sc_rollup in
   let* current_level = Node.get_level mavryk_node in
@@ -223,7 +227,11 @@ let test_migration_cement ~kind ~migrate_from ~migrate_to =
     (* no need to bake more to have the correct level for the
        cementation because commitment_period = challenge_period and we
        baked to be able to published a commit. *)
-    Sc_rollup_helpers.cement_commitment migrate_to ~sc_rollup ~hash mavryk_client
+    Sc_rollup_helpers.cement_commitment
+      migrate_to
+      ~sc_rollup
+      ~hash
+      mavryk_client
   in
   test_l1_migration_scenario
     ~kind
@@ -615,8 +623,8 @@ let test_originate_before_migration ~kind ~migrate_from ~migrate_to =
     Log.info "Sending messages on L1." ;
     Sc_rollup_helpers.send_messages 2 mavryk_client
   in
-  let scenario_after ~sc_rollup ~rollup_node:_discarded mavryk_node mavryk_client
-      () =
+  let scenario_after ~sc_rollup ~rollup_node:_discarded mavryk_node
+      mavryk_client () =
     let rollup_node =
       Sc_rollup_node.create
         Operator

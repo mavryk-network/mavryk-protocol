@@ -149,7 +149,8 @@ let rec do_connect ~count ~previous_status
   | Ok (heads, stopper) ->
       let consumer =
         Lwt_stream.iter_s
-          (fun ((hash, Mavryk_base.Block_header.{shell = {level; _}; _}) as head) ->
+          (fun ((hash, Mavryk_base.Block_header.{shell = {level; _}; _}) as
+               head) ->
             l1_ctxt.last_seen <- Some head ;
             Layer1_event.switched_new_head ~name hash level)
           heads
@@ -477,8 +478,8 @@ let get_mavryk_reorg_for_new_head l1_state
   aux reorg old_head new_head
 
 (** Returns the reorganization of L1 blocks (if any) for [new_head]. *)
-let get_mavryk_reorg_for_new_head l1_state ?get_old_predecessor old_head new_head
-    =
+let get_mavryk_reorg_for_new_head l1_state ?get_old_predecessor old_head
+    new_head =
   let open Lwt_result_syntax in
   match old_head with
   | `Level l ->

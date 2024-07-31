@@ -147,7 +147,12 @@ let add_input diff vk index position sum state =
       (Mavryk_sapling.Core.Client.DH.esk_random ())
   in
   let nf =
-    Mavryk_sapling.Core.Client.Nullifier.compute address vk ~amount rcm ~position
+    Mavryk_sapling.Core.Client.Nullifier.compute
+      address
+      vk
+      ~amount
+      rcm
+      ~position
   in
   let diff =
     Protocol.Sapling_repr.

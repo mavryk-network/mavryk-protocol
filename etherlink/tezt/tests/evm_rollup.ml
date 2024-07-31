@@ -170,7 +170,9 @@ let check_nb_in_storage ~evm_setup ~address ~nth ~expected =
 
 let get_storage_size sc_rollup_node ~address =
   let* storage =
-    Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Mavryk_regression.rpc_hooks
+    Sc_rollup_node.RPC.call
+      sc_rollup_node
+      ~rpc_hooks:Mavryk_regression.rpc_hooks
     @@ Sc_rollup_rpc.get_global_block_durable_state_value
          ~pvm_kind
          ~operation:Sc_rollup_rpc.Subkeys
@@ -563,7 +565,9 @@ let deploy_with_base_checks {contract; expected_address; expected_code}
            [to] field present"
   | None -> Test.fail "The transaction object of %s should be available" tx) ;
   let* accounts =
-    Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Mavryk_regression.rpc_hooks
+    Sc_rollup_node.RPC.call
+      sc_rollup_node
+      ~rpc_hooks:Mavryk_regression.rpc_hooks
     @@ Sc_rollup_rpc.get_global_block_durable_state_value
          ~pvm_kind
          ~operation:Sc_rollup_rpc.Subkeys
@@ -606,7 +610,8 @@ let test_evm_node_connection =
   Protocol.register_test
     ~__FILE__
     ~tags:["evm"]
-    ~uses:(fun _protocol -> Constant.[mavkit_smart_rollup_node; mavkit_evm_node])
+    ~uses:(fun _protocol ->
+      Constant.[mavkit_smart_rollup_node; mavkit_evm_node])
     ~title:"EVM node server connection"
   @@ fun protocol ->
   let* mavryk_node, mavryk_client = setup_l1 protocol in
@@ -654,7 +659,9 @@ let test_originate_evm_kernel =
     ~error_msg:"Current level has moved past first EVM run (%L = %R)" ;
   let evm_key = "evm" in
   let* storage_root_keys =
-    Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Mavryk_regression.rpc_hooks
+    Sc_rollup_node.RPC.call
+      sc_rollup_node
+      ~rpc_hooks:Mavryk_regression.rpc_hooks
     @@ Sc_rollup_rpc.get_global_block_durable_state_value
          ~pvm_kind
          ~operation:Sc_rollup_rpc.Subkeys
@@ -1194,7 +1201,9 @@ let test_l2_deploy_erc20 =
 
   (* check account was created *)
   let* accounts =
-    Sc_rollup_node.RPC.call sc_rollup_node ~rpc_hooks:Mavryk_regression.rpc_hooks
+    Sc_rollup_node.RPC.call
+      sc_rollup_node
+      ~rpc_hooks:Mavryk_regression.rpc_hooks
     @@ Sc_rollup_rpc.get_global_block_durable_state_value
          ~pvm_kind
          ~operation:Sc_rollup_rpc.Subkeys

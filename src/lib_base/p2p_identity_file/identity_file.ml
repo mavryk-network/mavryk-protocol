@@ -94,7 +94,9 @@ let () =
     Data_encoding.(
       obj2
         (req "file" string)
-        (req "public_key_hash" Mavryk_crypto.Crypto_box.Public_key_hash.encoding))
+        (req
+           "public_key_hash"
+           Mavryk_crypto.Crypto_box.Public_key_hash.encoding))
     (function
       | Identity_mismatch {filename; peer_id} -> Some (filename, peer_id)
       | _ -> None)

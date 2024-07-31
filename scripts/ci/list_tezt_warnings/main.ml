@@ -57,7 +57,8 @@ let () =
        let warnings = List.filter_map (fun line -> line =~* warn_rex) lines in
        if warnings <> [] then (
          Log.warn
-           "Found warnings in: https://gitlab.com/mavryk-network/mavryk-protocol/-/jobs/%d"
+           "Found warnings in: \
+            https://gitlab.com/mavryk-network/mavryk-protocol/-/jobs/%d"
            job_id ;
          List.iter (Log.warn "%s") warnings) ;
        unit

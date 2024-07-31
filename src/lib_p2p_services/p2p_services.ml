@@ -124,7 +124,8 @@ module Connections = struct
         ~output:connection_info_encoding
         ~description:
           "Details about the current P2P connection to the given peer."
-        Mavryk_rpc.Path.(root / "network" / "connections" /: P2p_peer.Id.rpc_arg)
+        Mavryk_rpc.Path.(
+          root / "network" / "connections" /: P2p_peer.Id.rpc_arg)
 
     let kick =
       Mavryk_rpc.Service.delete_service
@@ -132,7 +133,8 @@ module Connections = struct
         ~output:Data_encoding.empty
         ~description:
           "Forced close of the current P2P connection to the given peer."
-        Mavryk_rpc.Path.(root / "network" / "connections" /: P2p_peer.Id.rpc_arg)
+        Mavryk_rpc.Path.(
+          root / "network" / "connections" /: P2p_peer.Id.rpc_arg)
   end
 
   let list ctxt = make_call S.list ctxt () () ()

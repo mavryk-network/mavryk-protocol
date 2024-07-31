@@ -49,7 +49,8 @@ module V0 = struct
         "Retrieve the Dac certificate associated with the given root page hash"
       ~query:Mavryk_rpc.Query.empty
       ~output:Certificate_repr.encoding
-      Mavryk_rpc.Path.(v0_prefix / "certificates" /: Dac_plugin.raw_hash_rpc_arg)
+      Mavryk_rpc.Path.(
+        v0_prefix / "certificates" /: Dac_plugin.raw_hash_rpc_arg)
 
   let get_serialized_certificate =
     Mavryk_rpc.Service.get_service
@@ -71,7 +72,8 @@ module V0 = struct
          in Observer mode."
       ~query:Mavryk_rpc.Query.empty
       ~output:Data_encoding.bytes
-      Mavryk_rpc.Path.(v0_prefix / "missing_page" /: Dac_plugin.raw_hash_rpc_arg)
+      Mavryk_rpc.Path.(
+        v0_prefix / "missing_page" /: Dac_plugin.raw_hash_rpc_arg)
 
   (* TODO: https://gitlab.com/tezos/tezos/-/issues/4935
      Coordinator's "POST /preimage" endpoint should in addition to root page hash

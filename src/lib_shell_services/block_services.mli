@@ -831,7 +831,13 @@ module Make (Proto : PROTO) (Next_proto : PROTO) : sig
     end
 
     val live_blocks :
-      ([`GET], prefix, prefix, unit, unit, Block_hash.Set.t) Mavryk_rpc.Service.t
+      ( [`GET],
+        prefix,
+        prefix,
+        unit,
+        unit,
+        Block_hash.Set.t )
+      Mavryk_rpc.Service.t
   end
 end
 

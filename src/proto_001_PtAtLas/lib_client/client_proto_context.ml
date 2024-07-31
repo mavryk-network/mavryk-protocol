@@ -1242,8 +1242,8 @@ let sc_rollup_execute_outbox_message (cctxt : #full) ~chain ~block
       return (oph, op, result)
 
 let sc_rollup_recover_bond (cctxt : #full) ~chain ~block ?confirmations ?dry_run
-  ?verbose_signing ?simulation ?fee ?gas_limit ?safety_guard ?storage_limit
-  ?counter ~source ~src_pk ~src_sk ~fee_parameter ~sc_rollup ~staker () =
+    ?verbose_signing ?simulation ?fee ?gas_limit ?safety_guard ?storage_limit
+    ?counter ~source ~src_pk ~src_sk ~fee_parameter ~sc_rollup ~staker () =
   let open Lwt_result_syntax in
   let contents :
       Kind.sc_rollup_recover_bond Annotated_manager_operation.annotated_list =

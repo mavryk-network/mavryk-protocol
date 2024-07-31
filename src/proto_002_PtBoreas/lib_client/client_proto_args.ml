@@ -194,7 +194,9 @@ let json_with_origin_parameter =
   file_or_text_with_origin_parameter ~from_text ()
 
 let json_parameter =
-  Mavryk_clic.map_parameter ~f:content_of_file_or_text json_with_origin_parameter
+  Mavryk_clic.map_parameter
+    ~f:content_of_file_or_text
+    json_with_origin_parameter
 
 let data_parameter =
   let from_text (_cctxt : #Client_context.full) input =
@@ -240,7 +242,10 @@ let json_encoded_parameter ~name ?pp_error encoding =
     (json_encoded_with_origin_parameter ~name ?pp_error encoding)
 
 let json_encoded_param ~name ~desc ?pp_error encoding =
-  Mavryk_clic.param ~name ~desc (json_encoded_parameter ~name ?pp_error encoding)
+  Mavryk_clic.param
+    ~name
+    ~desc
+    (json_encoded_parameter ~name ?pp_error encoding)
 
 let binary_encoded_parameter ~name encoding =
   let open Lwt_result_syntax in

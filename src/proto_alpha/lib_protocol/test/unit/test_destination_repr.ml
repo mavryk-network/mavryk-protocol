@@ -135,7 +135,7 @@ let test_encode_destination_decode_contract str () =
 
 let encoding_compat ~encode_contract ~decode_contract ~encode_destination
     ~decode_destination contract =
-    let open Lwt_result_syntax in
+  let open Lwt_result_syntax in
   let destination = dest contract in
 
   let encoded_contract = encode_contract contract in

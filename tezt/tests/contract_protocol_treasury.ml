@@ -33,10 +33,12 @@ type buf_storage = string
 let get_buf_storage ~hooks client contract =
   let* storage = Client.contract_storage ~hooks contract client in
   match split_storage storage with
-  | [admin] ->
-      return (unquote admin);
+  | [admin] -> return (unquote admin)
   | _ ->
-      Test.fail "Unparseable buffer contract storage in %S: %S," contract storage
+      Test.fail
+        "Unparseable buffer contract storage in %S: %S,"
+        contract
+        storage
 
 let check_balance ~__LOC__ client ~contract expected_balance =
   let* balance = Client.get_balance_for client ~account:contract in
@@ -46,7 +48,7 @@ let check_balance ~__LOC__ client ~contract expected_balance =
       ~__LOC__
       ~error_msg:"Expected balance %R, got %L") ;
   unit
-      
+
 let setup_transfer_funds ~__LOC__ client =
   let* buf_address =
     Client.RPC.call client ~hooks
@@ -70,9 +72,7 @@ let setup_transfer_funds ~__LOC__ client =
         ~error_msg:"Expected storage %R, got %L")
   in
   (* Check initial balances *)
-  let* () =
-    check_balance ~__LOC__ client ~contract:buf (Tez.of_int 0)
-  in
+  let* () = check_balance ~__LOC__ client ~contract:buf (Tez.of_int 0) in
   (* transfer mav to the buffer *)
   Log.info "Call default" ;
   let* _test =
@@ -86,29 +86,25 @@ let setup_transfer_funds ~__LOC__ client =
       ~entrypoint:"default"
       client
   in
-  let expected_balance = 
-    (Tez.of_mumav_int (100000000 + lb_subsidy))
-  in
-  let* () =
-    check_balance ~__LOC__ client ~contract:buf expected_balance
-  in
+  let expected_balance = Tez.of_mumav_int (100000000 + lb_subsidy) in
+  let* () = check_balance ~__LOC__ client ~contract:buf expected_balance in
   (* transfer funds to another address *)
   (* Tested we mocked admin during development but unable to replicate because the mock admin cannot be replaced and the contract is deployed at level 1 *)
   (* Log.info "Call transferFunds" ;
-  let arg = sf "%S" Constant.bootstrap2.public_key_hash in
-  let* () =
-    Client.call_contract
-      ~hooks
-      ~src:Constant.bootstrap1.alias
-      ~destination:buf
-      ~entrypoint:"transferFunds"
-      ~arg
-      ~burn_cap:(Tez.of_int 10)
-      client
-  in
-  let* () =
-    check_balance ~__LOC__ client ~contract:buf (Tez.of_int 0)
-  in *)
+     let arg = sf "%S" Constant.bootstrap2.public_key_hash in
+     let* () =
+       Client.call_contract
+         ~hooks
+         ~src:Constant.bootstrap1.alias
+         ~destination:buf
+         ~entrypoint:"transferFunds"
+         ~arg
+         ~burn_cap:(Tez.of_int 10)
+         client
+     in
+     let* () =
+       check_balance ~__LOC__ client ~contract:buf (Tez.of_int 0)
+     in *)
   unit
 
 let register_transfer_funds =
@@ -121,5 +117,4 @@ let register_transfer_funds =
   let* () = setup_transfer_funds ~__LOC__ client in
   unit
 
-let register ~protocols =
-  register_transfer_funds protocols ;
+let register ~protocols = register_transfer_funds protocols

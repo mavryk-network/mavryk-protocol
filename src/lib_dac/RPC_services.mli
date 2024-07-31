@@ -43,7 +43,13 @@ module V0 : sig
   (** "PUT v0/member_signature" endpoint stores the [signature] 
     generated from signing [hex_root_hash] by [dac_member_pkh]. *)
   val put_dac_member_signature :
-    ([`PUT], unit, unit, unit, Signature_repr.t, unit) Mavryk_rpc.Service.service
+    ( [`PUT],
+      unit,
+      unit,
+      unit,
+      Signature_repr.t,
+      unit )
+    Mavryk_rpc.Service.service
 
   (** "GET v0/certificate" endpoint returns the DAC certificate for the
     provided [root_page_hash]. *)

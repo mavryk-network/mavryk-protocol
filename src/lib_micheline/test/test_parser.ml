@@ -97,10 +97,10 @@ let%expect_test "Basic tokenizing" =
   [%expect {| String "abc" |}] ;
   (* tokenize "abc\r" ; *)
   (* [%expect {| Cannot tokenize abc
- |}] ;
-  tokenize "\"abc\"\r" ;
-  [%expect {| Cannot tokenize "abc"
- |}] ; *)
+     |}] ;
+      tokenize "\"abc\"\r" ;
+      [%expect {| Cannot tokenize "abc"
+     |}] ; *)
   tokenize "\"abc" ;
   [%expect {| Cannot tokenize "abc |}] ;
   tokenize "abc\"" ;

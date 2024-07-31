@@ -24,7 +24,9 @@ let on_buffer_exists ctxt f =
 let on_protocol_treasury_exists ctxt f =
   let open Lwt_result_syntax in
   let*! protocol_treasury_exists =
-    Contract_storage.exists ctxt (Contract_repr.Originated get_protocol_treasury_address)
+    Contract_storage.exists
+      ctxt
+      (Contract_repr.Originated get_protocol_treasury_address)
   in
   match protocol_treasury_exists with
   | false -> on_buffer_exists ctxt f

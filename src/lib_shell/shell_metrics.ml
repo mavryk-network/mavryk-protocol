@@ -707,8 +707,8 @@ module Version = struct
     ]
 
   let init ~version
-      ~commit_info:({commit_hash; commit_date} : Mavkit_node_version.commit_info)
-      net =
+      ~commit_info:
+        ({commit_hash; commit_date} : Mavkit_node_version.commit_info) net =
     let _ =
       Prometheus.Gauge.labels metric
       @@ [version] @ network_version net @ [commit_hash; commit_date]

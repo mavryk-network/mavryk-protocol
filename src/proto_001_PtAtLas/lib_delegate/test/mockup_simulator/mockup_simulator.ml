@@ -178,7 +178,8 @@ let locate_blocks (state : state)
 
 (** Similar to [locate_blocks], but only returns the first block. *)
 let locate_block (state : state)
-    (block : Mavryk_shell_services.Block_services.block) : block tzresult Lwt.t =
+    (block : Mavryk_shell_services.Block_services.block) : block tzresult Lwt.t
+    =
   let open Lwt_result_syntax in
   let* blocks = locate_blocks state block in
   match blocks with
@@ -952,7 +953,8 @@ let baker_process ~(delegates : Baking_state.consensus_key list) ~base_dir
       checkout_fun =
         (fun hash ->
           Context_hash.Table.find state.ctxt_table hash
-          |> Option.map (fun Mavryk_protocol_environment.{context; _} -> context)
+          |> Option.map (fun Mavryk_protocol_environment.{context; _} ->
+                 context)
           |> Lwt.return);
       finalize_fun = Lwt.return;
     }

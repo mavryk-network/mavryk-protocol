@@ -432,8 +432,8 @@ module Location = struct
       (fun (k, v) ->
         if k = proxy_key && v = proxy_value then
           Test.fail
-            "MAVRYK_LOG key %s bound both to '%s' and '%s': impossible to honor \
-             both"
+            "MAVRYK_LOG key %s bound both to '%s' and '%s': impossible to \
+             honor both"
             proxy_key
             proxy_value
             v

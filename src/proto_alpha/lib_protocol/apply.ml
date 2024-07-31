@@ -2606,7 +2606,7 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
     ctxt
     ~per_block_vote
     (fun ctxt protocol_treasury_contract_hash ->
-      let protocol_treasury_contract = 
+      let protocol_treasury_contract =
         Contract.Originated protocol_treasury_contract_hash
       in
       let ctxt =
@@ -2618,9 +2618,9 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
         Gas.set_limit
           ctxt
           (Gas.Arith.integral_exn
-              (Z.div
+             (Z.div
                 (Gas.Arith.integral_to_z
-                    (Constants.hard_gas_limit_per_block ctxt))
+                   (Constants.hard_gas_limit_per_block ctxt))
                 (Z.of_int 20)))
       in
       let backtracking_ctxt = ctxt in
@@ -2682,15 +2682,15 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
                   - fees (the operation is mandatory)
           *)
             let* ( {
-                      script = updated_cached_script;
-                      code_size = updated_size;
-                      storage;
-                      lazy_storage_diff;
-                      operations;
-                      ticket_diffs;
-                      ticket_receipt;
-                    },
-                    ctxt ) =
+                     script = updated_cached_script;
+                     code_size = updated_size;
+                     storage;
+                     lazy_storage_diff;
+                     operations;
+                     ticket_diffs;
+                     ticket_receipt;
+                   },
+                   ctxt ) =
               Script_interpreter.execute_with_typed_parameter
                 ctxt
                 Optimized
@@ -2742,23 +2742,23 @@ let apply_liquidity_baking_subsidy ctxt ~per_block_vote =
                 let result =
                   Transaction_result
                     (Transaction_to_contract_result
-                        {
-                          storage = Some storage;
-                          lazy_storage_diff;
-                          balance_updates;
-                          ticket_receipt;
-                          (* At this point in application the
+                       {
+                         storage = Some storage;
+                         lazy_storage_diff;
+                         balance_updates;
+                         ticket_receipt;
+                         (* At this point in application the
                             origination nonce has not been initialized
                             so it's not possible to originate new
                             contracts. We've checked above that none
                             were originated. *)
-                          originated_contracts = [];
-                          consumed_gas;
-                          storage_size = new_size;
-                          paid_storage_size_diff =
-                            Z.add paid_storage_size_diff ticket_paid_storage_diff;
-                          allocated_destination_contract = false;
-                        })
+                         originated_contracts = [];
+                         consumed_gas;
+                         storage_size = new_size;
+                         paid_storage_size_diff =
+                           Z.add paid_storage_size_diff ticket_paid_storage_diff;
+                         allocated_destination_contract = false;
+                       })
                 in
                 let ctxt = Gas.set_unlimited ctxt in
                 return (ctxt, [Successful_manager_result result]))

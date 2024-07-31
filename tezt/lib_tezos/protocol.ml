@@ -76,7 +76,10 @@ let parameter_file ?(constants = default_constants) protocol =
   let name = constants_to_string constants in
   sf "src/%s/parameters/%s-parameters.json" (directory protocol) name
 
-let daemon_name = function Alpha -> "alpha" | Atlas -> "PtAtLas" | Boreas -> "PtBoreas"
+let daemon_name = function
+  | Alpha -> "alpha"
+  | Atlas -> "PtAtLas"
+  | Boreas -> "PtBoreas"
 
 let protocol_dependent_uses ~tag ~path =
   let make protocol =

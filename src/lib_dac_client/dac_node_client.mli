@@ -77,7 +77,8 @@ module V0 : sig
   val monitor_certificate :
     #cctxt ->
     root_hash:Dac_plugin.raw_hash ->
-    (Certificate_repr.t Lwt_stream.t * Mavryk_rpc.Context.stopper) tzresult Lwt.t
+    (Certificate_repr.t Lwt_stream.t * Mavryk_rpc.Context.stopper) tzresult
+    Lwt.t
 
   module Coordinator : sig
     (** [post_preimage cctxt ~payload] sends a [payload] to the DAC

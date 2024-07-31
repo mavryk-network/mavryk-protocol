@@ -16,8 +16,8 @@ let share ~rounding ~full_staking_balance amount =
     in
     Tez_repr.mul_ratio ~rounding amount ~num ~den
   in
-    let* stakers_part = Tez_repr.(amount -? baker_part) in
-    return {baker_part; stakers_part}
+  let* stakers_part = Tez_repr.(amount -? baker_part) in
+  return {baker_part; stakers_part}
 
 type reward_distrib = {
   to_baker_from_staking : Tez_repr.t;

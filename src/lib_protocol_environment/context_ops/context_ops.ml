@@ -139,7 +139,9 @@ let add_predecessor_ops_metadata_hash (context : Environment_context.t) hash =
       Shell_context.wrap_disk_context ctxt
   | Context {kind = Memory_context.Context; ctxt; _} ->
       let+ ctxt =
-        Mavryk_context_memory.Context.add_predecessor_ops_metadata_hash ctxt hash
+        Mavryk_context_memory.Context.add_predecessor_ops_metadata_hash
+          ctxt
+          hash
       in
       Memory_context.wrap_memory_context ctxt
   | Context t ->
@@ -293,7 +295,8 @@ let checkout_exn context_index context_hash =
 let exists context_index context_hash =
   match context_index with
   | Disk_index index -> Context.exists index context_hash
-  | Memory_index index -> Mavryk_context_memory.Context.exists index context_hash
+  | Memory_index index ->
+      Mavryk_context_memory.Context.exists index context_hash
 
 let close context_index =
   match context_index with

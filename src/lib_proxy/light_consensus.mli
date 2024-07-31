@@ -57,5 +57,6 @@ module Make (Light_proto : Light_proto.PROTO_RPCS) : sig
 
       Returns: whether consensus was attained or an error message.
     *)
-  val consensus : input -> (Uri.t * Mavryk_rpc.Context.simple) list -> bool Lwt.t
+  val consensus :
+    input -> (Uri.t * Mavryk_rpc.Context.simple) list -> bool Lwt.t
 end

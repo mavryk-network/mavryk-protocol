@@ -172,7 +172,9 @@ let shield_cmd =
          ~name:"src-tz"
          ~desc:"Transparent source account."
     @@ Mavryk_clic.prefix "to"
-    @@ Mavryk_clic.string ~name:"dst-sap" ~desc:"Sapling address of destination."
+    @@ Mavryk_clic.string
+         ~name:"dst-sap"
+         ~desc:"Sapling address of destination."
     @@ Mavryk_clic.prefix "using"
     @@ Originated_contract_alias.destination_param
          ~name:"sapling contract"
@@ -371,7 +373,9 @@ let forge_shielded_cmd =
          ~name:"src-sap"
          ~desc:"Sapling account of source."
     @@ Mavryk_clic.prefix "to"
-    @@ Mavryk_clic.string ~name:"dst-sap" ~desc:"Sapling address of destination."
+    @@ Mavryk_clic.string
+         ~name:"dst-sap"
+         ~desc:"Sapling address of destination."
     @@ Mavryk_clic.prefix "using"
     @@ Originated_contract_alias.destination_param
          ~name:"sapling contract"

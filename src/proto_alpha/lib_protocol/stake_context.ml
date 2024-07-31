@@ -93,7 +93,7 @@ let apply_limits ctxt staking_parameters staking_balance =
   let+ frozen = Tez_repr.(own_frozen +? allowed_staked_frozen) in
   Stake_repr.make ~frozen ~weighted_delegated
 
-  let optimal_frozen_wrt_delegated_without_ai ctxt full_staking_balance =
+let optimal_frozen_wrt_delegated_without_ai ctxt full_staking_balance =
   let open Result_syntax in
   let limit_of_delegation_over_baking =
     Int64.of_int (Constants_storage.limit_of_delegation_over_baking ctxt)

@@ -36,7 +36,8 @@ exception Rpc_dir_creation_failure of tztrace
     (see srcs/lib_proxy/README_LIGHT.md for documentation)
     and whether [mavkit-client] or [mavryk-proxy-server] is running. *)
 type mode =
-  | Light_client of Light.sources  (** [mavkit-client --mode light] is running *)
+  | Light_client of Light.sources
+      (** [mavkit-client --mode light] is running *)
   | Proxy_client  (** [mavkit-client --mode proxy] is running *)
   | Proxy_server of {
       sleep : float -> unit Lwt.t;

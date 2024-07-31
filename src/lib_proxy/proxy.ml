@@ -43,7 +43,8 @@ type mode =
     received the value of the corresponding field of this record. *)
 type proxy_getter_input = {
   rpc_context : Mavryk_rpc.Context.simple;  (** How to perform RPC calls *)
-  mode : mode;  (** Whether [mavkit-client] or [mavryk-proxy-server] is running *)
+  mode : mode;
+      (** Whether [mavkit-client] or [mavryk-proxy-server] is running *)
   chain : Mavryk_shell_services.Block_services.chain;
       (** The chain involved in the RPC call *)
   block : Mavryk_shell_services.Block_services.block;

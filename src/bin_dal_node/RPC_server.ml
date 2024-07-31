@@ -350,7 +350,8 @@ let add_service registerer service handler directory =
   registerer directory service handler
 
 let register_new :
-    Node_context.t -> unit Mavryk_rpc.Directory.t -> unit Mavryk_rpc.Directory.t =
+    Node_context.t -> unit Mavryk_rpc.Directory.t -> unit Mavryk_rpc.Directory.t
+    =
  fun ctxt directory ->
   directory
   |> add_service

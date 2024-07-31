@@ -235,7 +235,10 @@ module Manpage = struct
   let man = description
 
   let info =
-    Cmdliner.Cmd.info ~doc:"Run the Mavkit rpc process" ~man "mavkit-rpc-process"
+    Cmdliner.Cmd.info
+      ~doc:"Run the Mavkit rpc process"
+      ~man
+      "mavkit-rpc-process"
 end
 
 let cmd = Cmdliner.Cmd.v Manpage.info Term.term

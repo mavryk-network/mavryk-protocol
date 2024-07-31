@@ -239,8 +239,14 @@ linkcheck_allowed_redirects = dict(
         ),
         (r'https://ocaml\.org/.*', r'https://v2\.ocaml\.org/.*'),
         (
-            r'https://github\.com/mavryk-network/mavryk-packaging/releases/latest',
-            r'https://github\.com/mavryk-network/mavryk-packaging/releases/tag/.*',
+            (
+                r'https://github\.com/mavryk-network/'
+                r'mavryk-packaging/releases/latest'
+            ),
+            (
+                r'https://github\.com/mavryk-network/'
+                r'mavryk-packaging/releases/tag/.*'
+            ),
         ),
         (
             r'https://www.reddit.com/r/tezos/',

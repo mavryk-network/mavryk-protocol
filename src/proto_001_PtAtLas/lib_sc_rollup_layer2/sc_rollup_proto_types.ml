@@ -157,8 +157,8 @@ module Dal = struct
   module Slot_index = struct
     type t = Dal.Slot_index.t
 
-    let of_mavkit ~number_of_slots (i : Mavkit_smart_rollup.Dal.Slot_index.t) : t
-        =
+    let of_mavkit ~number_of_slots (i : Mavkit_smart_rollup.Dal.Slot_index.t) :
+        t =
       match Dal.Slot_index.of_int_opt ~number_of_slots i with
       | None -> Format.ksprintf invalid_arg "Dal.Slot_index.of_mavkit: %d" i
       | Some i -> i

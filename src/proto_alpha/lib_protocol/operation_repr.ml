@@ -2621,7 +2621,7 @@ let compare_attestation_infos
 let compare_consensus_weight w1 w2 =
   match (w1, w2) with
   | Weight_attestation infos1, Weight_attestation infos2 ->
-    compare_attestation_infos infos1 infos2
+      compare_attestation_infos infos1 infos2
   | Weight_preattestation infos1, Weight_preattestation infos2 ->
       compare_preattestation_infos infos1 infos2
   | ( Weight_attestation {round_infos = round_infos1; _},

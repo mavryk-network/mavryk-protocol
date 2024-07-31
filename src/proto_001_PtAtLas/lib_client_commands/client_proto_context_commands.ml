@@ -355,7 +355,10 @@ let commands_ro () =
          contract (deprecated)."
       no_options
       (prefixes ["get"; "big"; "map"; "value"; "for"]
-      @@ Mavryk_clic.param ~name:"key" ~desc:"the key to look for" data_parameter
+      @@ Mavryk_clic.param
+           ~name:"key"
+           ~desc:"the key to look for"
+           data_parameter
       @@ prefixes ["of"; "type"]
       @@ Mavryk_clic.param ~name:"type" ~desc:"type of the key" data_parameter
       @@ prefix "in"
@@ -1111,7 +1114,8 @@ let commands_network network () =
           @@ Public_key_hash.alias_param @@ prefixes ["with"]
           @@ param
                ~name:"code"
-               (Mavryk_clic.parameter (fun (cctxt : #Client_context.full) code ->
+               (Mavryk_clic.parameter
+                  (fun (cctxt : #Client_context.full) code ->
                     match
                       Blinded_public_key_hash.activation_code_of_hex code
                     with

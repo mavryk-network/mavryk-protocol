@@ -958,7 +958,8 @@ let dump_to_rlp_command =
             fun acc Mavkit_smart_rollup.Installer_config.(Set {value; to_}) ->
             List [Value (String.to_bytes to_); Value (String.to_bytes value)]
             :: acc
-          else fun acc Mavkit_smart_rollup.Installer_config.(Set {value; to_}) ->
+          else
+            fun acc Mavkit_smart_rollup.Installer_config.(Set {value; to_}) ->
             if String.starts_with ~prefix:"/evm" to_ then
               List [Value (String.to_bytes to_); Value (String.to_bytes value)]
               :: acc

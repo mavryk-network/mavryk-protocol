@@ -139,7 +139,8 @@ let generate_next_dissection (module Plugin : Protocol_plugin_sig.S)
            Mavryk node we are connected to and prefer to stop here. *)
         tzfail
           Rollup_node_errors.Unreliable_mavryk_node_returning_inconsistent_game
-    | Mavkit_smart_rollup.Game.{state_hash = their_hash; tick} :: dissection -> (
+    | Mavkit_smart_rollup.Game.{state_hash = their_hash; tick} :: dissection
+      -> (
         let start_state =
           match ok with
           | Hash _, _ -> None

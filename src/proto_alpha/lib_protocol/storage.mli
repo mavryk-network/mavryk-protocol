@@ -71,8 +71,7 @@ module Slashed_deposits_history : sig
 end
 
 (* TODO #6918: Remove after P *)
-module Slashed_deposits_history__Atlas :
-    module type of Slashed_deposits_history
+module Slashed_deposits_history__Atlas : module type of Slashed_deposits_history
 
 module Unstake_request : sig
   type request = Cycle_repr.t * Tez_repr.t

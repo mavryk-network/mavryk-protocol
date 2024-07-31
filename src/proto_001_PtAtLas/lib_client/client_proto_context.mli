@@ -80,7 +80,7 @@ val register_global_constant :
   ?simulation:bool ->
   ?fee:Tez.mav ->
   ?gas_limit:Gas.Arith.integral ->
-    ?safety_guard:Gas.Arith.integral ->
+  ?safety_guard:Gas.Arith.integral ->
   ?storage_limit:Z.t ->
   ?counter:Manager_counter.t ->
   source:Signature.public_key_hash ->
@@ -716,7 +716,7 @@ val sc_rollup_cement :
   ?simulation:bool ->
   ?fee:Tez.t ->
   ?gas_limit:Gas.Arith.integral ->
-    ?safety_guard:Gas.Arith.integral ->
+  ?safety_guard:Gas.Arith.integral ->
   ?storage_limit:Z.t ->
   ?counter:Manager_counter.t ->
   source:public_key_hash ->

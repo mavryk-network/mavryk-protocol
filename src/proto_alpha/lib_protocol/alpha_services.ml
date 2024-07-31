@@ -190,7 +190,8 @@ module Protocol_treasury = struct
         ~description:"Protocol treasury buffer address"
         ~query:RPC_query.empty
         ~output:Alpha_context.Contract.originated_encoding
-        RPC_path.(custom_root / "context" / "protocol_treasury" / "buffer_address")
+        RPC_path.(
+          custom_root / "context" / "protocol_treasury" / "buffer_address")
   end
 
   let register () =

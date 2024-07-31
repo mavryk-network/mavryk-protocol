@@ -950,8 +950,8 @@ module Manpage = struct
     [
       `S "DEBUG";
       `P
-        ("The environment variable $(b,MAVRYK_LOG) is used to fine-tune what is \
-          going to be logged. The syntax is \
+        ("The environment variable $(b,MAVRYK_LOG) is used to fine-tune what \
+          is going to be logged. The syntax is \
           $(b,MAVRYK_LOG='<section> -> <level> [ ; ...]') where section is one \
           of $(i," ^ log_sections
        ^ ") and level is one of $(i,fatal), $(i,error), $(i,warn), \

@@ -100,8 +100,8 @@ let check_node_net_addr_colision_message () =
       rex
         ~opts:[`Dotall]
         (Printf.sprintf
-           "127\\.0\\.0\\.1:%d.*Another mavryk node is probably running on this \
-            address.*P2P"
+           "127\\.0\\.0\\.1:%d.*Another mavryk node is probably running on \
+            this address.*P2P"
            net_port)
     in
     Node.check_error ~msg:error_rex node2

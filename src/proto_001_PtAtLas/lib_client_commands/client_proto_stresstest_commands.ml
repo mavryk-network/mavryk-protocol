@@ -1288,8 +1288,8 @@ let estimate_transaction_cost ?smart_contracts
             Operation_result.pp_operation_result
             (op.protocol_data.contents, result.contents))
 
-let estimate_transaction_costs : Protocol_client_context.full Mavryk_clic.command
-    =
+let estimate_transaction_costs :
+    Protocol_client_context.full Mavryk_clic.command =
   let open Mavryk_clic in
   command
     ~group

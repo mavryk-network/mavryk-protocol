@@ -407,8 +407,8 @@ module Cli = struct
       in
       if identity_file_in_data_dir_exists then
         failwith
-          "Invalid data directory. This is a data directory for an Mavkit node, \
-           please choose a different directory for the EVM node data."
+          "Invalid data directory. This is a data directory for an Mavkit \
+           node, please choose a different directory for the EVM node data."
       else return_unit
     in
     let config_file = config_filename ~data_dir in

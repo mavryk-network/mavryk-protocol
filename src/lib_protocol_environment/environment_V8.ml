@@ -745,7 +745,8 @@ struct
   module Block_hash = Mavryk_crypto.Hashed.Block_hash
   module Operation_hash = Mavryk_crypto.Hashed.Operation_hash
   module Operation_list_hash = Mavryk_crypto.Hashed.Operation_list_hash
-  module Operation_list_list_hash = Mavryk_crypto.Hashed.Operation_list_list_hash
+  module Operation_list_list_hash =
+    Mavryk_crypto.Hashed.Operation_list_list_hash
   module Context_hash = Mavryk_crypto.Hashed.Context_hash
   module Protocol_hash = Mavryk_crypto.Hashed.Protocol_hash
   module Blake2B = Mavryk_crypto.Blake2B
@@ -1111,7 +1112,8 @@ struct
       message_index : Z.t;
     }
 
-    type reveal_hash = Mavryk_scoru_wasm.Wasm_pvm_state.Compatibility.reveal_hash
+    type reveal_hash =
+      Mavryk_scoru_wasm.Wasm_pvm_state.Compatibility.reveal_hash
 
     type reveal = Mavryk_scoru_wasm.Wasm_pvm_state.Compatibility.reveal =
       | Reveal_raw_data of reveal_hash
@@ -1146,7 +1148,8 @@ struct
       let initial_state = initial_state V0
 
       let compute_step =
-        compute_step ~wasm_entrypoint:Mavryk_scoru_wasm.Constants.wasm_entrypoint
+        compute_step
+          ~wasm_entrypoint:Mavryk_scoru_wasm.Constants.wasm_entrypoint
 
       let reveal_compat reveal =
         match
@@ -1164,7 +1167,8 @@ struct
             Reveal_raw_data "this line costs 10k XTZ to execute"
 
       let input_request_compat = function
-        | Mavryk_scoru_wasm.Wasm_pvm_state.No_input_required -> No_input_required
+        | Mavryk_scoru_wasm.Wasm_pvm_state.No_input_required ->
+            No_input_required
         | Input_required -> Input_required
         | Reveal_required req -> Reveal_required (reveal_compat req)
 

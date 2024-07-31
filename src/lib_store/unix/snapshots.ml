@@ -571,8 +571,8 @@ let () =
     ~pp:(fun ppf () ->
       Format.fprintf
         ppf
-        "Cannot export snapshot with a storage that was created with Mavkit v13 \
-         (or earlier). Please refer to the documentation and consider \
+        "Cannot export snapshot with a storage that was created with Mavkit \
+         v13 (or earlier). Please refer to the documentation and consider \
          switching to the default minimal indexing strategy to enable snapshot \
          exports. ")
     unit

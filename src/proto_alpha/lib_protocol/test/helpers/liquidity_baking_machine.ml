@@ -1355,7 +1355,7 @@ module ValidationBaseMachine :
   let init ~invariant ?subsidy balances =
     let* blk, env =
       ConcreteBaseMachine.init
-      ~invariant:(fun _ _ -> Lwt_result_syntax.return_true)
+        ~invariant:(fun _ _ -> Lwt_result_syntax.return_true)
         ?subsidy
         balances
     in

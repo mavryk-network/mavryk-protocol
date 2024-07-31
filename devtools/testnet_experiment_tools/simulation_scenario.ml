@@ -451,9 +451,9 @@ let commands =
       ~desc:
         "Patch the chain's state of an mavkit-node data directory with a user \
          defined block time by overwriting protocol constants. This command \
-         cannot be run twice on a same mavkit-node data directory. Warning: all \
-         testnet nodes must apply this patch otherwise they will fail to agree \
-         on the new resulting chain's state."
+         cannot be run twice on a same mavkit-node data directory. Warning: \
+         all testnet nodes must apply this patch otherwise they will fail to \
+         agree on the new resulting chain's state."
       (args1 max_op_ttl_arg)
       (prefixes ["patch"; "time"]
       @@ data_dir_param @@ prefix "to" @@ block_time_param @@ stop)

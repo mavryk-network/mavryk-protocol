@@ -57,7 +57,8 @@ val preapply_block :
   timestamp:Time.Protocol.t ->
   protocol_data:Protocol.block_header_data ->
   packed_operation list list ->
-  (Mavryk_base.Block_header.shell_header * error Preapply_result.t list) tzresult
+  (Mavryk_base.Block_header.shell_header * error Preapply_result.t list)
+  tzresult
   Lwt.t
 
 (** Monitor validated blocks/proposals from the node. *)

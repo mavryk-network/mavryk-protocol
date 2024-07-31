@@ -57,5 +57,11 @@ module S : sig
     ([`GET], unit, unit, unit, unit, Protocol_hash.t list) Mavryk_rpc.Service.t
 
   val fetch :
-    ([`GET], unit, unit * Protocol_hash.t, unit, unit, unit) Mavryk_rpc.Service.t
+    ( [`GET],
+      unit,
+      unit * Protocol_hash.t,
+      unit,
+      unit,
+      unit )
+    Mavryk_rpc.Service.t
 end

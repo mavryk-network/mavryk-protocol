@@ -916,20 +916,21 @@ let pp_manager_operation_result ppf
         {source; fee; operation; counter; gas_limit; storage_limit},
       Manager_operation_result
         {balance_updates; operation_result; internal_operation_results} ) =
-
   (* Convert fee to int64 and then calculate divided fees *)
   let fee_int64 = Tez.to_mumav fee in
   let quarter_fee_mumav = Int64.div fee_int64 4L in
-  let quarter_fee = match (Tez.of_mumav (quarter_fee_mumav)) with
-    | Some(mumav) -> Tez.to_string mumav
+  let quarter_fee =
+    match Tez.of_mumav quarter_fee_mumav with
+    | Some mumav -> Tez.to_string mumav
     | None -> Tez.to_string Tez.zero
   in
   let burn_fee_mumav = Int64.sub fee_int64 (Int64.mul 2L quarter_fee_mumav) in
-  let burn_fee = match (Tez.of_mumav (burn_fee_mumav)) with
-    | Some(mumav) -> Tez.to_string mumav
+  let burn_fee =
+    match Tez.of_mumav burn_fee_mumav with
+    | Some mumav -> Tez.to_string mumav
     | None -> Tez.to_string Tez.zero
   in
-  
+
   Format.fprintf ppf "@[<v 2>Manager signed operations:" ;
   Format.fprintf ppf "@,From: %a" Signature.Public_key_hash.pp source ;
   Format.fprintf ppf "@,Fee to the validator: %s%s" tez_sym quarter_fee ;

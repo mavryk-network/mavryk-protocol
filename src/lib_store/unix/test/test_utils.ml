@@ -559,7 +559,8 @@ let make_raw_block_list ?min_lpbl ?constants ?max_operations_ttl ?(kind = `Full)
   let blk = List.hd l |> WithExceptions.Option.get ~loc:__LOC__ in
   Lwt.return (List.rev l, blk)
 
-let make_operation ?(fee = Mavryk_protocol_alpha.Protocol.Alpha_context.Tez.zero)
+let make_operation
+    ?(fee = Mavryk_protocol_alpha.Protocol.Alpha_context.Tez.zero)
     ?(gas_limit =
       Mavryk_protocol_alpha.Protocol.Alpha_context.Gas.Arith.integral_of_int_exn
         100_000) ?(storage_limit = Z.zero) ~source_pkh ~source_sk ~counter

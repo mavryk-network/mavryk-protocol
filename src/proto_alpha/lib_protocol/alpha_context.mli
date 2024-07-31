@@ -2350,7 +2350,7 @@ module Delegate : sig
     val seed_nonce_revelation_tip : t -> Tez.t tzresult
 
     val vdf_revelation_tip : t -> Tez.t tzresult
-  
+
     module For_RPC : sig
       type reward_kind =
         | Baking_reward_fixed_portion
@@ -2366,10 +2366,10 @@ module Delegate : sig
           It verifies [reward_from_constants ~coeff csts ~reward_kind =
           coeff * reward_from_constants csts ~reward_kind]. *)
       val reward_from_constants :
-      ?coeff:Q.t ->
-      Constants.Parametric.t ->
-      reward_kind:reward_kind ->
-      Tez.t tzresult
+        ?coeff:Q.t ->
+        Constants.Parametric.t ->
+        reward_kind:reward_kind ->
+        Tez.t tzresult
 
       val liquidity_baking_subsidy_from_constants :
         Constants.Parametric.t -> Tez.t tzresult
@@ -2407,34 +2407,34 @@ module Delegate : sig
         Q.t
 
       val compute_bonus :
-      issuance_ratio_max:Q.t ->
-      seconds_per_cycle:int64 ->
-      stake_ratio:Q.t ->
-      base_reward_coeff_ratio:Q.t ->
-      previous_bonus:Issuance_bonus_repr.t ->
-      reward_params:Constants.Parametric.adaptive_rewards_params ->
-      Issuance_bonus_repr.t tzresult
+        issuance_ratio_max:Q.t ->
+        seconds_per_cycle:int64 ->
+        stake_ratio:Q.t ->
+        base_reward_coeff_ratio:Q.t ->
+        previous_bonus:Issuance_bonus_repr.t ->
+        reward_params:Constants.Parametric.adaptive_rewards_params ->
+        Issuance_bonus_repr.t tzresult
 
-    val compute_coeff :
-      issuance_ratio_max:Q.t ->
-      issuance_ratio_min:Q.t ->
-      base_total_issued_per_minute:Tez_repr.t ->
-      base_reward_coeff_ratio:Q.t ->
-      q_total_supply:Q.t ->
-      bonus:Issuance_bonus_repr.t ->
-      Q.t
+      val compute_coeff :
+        issuance_ratio_max:Q.t ->
+        issuance_ratio_min:Q.t ->
+        base_total_issued_per_minute:Tez_repr.t ->
+        base_reward_coeff_ratio:Q.t ->
+        q_total_supply:Q.t ->
+        bonus:Issuance_bonus_repr.t ->
+        Q.t
 
-    val compute_min :
-      reward_params:Constants.Parametric.adaptive_rewards_params ->
-      launch_cycle:Cycle_repr.t option ->
-      new_cycle:Cycle_repr.t ->
-      Q.t
+      val compute_min :
+        reward_params:Constants.Parametric.adaptive_rewards_params ->
+        launch_cycle:Cycle_repr.t option ->
+        new_cycle:Cycle_repr.t ->
+        Q.t
 
-    val compute_max :
-      reward_params:Constants.Parametric.adaptive_rewards_params ->
-      launch_cycle:Cycle_repr.t option ->
-      new_cycle:Cycle_repr.t ->
-      Q.t
+      val compute_max :
+        reward_params:Constants.Parametric.adaptive_rewards_params ->
+        launch_cycle:Cycle_repr.t option ->
+        new_cycle:Cycle_repr.t ->
+        Q.t
     end
   end
 

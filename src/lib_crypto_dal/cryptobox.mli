@@ -453,7 +453,8 @@ val load_precompute_shards_proofs :
 
     @raises a {!Data_encoding.Binary.Write_error} if [precomputation] can't be
     serialized to a value {!val:shards_proofs_precomputation_encoding}. *)
-val hash_precomputation : shards_proofs_precomputation -> Mavryk_crypto.Blake2B.t
+val hash_precomputation :
+  shards_proofs_precomputation -> Mavryk_crypto.Blake2B.t
 
 (** [prove_shards t ~precomputation ~polynomial] produces
    [number_of_shards] proofs [(π_0, ..., π_{number_of_shards - 1})] for the elements

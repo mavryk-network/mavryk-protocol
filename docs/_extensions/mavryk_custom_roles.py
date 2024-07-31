@@ -175,7 +175,10 @@ def src_role(_name, rawtext, text, lineno, inliner, options={}, _content=[]):
     branch = os.environ.get('CI_COMMIT_REF_NAME', 'master')
     project_url = os.environ.get(
         'CI_MERGE_REQUEST_SOURCE_PROJECT_URL',
-        os.environ.get('CI_PROJECT_URL', 'https://gitlab.com/mavryk-network/mavryk-protocol'),
+        os.environ.get(
+            'CI_PROJECT_URL',
+            'https://gitlab.com/mavryk-network/mavryk-protocol',
+        ),
     )
     if Path(MAVRYK_HOME, file).is_file():
         url = project_url + "/-/blob/" + branch + "/" + src

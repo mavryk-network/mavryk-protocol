@@ -263,7 +263,8 @@ let print_baker_nodes map =
       List.iter
         (fun delegate_address ->
           Format.printf "%s @,"
-          @@ Mavryk_crypto.Signature.Public_key_hash.to_b58check delegate_address)
+          @@ Mavryk_crypto.Signature.Public_key_hash.to_b58check
+               delegate_address)
         delegate_addresses ;
       Format.printf "@.")
     map

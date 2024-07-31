@@ -156,7 +156,8 @@ struct
     let scheme = unix_scheme
 
     let title =
-      "Built-in mavryk-signer using remote signer through hardcoded unix socket."
+      "Built-in mavryk-signer using remote signer through hardcoded unix \
+       socket."
 
     let description =
       "Valid locators are of the form\n - unix:/path/to/socket?pkh=mv1..."

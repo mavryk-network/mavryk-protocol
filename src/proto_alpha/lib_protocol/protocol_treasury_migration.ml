@@ -3,9 +3,7 @@ open Micheline
 let admin_address = "mv1FpkYtjBvppr7rrrrBVKbmiDtcALjb4T21"
 
 let buffer_init_storage =
-  Script_repr.lazy_expr
-    (Micheline.strip_locations
-       (String (0, admin_address)))
+  Script_repr.lazy_expr (Micheline.strip_locations (String (0, admin_address)))
 
 let originate ctxt address_hash ~balance script =
   let open Lwt_result_syntax in
@@ -63,7 +61,9 @@ let init ctxt ~typecheck =
   let*? ctxt, buffer_address =
     Contract_storage.fresh_contract_from_current_nonce ctxt
   in
-  let* ctxt = Storage.Protocol_treasury.Buffer_address.init ctxt buffer_address in
+  let* ctxt =
+    Storage.Protocol_treasury.Buffer_address.init ctxt buffer_address
+  in
   let buffer_script =
     Script_repr.
       {

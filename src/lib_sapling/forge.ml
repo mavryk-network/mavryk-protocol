@@ -244,8 +244,8 @@ let forge_shield_transaction ?(number_dummy_inputs = 0)
   if number_dummy_inputs < 0 then
     raise
       (Invalid_argument
-         "Mavryk_sapling.Forge.forge_shield_transaction: number_dummy_inputs is \
-          negative") ;
+         "Mavryk_sapling.Forge.forge_shield_transaction: number_dummy_inputs \
+          is negative") ;
   if number_dummy_outputs < 0 then
     raise
       (Invalid_argument

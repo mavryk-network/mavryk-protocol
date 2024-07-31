@@ -147,7 +147,9 @@ let inject_vdf_revelation cctxt state setup solution chain_id hash
             ~solution
             ()
         in
-        let op_bytes = Mavryk_crypto.Signature.V_latest.(concat op_bytes zero) in
+        let op_bytes =
+          Mavryk_crypto.Signature.V_latest.(concat op_bytes zero)
+        in
         let* op_hash =
           Shell_services.Injection.operation cctxt ~chain op_bytes
         in
