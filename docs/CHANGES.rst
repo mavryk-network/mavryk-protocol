@@ -3,8 +3,8 @@
 Changelog
 '''''''''
 
-Version 19.1
-============
+Version 1.1
+===========
 
 Node
 ----
@@ -23,16 +23,16 @@ Smart Rollup node
 
 - Fixed issue with constants fetching during protocol migration. (MR :gl:`!11804`)
 
-Version 19.0
-============
+Version 1.0
+===========
 
 Miscellaneous
 -------------
 
 - References to ``teztnets.xyz`` have been changed to ``teztnets.com``.
 
-Version 19.0~rc1
-================
+Version 1.0~rc1
+===============
 
 Node
 ----
@@ -44,7 +44,7 @@ Node
   mavkit versions (MR :gl:`!10785`).
 
 Version 1.0
-============
+===========
 
 Node
 ----
