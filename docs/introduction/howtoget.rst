@@ -1,6 +1,6 @@
 .. _howtoget:
 
-How to get Mavryk
+Installing Mavkit
 =================
 
 In this how-to we explain how to get up-to-date binaries to run Mavryk
@@ -50,8 +50,8 @@ However, if you encounter problems when performing one of the installation scena
 Getting static binaries
 -----------------------
 
-You can get static Linux binaries from the
-`latest release in the mavryk-packaging repository <https://github.com/mavryk-network/mavryk-packaging/releases/latest>`__.
+You can get static Linux binaries of the latest release from the
+`Mavkit package registry <https://gitlab.com/mavryk-network/mavryk-protocol/-/packages/>`__.
 
 This repository provides static binaries for x86_64 and arm64 architectures. Since these binaries
 are static, they can be used on any Linux distribution without any additional prerequisites.
@@ -72,7 +72,7 @@ distribution from the `Mavkit release page
 and then installing them with your package tool manager. Most of the
 configuration options are accessible by the user in ``/etc/default/<package>``.
 
-If you are upgrading from a different package distributor such as `Serokell's tezos-packaging <https://github.com/mavryk-network/mavryk-packaging>`__,
+If you are upgrading from a different package distributor such as `Mavryk Networks's mavryk-packaging <https://github.com/mavryk-network/mavryk-packaging>`__,
 please pay attention to the possible differences between the two packages, in
 particular regarding the home directory for the ``tezos`` user.
 
@@ -92,7 +92,7 @@ Also there are some experimental packages:
 
 The packages are set up to run under a dedicated user. The ``mavkit-node``,
 ``mavkit-baker`` and ``mavkit-smartrollup`` packages use a user and group called
-tezos. The ``mavkit-signer`` package uses a user and group called tzsigner. It’s
+mavryk. The ``mavkit-signer`` package uses a user and group called tzsigner. It’s
 possible to configure the software to use a different user (even root).
 
 The documentation for these packages, originally developed by Chris Pinnock,
@@ -185,7 +185,7 @@ Docker Image Configuration
 Lastly, the entrypoint script (:src:`scripts/docker/entrypoint.sh`) provides the following configurable
 environment variables:
 
-- ``DATA_DIR``: The directory to store the node's data (defaults to ``/var/run/tezos``).
+- ``DATA_DIR``: The directory to store the node's data (defaults to ``/var/run/mavryk``).
 - ``NODE_HOST``: The name of the node container (defaults to ``node``).
 - ``NODE_RPC_PORT``: The RPC port **inside the container** the node listens to (defaults to ``8732``).
 - ``NODE_RPC_ADDR``: The RPC address **inside the container** the node binds to (defaults to ``[::]``).
@@ -239,9 +239,8 @@ Environment
 ~~~~~~~~~~~
 
 Currently Mavkit is being developed for Linux x86_64, mostly for
-Debian/Ubuntu and Arch Linux. The following OSes are also reported to
-work: macOS (x86_64), Arch Linux ARM (aarch64), Debian Linux (bullseye),
-Ubuntu Linux (focal). A Windows port is feasible and might be
+Ubuntu and Fedora Linux. The following OSes are also reported to
+work: macOS (x86_64), Arch Linux ARM (aarch64), Debian Linux (x86_64). A Windows port is feasible and might be
 developed in the future.
 
 .. note::
@@ -360,14 +359,14 @@ Identified situations where it will be more tricky are:
   you have several possibilities:
 
   - Be explicit about the "upgrade" and do ``opam upgrade --unlock-base
-    ocaml.$new_version tezos``. Note that starting from OPAM version 2.1,
+    ocaml.$new_version mavryk``. Note that starting from OPAM version 2.1,
     this option is replaced by ``--update-invariant`` (see the `opam-switch
     manual <https://opam.ocaml.org/doc/man/opam-switch.html>`_).
-  - Remove the existing switch (e.g., ``opam switch remove for_tezos``, but
+  - Remove the existing switch (e.g., ``opam switch remove for_mavryk``, but
     be aware that this will delete the previous installation), and replay
     :ref:`the installation instructions <install_opam_packages>`.
   - Replay :ref:`the installation instructions <install_opam_packages>` while
-    creating a different switch (e.g. ``ocaml_${ocaml_version}_for_tezos``), but
+    creating a different switch (e.g. ``ocaml_${ocaml_version}_for_mavryk``), but
     be aware that each switch consumes a significant amount of disk space.
 
 * When there are Rust dependencies involved. The way to go is still
@@ -385,7 +384,7 @@ If you plan to contribute to the Mavkit codebase, the way to go is to set up a
 complete development environment, by cloning the repository and compiling the
 sources using the provided makefile.
 
-**TL;DR**: From a fresh Debian Bullseye x86_64, you typically want to select a source branch in the Mavkit repository, e.g.:
+**TL;DR**: From a fresh Debian Bullseye or Ubuntu Mantic x86_64, you typically want to select a source branch in the Mavkit repository, e.g.:
 
 .. literalinclude:: compile-sources.sh
   :language: shell
@@ -564,7 +563,15 @@ Update
 ~~~~~~
 
 For updating to a new version, you typically have to
-update the sources by doing ``git pull`` in the ``tezos/`` directory and replay
+update the sources by doing ``git pull`` in the ``mavryk-protocol/`` directory and replay
 the compilation scenario starting from ``make build-deps``.
 You may also use ``make clean`` (and ``rm -Rf _opam/`` if needed) before that, for restarting compilation in a
 fresh state.
+
+Appendix
+--------
+
+.. toctree::
+   :maxdepth: 2
+
+   get_troubleshooting
