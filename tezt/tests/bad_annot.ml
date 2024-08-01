@@ -32,7 +32,7 @@
 *)
 
 let test_bad_annot client protocol () =
-  (* This was produced by running "mavkit-client hash data '{ UNIT
+  (* This was produced by running "octez-client hash data '{ UNIT
      ; PAIR ; CAR %faa }' of type 'lambda unit unit'" and
      replacing the two last bytes (that correspond to the two
      'a's at the end of the annotation) by the 0xff byte which is
@@ -57,6 +57,7 @@ let register ~protocols =
         ~__FILE__
         ~title
         ~tags:["client"; "michelson"]
+        ~uses_node:false
         (fun protocol ->
           let* client = Client.init_mockup ~protocol () in
           test_function client protocol ())

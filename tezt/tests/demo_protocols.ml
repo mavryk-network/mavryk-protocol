@@ -234,6 +234,5 @@ module Demo_noops = struct
 end
 
 let register () =
-  (* FIX: an error is triggered when the past protocol versions are removed from the clean code *)
-  (* Demo_counter.register () ; *)
+  Demo_counter.register () ;
   Demo_noops.register ()

@@ -52,6 +52,9 @@ let check_dump_encodings () =
     ~title:"mavkit-codec dump encodings"
     ~tags:["dump"]
     ~uses:[Constant.mavkit_codec]
+    ~uses_node:false
+    ~uses_client:false
+    ~uses_admin_client:false
   @@ fun () ->
   let* (_ : JSON.t) = Codec.dump_encodings () in
   unit
@@ -109,6 +112,9 @@ let check_shell_sample_encoding sample =
     ~title:(sf "shell encoding regression test: %s" sample)
     ~tags:(["encoding"; "shell"] @ sample_as_tags sample)
     ~uses:[Constant.mavkit_codec]
+    ~uses_node:false
+    ~uses_client:false
+    ~uses_admin_client:false
   @@ fun () ->
   let base_path =
     "tezt" // "tests" // "encoding_samples" // "shell" // sample

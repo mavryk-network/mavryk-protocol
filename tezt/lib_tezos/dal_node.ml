@@ -230,7 +230,7 @@ let create_from_endpoint ?runner ?(path = Uses.path Constant.mavkit_dal_node)
   in
   let listen_addr =
     match listen_addr with
-    | None -> Format.sprintf "127.0.0.1:%d" @@ Port.fresh ()
+    | None -> Format.sprintf "%s:%d" Constant.default_host @@ Port.fresh ()
     | Some addr -> addr
   in
   let public_addr =
@@ -238,7 +238,7 @@ let create_from_endpoint ?runner ?(path = Uses.path Constant.mavkit_dal_node)
   in
   let metrics_addr =
     match metrics_addr with
-    | None -> Format.sprintf "127.0.0.1:%d" @@ Port.fresh ()
+    | None -> Format.sprintf "%s:%d" Constant.default_host @@ Port.fresh ()
     | Some addr -> addr
   in
   let dal_node =

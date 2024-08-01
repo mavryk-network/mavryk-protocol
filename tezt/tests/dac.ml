@@ -1112,7 +1112,7 @@ module Full_infrastructure = struct
         coordinator_node
         (committee_members_nodes @ observer_nodes)
     in
-    (* 2. We terminate the Tezos [node], which cause a L1 disconnection of the
+    (* 2. We terminate the Mavryk [node], which cause a L1 disconnection of the
           DAC network. *)
     let wait_for_coordinator_stopped_tracking_l1 =
       wait_for_l1_tracking_ended coordinator_node
@@ -1123,12 +1123,12 @@ module Full_infrastructure = struct
     let wait_for_observer_stopped_tracking_l1 =
       wait_for_l1_tracking_ended observer
     in
-    Log.info "Terminating Tezos node" ;
+    Log.info "Terminating Mavryk node" ;
     let* () = Node.terminate node in
     let* () = wait_for_coordinator_stopped_tracking_l1 in
     let* () = wait_for_committee_member_stopped_tracking_l1 in
     let* () = wait_for_observer_stopped_tracking_l1 in
-    (* 3. We restart Tezos [node] and expect the DAC network to restart tracking
+    (* 3. We restart Mavryk [node] and expect the DAC network to restart tracking
          L1 heads. *)
     let wait_for_coordinator_connected_to_l1 =
       wait_for_layer1_new_head coordinator_node
@@ -1136,7 +1136,7 @@ module Full_infrastructure = struct
     let wait_for_committee_member_connected_to_l1 =
       wait_for_layer1_new_head committee_member
     in
-    Log.info "Restarting Tezos node" ;
+    Log.info "Restarting Mavryk node" ;
     let* () = Node.run node [] in
     (* 4. We assert [3.] by waiting for "dac_node_layer_1_new_head" event from
        both [coordinator_node] and [committee_member] node. *)

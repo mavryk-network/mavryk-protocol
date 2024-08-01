@@ -105,7 +105,8 @@ let register =
       ~typ:"lambda (pair (nat %.) (int %.)) nat"
       client
   in
-
+  (* LEGACY: until Nairobi alphabetic field annotation in parameter
+     root was allowed in legacy mode *)
   let* () =
     typecheck_script
       ~res:(rex "unexpected annotation")
@@ -113,7 +114,8 @@ let register =
       ~script:"parameter %r unit; storage unit; code { FAILWITH }"
       client
   in
-
+  (* LEGACY: until Nairobi numeric field annotation in parameter root
+     was allowed in legacy mode *)
   let* () =
     typecheck_script
       ~res:(rex "unexpected annotation")

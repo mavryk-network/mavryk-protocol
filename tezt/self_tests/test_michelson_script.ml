@@ -510,14 +510,13 @@ let test_version_range7 () =
   in
   unit
 
-(* TODO: Restore after Atlas update to test migrations *)
-(* let () =
-   test_all () ;
-   test_find () ;
-   test_version_range1 () ;
-   test_version_range2 () ;
-   test_version_range3 () ;
-   test_version_range4 () ;
-   test_version_range5 () ;
-   test_version_range6 () ;
-   test_version_range7 () *)
+let () =
+  test_all () ;
+  test_find () ;
+  test_version_range1 () ;
+  test_version_range2 () ;
+  test_version_range3 () ;
+  test_version_range4 () ;
+  test_version_range5 () ;
+  test_version_range6 () ;
+  test_version_range7 ()

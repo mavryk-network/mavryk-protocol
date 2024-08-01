@@ -26,13 +26,15 @@
 
 (* Testing
    -------
-   Component:    Smart Contract Optimistic Rollups
+   Component:    Smart Optimistic Rollups
    Invocation:   dune exec tezt/long_tests/main.exe -- --file sc_rollup.ml
 *)
 
 open Base
 
 let hooks = Mavryk_regression.hooks
+
+let rpc_hooks = Mavryk_regression.rpc_hooks
 
 (*
 
@@ -51,7 +53,7 @@ let hex_encode (input : string) : string =
    See also [wasm_incomplete_kernel_boot_sector].
 
    Note that this uses [Mavryk_scoru_wasm.Gather_floppies.Complete_kernel], so
-   the kernel must fit into a single Mavryk operation.
+   the kernel must fit into a single Tezos operation.
 *)
 let read_kernel name : string =
   let open Tezt.Base in
@@ -90,7 +92,6 @@ let setup ?commitment_period ?challenge_window ?timeout f ~protocol =
     make_parameter "smart_rollup_commitment_period_in_blocks" commitment_period
     @ make_parameter "smart_rollup_challenge_window_in_blocks" challenge_window
     @ make_parameter "smart_rollup_timeout_period_in_blocks" timeout
-    @ [(["smart_rollup_enable"], `Bool true)]
   in
   let base = Either.right (protocol, None) in
   let* parameter_file = Protocol.write_parameter_file ~base parameters in
@@ -177,7 +178,7 @@ let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
         @@ Sc_rollup_rpc.get_global_block_state_hash ()
       in
       let* prev_ticks =
-        Sc_rollup_node.RPC.call sc_rollup_node
+        Sc_rollup_node.RPC.call ~rpc_hooks sc_rollup_node
         @@ Sc_rollup_rpc.get_global_block_total_ticks ()
       in
       let message = sf "%d %d + value" i ((i + 2) * 2) in
@@ -224,7 +225,7 @@ let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
                 ~error_msg:"Invalid value in rollup state (%L <> %R)") ;
             return ()
         | "wasm_2_0_0" ->
-            (* TODO: https://gitlab.com/tezos/tezos/-/issues/3729
+            (* TODO: https://gitlab.com/mavryk/mavryk/-/issues/3729
 
                 Add an appropriate check for various test kernels
 
@@ -244,7 +245,7 @@ let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
         ~error_msg:"State hash has not changed (%L <> %R)" ;
 
       let* ticks =
-        Sc_rollup_node.RPC.call sc_rollup_node
+        Sc_rollup_node.RPC.call ~rpc_hooks sc_rollup_node
         @@ Sc_rollup_rpc.get_global_block_total_ticks ()
       in
       Check.(ticks >= prev_ticks)

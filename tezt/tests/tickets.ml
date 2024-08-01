@@ -60,6 +60,7 @@ let test_create_and_remove_tickets =
     ~__FILE__
     ~title:"Create and remove tickets"
     ~tags:["client"; "michelson"]
+    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, contract_id =
@@ -133,6 +134,7 @@ let test_send_tickets_in_big_map =
     ~__FILE__
     ~title:"Send tickets in bigmap"
     ~tags:["client"; "michelson"]
+    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _receive_contract_alias, receive_contract_hash =
@@ -194,6 +196,7 @@ let test_send_tickets_to_implicit_account =
     ~__FILE__
     ~title:"Send tickets from contracts to implicit accounts"
     ~tags:["client"; "michelson"]
+    ~uses_node:false
     ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -566,6 +569,7 @@ let test_send_tickets_to_implicit_account_non_zero_amount =
     ~title:
       "Send tickets from contracts to implicit accounts with some Tez along"
     ~tags:["client"; "michelson"]
+    ~uses_node:false
     ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -614,6 +618,7 @@ let test_send_tickets_to_implicit_with_wrong_type =
       "Send tickets from contracts to implicit accounts with the wrong type \
        must fail"
     ~tags:["client"; "michelson"]
+    ~uses_node:false
     ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -667,6 +672,7 @@ let test_ticket_transfer_commutative =
     ~__FILE__
     ~title:"Send tickets between originated contracts and implicit accounts"
     ~tags:["client"; "michelson"]
+    ~uses_node:false
     ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -830,6 +836,7 @@ let test_ticket_transfer_from_storage_to_implicit =
     ~__FILE__
     ~title:"Sending ticket from contract storage to implicit accounts"
     ~tags:["client"; "michelson"]
+    ~uses_node:false
     ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -951,6 +958,7 @@ let test_zero_ticket_rejection =
     ~__FILE__
     ~title:"Sending zero ticket from implicit accounts must be rejected"
     ~tags:["client"; "michelson"]
+    ~uses_node:false
     ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -1031,6 +1039,7 @@ let test_ticket_overdraft_rejection =
     ~__FILE__
     ~title:"Overdrafting ticket from implicit accounts must be rejected"
     ~tags:["client"; "michelson"]
+    ~uses_node:false
     ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -1103,6 +1112,7 @@ let test_ticket_of_wrong_type_rejection =
     ~title:
       "Sending ticket of wrong type from implicit accounts must be rejected"
     ~tags:["client"; "michelson"]
+    ~uses_node:false
     ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
@@ -1151,6 +1161,7 @@ let test_originated_implicit_can_be_equipotent =
        accepting tickets with default entrypoint should equally work"
     ~tags:["client"; "michelson"]
     ~supports:(Protocol.From_protocol 001)
+    ~uses_node:false
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, ticketer =

@@ -208,6 +208,8 @@ module Maintenance = struct
       ~__FILE__
       ~title:"p2p-maintenance-disabled"
       ~tags:["p2p"; "node"; "maintenance"]
+      ~uses_client:false
+      ~uses_admin_client:false
     @@ fun () ->
     (* We set the maintenance idle time to 5 seconds to make the test
        shorter. *)
@@ -588,6 +590,8 @@ module Swap = struct
       ~__FILE__
       ~title:"p2p-swap-disable"
       ~tags:["p2p"; "node"; "swap"; Tag.memory_4k]
+      ~uses_client:false
+      ~uses_admin_client:false
     @@ fun () ->
     (* Since we try to verify that something does not happen, we need
        to find when we consider having waited enough time to consider
@@ -646,6 +650,8 @@ let test_advertised_port () =
     ~__FILE__
     ~title:"check --advertised-net-port=PORT option"
     ~tags:["p2p"; "cli"; "connections"]
+    ~uses_client:false
+    ~uses_admin_client:false
   @@ fun () ->
   let* node_1 = Node.init [Connections 1] in
   let maintenance_p =
@@ -811,8 +817,10 @@ module Connect_handler = struct
       ~__FILE__
       ~title:"peers with different chain name"
       ~tags:["p2p"; "connect_handler"]
+      ~uses_client:false
+      ~uses_admin_client:false
     @@ fun () ->
-    let addr_of_port port = "127.0.0.1:" ^ string_of_int port in
+    let addr_of_port port = sf "%s:%d" Constant.default_host port in
     let create_node ?chain_name ?peer_port port =
       let peer_arg =
         Option.map (fun p -> Node.Peer (addr_of_port p)) peer_port
@@ -888,6 +896,8 @@ let trusted_ring () =
     ~__FILE__
     ~title:"p2p - set a trusted ring"
     ~tags:["p2p"; "connection"; "trusted"; "ring"]
+    ~uses_client:false
+    ~uses_admin_client:false
   @@ fun () ->
   let num_nodes = 5 in
   Log.info "Initialize nodes" ;
@@ -998,6 +1008,8 @@ let expected_peer_id () =
     ~__FILE__
     ~title:"Test expected_peer_id"
     ~tags:["p2p"; "connections"; "expected_peer_id"]
+    ~uses_client:false
+    ~uses_admin_client:false
   @@ fun () ->
   let num_nodes = 5 in
   Log.info "Start a clique of %d nodes" num_nodes ;
@@ -1368,6 +1380,8 @@ module Peer_discovery = struct
       ~__FILE__
       ~title:"p2p-peer-discovery"
       ~tags:["p2p"; "node"; "peer_discovery"]
+      ~uses_client:false
+      ~uses_admin_client:false
     @@ fun () ->
     let maintenance_idle_time = 5. in
     peer_discovery_test_raw ~maintenance_idle_time ()
@@ -1383,6 +1397,8 @@ module Peer_discovery = struct
       ~__FILE__
       ~title:"p2p-peer-discovery-disable"
       ~tags:["p2p"; "node"; "peer_discovery"]
+      ~uses_client:false
+      ~uses_admin_client:false
     @@ fun () ->
     let maintenance_idle_time = 5. in
     let create_node = create_node ~maintenance_idle_time in

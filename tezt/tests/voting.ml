@@ -57,7 +57,7 @@ let test_proto_files = ["main.ml"; "main.mli"]
 let test_proto_MAVRYK_PROTOCOL =
   {|{
     "modules": ["Main"],
-    "expected_env_version": 11
+    "expected_env_version": 12
 }
 |}
 
@@ -875,6 +875,12 @@ let test_user_activated_protocol_override_baker_vote ~from_protocol ~to_protocol
         "voting";
         "from_" ^ Protocol.tag from_protocol;
         "to_" ^ Protocol.tag to_protocol;
+      ]
+    ~uses:
+      [
+        Protocol.accuser to_protocol;
+        Protocol.baker from_protocol;
+        Protocol.baker to_protocol;
       ]
   @@ fun () ->
   let node_arguments = [Node.Synchronisation_threshold 0] in
