@@ -2161,7 +2161,7 @@ module Api_regression = struct
   let replace_variables string =
     let replacements =
       [
-        ("tz[1234]\\w{33}\\b", "[PUBLIC_KEY_HASH]");
+        ("mv[1234]\\w{33}\\b", "[PUBLIC_KEY_HASH]");
         ("(BLsig|asig)\\w{137}\\b", "[AGGREGATED_SIG]");
         ("http://localhost:\\d{4,5}/", "$SCHEME://$HOST:$PORT/");
         ("http://127.0.0.1:\\d{4,5}/", "$SCHEME://$HOST:$PORT/");

@@ -1486,7 +1486,7 @@
       "node",
       "atlas",
       "transfer",
-      "tz4"
+      "mv4"
     ],
     "successful_runs": {
       "total_time": "30119954",

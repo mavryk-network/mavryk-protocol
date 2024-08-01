@@ -53,7 +53,7 @@ key_hash_type_and_impls! {
     Tz2(ContractMv2Hash),
     /// A hash of a P256 public key, `tz3...` in base58-check encoding.
     Tz3(ContractMv3Hash),
-    /// A hash of a BLS public key, `tz4...` in base58-check encoding.
+    /// A hash of a BLS public key, `mv4...` in base58-check encoding.
     Tz4(ContractMv4Hash),
 }
 
@@ -108,7 +108,7 @@ impl ByteReprTrait for KeyHash {
             "tz1" => Tz1(HashTrait::from_b58check(data)?),
             "tz2" => Tz2(HashTrait::from_b58check(data)?),
             "tz3" => Tz3(HashTrait::from_b58check(data)?),
-            "tz4" => Tz4(HashTrait::from_b58check(data)?),
+            "mv4" => Tz4(HashTrait::from_b58check(data)?),
             s => return Err(ByteReprError::UnknownPrefix(s.to_owned())),
         })
     }

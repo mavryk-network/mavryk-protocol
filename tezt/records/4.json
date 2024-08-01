@@ -1451,7 +1451,7 @@
   },
   {
     "file": "tezt/tests/client_keys.ml",
-    "title": "Generates new tz4 keys in aggregate wallet",
+    "title": "Generates new mv4 keys in aggregate wallet",
     "tags": [
       "admin_client",
       "aggregate",

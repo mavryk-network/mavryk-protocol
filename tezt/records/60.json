@@ -1504,7 +1504,7 @@
       "client",
       "node",
       "transfer",
-      "tz4"
+      "mv4"
     ],
     "successful_runs": {
       "total_time": "32004356",

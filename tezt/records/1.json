@@ -1411,7 +1411,7 @@
   },
   {
     "file": "tezt/tests/client_keys.ml",
-    "title": "Generates new tz4 keys",
+    "title": "Generates new mv4 keys",
     "tags": [
       "admin_client",
       "bls",

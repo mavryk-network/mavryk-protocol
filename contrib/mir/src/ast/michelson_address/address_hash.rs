@@ -136,7 +136,7 @@ impl ByteReprTrait for AddressHash {
         Ok(match &data[0..3] {
             "KT1" => Kt1(HashTrait::from_b58check(data)?),
             "sr1" => Sr1(HashTrait::from_b58check(data)?),
-            // tz1..tz4 are delegated to KeyHash
+            // tz1..mv4 are delegated to KeyHash
             _ => Implicit(KeyHash::from_base58_check(data)?),
         })
     }

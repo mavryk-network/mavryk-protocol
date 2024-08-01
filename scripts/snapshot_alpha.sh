@@ -64,7 +64,7 @@ mv /tmp/mavryk_proto_doc_snapshot/docs/alpha "docs/${label}"
 rm -rf /tmp/mavryk_proto_doc_snapshot
 
 # set current version
-# Starting from 018 the version value moved to `constants_repr`. To be
+# Starting from 001 the version value moved to `constants_repr`. To be
 # able to snapshot older protocol the `raw_context` file is kept even
 # if it is not strictly needed anymore.
 echo "Setting current version in raw_context and proxy"

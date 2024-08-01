@@ -30,7 +30,7 @@ Delegation and Staking
 A *delegate* is any :ref:`implicit account <def_implicit_account_boreas>` registered as
 such. This is done by *self-delegating*, that is, emitting a delegation
 operation (see below) in which the specified delegate is the same as the
-operation emitter (its signer). Note that ``tz4`` accounts cannot be registered
+operation emitter (its signer). Note that ``mv4`` accounts cannot be registered
 as delegates.
 
 Any :ref:`account <def_account_boreas>` (implicit or originated) can specify a delegate

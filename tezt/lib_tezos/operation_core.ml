@@ -895,7 +895,7 @@ let inject_error_check_recommended_fee ~loc ~rex ~expected_fee op client =
 
 let dal_data_availibility_attester_not_in_committee =
   rex
-    {|The attester (tz[\w\d]+), with slot ([\d]+), is not part of the DAL committee for the level ([\d]+)\.|}
+    {|The attester (mv[\w\d]+), with slot ([\d]+), is not part of the DAL committee for the level ([\d]+)\.|}
 
 let already_denounced =
   rex

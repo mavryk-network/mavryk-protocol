@@ -196,7 +196,7 @@
   },
   {
     "file": "src/proto_alpha/lib_protocol/test/integration/consensus/test_consensus_key.ml",
-    "title": "alpha: consensus key (tz4 consensus key)",
+    "title": "alpha: consensus key (mv4 consensus key)",
     "tags": [
       "alcotezt",
       "quick",

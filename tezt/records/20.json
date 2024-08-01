@@ -1711,7 +1711,7 @@
   },
   {
     "file": "tezt/tests/client_commands.ml",
-    "title": "Nairobi: Set delegate forbidden on tz4",
+    "title": "Nairobi: Set delegate forbidden on mv4",
     "tags": [
       "admin_client",
       "bls",
@@ -1719,7 +1719,7 @@
       "nairobi",
       "node",
       "set_delegate",
-      "tz4"
+      "mv4"
     ],
     "successful_runs": {
       "total_time": "4065428",

@@ -142,9 +142,9 @@ mod test {
             Ok(Contract::Implicit(PublicKeyHash::Secp256k1(_)))
         ));
 
-        let tz2_from_pkh = pkh.unwrap().to_b58check();
+        let mv2_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(mv2, &tz2_from_pkh);
+        assert_eq!(mv2, &mv2_from_pkh);
     }
 
     #[test]
@@ -158,9 +158,9 @@ mod test {
             Ok(Contract::Implicit(PublicKeyHash::P256(_)))
         ));
 
-        let tz3_from_pkh = pkh.unwrap().to_b58check();
+        let mv3_from_pkh = pkh.unwrap().to_b58check();
 
-        assert_eq!(mv3, &tz3_from_pkh);
+        assert_eq!(mv3, &mv3_from_pkh);
     }
 
     #[test]

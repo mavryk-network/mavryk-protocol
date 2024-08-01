@@ -154,18 +154,18 @@ let random_mv1 =
   (Ed25519 (Signature.Ed25519.Public_key_hash.of_string_exn str)
     : public_key_hash)
 
-let random_tz2 =
+let random_mv2 =
   let open QCheck2.Gen in
   let+ str = string_size (pure Signature.Secp256k1.Public_key_hash.size) in
   (Secp256k1 (Signature.Secp256k1.Public_key_hash.of_string_exn str)
     : public_key_hash)
 
-let random_tz3 =
+let random_mv3 =
   let open QCheck2.Gen in
   let+ str = string_size (pure Signature.P256.Public_key_hash.size) in
   (P256 (Signature.P256.Public_key_hash.of_string_exn str) : public_key_hash)
 
-let random_tz4 =
+let random_mv4 =
   let open QCheck2.Gen in
   let+ str = string_size (pure Signature.Bls.Public_key_hash.size) in
   (Bls (Signature.Bls.Public_key_hash.of_string_exn str) : public_key_hash)
@@ -175,9 +175,9 @@ let random_pkh =
   let* algo = gen_algo in
   match algo with
   | Ed25519 -> random_mv1
-  | Secp256k1 -> random_tz2
-  | P256 -> random_tz3
-  | Bls -> random_tz4
+  | Secp256k1 -> random_mv2
+  | P256 -> random_mv3
+  | Bls -> random_mv4
 
 let random_pk =
   let open QCheck2.Gen in

@@ -8,7 +8,7 @@ addresses:
   - An implicit account is a non-programmable account, whose tokens
     are spendable and delegatable by the owner of a private key. Its address is
     the hash of the public key, prefixed by ``tz1``, ``tz2``,
-    ``tz3`` or ``tz4``.
+    ``tz3`` or ``mv4``.
   - A smart contract is a programmable account, associated with some Michelson code.
     A transaction to such
     an address can provide data, and can fail, according to the :ref:`transaction semantics <transaction_semantics_atlas>`. Its address is a unique hash that depends on
@@ -66,10 +66,10 @@ Secp256r1. This is one of the curves for EcDSA recommended by NIST. It is also
 often the only cryptographic scheme supported by HSMs (Hardware Security
 Modules) of cloud providers.
 
-``tz4``: BLS
+``mv4``: BLS
 ''''''''''''
 
-Addresses that start with the ``tz4`` prefix are hashes of BLS public keys and
+Addresses that start with the ``mv4`` prefix are hashes of BLS public keys and
 signatures must be produced by using the `BLS signature scheme
 <https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-bls-signature-05>`_ with
 the `BLS12-381 curve <https://hackmd.io/@benjaminion/bls12-381>`_. One

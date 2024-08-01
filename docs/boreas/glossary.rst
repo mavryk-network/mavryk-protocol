@@ -171,7 +171,7 @@ _`Delegate`
     An implicit account becomes a delegate by registering as such.
     Through delegation_, other accounts can delegate their rights to a delegate account.
     The delegate's rights are calculated based on its stake_.
-    Note that ``tz4`` accounts cannot be delegates.
+    Note that ``mv4`` accounts cannot be delegates.
 
 _`Delegation`
     An operation_ in which an account_ designates a

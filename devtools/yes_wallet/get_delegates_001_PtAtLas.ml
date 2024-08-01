@@ -83,7 +83,7 @@ module Get_delegates = struct
 
     type t = Blinded_public_key_hash.t
 
-    (* Use Obj.magic to access commitments from raw context without modifying Protocol 018 *)
+    (* Use Obj.magic to access commitments from raw context without modifying Protocol 001 *)
     let fold ctxt ~order ~init ~f =
       let context : Mavryk_protocol_001_PtAtLas.Protocol.Raw_context.t =
         Obj.magic ctxt

@@ -348,7 +348,7 @@ module Transfer = struct
       ~error_msg:"Balance of victim should be %R but is %L." ;
     unit
 
-  let transfer_tz4 =
+  let transfer_mv4 =
     Protocol.register_test
       ~__FILE__
       ~title:"Transfer from and to accounts"
@@ -394,7 +394,7 @@ module Transfer = struct
         Lwt_list.iter_s (fun dest -> test_transfer from dest) accounts2)
       accounts1
 
-  let batch_transfers_tz4 =
+  let batch_transfers_mv4 =
     Protocol.register_test
       ~__FILE__
       ~title:"Batch transfers"
@@ -468,7 +468,7 @@ module Transfer = struct
     in
     Lwt_list.iter_s test_batch_transfer accounts
 
-  let forbidden_set_delegate_tz4 =
+  let forbidden_set_delegate_mv4 =
     Protocol.register_test
       ~__FILE__
       ~title:"Set delegate forbidden on mv4"
@@ -644,9 +644,9 @@ module Transfer = struct
   let register protocols =
     alias_pkh_destination protocols ;
     alias_pkh_source protocols ;
-    transfer_tz4 protocols ;
-    batch_transfers_tz4 protocols ;
-    forbidden_set_delegate_tz4 protocols ;
+    transfer_mv4 protocols ;
+    batch_transfers_mv4 protocols ;
+    forbidden_set_delegate_mv4 protocols ;
     balance_too_low protocols ;
     transfers_bootstraps5_bootstrap1 protocols ;
     safety_guard protocols

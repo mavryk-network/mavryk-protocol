@@ -102,13 +102,13 @@ let signer_bls_test =
       client
   in
   let* () = Client.bake_for_and_wait client in
-  let get_balance_tz4 client =
+  let get_balance_mv4 client =
     Client.RPC.call client
     @@ RPC.get_chain_block_context_contract_balance
          ~id:Constant.mv4_account.public_key_hash
          ()
   in
-  let* balance_0 = get_balance_tz4 client in
+  let* balance_0 = get_balance_mv4 client in
   let* () =
     Client.transfer
       ~amount:(Tez.of_int 5)
@@ -117,7 +117,7 @@ let signer_bls_test =
       client
   in
   let* () = Client.bake_for_and_wait client in
-  let* balance_1 = get_balance_tz4 client in
+  let* balance_1 = get_balance_mv4 client in
   Check.((Tez.mumav_int64 balance_0 > Tez.mumav_int64 balance_1) int64)
     ~error_msg:"Tz4 sender %s has decreased balance after transfer" ;
   unit

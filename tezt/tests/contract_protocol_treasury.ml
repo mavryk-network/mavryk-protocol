@@ -13,6 +13,7 @@ let hooks =
     ()
 
 let buf = "KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH"
+let buf_adm = "mv1FpkYtjBvppr7rrrrBVKbmiDtcALjb4T21"
 
 let lb_subsidy = 83333
 
@@ -66,7 +67,7 @@ let setup_transfer_funds ~__LOC__ client =
   let* buf_storage = get_buf_storage client ~hooks buf in
   let () =
     Check.(
-      (buf_storage = Constant.bootstrap1.public_key_hash)
+      (buf_storage = buf_adm)
         string
         ~__LOC__
         ~error_msg:"Expected storage %R, got %L")
