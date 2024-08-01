@@ -13,6 +13,7 @@ let hooks =
     ()
 
 let buf = "KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH"
+
 let buf_adm = "mv1FpkYtjBvppr7rrrrBVKbmiDtcALjb4T21"
 
 let lb_subsidy = 83333

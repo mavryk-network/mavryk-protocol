@@ -139,28 +139,28 @@ let migrate_already_denounced_from_Atlas ctxt =
   | None -> return ctxt
   | Some previous_cycle -> migrate_cycle ctxt previous_cycle
 
-  (* This removes snapshots and moves the current [staking_balance] one level
-     up. Same thing for active delegates with minimal stake but renames the key
-     at the same time. *)
-  let migrate_staking_balance_and_active_delegates_for_b ctxt =
-    let open Lwt_result_syntax in
-    let* staking_balance_tree =
-      Raw_context.get_tree ctxt ["staking_balance"; "current"]
-    in
-    let*! ctxt =
-      Raw_context.add_tree ctxt ["staking_balance"] staking_balance_tree
-    in
-    let* active_delegates_tree =
-      Raw_context.get_tree ctxt ["active_delegate_with_one_roll"; "current"]
-    in
-    let*! ctxt = Raw_context.remove ctxt ["active_delegate_with_one_roll"] in
-    let*! ctxt =
-      Raw_context.add_tree
-        ctxt
-        ["active_delegates_with_minimal_stake"]
-        active_delegates_tree
-    in
-    return ctxt
+(* This removes snapshots and moves the current [staking_balance] one level
+   up. Same thing for active delegates with minimal stake but renames the key
+   at the same time. *)
+let migrate_staking_balance_and_active_delegates_for_b ctxt =
+  let open Lwt_result_syntax in
+  let* staking_balance_tree =
+    Raw_context.get_tree ctxt ["staking_balance"; "current"]
+  in
+  let*! ctxt =
+    Raw_context.add_tree ctxt ["staking_balance"] staking_balance_tree
+  in
+  let* active_delegates_tree =
+    Raw_context.get_tree ctxt ["active_delegate_with_one_roll"; "current"]
+  in
+  let*! ctxt = Raw_context.remove ctxt ["active_delegate_with_one_roll"] in
+  let*! ctxt =
+    Raw_context.add_tree
+      ctxt
+      ["active_delegates_with_minimal_stake"]
+      active_delegates_tree
+  in
+  return ctxt
 
 (* This should clean most of the remaining fields [frozen_deposits].
    The field was removed in Atlas but cleaning it using [remove] was too

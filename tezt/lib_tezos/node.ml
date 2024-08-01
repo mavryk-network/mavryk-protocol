@@ -142,6 +142,17 @@ let is_redundant = function
   | Max_active_rpc_connections _, _ ->
       false
 
+(* Some arguments should not be written in the config file by [Node.init]
+   because [Node.run] overwrites them or it does not exist in the configuration
+   file of the node. *)
+let should_be_runlike_argument = function
+  (* The single process argument does not exist in the configuration file of
+     the node. It is only known as a command-line option. *)
+  | Singleprocess -> true
+  (* More details are given in definition of type [argument]. *)
+  | RPC_additional_addr _ -> true
+  | _ -> false
+
 type 'a known = Unknown | Known of 'a
 
 module Parameters = struct
@@ -367,7 +378,7 @@ module Config_file = struct
         ( "genesis",
           `O
             [
-              ("timestamp", `String "22024-02-23T09:42:53Z");
+              ("timestamp", `String "2018-06-30T16:07:32Z");
               ( "block",
                 `String "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2" );
               ("protocol", `String Protocol.genesis_hash);
@@ -389,9 +400,9 @@ module Config_file = struct
         ( "genesis",
           `O
             [
-              ("timestamp", `String "2024-02-23T09:40:24Z");
+              ("timestamp", `String "2022-01-25T15:00:00Z");
               ( "block",
-                `String "BLockGenesisGenesisGenesisGenesisGenesisad134b8W1qK" );
+                `String "BLockGenesisGenesisGenesisGenesisGenesis1db77eJNeJ9" );
               ("protocol", `String Protocol.genesis_hash);
             ] );
         ( "genesis_parameters",
@@ -813,9 +824,14 @@ let runlike_command_arguments node command arguments =
   let net_addr, rpc_addr, metrics_addr =
     match node.persistent_state.runner with
     | None ->
-        ( Option.value ~default:"127.0.0.1" node.persistent_state.net_addr ^ ":",
+        ( Option.value
+            ~default:Constant.default_host
+            node.persistent_state.net_addr
+          ^ ":",
           node.persistent_state.rpc_host ^ ":",
-          Option.value ~default:"127.0.0.1" node.persistent_state.metrics_addr
+          Option.value
+            ~default:Constant.default_host
+            node.persistent_state.metrics_addr
           ^ ":" )
     | Some _ ->
         (* FIXME spawn an ssh tunnel in case of remote host *)
@@ -918,12 +934,9 @@ let init ?runner ?path ?name ?color ?data_dir ?event_pipe ?net_port
     ?advertised_net_port ?metrics_addr ?metrics_port ?rpc_external ?rpc_host
     ?rpc_port ?rpc_tls ?event_level ?event_sections_levels ?patch_config
     ?snapshot arguments =
-  (* The single process argument does not exist in the configuration
-     file of the node. It is only known as a command-line option. As a
-     consequence, we filter Singleprocess from the list of arguments
-     passed to create, and we readd it if necessary when calling
-     run. *)
-  let single_process = List.mem Singleprocess arguments in
+  let run_arguments, config_arguments =
+    List.partition should_be_runlike_argument arguments
+  in
   let node =
     create
       ?runner
@@ -940,18 +953,28 @@ let init ?runner ?path ?name ?color ?data_dir ?event_pipe ?net_port
       ?rpc_host
       ?rpc_port
       ?rpc_tls
-      (List.filter (fun x -> x <> Singleprocess) arguments)
+      config_arguments
   in
   let* () = identity_generate node in
   let* () = config_init node [] in
+  (* We leave RPC port arguments in because we want them to be used by [run] if
+     the node is restarted. It does mean that [config_init] will write them
+     too, which can be confusing since it has no effect. This is a compromise.
+
+     We filter out [Singleprocess] to prevent an error if a config command is
+     called on [node]. This argument will not be used if the node is restarted.
+  *)
+  let singleprocess_arg, run_arguments =
+    List.partition (function Singleprocess -> true | _ -> false) run_arguments
+  in
+  node.persistent_state.arguments <- run_arguments ;
   let* () =
     match snapshot with
     | Some (file, reconstruct) -> snapshot_import ~reconstruct node file
     | None -> unit
   in
-  let argument = if single_process then [Singleprocess] else [] in
   let* () =
-    run ?patch_config ?event_level ?event_sections_levels node argument
+    run ?patch_config ?event_level ?event_sections_levels node singleprocess_arg
   in
   let* () = wait_for_ready node in
   return node

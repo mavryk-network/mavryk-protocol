@@ -63,7 +63,19 @@ type media_type = Json | Binary | Any
     Not all arguments are available here.
     Some are simply not implemented, and some are handled separately
     because they need special care. The latter are implemented as optional
-    labeled arguments (e.g. [?net_port] and [?data_dir]). *)
+    labeled arguments (e.g. [?net_port] and [?data_dir]).
+
+    About [RPC_additional_addr], at least one RPC port is always passed by
+    [Node.run], which causes the RPC ports from the configuration file to be
+    ignored. So these arguments are not written in the config file when using
+    [Node.init] and kept in the list of arguments of the persistent state to
+    make sure [Node.run] passes them too.
+
+    [Singleprocess] argument does not exist in the configuration file of the
+    node. It is only known as a command-line option. [Node.init] will neither
+    pass it to [Node.config] nor register it into node's arguments, but only
+    use it for [Node.run] function.
+*)
 type argument =
   | Network of string  (** [--network] *)
   | History_mode of history_mode  (** [--history-mode] *)
@@ -111,7 +123,7 @@ type t
     whose name is derived from [name]. It will be created
     as a named pipe so that node events can be received.
 
-    Default value for [net_addr] is either [127.0.0.1] if no [runner] is
+    Default value for [net_addr] is either [Constant.default_host] if no [runner] is
     provided, or a value allowing the local Tezt program to connect to it
     if it is.
 
@@ -162,15 +174,18 @@ val create :
 
     The argument is passed to the next run of [mavkit-node config init].
     It is also passed to all runs of [mavkit-node run] that occur before
-    the next [mavkit-node config init]. *)
+    the next [mavkit-node config init].
+
+    There are some exceptions, see definition of type [argument]. *)
 val add_argument : t -> argument -> unit
 
 (** Add a [--peer] argument to a node.
 
     Usage: [add_peer node peer]
 
-    Same as [add_argument node (Peer "127.0.0.1:<PORT>")]
-    where [<PORT>] is the P2P port of [peer]. *)
+    Same as [add_argument node (Peer "<HOST>:<PORT>")]
+    where [<HOST>] is given by [Runner.address] and [<PORT>] is the P2P port of
+    [peer]. *)
 val add_peer : t -> t -> unit
 
 (** Returns the list of address of all [Peer <addr>] arguments. *)
@@ -180,8 +195,9 @@ val get_peers : t -> string list
 
     Usage: [add_peer node peer]
 
-    Same as [add_argument node (Peer "127.0.0.1:<PORT>#<ID>")]
-    where [<PORT>] is the P2P port and [<ID>] is the identity of [peer]. *)
+    Same as [add_argument node (Peer "<HOST>:<PORT>#<ID>")]
+    where [<HOST>] is given by [Runner.address], [<PORT>] is the P2P port and
+    [<ID>] is the identity of [peer]. *)
 val add_peer_with_id : t -> t -> unit Lwt.t
 
 (** Removes the file peers.json that is at the root of data-dir.

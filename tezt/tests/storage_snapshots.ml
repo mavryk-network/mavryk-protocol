@@ -43,12 +43,17 @@ let pp_snapshot_history_mode fmt v =
     | Node.Rolling_history -> "rolling"
     | Node.Full_history -> "full")
 
-let get_constants client =
+let get_constants ~protocol client =
   let* constants =
     Client.RPC.call client @@ RPC.get_chain_block_context_constants ()
   in
   let blocks_preservation_cycles =
-    JSON.(constants |-> "blocks_preservation_cycles" |> as_int)
+    let v =
+      if Protocol.number protocol > Protocol.number Protocol.Atlas then
+        "blocks_preservation_cycles"
+      else "preserved_cycles"
+    in
+    JSON.(constants |-> v |> as_int)
   in
   let blocks_per_cycle = JSON.(constants |-> "blocks_per_cycle" |> as_int) in
   let max_op_ttl =
@@ -294,7 +299,7 @@ let test_export_import_snapshots =
   let* client = Client.init ~endpoint:(Node archive_node) () in
   let* () = Client.activate_protocol_and_wait ~protocol client in
   let* blocks_preservation_cycles, blocks_per_cycle, max_op_ttl =
-    get_constants client
+    get_constants ~protocol client
   in
   (* Bake enough blocks so that the rolling node caboose is not at the
      genesis anymore. To do so, we need to bake at least 3 cycles,
@@ -366,9 +371,15 @@ let test_drag_after_rolling_import =
   let* client = Client.init ~endpoint:(Node archive_node) () in
   let* () = Client.activate_protocol_and_wait ~protocol client in
   let* blocks_preservation_cycles, blocks_per_cycle, max_op_ttl =
-    get_constants client
+    get_constants ~protocol client
   in
-  let finalized_block_distance = 2 in
+  let finalized_block_distance =
+    match protocol with
+    | Atlas ->
+        (* Conservative TB finality *)
+        blocks_preservation_cycles * blocks_per_cycle
+    | Alpha | Boreas -> (* TB finality *) 2
+  in
   Log.info "Baking a few blocks"
   (* Baking enough blocks so that the caboose is not the genesis
      anymore (depending on the max_op_ttl)*) ;
