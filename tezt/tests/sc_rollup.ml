@@ -43,12 +43,12 @@ open Sc_rollup_helpers
 *)
 
 let default_wasm_pvm_revision = function
-  | Protocol.Atlas -> "2.0.0-r3"
   | Protocol.Alpha | Boreas -> "2.0.0-r4"
+  | Protocol.Atlas -> "2.0.0-r3"
 
 let max_nb_ticks = function
-  | Protocol.Atlas | Boreas -> 50_000_000_000_000
-  | Alpha -> 11_000_000_000
+  | Protocol.Boreas -> 50_000_000_000_000
+  | Alpha | Atlas -> 11_000_000_000
 
 let get_outbox_proof ?rpc_hooks ~__LOC__ sc_rollup_node ~message_index
     ~outbox_level =
@@ -1505,11 +1505,11 @@ let check_published_commitment_in_l1 ?(force_new_level = true) sc_rollup client
     (published_commitment, "published") ;
   unit
 
-let test_commitment_scenario ?supports ?(commitment_period = 10)
-    ?challenge_window ?(extra_tags = []) ~variant =
+let test_commitment_scenario ?supports ?commitment_period ?challenge_window
+    ?(extra_tags = []) ~variant =
   test_full_scenario
     ?supports
-    ~commitment_period
+    ?commitment_period
     ?challenge_window
     {
       tags = ["commitment"] @ extra_tags;
@@ -1732,6 +1732,7 @@ let commitments_messages_reset kind protocol sc_rollup_node sc_rollup _node
      `block_finality_time` empty levels are baked which ensures that two
      commitments are stored and published by the rollup node.
   *)
+  let max_nb_ticks = max_nb_ticks protocol in
   let* genesis_info =
     Client.RPC.call ~hooks client
     @@ RPC.get_chain_block_context_smart_rollups_smart_rollup_genesis_info
@@ -1790,7 +1791,7 @@ let commitments_messages_reset kind protocol sc_rollup_node sc_rollup _node
          4
          (* one snapshot for collecting, two snapshots for SOL,
             Info_per_level and EOL *)
-         * max_nb_ticks protocol (* number of ticks in a snapshots *)
+         * max_nb_ticks (* number of ticks in a snapshots *)
          * levels_to_commitment (* number of inboxes *)
      | _ -> failwith "incorrect kind"
    in
@@ -2032,7 +2033,8 @@ let commitments_reorgs ~switch_l1_node ~kind protocol sc_rollup_node sc_rollup
     ~error_msg:
       "Commitment has been stored at a level different than expected (%L = %R)" ;
   let () = Log.info "init_level: %d" init_level in
-  (let expected_number_of_ticks =
+  (let max_nb_ticks = max_nb_ticks protocol in
+   let expected_number_of_ticks =
      match kind with
      | "arith" ->
          1 (* boot sector *) + 1 (* metadata *) + (3 * levels_to_commitment)
@@ -2040,7 +2042,7 @@ let commitments_reorgs ~switch_l1_node ~kind protocol sc_rollup_node sc_rollup
      | "wasm_2_0_0" ->
          (* Number of ticks per snapshot,
             see Lib_scoru_wasm.Constants.wasm_max_tick *)
-         let snapshot_ticks = max_nb_ticks protocol in
+         let snapshot_ticks = max_nb_ticks in
          snapshot_ticks * 4
          (* 1 snapshot for collecting messages, 3 snapshots for SOL,
             Info_per_level and SOL *) * levels_to_commitment
@@ -4939,11 +4941,7 @@ let test_private_rollup_node_publish_in_whitelist =
   let levels = commitment_period in
   Log.info "Baking at least %d blocks for commitment of first message" levels ;
   let* _new_level =
-    bake_until_lpc_updated
-      ~at_least:levels
-      ~timeout:5.
-      mavryk_client
-      rollup_node
+    bake_until_lpc_updated ~at_least:levels ~timeout:5. mavryk_client rollup_node
   in
   bake_levels levels mavryk_client
 
