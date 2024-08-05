@@ -29,7 +29,7 @@ cleanup() {
   git tag -d "mavkit-v$VERSION"+rc1 > /dev/null 2>&1
   git tag -d "mavkit-v$VERSION"-rc1 > /dev/null 2>&1
   git checkout "$CURRENT_BRANCH"
-  git branch -D "$TESTBRANCH"
+  git branch -D "$TESTBRANCH" > /dev/null 2>&1
   set -e
 }
 

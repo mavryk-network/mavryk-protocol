@@ -10,7 +10,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7
-    Fee to the baker: ṁ0.000066
+    Fee to the validator: ṁ0.000066
     Fee to the protocol treasury: ṁ0.000066
     Fee to the burn address: ṁ0.000133
     Expected counter: 1

@@ -30,7 +30,7 @@
    Subject:      Detect double (pre)attestation through the accuser.
 *)
 
-let use_legacy_attestation_name protocol = Protocol.number protocol < 18
+let use_legacy_attestation_name protocol = Protocol.number protocol < 001
 
 let get_consensus_operation_name protocol =
   if use_legacy_attestation_name protocol then "endorsement" else "attestation"

@@ -1,7 +1,7 @@
 
 ./mavkit-client --wait none transfer 0 from bootstrap1 to '[CONTRACT_HASH]' --burn-cap 1000 --arg 'Pair (Pair "[SMART_ROLLUP_HASH]" "[PUBLIC_KEY_HASH]") (Pair 450 "Hello, Ticket!")'
 Node is bootstrapped.
-Estimated gas: 2329.171 units (will add 100 for safety)
+Estimated gas: 2329.402 units (will add 100 for safety)
 Estimated storage: 67 bytes added (will add 20 for safety)
 Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
@@ -12,7 +12,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.000151
+    Fee to the validator: ṁ0.000151
     Fee to the protocol treasury: ṁ0.000151
     Fee to the burn address: ṁ0.000304
     Expected counter: 3
@@ -31,7 +31,7 @@ This sequence of operations was run:
       Updated storage: Unit
       Storage size: 205 bytes
       Paid storage size diff: 67 bytes
-      Consumed gas: 2222.144
+      Consumed gas: 2222.384
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.01675
         storage fees ........................... +ṁ0.01675
@@ -41,9 +41,9 @@ This sequence of operations was run:
           From: [CONTRACT_HASH]
           To: [SMART_ROLLUP_HASH]
           Parameter: (Pair "[PUBLIC_KEY_HASH]"
-                           (Ticket [MICHELINE_KT1_BYTES] string "Hello, Ticket!" 450))
+                           (Pair [MICHELINE_KT1_BYTES] (Pair "Hello, Ticket!" 450)))
           This transaction was successfully applied
-          Consumed gas: 106.960
+          Consumed gas: 106.951
           Ticket updates:
             Ticketer: [CONTRACT_HASH]
             Content type: string
@@ -65,7 +65,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.000154
+    Fee to the validator: ṁ0.000154
     Fee to the protocol treasury: ṁ0.000154
     Fee to the burn address: ṁ0.000311
     Expected counter: 1
@@ -96,7 +96,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.00017
+    Fee to the validator: ṁ0.00017
     Fee to the protocol treasury: ṁ0.00017
     Fee to the burn address: ṁ0.000342
     Expected counter: 2
@@ -116,8 +116,8 @@ GET http://[HOST]:[PORT]/global/block/12/total_ticks
 
 ./mavkit-client --wait none execute outbox message of smart rollup '[SMART_ROLLUP_HASH]' from bootstrap1 for commitment hash '[SC_ROLLUP_COMMITMENT_HASH]' and output proof '[SMART_ROLLUP_BYTES]' --burn-cap 10
 Node is bootstrapped.
-Estimated gas: 6269.265 units (will add 100 for safety)
-Estimated storage: 133 bytes added (will add 20 for safety)
+Estimated gas: 6269.473 units (will add 100 for safety)
+Estimated storage: 125 bytes added (will add 20 for safety)
 Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
@@ -127,12 +127,12 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.000406
+    Fee to the validator: ṁ0.000406
     Fee to the protocol treasury: ṁ0.000406
     Fee to the burn address: ṁ0.000813
     Expected counter: 8
     Gas limit: 6370
-    Storage limit: 153 bytes
+    Storage limit: 145 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.001625
       total block fees ....................... +ṁ0.001625
@@ -160,13 +160,13 @@ This sequence of operations was run:
           Parameter: (Pair [MICHELINE_KT1_BYTES] (Pair "Hello, Ticket!" 220))
           This transaction was successfully applied
           Updated storage:
-            { Ticket [MICHELINE_KT1_BYTES] string "Hello, Ticket!" 220 }
-          Storage size: 183 bytes
-          Paid storage size diff: 61 bytes
-          Consumed gas: 1208.551
+            { Pair [MICHELINE_KT1_BYTES] (Pair "Hello, Ticket!" 220) }
+          Storage size: 175 bytes
+          Paid storage size diff: 53 bytes
+          Consumed gas: 1208.759
           Balance updates:
-            [PUBLIC_KEY_HASH] ... -ṁ0.01525
-            storage fees ........................... +ṁ0.01525
+            [PUBLIC_KEY_HASH] ... -ṁ0.01325
+            storage fees ........................... +ṁ0.01325
           Ticket updates:
             Ticketer: [CONTRACT_HASH]
             Content type: string
@@ -177,8 +177,8 @@ This sequence of operations was run:
 
 ./mavkit-client --wait none execute outbox message of smart rollup '[SMART_ROLLUP_HASH]' from bootstrap1 for commitment hash '[SC_ROLLUP_COMMITMENT_HASH]' and output proof '[SMART_ROLLUP_BYTES]' --burn-cap 10
 Node is bootstrapped.
-Estimated gas: 5817.841 units (will add 100 for safety)
-Estimated storage: 60 bytes added (will add 20 for safety)
+Estimated gas: 5818.257 units (will add 100 for safety)
+Estimated storage: 52 bytes added (will add 20 for safety)
 Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
 NOT waiting for the operation to be included.
@@ -188,12 +188,12 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.000394
+    Fee to the validator: ṁ0.000394
     Fee to the protocol treasury: ṁ0.000394
     Fee to the burn address: ṁ0.000789
     Expected counter: 9
-    Gas limit: 5918
-    Storage limit: 80 bytes
+    Gas limit: 5919
+    Storage limit: 72 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.001577
       total block fees ....................... +ṁ0.001577
@@ -217,14 +217,14 @@ This sequence of operations was run:
           Parameter: (Pair [MICHELINE_KT1_BYTES] (Pair "Hello, Ticket!" 40))
           This transaction was successfully applied
           Updated storage:
-            { Ticket [MICHELINE_KT1_BYTES] string "Hello, Ticket!" 40 ;
-              Ticket [MICHELINE_KT1_BYTES] string "Hello, Ticket!" 220 }
-          Storage size: 243 bytes
-          Paid storage size diff: 60 bytes
-          Consumed gas: 1216.566
+            { Pair [MICHELINE_KT1_BYTES] (Pair "Hello, Ticket!" 40) ;
+              Pair [MICHELINE_KT1_BYTES] (Pair "Hello, Ticket!" 220) }
+          Storage size: 227 bytes
+          Paid storage size diff: 52 bytes
+          Consumed gas: 1216.982
           Balance updates:
-            [PUBLIC_KEY_HASH] ... -ṁ0.015
-            storage fees ........................... +ṁ0.015
+            [PUBLIC_KEY_HASH] ... -ṁ0.013
+            storage fees ........................... +ṁ0.013
           Ticket updates:
             Ticketer: [CONTRACT_HASH]
             Content type: string

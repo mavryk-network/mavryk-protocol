@@ -780,8 +780,8 @@ module Revamped = struct
     let* () = check_mempool ~validated:[oph1; oph2] client in
 
     let signer =
-      if Protocol.number protocol >= 15 then Constant.bootstrap1
-        (* Since protocol 15, the 1M restriction check is done
+      if Protocol.number protocol >= 001 then Constant.bootstrap1
+        (* Since protocol 001, the 1M restriction check is done
            after the validation of the op (and includes the
            signature checks), therefore we need a valid
            signature *)

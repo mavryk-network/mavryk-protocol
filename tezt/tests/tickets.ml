@@ -1160,8 +1160,8 @@ let test_originated_implicit_can_be_equipotent =
       "Sending tickets to either implicit accounts or originated contracts \
        accepting tickets with default entrypoint should equally work"
     ~tags:["client"; "michelson"]
-    ~supports:(Protocol.From_protocol 001)
     ~uses_node:false
+    ~supports:(Protocol.From_protocol 001)
   @@ fun protocol ->
   let* client = Client.init_mockup ~protocol () in
   let* _alias, ticketer =
