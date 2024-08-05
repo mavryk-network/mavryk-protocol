@@ -12,13 +12,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000359
+    Fee to the baker: ṁ0.000089
+    Fee to the protocol treasury: ṁ0.000089
+    Fee to the burn address: ṁ0.000181
     Expected counter: 1
     Gas limit: 681
     Storage limit: 321 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000359
-      payload fees(the block proposer) ....... +ṁ0.000359
+      total block fees ....................... +ṁ0.000359
     Origination:
       From: [PUBLIC_KEY_HASH]
       Credit: ṁ0
@@ -56,13 +58,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000386
+    Fee to the baker: ṁ0.000096
+    Fee to the protocol treasury: ṁ0.000096
+    Fee to the burn address: ṁ0.000194
     Expected counter: 2
     Gas limit: 1378
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000386
-      payload fees(the block proposer) ....... +ṁ0.000386
+      total block fees ....................... +ṁ0.000386
     Transaction:
       Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
@@ -70,7 +74,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: 1
       Storage size: 40 bytes
-      Consumed gas: 1277.860
+      Consumed gas: 1277.344
 
 
 ./mavkit-client --mode mockup rpc get '/chains/main/blocks/head/context/contracts/[CONTRACT_HASH]/storage'

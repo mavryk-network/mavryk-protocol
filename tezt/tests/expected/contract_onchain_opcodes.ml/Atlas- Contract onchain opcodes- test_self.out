@@ -1,0 +1,81 @@
+
+./mavkit-client --mode mockup --wait none originate contract self transferring 0 from bootstrap1 running michelson_test_scripts/opcodes/self.tz --init '"[PUBLIC_KEY_HASH]"' --burn-cap 10 --force
+Node is bootstrapped.
+Estimated gas: 586.589 units (will add 100 for safety)
+Estimated storage: 324 bytes added (will add 20 for safety)
+Operation successfully injected in the node.
+Operation hash is '[OPERATION_HASH]'
+NOT waiting for the operation to be included.
+Use command
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+and/or an external block explorer to make sure that it has been included.
+This sequence of operations was run:
+  Manager signed operations:
+    From: [PUBLIC_KEY_HASH]
+    Fee to the validator: ṁ0.000094
+    Fee to the protocol treasury: ṁ0.000094
+    Fee to the burn address: ṁ0.000189
+    Expected counter: 1
+    Gas limit: 687
+    Storage limit: 344 bytes
+    Balance updates:
+      [PUBLIC_KEY_HASH] ... -ṁ0.000377
+      total block fees ....................... +ṁ0.000377
+    Origination:
+      From: [PUBLIC_KEY_HASH]
+      Credit: ṁ0
+      Script:
+        { parameter unit ;
+          storage address ;
+          code { DROP ; SELF ; ADDRESS ; NIL operation ; PAIR } }
+        Initial storage: "[PUBLIC_KEY_HASH]"
+        No delegate for this contract
+        This origination was successfully applied
+        Originated contracts:
+          [CONTRACT_HASH]
+        Storage size: 67 bytes
+        Paid storage size diff: 67 bytes
+        Consumed gas: 586.556
+        Balance updates:
+          [PUBLIC_KEY_HASH] ... -ṁ0.01675
+          storage fees ........................... +ṁ0.01675
+          [PUBLIC_KEY_HASH] ... -ṁ0.06425
+          storage fees ........................... +ṁ0.06425
+
+New contract [CONTRACT_HASH] originated.
+Contract memorized as self.
+
+./mavkit-client --mode mockup --wait none transfer 0 from bootstrap1 to '[CONTRACT_HASH]' --burn-cap 10 --arg Unit
+Node is bootstrapped.
+Estimated gas: 1279.520 units (will add 100 for safety)
+Estimated storage: no bytes added
+Operation successfully injected in the node.
+Operation hash is '[OPERATION_HASH]'
+NOT waiting for the operation to be included.
+Use command
+  mavkit-client wait for [OPERATION_HASH] to be included --confirmations 1 --branch [BLOCK_HASH]
+and/or an external block explorer to make sure that it has been included.
+This sequence of operations was run:
+  Manager signed operations:
+    From: [PUBLIC_KEY_HASH]
+    Fee to the validator: ṁ0.000096
+    Fee to the protocol treasury: ṁ0.000096
+    Fee to the burn address: ṁ0.000194
+    Expected counter: 2
+    Gas limit: 1380
+    Storage limit: 0 bytes
+    Balance updates:
+      [PUBLIC_KEY_HASH] ... -ṁ0.000386
+      total block fees ....................... +ṁ0.000386
+    Transaction:
+      Amount: ṁ0
+      From: [PUBLIC_KEY_HASH]
+      To: [CONTRACT_HASH]
+      This transaction was successfully applied
+      Updated storage: 0x019ad266f0f932e4ea940c123a688e5f6565e2688a00
+      Storage size: 67 bytes
+      Consumed gas: 1279.626
+
+
+./mavkit-client --mode mockup get contract storage for '[CONTRACT_HASH]'
+"[CONTRACT_HASH]"

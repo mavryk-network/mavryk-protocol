@@ -12,13 +12,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000556
+    Fee to the baker: ṁ0.000139
+    Fee to the protocol treasury: ṁ0.000139
+    Fee to the burn address: ṁ0.000278
     Expected counter: 1
     Gas limit: 750
     Storage limit: 531 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000556
-      payload fees(the block proposer) ....... +ṁ0.000556
+      total block fees ....................... +ṁ0.000556
     Origination:
       From: [PUBLIC_KEY_HASH]
       Credit: ṁ0
@@ -78,13 +80,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000403
+    Fee to the baker: ṁ0.0001
+    Fee to the protocol treasury: ṁ0.0001
+    Fee to the burn address: ṁ0.000203
     Expected counter: 2
     Gas limit: 1420
     Storage limit: 38 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000403
-      payload fees(the block proposer) ....... +ṁ0.000403
+      total block fees ....................... +ṁ0.000403
     Transaction:
       Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
@@ -94,7 +98,7 @@ This sequence of operations was run:
       Updated storage: { "a" ; "b" ; "c" }
       Storage size: 272 bytes
       Paid storage size diff: 18 bytes
-      Consumed gas: 1320.384
+      Consumed gas: 1319.911
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.0045
         storage fees ........................... +ṁ0.0045
@@ -116,13 +120,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000404
+    Fee to the baker: ṁ0.000101
+    Fee to the protocol treasury: ṁ0.000101
+    Fee to the burn address: ṁ0.000202
     Expected counter: 3
     Gas limit: 1423
     Storage limit: 38 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000404
-      payload fees(the block proposer) ....... +ṁ0.000404
+      total block fees ....................... +ṁ0.000404
     Transaction:
       Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
@@ -132,7 +138,7 @@ This sequence of operations was run:
       Updated storage: { "a" ; "b" ; "c" ; "d" ; "e" ; "f" }
       Storage size: 290 bytes
       Paid storage size diff: 18 bytes
-      Consumed gas: 1323.075
+      Consumed gas: 1322.602
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.0045
         storage fees ........................... +ṁ0.0045

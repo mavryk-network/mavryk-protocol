@@ -86,7 +86,7 @@ fn rvemu(opts: Options) -> Result<(), Box<dyn Error>> {
         .next_level()
         .insert_transfer(
             ContractKt1Hash::from_base58_check("KT1EfTusMLoeCAAGd9MZJn5yKzFr6kJU5U91").unwrap(),
-            PublicKeyHash::from_b58check("tz1dJ21ejKD17t7HKcKkTPuwQphgcSiehTYi").unwrap(),
+            PublicKeyHash::from_b58check("mv1Q4RbUk6tX1J43AGg4ScnisAEhLnpHNyux").unwrap(),
             meta.address.clone(),
             MichelsonUnit,
         );

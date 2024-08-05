@@ -12,13 +12,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000351
+    Fee to the baker: ṁ0.000087
+    Fee to the protocol treasury: ṁ0.000087
+    Fee to the burn address: ṁ0.000177
     Expected counter: 1
     Gas limit: 686
     Storage limit: 332 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000351
-      payload fees(the block proposer) ....... +ṁ0.000351
+      total block fees ....................... +ṁ0.000351
     Origination:
       From: [PUBLIC_KEY_HASH]
       Credit: ṁ0
@@ -62,13 +64,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000375
+    Fee to the baker: ṁ0.000093
+    Fee to the protocol treasury: ṁ0.000093
+    Fee to the burn address: ṁ0.000189
     Expected counter: 2
     Gas limit: 686
     Storage limit: 342 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000375
-      payload fees(the block proposer) ....... +ṁ0.000375
+      total block fees ....................... +ṁ0.000375
     Origination:
       From: [PUBLIC_KEY_HASH]
       Credit: ṁ0
@@ -106,13 +110,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000386
+    Fee to the baker: ṁ0.000096
+    Fee to the protocol treasury: ṁ0.000096
+    Fee to the burn address: ṁ0.000194
     Expected counter: 1
     Gas limit: 1379
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000386
-      payload fees(the block proposer) ....... +ṁ0.000386
+      total block fees ....................... +ṁ0.000386
     Transaction:
       Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
@@ -120,7 +126,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: 0x0000e7670f32038107a59a2b9cfefae36ea21f5aa63c
       Storage size: 65 bytes
-      Consumed gas: 1279.372
+      Consumed gas: 1278.856
 
 
 ./mavkit-client --mode mockup get contract storage for '[CONTRACT_HASH]'
@@ -139,13 +145,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000599
+    Fee to the baker: ṁ0.000149
+    Fee to the protocol treasury: ṁ0.000149
+    Fee to the burn address: ṁ0.000301
     Expected counter: 2
     Gas limit: 3049
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000599
-      payload fees(the block proposer) ....... +ṁ0.000599
+      total block fees ....................... +ṁ0.000599
     Transaction:
       Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
@@ -154,7 +162,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: Unit
       Storage size: 55 bytes
-      Consumed gas: 1739.356
+      Consumed gas: 1738.883
       Internal operations:
         Internal Transaction:
           Amount: ṁ0
@@ -163,7 +171,7 @@ This sequence of operations was run:
           This transaction was successfully applied
           Updated storage: 0x01c144b1848cb3943f64c69648f0b9e477d96c540600
           Storage size: 65 bytes
-          Consumed gas: 1210.707
+          Consumed gas: 1210.277
 
 
 ./mavkit-client --mode mockup get contract storage for '[CONTRACT_HASH]'

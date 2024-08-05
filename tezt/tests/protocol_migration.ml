@@ -331,7 +331,7 @@ let is_attestation ~protocol op =
   let kind = JSON.(op |-> "contents" |=> 0 |-> "kind" |> as_string) in
   String.equal
     kind
-    (if Protocol.(number protocol >= 18) then "attestation" else "endorsement")
+    (if Protocol.(number protocol >= 001) then "attestation" else "endorsement")
 
 (** Check that the given json list of operations contains
     [expected_count] attestations. *)

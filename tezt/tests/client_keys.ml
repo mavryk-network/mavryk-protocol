@@ -385,7 +385,7 @@ module Wallet = struct
     let* addresses = Client.list_known_addresses client in
     Check.(
       (List.assoc_opt "key" addresses
-      = Some "tz1QSF4TSVzaosgbaxnFJpRbs7798Skeb8Re")
+      = Some "mv1CoiN3ksHwP9TpjHM6Ye7d27y7gqFN42yX")
         (option string)
         ~__LOC__
         ~error_msg:"Expected %R, got %L") ;

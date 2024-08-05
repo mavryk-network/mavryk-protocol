@@ -12,13 +12,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000284
+    Fee to the baker: ṁ0.000071
+    Fee to the protocol treasury: ṁ0.000071
+    Fee to the burn address: ṁ0.000142
     Expected counter: 1
     Gas limit: 269
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000284
-      payload fees(the block proposer) ....... +ṁ0.000284
+      total block fees ....................... +ṁ0.000284
     Update_consensus_key:
       Public key hash: [PUBLIC_KEY_HASH]
       This consensus key update was successfully applied
@@ -41,8 +43,8 @@ This sequence of operations was run:
   "active_consensus_key": "[PUBLIC_KEY_HASH]" }
 
 ./mavkit-client rpc get '/chains/main/blocks/head/context/delegates/[PUBLIC_KEY_HASH]'
-{ "full_balance": "4000000333333", "current_frozen_deposits": "200000016667",
-  "frozen_deposits": "200000000000", "staking_balance": "4000000333333",
+{ "full_balance": "4000000333120", "current_frozen_deposits": "200000016667",
+  "frozen_deposits": "200000000000", "staking_balance": "4000000333120",
   "delegated_contracts": [ "[PUBLIC_KEY_HASH]" ],
   "delegated_balance": "0",
   "min_delegated_in_current_cycle":
@@ -58,12 +60,12 @@ This sequence of operations was run:
     [ { "cycle": 2, "pkh": "[PUBLIC_KEY_HASH]" } ] }
 
 ./mavkit-client rpc get '/chains/main/blocks/head/context/delegates/[PUBLIC_KEY_HASH]'
-{ "full_balance": "4000003298113", "current_frozen_deposits": "200000164906",
-  "frozen_deposits": "200000000000", "staking_balance": "4000003298113",
+{ "full_balance": "4000003297900", "current_frozen_deposits": "200000164895",
+  "frozen_deposits": "200000000000", "staking_balance": "4000003297900",
   "delegated_contracts": [ "[PUBLIC_KEY_HASH]" ],
   "delegated_balance": "0",
   "min_delegated_in_current_cycle":
-    { "amount": "3800001595660",
+    { "amount": "3800001595458",
       "level":
         { "level": 5, "level_position": 4, "cycle": 1, "cycle_position": 0,
           "expected_commitment": false } }, "deactivated": false,

@@ -12,13 +12,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000368
+    Fee to the baker: ṁ0.000092
+    Fee to the protocol treasury: ṁ0.000092
+    Fee to the burn address: ṁ0.000184
     Expected counter: 1
     Gas limit: 690
     Storage limit: 349 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000368
-      payload fees(the block proposer) ....... +ṁ0.000368
+      total block fees ....................... +ṁ0.000368
     Origination:
       From: [PUBLIC_KEY_HASH]
       Credit: ṁ0
@@ -48,7 +50,9 @@ Node is bootstrapped.
 This simulation failed:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0
+    Fee to the baker: ṁ0
+    Fee to the protocol treasury: ṁ0
+    Fee to the burn address: ṁ0
     Expected counter: 2
     Gas limit: 1040000
     Storage limit: 60000 bytes
