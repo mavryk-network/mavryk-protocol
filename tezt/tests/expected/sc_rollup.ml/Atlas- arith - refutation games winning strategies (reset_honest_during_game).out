@@ -143,16 +143,16 @@
 
 {
   "opponent": "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
-  "start_tick": "0",
-  "end_tick": "1",
+  "start_tick": "121",
+  "end_tick": "122",
   "dissection": [
     {
-      "state": "srs136U2KJweAXf7Excw61Zeu5R5L7mi2TCb1WKkowQJ6UdHJ2VZWS",
-      "tick": "0"
+      "state": "srs12gTMVH2Jm8MTRtBmtjCuVtQxsRdPKd6fmLgqUeizfdTCHpzb8V",
+      "tick": "121"
     },
     {
-      "state": "srs12RDgQ8yqwC1a1uSQjYRKEAu6LBL728S4tbiS1dwpUrpMZjmHYr",
-      "tick": "1"
+      "state": "srs12ziRy1mzsTCGdXRuzHERaB5gWs4nTByjVdGQ5chVQPucjfx7MA",
+      "tick": "122"
     }
   ]
 }
