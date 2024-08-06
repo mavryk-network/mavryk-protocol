@@ -12,13 +12,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.00085
+    Fee to the validator: ṁ0.000212
+    Fee to the protocol treasury: ṁ0.000212
+    Fee to the burn address: ṁ0.000426
     Expected counter: 1
     Gas limit: 2045
     Storage limit: 6572 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.00085
-      payload fees(the block proposer) ....... +ṁ0.00085
+      total block fees ....................... +ṁ0.00085
     Smart rollup origination:
       Kind: wasm_2_0_0
       Parameter type: string
@@ -243,7 +245,7 @@ null
 
 GET http://[HOST]:[PORT]/global/block/head/durable/wasm_2_0_0/value?key=/readonly/wasm_version
 200 OK
-"322e302e302d7234"
+"322e302e302d7233"
 
 GET http://[HOST]:[PORT]/global/block/head/durable/wasm_2_0_0/length?key=/readonly/wasm_version
 200 OK
@@ -259,7 +261,7 @@ GET http://[HOST]:[PORT]/global/block/head/status
 
 GET http://[HOST]:[PORT]/global/block/head/ticks
 200 OK
-"450000000000000"
+"99000000000"
 
 GET http://[HOST]:[PORT]/global/block/head/state_hash
 200 OK

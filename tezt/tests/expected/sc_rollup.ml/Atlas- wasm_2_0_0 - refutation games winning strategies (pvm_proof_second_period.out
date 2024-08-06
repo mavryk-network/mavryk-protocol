@@ -3,7 +3,7 @@
 {
   "opponent": "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7",
   "start_tick": "198000000000",
-  "end_tick": "231000000000",
+  "end_tick": "220000000000",
   "dissection": [
     {
       "tick": "198000000000"
@@ -13,9 +13,6 @@
     },
     {
       "tick": "220000000000"
-    },
-    {
-      "tick": "231000000000"
     }
   ]
 }

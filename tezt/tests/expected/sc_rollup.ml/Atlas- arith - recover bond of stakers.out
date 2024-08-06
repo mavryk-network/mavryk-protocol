@@ -12,7 +12,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.00011
+    Fee to the validator: ṁ0.00011
     Fee to the protocol treasury: ṁ0.00011
     Fee to the burn address: ṁ0.000221
     Expected counter: 1
@@ -49,7 +49,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.000247
+    Fee to the validator: ṁ0.000247
     Fee to the protocol treasury: ṁ0.000247
     Fee to the burn address: ṁ0.000495
     Expected counter: 2
@@ -87,7 +87,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.000253
+    Fee to the validator: ṁ0.000253
     Fee to the protocol treasury: ṁ0.000253
     Fee to the burn address: ṁ0.000506
     Expected counter: 1
@@ -125,7 +125,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.000184
+    Fee to the validator: ṁ0.000184
     Fee to the protocol treasury: ṁ0.000184
     Fee to the burn address: ṁ0.00037
     Expected counter: 3
@@ -155,7 +155,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.25
+    Fee to the validator: ṁ0.25
     Fee to the protocol treasury: ṁ0.25
     Fee to the burn address: ṁ0.5
     Expected counter: 4
@@ -187,7 +187,7 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.25
+    Fee to the validator: ṁ0.25
     Fee to the protocol treasury: ṁ0.25
     Fee to the burn address: ṁ0.5
     Expected counter: 5
