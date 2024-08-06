@@ -29,7 +29,7 @@ let () = Additional_registrations.force_linking ()
    Remove backwards compatible Tezos symlinks. *)
 let warn_if_argv0_name_not_mavkit () =
   let executable_name = Filename.basename Sys.argv.(0) in
-  let prefix = "tezos-" in
+  let prefix = "mavryk-" in
   if TzString.has_prefix executable_name ~prefix then
     let expected_name =
       let len_prefix = String.length prefix in
@@ -65,7 +65,7 @@ let base_dir_arg =
     ~placeholder:"path"
     ~doc:
       ("data directory\n\
-        The directory where the Tezos codec will output logs.\n\
+        The directory where the Mavryk codec will output logs.\n\
         By default: '" ^ default_base_dir ^ "'.")
     (parameter (fun _ctxt x -> Lwt.return_ok x))
 
