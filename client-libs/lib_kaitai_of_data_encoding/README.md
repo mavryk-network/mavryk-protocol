@@ -1,6 +1,6 @@
 # Context
 
-Tezos `data-encoding` is a combinator library for defining mavkit encodings.
+Mavryk `data-encoding` is a combinator library for defining mavkit encodings.
 Kaitai struct language is a formal description language for describing existing
 binary encoded data. Given a valid kaitai struct description file (`.ksy`),
 we can autogenerate parsers in many mainstream languages.
