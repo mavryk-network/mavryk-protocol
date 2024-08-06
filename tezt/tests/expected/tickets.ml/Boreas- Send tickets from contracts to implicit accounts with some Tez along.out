@@ -1,5 +1,5 @@
 
-./mavkit-client --mode mockup --wait none originate contract tickets_send_with_tez transferring 1 from bootstrap1 running michelson_test_scripts/mini_scenarios/tickets_send_with_tez_016.tz --init Unit --burn-cap 1
+./mavkit-client --mode mockup --wait none originate contract tickets_send_with_tez transferring 1 from bootstrap1 running michelson_test_scripts/mini_scenarios/tickets_send_with_tez_001.tz --init Unit --burn-cap 1
 Node is bootstrapped.
 Estimated gas: 612.418 units (will add 100 for safety)
 Estimated storage: 411 bytes added (will add 20 for safety)
@@ -88,7 +88,7 @@ This sequence of operations was run:
       Updated storage: Unit
       Storage size: 154 bytes
       Paid storage size diff: 66 bytes
-      Consumed gas: 1757.270
+      Consumed gas: 1756.797
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.0165
         storage fees ........................... +ṁ0.0165

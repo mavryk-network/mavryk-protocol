@@ -1,7 +1,7 @@
 
 ./mavkit-client --wait none transfer 0 from bootstrap1 to '[CONTRACT_HASH]' --burn-cap 1 --entrypoint mint
 Node is bootstrapped.
-Estimated gas: 2221.617 units (will add 100 for safety)
+Estimated gas: 2221.144 units (will add 100 for safety)
 Estimated storage: 237 bytes added (will add 20 for safety)
 Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
@@ -12,13 +12,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000494
+    Fee to the baker: ṁ0.000123
+    Fee to the protocol treasury: ṁ0.000123
+    Fee to the burn address: ṁ0.000248
     Expected counter: 3
     Gas limit: 2322
     Storage limit: 257 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000494
-      payload fees(the block proposer) ....... +ṁ0.000494
+      total block fees ....................... +ṁ0.000494
     Transaction:
       Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
@@ -30,7 +32,7 @@ This sequence of operations was run:
           Ticket 0x017a22a4e42f88383dbb327d548e263b53f4f3b91100 string "Ticket" 1 }
       Storage size: 325 bytes
       Paid storage size diff: 237 bytes
-      Consumed gas: 2221.584
+      Consumed gas: 2221.111
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.05925
         storage fees ........................... +ṁ0.05925
@@ -49,7 +51,7 @@ This sequence of operations was run:
 
 ./mavkit-client --wait none transfer 0 from bootstrap1 to '[CONTRACT_HASH]' --burn-cap 1 --entrypoint send --arg '"[SMART_ROLLUP_HASH]"'
 Node is bootstrapped.
-Estimated gas: 3141.491 units (will add 100 for safety)
+Estimated gas: 3141.276 units (will add 100 for safety)
 Estimated storage: no bytes added
 Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
@@ -60,13 +62,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000624
+    Fee to the baker: ṁ0.000156
+    Fee to the protocol treasury: ṁ0.000156
+    Fee to the burn address: ṁ0.000312
     Expected counter: 4
     Gas limit: 3242
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000624
-      payload fees(the block proposer) ....... +ṁ0.000624
+      total block fees ....................... +ṁ0.000624
     Transaction:
       Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
@@ -76,7 +80,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: {}
       Storage size: 220 bytes
-      Consumed gas: 3031.474
+      Consumed gas: 3031.259
       Ticket updates:
         Ticketer: [CONTRACT_HASH]
         Content type: string

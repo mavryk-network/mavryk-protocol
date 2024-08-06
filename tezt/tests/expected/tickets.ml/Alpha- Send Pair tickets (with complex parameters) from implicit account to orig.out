@@ -5,6 +5,8 @@ This simulation failed:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
     Fee to the baker: ṁ0
+    Fee to the protocol treasury: ṁ0
+    Fee to the burn address: ṁ0
     Expected counter: 4
     Gas limit: 1040000
     Storage limit: 60000 bytes

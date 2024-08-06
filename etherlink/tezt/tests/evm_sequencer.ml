@@ -667,11 +667,11 @@ let test_send_transaction_to_delayed_inbox =
       ?expect_failure
       raw_transfer
   in
-  (* Test that paying less than 1XTZ is not allowed. *)
+  (* Test that paying less than 1MVRK is not allowed. *)
   let* _hash =
     send ~amount:(Tez.parse_floating "0.9") ~expect_failure:true ()
   in
-  (* Test the correct case where the user burns 1XTZ to send the transaction. *)
+  (* Test the correct case where the user burns 1MVRK to send the transaction. *)
   let* hash = send ~amount:Tez.one ~expect_failure:false () in
   (* Assert that the expected transaction hash is found in the delayed inbox
      durable storage path. *)
@@ -685,7 +685,7 @@ let test_send_transaction_to_delayed_inbox =
   in
   Check.(list_mem string hash delayed_transactions_hashes)
     ~error_msg:"hash %L should be present in the delayed inbox %R" ;
-  (* Test that paying more than 1XTZ is allowed. *)
+  (* Test that paying more than 1MVRK is allowed. *)
   let* _hash =
     send ~amount:(Tez.parse_floating "1.1") ~expect_failure:false ()
   in

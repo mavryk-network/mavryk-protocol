@@ -12,13 +12,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000441
+    Fee to the baker: ṁ0.00011
+    Fee to the protocol treasury: ṁ0.00011
+    Fee to the burn address: ṁ0.000221
     Expected counter: 1
     Gas limit: 2031
     Storage limit: 6572 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000441
-      payload fees(the block proposer) ....... +ṁ0.000441
+      total block fees ....................... +ṁ0.000441
     Smart rollup origination:
       Kind: arith
       Parameter type: string
@@ -47,13 +49,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000989
+    Fee to the baker: ṁ0.000247
+    Fee to the protocol treasury: ṁ0.000247
+    Fee to the burn address: ṁ0.000495
     Expected counter: 1
     Gas limit: 6689
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000989
-      payload fees(the block proposer) ....... +ṁ0.000989
+      total block fees ....................... +ṁ0.000989
     Smart rollup commitment publishing:
       Address: [SMART_ROLLUP_HASH]
       Commitment:
@@ -83,13 +87,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.001059
+    Fee to the baker: ṁ0.000264
+    Fee to the protocol treasury: ṁ0.000264
+    Fee to the burn address: ṁ0.000531
     Expected counter: 1
     Gas limit: 7388
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.001059
-      payload fees(the block proposer) ....... +ṁ0.001059
+      total block fees ....................... +ṁ0.001059
     Smart rollup commitment publishing:
       Address: [SMART_ROLLUP_HASH]
       Commitment:
@@ -119,13 +125,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000668
+    Fee to the baker: ṁ0.000167
+    Fee to the protocol treasury: ṁ0.000167
+    Fee to the burn address: ṁ0.000334
     Expected counter: 2
     Gas limit: 3816
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000668
-      payload fees(the block proposer) ....... +ṁ0.000668
+      total block fees ....................... +ṁ0.000668
     Smart rollup refutation timeout:
       Address: [SMART_ROLLUP_HASH]
       First staker (Alice): [PUBLIC_KEY_HASH]

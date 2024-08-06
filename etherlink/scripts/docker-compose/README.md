@@ -15,27 +15,27 @@ First step is to create an `.env` containing all necessary variables:
 ```
 # network to use
 # warning: date dependent variables won't be correctly interpreted in compose.yml
-TZNETWORK=${TZNETWORK:-"basenet"}
+MVNETWORK=${MVNETWORK:-"basenet"}
 
 # tag to use for the mavryk docker. default to `master`
 MAVKIT_TAG=${MAVKIT_TAG:-master}
 
-# directory where all data dir are placed, default to `./.etherlink-${TZNETWORK}-data`
-HOST_MAVRYK_DATA_DIR=${HOST_MAVRYK_DATA_DIR:-"$PWD/.etherlink-$TZNETWORK-data"}
+# directory where all data dir are placed, default to `./.etherlink-${MVNETWORK}-data`
+HOST_MAVRYK_DATA_DIR=${HOST_MAVRYK_DATA_DIR:-"$PWD/.etherlink-$MVNETWORK-data"}
 
 # network used to initialize the mavkit node configuration
-TZNETWORK_ADDRESS=${TZNETWORK_ADDRESS:-"https://teztnets.com/$TZNETWORK"}
+MVNETWORK_ADDRESS=${MVNETWORK_ADDRESS:-"https://teztnets.com/$MVNETWORK"}
 
 # snapshot to use to start the mavkit node
-SNAPSHOT_URL=${SNAPSHOT_URL-"https://snapshots.eu.tzinit.org/$TZNETWORK/rolling"}
+SNAPSHOT_URL=${SNAPSHOT_URL-"https://snapshots.eu.tzinit.org/$MVNETWORK/rolling"}
 
 # address of faucet to use with @tacoinfra/get-tez
-FAUCET=${FAUCET:-"https://faucet.$TZNETWORK.teztnets.com"}
+FAUCET=${FAUCET:-"https://faucet.$MVNETWORK.teztnets.com"}
 
 # endpoint to use to originate the smart rollup.
 # it could be possible to use the local node but it
 # would require then to first start the mavkit-node sepratatly from the docker compose.
-ENDPOINT=${ENDPOINT:-"https://rpc.$TZNETWORK.teztnets.com"}
+ENDPOINT=${ENDPOINT:-"https://rpc.$MVNETWORK.teztnets.com"}
 
 ## Contract options
 
@@ -74,9 +74,9 @@ SEQUENCER_SECRET_KEY=${SEQUENCER_SECRET_KEY:-"edsk3gUfUPyBSfrS9CCgmCiQsTCHGkviBD
 EVM_KERNEL_CONFIG=${EVM_KERNEL_CONFIG:-"$PWD/evm_config.yaml"}
 ```
 
-You can you the dailynet by only setting `TZNETWORK` and removing `SNAPSHOT_URL`:
+You can you the dailynet by only setting `MVNETWORK` and removing `SNAPSHOT_URL`:
 ```
-export TZNETWORK="dailynet-$(date +%Y-%m-%d)"
+export MVNETWORK="dailynet-$(date +%Y-%m-%d)"
 export SNAPSHOT_URL=""
 ```
 
@@ -99,7 +99,7 @@ Last step before running the docker compose is to bootstrap the rollup environme
 ```
 ./init.sh init_rollup
 ```
-This generate a new account, wait until the address has enough tz.
+This generate a new account, wait until the address has enough mv.
 Then it build the evm kernel and originate a new rollup with it.
 And finally initialise the rollup node configuration.
 

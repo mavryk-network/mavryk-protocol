@@ -1,5 +1,5 @@
 
-./mavkit-client --mode mockup --wait none originate contract add_clear_tickets transferring 200 from bootstrap1 running michelson_test_scripts/mini_scenarios/add_clear_tickets_015.tz --init '{}' --burn-cap 1
+./mavkit-client --mode mockup --wait none originate contract add_clear_tickets transferring 200 from bootstrap1 running michelson_test_scripts/mini_scenarios/add_clear_tickets.tz --init '{}' --burn-cap 1
 Node is bootstrapped.
 Estimated gas: 610.029 units (will add 100 for safety)
 Estimated storage: 398 bytes added (will add 20 for safety)
@@ -12,13 +12,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000443
+    Fee to the baker: ṁ0.00011
+    Fee to the protocol treasury: ṁ0.00011
+    Fee to the burn address: ṁ0.000223
     Expected counter: 1
     Gas limit: 711
     Storage limit: 418 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000443
-      payload fees(the block proposer) ....... +ṁ0.000443
+      total block fees ....................... +ṁ0.000443
     Origination:
       From: [PUBLIC_KEY_HASH]
       Credit: ṁ200
@@ -69,13 +71,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.000454
+    Fee to the baker: ṁ0.000113
+    Fee to the protocol treasury: ṁ0.000113
+    Fee to the burn address: ṁ0.000228
     Expected counter: 1
     Gas limit: 1852
     Storage limit: 133 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000454
-      payload fees(the block proposer) ....... +ṁ0.000454
+      total block fees ....................... +ṁ0.000454
     Transaction:
       Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
@@ -87,7 +91,7 @@ This sequence of operations was run:
         { Ticket 0x01435e1f410af86271d7c8c3c98a8708157a45269200 string "A" 1 }
       Storage size: 188 bytes
       Paid storage size diff: 113 bytes
-      Consumed gas: 1752.012
+      Consumed gas: 1751.539
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.02825
         storage fees ........................... +ṁ0.02825
@@ -112,13 +116,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000466
+    Fee to the baker: ṁ0.000116
+    Fee to the protocol treasury: ṁ0.000116
+    Fee to the burn address: ṁ0.000234
     Expected counter: 2
     Gas limit: 2042
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000466
-      payload fees(the block proposer) ....... +ṁ0.000466
+      total block fees ....................... +ṁ0.000466
     Transaction:
       Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
@@ -127,7 +133,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: {}
       Storage size: 141 bytes
-      Consumed gas: 1942.112
+      Consumed gas: 1941.639
       Ticket updates:
         Ticketer: [CONTRACT_HASH]
         Content type: string
@@ -149,13 +155,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000453
+    Fee to the baker: ṁ0.000113
+    Fee to the protocol treasury: ṁ0.000113
+    Fee to the burn address: ṁ0.000227
     Expected counter: 3
     Gas limit: 1852
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000453
-      payload fees(the block proposer) ....... +ṁ0.000453
+      total block fees ....................... +ṁ0.000453
     Transaction:
       Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
@@ -166,7 +174,7 @@ This sequence of operations was run:
       Updated storage:
         { Ticket 0x01435e1f410af86271d7c8c3c98a8708157a45269200 string "B" 1 }
       Storage size: 188 bytes
-      Consumed gas: 1751.978
+      Consumed gas: 1751.505
       Ticket updates:
         Ticketer: [CONTRACT_HASH]
         Content type: string
@@ -188,13 +196,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.000522
+    Fee to the baker: ṁ0.00013
+    Fee to the protocol treasury: ṁ0.00013
+    Fee to the burn address: ṁ0.000262
     Expected counter: 4
     Gas limit: 2534
     Storage limit: 133 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000522
-      payload fees(the block proposer) ....... +ṁ0.000522
+      total block fees ....................... +ṁ0.000522
     Transaction:
       Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
@@ -207,7 +217,7 @@ This sequence of operations was run:
           Ticket 0x01435e1f410af86271d7c8c3c98a8708157a45269200 string "B" 1 }
       Storage size: 235 bytes
       Paid storage size diff: 113 bytes
-      Consumed gas: 2434.067
+      Consumed gas: 2433.594
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.02825
         storage fees ........................... +ṁ0.02825

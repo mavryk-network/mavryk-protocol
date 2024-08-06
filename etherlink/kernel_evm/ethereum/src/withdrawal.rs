@@ -15,7 +15,7 @@ pub struct Withdrawal {
     pub target: Contract,
     /// The amount in wei we wish to transfer. This has to be
     /// translated into CTEZ or whatever currency is used for
-    /// paying for L2XTZ.
+    /// paying for L2MVRK.
     pub amount: U256,
 }
 

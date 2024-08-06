@@ -12,13 +12,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000379
+    Fee to the baker: ṁ0.000094
+    Fee to the protocol treasury: ṁ0.000094
+    Fee to the burn address: ṁ0.000191
     Expected counter: 1
     Gas limit: 693
     Storage limit: 359 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000379
-      payload fees(the block proposer) ....... +ṁ0.000379
+      total block fees ....................... +ṁ0.000379
     Origination:
       From: [PUBLIC_KEY_HASH]
       Credit: ṁ0
@@ -62,13 +64,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.00038
+    Fee to the baker: ṁ0.000095
+    Fee to the protocol treasury: ṁ0.000095
+    Fee to the burn address: ṁ0.00019
     Expected counter: 2
     Gas limit: 693
     Storage limit: 360 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.00038
-      payload fees(the block proposer) ....... +ṁ0.00038
+      total block fees ....................... +ṁ0.00038
     Origination:
       From: [PUBLIC_KEY_HASH]
       Credit: ṁ0
@@ -112,13 +116,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000601
+    Fee to the baker: ṁ0.00015
+    Fee to the protocol treasury: ṁ0.00015
+    Fee to the burn address: ṁ0.000301
     Expected counter: 1
     Gas limit: 3062
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000601
-      payload fees(the block proposer) ....... +ṁ0.000601
+      total block fees ....................... +ṁ0.000601
     Transaction:
       Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
@@ -127,7 +133,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: Unit
       Storage size: 82 bytes
-      Consumed gas: 1745.840
+      Consumed gas: 1745.367
       Internal operations:
         Internal Transaction:
           Amount: ṁ0
@@ -137,5 +143,5 @@ This sequence of operations was run:
           This transaction was successfully applied
           Updated storage: Unit
           Storage size: 83 bytes
-          Consumed gas: 1216.725
+          Consumed gas: 1216.295
 

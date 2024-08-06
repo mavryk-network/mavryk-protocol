@@ -12,13 +12,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000441
+    Fee to the baker: ṁ0.00011
+    Fee to the protocol treasury: ṁ0.00011
+    Fee to the burn address: ṁ0.000221
     Expected counter: 1
     Gas limit: 2031
     Storage limit: 6572 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000441
-      payload fees(the block proposer) ....... +ṁ0.000441
+      total block fees ....................... +ṁ0.000441
     Smart rollup origination:
       Kind: arith
       Parameter type: string
@@ -251,11 +253,11 @@ GET http://[HOST]:[PORT]/global/block/head/state_hash
 200 OK
 "[SC_ROLLUP_PVM_STATE_HASH]"
 
-GET http://[HOST]:[PORT]/global/tezos_head
+GET http://[HOST]:[PORT]/global/mavryk_head
 200 OK
 "[BLOCK_HASH]"
 
-GET http://[HOST]:[PORT]/global/tezos_level
+GET http://[HOST]:[PORT]/global/mavryk_level
 200 OK
 18
 

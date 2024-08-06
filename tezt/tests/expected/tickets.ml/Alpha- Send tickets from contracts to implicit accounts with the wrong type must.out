@@ -1,5 +1,5 @@
 
-./mavkit-client --mode mockup --wait none originate contract send_ticket_list transferring 1 from bootstrap1 running michelson_test_scripts/mini_scenarios/send_ticket_list_016.tz --init Unit --burn-cap 1
+./mavkit-client --mode mockup --wait none originate contract send_ticket_list transferring 1 from bootstrap1 running michelson_test_scripts/mini_scenarios/send_ticket_list_001.tz --init Unit --burn-cap 1
 Node is bootstrapped.
 Estimated gas: 614.205 units (will add 100 for safety)
 Estimated storage: 402 bytes added (will add 20 for safety)
@@ -12,13 +12,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000446
+    Fee to the baker: ṁ0.000111
+    Fee to the protocol treasury: ṁ0.000111
+    Fee to the burn address: ṁ0.000224
     Expected counter: 1
     Gas limit: 715
     Storage limit: 422 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000446
-      payload fees(the block proposer) ....... +ṁ0.000446
+      total block fees ....................... +ṁ0.000446
     Origination:
       From: [PUBLIC_KEY_HASH]
       Credit: ṁ1
@@ -61,7 +63,7 @@ This sequence of operations was run:
 New contract [CONTRACT_HASH] originated.
 Contract memorized as send_ticket_list.
 
-./mavkit-client --mode mockup --wait none originate contract tickets_list_blackhole transferring 1 from bootstrap1 running michelson_test_scripts/mini_scenarios/tickets_list_blackhole_016.tz --init Unit --burn-cap 1
+./mavkit-client --mode mockup --wait none originate contract tickets_list_blackhole transferring 1 from bootstrap1 running michelson_test_scripts/mini_scenarios/tickets_list_blackhole_001.tz --init Unit --burn-cap 1
 Node is bootstrapped.
 Estimated gas: 579.433 units (will add 100 for safety)
 Estimated storage: 299 bytes added (will add 20 for safety)
@@ -74,13 +76,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000339
+    Fee to the baker: ṁ0.000084
+    Fee to the protocol treasury: ṁ0.000084
+    Fee to the burn address: ṁ0.000171
     Expected counter: 2
     Gas limit: 680
     Storage limit: 319 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000339
-      payload fees(the block proposer) ....... +ṁ0.000339
+      total block fees ....................... +ṁ0.000339
     Origination:
       From: [PUBLIC_KEY_HASH]
       Credit: ṁ1
@@ -120,13 +124,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000711
+    Fee to the baker: ṁ0.000177
+    Fee to the protocol treasury: ṁ0.000177
+    Fee to the burn address: ṁ0.000357
     Expected counter: 3
     Gas limit: 4164
     Storage limit: 86 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000711
-      payload fees(the block proposer) ....... +ṁ0.000711
+      total block fees ....................... +ṁ0.000711
     Transaction:
       Amount: ṁ0
       From: [PUBLIC_KEY_HASH]
@@ -136,7 +142,7 @@ This sequence of operations was run:
       Updated storage: Unit
       Storage size: 145 bytes
       Paid storage size diff: 66 bytes
-      Consumed gas: 2211.011
+      Consumed gas: 2210.538
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.0165
         storage fees ........................... +ṁ0.0165
@@ -149,7 +155,7 @@ This sequence of operations was run:
           This transaction was successfully applied
           Updated storage: Unit
           Storage size: 42 bytes
-          Consumed gas: 1853.656
+          Consumed gas: 1853.226
 
 
 ./mavkit-client --mode mockup --wait none transfer 0 from bootstrap1 to '[CONTRACT_HASH]' --burn-cap 1 --arg '"[PUBLIC_KEY_HASH]"'
@@ -157,7 +163,9 @@ Node is bootstrapped.
 This simulation failed:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0
+    Fee to the baker: ṁ0
+    Fee to the protocol treasury: ṁ0
+    Fee to the burn address: ṁ0
     Expected counter: 4
     Gas limit: 1040000
     Storage limit: 60000 bytes

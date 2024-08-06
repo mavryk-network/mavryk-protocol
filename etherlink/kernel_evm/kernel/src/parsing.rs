@@ -439,7 +439,7 @@ impl<Mode: Parsable> InputResult<Mode> {
         // We use the `U256::from_little_endian` as it takes arbitrary long
         // bytes. Afterward it's transform to `u64` to use `eth_from_mumav`, it's
         // obviously safe as we deposit CTEZ and the amount is limited by
-        // the XTZ quantity.
+        // the MVRK quantity.
         let amount: u64 = U256::from_little_endian(&amount_bytes).as_u64();
         let amount: U256 = eth_from_mumav(amount);
 

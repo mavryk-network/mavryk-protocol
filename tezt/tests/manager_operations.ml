@@ -993,6 +993,13 @@ module Gas_limits = struct
       operations_gas_limit
     |> return
 
+  let remaining_gas_after_big_operation ~(protocol : Protocol.t)
+      (limits : Helpers.hard_gas_limits) =
+    match protocol with
+    | Alpha | Boreas ->
+        limits.hard_gas_limit_per_block - limits.hard_gas_limit_per_operation
+    | Atlas -> limits.hard_gas_limit_per_operation
+
   let block_below_ops_below =
     Protocol.register_test
       ~__FILE__
@@ -1001,9 +1008,7 @@ module Gas_limits = struct
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* limits = Helpers.gas_limits nodes.main.client in
-    let gas_limit =
-      limits.hard_gas_limit_per_block - limits.hard_gas_limit_per_operation
-    in
+    let gas_limit = remaining_gas_after_big_operation ~protocol limits in
     (* Gas limit per op is ok *)
     let operations_gas_limit =
       [limits.hard_gas_limit_per_operation; gas_limit]
@@ -1026,9 +1031,7 @@ module Gas_limits = struct
     @@ fun protocol ->
     let* nodes = Helpers.init ~protocol () in
     let* limits = Helpers.gas_limits nodes.main.client in
-    let gas_limit =
-      limits.hard_gas_limit_per_block - limits.hard_gas_limit_per_operation
-    in
+    let gas_limit = remaining_gas_after_big_operation ~protocol limits in
     let operations_gas_limit =
       [limits.hard_gas_limit_per_operation + 1; gas_limit - 2]
     in

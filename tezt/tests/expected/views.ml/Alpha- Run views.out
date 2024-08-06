@@ -12,13 +12,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.00045
+    Fee to the baker: ṁ0.000112
+    Fee to the protocol treasury: ṁ0.000112
+    Fee to the burn address: ṁ0.000226
     Expected counter: 1
     Gas limit: 704
     Storage limit: 429 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.00045
-      payload fees(the block proposer) ....... +ṁ0.00045
+      total block fees ....................... +ṁ0.00045
     Origination:
       From: [PUBLIC_KEY_HASH]
       Credit: ṁ0
@@ -61,13 +63,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000508
+    Fee to the baker: ṁ0.000127
+    Fee to the protocol treasury: ṁ0.000127
+    Fee to the burn address: ṁ0.000254
     Expected counter: 2
     Gas limit: 729
     Storage limit: 485 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000508
-      payload fees(the block proposer) ....... +ṁ0.000508
+      total block fees ....................... +ṁ0.000508
     Origination:
       From: [PUBLIC_KEY_HASH]
       Credit: ṁ0
@@ -118,13 +122,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000665
+    Fee to the baker: ṁ0.000166
+    Fee to the protocol treasury: ṁ0.000166
+    Fee to the burn address: ṁ0.000333
     Expected counter: 3
     Gas limit: 3683
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000665
-      payload fees(the block proposer) ....... +ṁ0.000665
+      total block fees ....................... +ṁ0.000665
     Transaction:
       Amount: ṁ1
       From: [PUBLIC_KEY_HASH]
@@ -133,7 +139,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: None
       Storage size: 208 bytes
-      Consumed gas: 3583.116
+      Consumed gas: 3582.643
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ1
         [CONTRACT_HASH] ... +ṁ1
@@ -152,13 +158,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000389
+    Fee to the baker: ṁ0.000097
+    Fee to the protocol treasury: ṁ0.000097
+    Fee to the burn address: ṁ0.000195
     Expected counter: 4
     Gas limit: 1386
     Storage limit: 47 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000389
-      payload fees(the block proposer) ....... +ṁ0.000389
+      total block fees ....................... +ṁ0.000389
     Transaction:
       Amount: ṁ1
       From: [PUBLIC_KEY_HASH]
@@ -167,7 +175,7 @@ This sequence of operations was run:
       Updated storage: { 0x000002298c03ed7d454a101eb7022bc95f7e5f41ac78 }
       Storage size: 179 bytes
       Paid storage size diff: 27 bytes
-      Consumed gas: 1286.351
+      Consumed gas: 1285.878
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.00675
         storage fees ........................... +ṁ0.00675
@@ -188,13 +196,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000665
+    Fee to the baker: ṁ0.000166
+    Fee to the protocol treasury: ṁ0.000166
+    Fee to the burn address: ṁ0.000333
     Expected counter: 5
     Gas limit: 3687
     Storage limit: 47 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000665
-      payload fees(the block proposer) ....... +ṁ0.000665
+      total block fees ....................... +ṁ0.000665
     Transaction:
       Amount: ṁ1
       From: [PUBLIC_KEY_HASH]
@@ -204,7 +214,7 @@ This sequence of operations was run:
       Updated storage: (Some 0x000002298c03ed7d454a101eb7022bc95f7e5f41ac78)
       Storage size: 235 bytes
       Paid storage size diff: 27 bytes
-      Consumed gas: 3586.748
+      Consumed gas: 3586.275
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.00675
         storage fees ........................... +ṁ0.00675

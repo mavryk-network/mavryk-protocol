@@ -1,5 +1,5 @@
 
-./mavkit-client --mode mockup --wait none originate contract tickets_send transferring 0 from bootstrap1 running michelson_test_scripts/mini_scenarios/tickets_send_016.tz --init Unit --burn-cap 1
+./mavkit-client --mode mockup --wait none originate contract tickets_send transferring 0 from bootstrap1 running michelson_test_scripts/mini_scenarios/tickets_send_001.tz --init Unit --burn-cap 1
 Node is bootstrapped.
 Estimated gas: 614.216 units (will add 100 for safety)
 Estimated storage: 415 bytes added (will add 20 for safety)
@@ -58,7 +58,7 @@ This sequence of operations was run:
 New contract [CONTRACT_HASH] originated.
 Contract memorized as tickets_send.
 
-./mavkit-client --mode mockup --wait none originate contract tickets_bag_implicit transferring 0 from bootstrap1 running michelson_test_scripts/mini_scenarios/tickets_bag_implicit_016.tz --init '{}' --burn-cap 1
+./mavkit-client --mode mockup --wait none originate contract tickets_bag_implicit transferring 0 from bootstrap1 running michelson_test_scripts/mini_scenarios/tickets_bag_implicit_001.tz --init '{}' --burn-cap 1
 Node is bootstrapped.
 Estimated gas: 619.169 units (will add 100 for safety)
 Estimated storage: 440 bytes added (will add 20 for safety)
@@ -146,7 +146,7 @@ This sequence of operations was run:
       Updated storage: Unit
       Storage size: 158 bytes
       Paid storage size diff: 66 bytes
-      Consumed gas: 1758.787
+      Consumed gas: 1758.314
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.0165
         storage fees ........................... +ṁ0.0165
@@ -217,7 +217,7 @@ This sequence of operations was run:
             { Pair 0x01fca241ad513615858a813a6019c5a5b3977c27dc00 (Pair "Ticket" 1) }
           Storage size: 227 bytes
           Paid storage size diff: 44 bytes
-          Consumed gas: 1910.352
+          Consumed gas: 1909.879
           Balance updates:
             [PUBLIC_KEY_HASH] ... -ṁ0.011
             storage fees ........................... +ṁ0.011
@@ -264,7 +264,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: {}
       Storage size: 183 bytes
-      Consumed gas: 2411.347
+      Consumed gas: 2410.874
       Ticket updates:
         Ticketer: [CONTRACT_HASH]
         Content type: string

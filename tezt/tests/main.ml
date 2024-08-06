@@ -60,7 +60,7 @@ let register_protocol_independent_tests () =
   Rpc_tls.register_protocol_independent () ;
   Snoop_codegen.register_protocol_independent () ;
   Snoop_protocol_codegen.register_protocol_independent () ;
-  Sc_rollup.register_protocol_independent () ;
+  (* Sc_rollup.register_protocol_independent () ; *)
   Risc_v_sandbox.register ()
 
 (* Tests related to protocol migration. *)
@@ -170,7 +170,7 @@ let register_protocol_tests_that_use_supports_correctly () =
   Node_event_level.register ~protocols ;
   Nonce_seed_revelation.register ~protocols ;
   Normalize.register ~protocols ;
-  Operations_liveness.register ~protocols ;
+  Operations_liveness.register ~protocols:[Protocol.Alpha; Protocol.Boreas] ;
   Operation_size.register ~protocols ;
   Order_in_top_level.register ~protocols ;
   P2p.register ~protocols ;

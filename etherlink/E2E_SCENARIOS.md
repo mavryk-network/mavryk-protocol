@@ -294,9 +294,9 @@ There is no code for this specific scenario.
 ### Actions:
 1. User can use the Etherlink network on MetaMask
    * The Etherlink network can be added directly on MetaMask
-   * User can see his balance of XTZ on the wallet
+   * User can see his balance of MVRK on the wallet
 2. User can send simple transactions
-   * User can send to himself (or somebody else) some XTZ from the MetaMask interface
+   * User can send to himself (or somebody else) some MVRK from the MetaMask interface
    * User can see his transaction on the Blockscout explorer
 3. User can use MetaMask on a dApp with Etherlink network
    * User can connect on a dApp (I recommend Blockscout or the dApp form scenario 4) with MetaMask

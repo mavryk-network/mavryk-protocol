@@ -150,7 +150,7 @@ init_mavkit_node() {
   docker_update_images
   mkdir -p "$HOST_MAVRYK_DATA_DIR"
   # init mavkit node storage
-  run_in_docker mavkit-node config init --network "${TZNETWORK_ADDRESS}"
+  run_in_docker mavkit-node config init --network "${MVNETWORK_ADDRESS}"
   # download snapshot
   if [[ -n ${SNAPSHOT_URL} ]]; then
     wget -O "${HOST_MAVRYK_DATA_DIR}/snapshot" "${SNAPSHOT_URL}"
@@ -169,12 +169,12 @@ originate_contracts() {
   fi
   if [[ -n ${EVM_ADMIN_ALIAS} ]]; then
     generate_key "${EVM_ADMIN_ALIAS}"
-    evm_admin_address=$(run_in_docker mavkit-client --endpoint "${ENDPOINT}" show address "${EVM_ADMIN_ALIAS}" | grep Hash | grep -oE "tz.*")
+    evm_admin_address=$(run_in_docker mavkit-client --endpoint "${ENDPOINT}" show address "${EVM_ADMIN_ALIAS}" | grep Hash | grep -oE "mv.*")
     originate_admin "${EVM_ADMIN_ALIAS}_contract" "${evm_admin_address}"
   fi
   if [[ -n ${SEQUENCER_GOVERNANCE_ALIAS} ]]; then
     generate_key "${SEQUENCER_GOVERNANCE_ALIAS}"
-    sequencer_governance_address=$(run_in_docker mavkit-client --endpoint "${ENDPOINT}" show address "${SEQUENCER_GOVERNANCE_ALIAS}" | grep Hash | grep -oE "tz.*")
+    sequencer_governance_address=$(run_in_docker mavkit-client --endpoint "${ENDPOINT}" show address "${SEQUENCER_GOVERNANCE_ALIAS}" | grep Hash | grep -oE "mv.*")
     originate_admin "${SEQUENCER_GOVERNANCE_ALIAS}_contract" "${sequencer_governance_address}"
   fi
   if [[ -n ${DELAYED_BRIDGE_ALIAS} ]]; then
@@ -199,7 +199,7 @@ init_rollup() {
 loop_until_balance_is_enough() {
   alias=$1
   minimum_balance=$2
-  address=$(run_in_docker mavkit-client --endpoint "${ENDPOINT}" show address "${alias}" | grep Hash | grep -oE "tz.*")
+  address=$(run_in_docker mavkit-client --endpoint "${ENDPOINT}" show address "${alias}" | grep Hash | grep -oE "mv.*")
   until balance_account_is_enough "${address}" "${alias}" "${minimum_balance}"; do
     if [[ -n $FAUCET ]] && command -v npx &> /dev/null; then
       npx @tacoinfra/get-tez -a $((minimum_balance + 100)) -f "$FAUCET" "$address"
@@ -326,7 +326,7 @@ Available commands:
   - restart
     execute docker compose restart
   - deposit <amount> <source: mavryk address> <target: evm address>
-    deposit xtz to etherlink via the ticketer
+    deposit mvrk to etherlink via the ticketer
 EOF
   ;;
 esac
