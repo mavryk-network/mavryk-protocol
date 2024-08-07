@@ -46,8 +46,8 @@ $ sudo su tezos -c "mavkit-client -R tcp://localhost:7732 import secret key alic
 $ sudo su tezos -c "mavkit-client sign bytes 0x03 for alice"
 ```
 
-If you are experimenting on ghostnet you can request tokens here:
-https://faucet.ghostnet.teztnets.com/
+If you are experimenting on basenet you can request tokens here:
+https://faucet.basenet.teztnets.com/
 
 We recommend to associate the signer to a ledger and to take all relevant
 precautions to secure the private keys.

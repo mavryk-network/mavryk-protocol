@@ -105,13 +105,13 @@ module WASM = struct
       ~tag:"failed_migration"
       ~path:"etherlink/kernel_evm/kernel/tests/resources/failed_migration.wasm"
 
-  let ghostnet_evm_kernel =
+  let basenet_evm_kernel =
     Uses.make
-      ~tag:"ghostnet_evm_kernel"
+      ~tag:"basenet_evm_kernel"
       ~path:
-        "etherlink/kernel_evm/kernel/tests/resources/ghostnet_evm_kernel.wasm"
+        "etherlink/kernel_evm/kernel/tests/resources/basenet_evm_kernel.wasm"
 
-  let ghostnet_evm_commit = "d517020b58afef0e15c768ee0b5acbda1786cdd8"
+  let basenet_evm_commit = "d517020b58afef0e15c768ee0b5acbda1786cdd8"
 
   let tx_kernel = Uses.make ~tag:"tx_kernel" ~path:"tx_kernel.wasm"
 

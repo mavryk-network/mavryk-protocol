@@ -30,7 +30,7 @@ val version : string
 
 val mainnet_id : Chain_id.t
 
-val ghostnet_id : Chain_id.t
+val basenet_id : Chain_id.t
 
 val fitness_version_number : string
 

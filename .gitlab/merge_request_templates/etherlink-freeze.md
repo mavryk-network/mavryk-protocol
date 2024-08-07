@@ -10,12 +10,12 @@ Prepare the basenet kernel:
 ```
 $ git checkout RELEASE_COMMIT
 $ etherlink/scripts/build-wasm.sh
-$ cp etherlink/kernels-<RELEASE_COMMIT>/evm_kernel.wasm etherlink/kernel_evm/kernel/tests/resources/ghostnet_evm_kernel.wasm
+$ cp etherlink/kernels-<RELEASE_COMMIT>/evm_kernel.wasm etherlink/kernel_evm/kernel/tests/resources/basenet_evm_kernel.wasm
 ```
 
-Update the constant `ghostnet_evm_commit` in `tezt/lib_tezos/constant.ml`:
+Update the constant `basenet_evm_commit` in `tezt/lib_tezos/constant.ml`:
 ```
-let ghostnet_evm_commit = "RELEASE_COMMIT"
+let basenet_evm_commit = "RELEASE_COMMIT"
 ```
 
 ## Freeze the node

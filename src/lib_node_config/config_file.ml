@@ -131,9 +131,9 @@ let blockchain_network_mainnet =
           ["dalboot.mainnet.tzinit.org"; "dalboot.mainnet.tzboot.net"];
       }
 
-let blockchain_network_ghostnet =
+let blockchain_network_basenet =
   make_blockchain_network
-    ~alias:"ghostnet"
+    ~alias:"basenet"
     {
       time = Time.Protocol.of_notation_exn "2022-01-25T15:00:00Z";
       block =
@@ -160,18 +160,18 @@ let blockchain_network_ghostnet =
       [(6729729l, "PsELxcpLwbxf6x36eKbSaBxH7tMzDPAPZbb3byDaLKhfHTjJYeW")]
     ~default_bootstrap_peers:
       [
-        "ghostnet.teztnets.com";
-        "ghostnet.tzinit.org";
-        "ghostnet.tzboot.net";
-        "ghostnet.boot.ecadinfra.com";
-        "ghostnet.stakenow.de:9733";
+        "basenet.teztnets.com";
+        "basenet.tzinit.org";
+        "basenet.tzboot.net";
+        "basenet.boot.ecadinfra.com";
+        "basenet.stakenow.de:9733";
       ]
     ~dal_config:
       {
         activated = true;
         use_mock_srs_for_testing = false;
         bootstrap_peers =
-          ["dalboot.ghostnet.tzinit.org"; "dalboot.ghostnet.tzboot.net"];
+          ["dalboot.basenet.tzinit.org"; "dalboot.basenet.tzboot.net"];
       }
 
 let blockchain_network_sandbox =
@@ -287,7 +287,7 @@ let builtin_blockchain_networks_with_tags =
   [
     (1, blockchain_network_sandbox);
     (4, blockchain_network_mainnet);
-    (19, blockchain_network_ghostnet);
+    (19, blockchain_network_basenet);
   ]
   |> List.map (fun (tag, network) ->
          match network.alias with

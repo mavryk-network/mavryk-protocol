@@ -1624,7 +1624,7 @@
       "evm",
       "evm_kernel",
       "evm_node",
-      "ghostnet_evm_kernel",
+      "basenet_evm_kernel",
       "node",
       "smart_rollup_installer",
       "smart_rollup_node",

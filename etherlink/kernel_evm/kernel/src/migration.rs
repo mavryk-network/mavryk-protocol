@@ -20,7 +20,7 @@ pub enum MigrationStatus {
 // /!\ the following functions are migratin helpers, do not remove them /!\
 
 #[allow(dead_code)]
-fn is_etherlink_ghostnet(host: &impl Runtime) -> anyhow::Result<bool> {
+fn is_etherlink_basenet(host: &impl Runtime) -> anyhow::Result<bool> {
     let chain_id = read_chain_id(host)?;
     Ok(chain_id == 128123.into())
 }

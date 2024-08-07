@@ -2707,7 +2707,7 @@ let gen_kernel_migration_test ?config ?(admin = Constant.bootstrap5)
       ~da_fee_per_byte:Wei.zero
       ~minimum_base_fee_per_gas:(Wei.of_string "21000")
       ?config
-      ~kernel_installee:Constant.WASM.ghostnet_evm_kernel
+      ~kernel_installee:Constant.WASM.basenet_evm_kernel
       ~admin:(Some admin)
       protocol
   in
@@ -2755,7 +2755,7 @@ let test_kernel_migration =
         Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
-        Constant.WASM.ghostnet_evm_kernel;
+        Constant.WASM.basenet_evm_kernel;
       ])
     ~title:"Ensures EVM kernel's upgrade succeed with potential migration(s)."
   @@ fun protocol ->
@@ -3020,7 +3020,7 @@ let test_deposit_before_and_after_migration =
         Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
-        Constant.WASM.ghostnet_evm_kernel;
+        Constant.WASM.basenet_evm_kernel;
       ])
     ~title:"Deposit before and after migration"
   @@ fun protocol ->
@@ -3094,7 +3094,7 @@ let test_block_storage_before_and_after_migration =
         Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
-        Constant.WASM.ghostnet_evm_kernel;
+        Constant.WASM.basenet_evm_kernel;
       ])
     ~title:"Block storage before and after migration"
   @@ fun protocol ->
@@ -3150,7 +3150,7 @@ let test_kernel_upgrade_version_change =
         Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
-        Constant.WASM.ghostnet_evm_kernel;
+        Constant.WASM.basenet_evm_kernel;
       ])
     ~title:"Kernel version changes after an upgrade"
   @@ fun protocol ->
@@ -3239,7 +3239,7 @@ let test_transaction_storage_before_and_after_migration =
         Constant.mavkit_evm_node;
         Constant.smart_rollup_installer;
         Constant.WASM.evm_kernel;
-        Constant.WASM.ghostnet_evm_kernel;
+        Constant.WASM.basenet_evm_kernel;
       ])
     ~title:"Transaction storage before and after migration"
   @@ fun protocol ->
@@ -4767,7 +4767,7 @@ let test_migrate_proxy_to_sequencer_past =
 
   unit
 
-let test_ghostnet_kernel =
+let test_basenet_kernel =
   Protocol.register_test
     ~__FILE__
     ~tags:["evm"; "basenet"; "version"]
@@ -4776,18 +4776,18 @@ let test_ghostnet_kernel =
         Constant.mavkit_evm_node;
         Constant.mavkit_smart_rollup_node;
         Constant.smart_rollup_installer;
-        Constant.WASM.ghostnet_evm_kernel;
+        Constant.WASM.basenet_evm_kernel;
       ])
     ~title:"Regression test for Basenet kernel"
   @@ fun protocol ->
   let* {evm_node; _} =
     setup_evm_kernel
-      ~kernel_installee:Constant.WASM.ghostnet_evm_kernel
+      ~kernel_installee:Constant.WASM.basenet_evm_kernel
       ~admin:None
       protocol
   in
   let*@ version = Rpc.tez_kernelVersion evm_node in
-  Check.((version = Constant.WASM.ghostnet_evm_commit) string)
+  Check.((version = Constant.WASM.basenet_evm_commit) string)
     ~error_msg:"The basenet kernel has version %L but constant says %R" ;
   unit
 
@@ -5504,7 +5504,7 @@ let register_evm_node ~protocols =
   test_l2_timestamp_opcode protocols ;
   test_migrate_proxy_to_sequencer_past protocols ;
   test_migrate_proxy_to_sequencer_future protocols ;
-  test_ghostnet_kernel protocols ;
+  test_basenet_kernel protocols ;
   test_estimate_gas_out_of_ticks protocols ;
   test_l2_call_selfdetruct_contract_in_same_transaction protocols ;
   test_transaction_exhausting_ticks_is_rejected protocols ;

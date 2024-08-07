@@ -1641,7 +1641,7 @@ let test_force_kernel_upgrade_too_early =
     ~__FILE__
     ~tags:["evm"; "sequencer"; "upgrade"; "force"]
     ~title:"Force kernel upgrade fail too early"
-    ~uses:(fun protocol -> Constant.WASM.ghostnet_evm_kernel :: uses protocol)
+    ~uses:(fun protocol -> Constant.WASM.basenet_evm_kernel :: uses protocol)
   @@ fun protocol ->
   (* Add a delay between first block and activation timestamp. *)
   let genesis_timestamp =
@@ -1683,7 +1683,7 @@ let test_force_kernel_upgrade_too_early =
       ~admin:Constant.bootstrap2.public_key_hash
       ~admin_contract:l1_contracts.admin
       ~client
-      ~upgrade_to:Constant.WASM.ghostnet_evm_kernel
+      ~upgrade_to:Constant.WASM.basenet_evm_kernel
       ~activation_timestamp
   in
 
@@ -1704,7 +1704,7 @@ let test_force_kernel_upgrade =
     ~__FILE__
     ~tags:["evm"; "sequencer"; "upgrade"; "force"]
     ~title:"Force kernel upgrade"
-    ~uses:(fun protocol -> Constant.WASM.ghostnet_evm_kernel :: uses protocol)
+    ~uses:(fun protocol -> Constant.WASM.basenet_evm_kernel :: uses protocol)
   @@ fun protocol ->
   (* Add a delay between first block and activation timestamp. *)
   let genesis_timestamp =
@@ -1746,7 +1746,7 @@ let test_force_kernel_upgrade =
       ~admin:Constant.bootstrap2.public_key_hash
       ~admin_contract:l1_contracts.admin
       ~client
-      ~upgrade_to:Constant.WASM.ghostnet_evm_kernel
+      ~upgrade_to:Constant.WASM.basenet_evm_kernel
       ~activation_timestamp
   in
 
@@ -1949,12 +1949,12 @@ let test_no_automatic_block_production =
     ~error_msg:"No transaction hash expected" ;
   unit
 
-let test_migration_from_ghostnet =
+let test_migration_from_basenet =
   Protocol.register_test
     ~__FILE__
     ~tags:["evm"; "sequencer"; "upgrade"; "migration"; "basenet"]
     ~title:"Sequencer can upgrade from basenet"
-    ~uses:(fun protocol -> Constant.WASM.ghostnet_evm_kernel :: uses protocol)
+    ~uses:(fun protocol -> Constant.WASM.basenet_evm_kernel :: uses protocol)
   @@ fun protocol ->
   (* Creates a sequencer using prod version and basenet kernel. *)
   let* {
@@ -1969,7 +1969,7 @@ let test_migration_from_ghostnet =
     setup_sequencer
       protocol
       ~time_between_blocks:Nothing
-      ~kernel:Constant.WASM.ghostnet_evm_kernel
+      ~kernel:Constant.WASM.basenet_evm_kernel
       ~devmode:false
       ~max_blueprints_lag:0
   in
@@ -1989,13 +1989,13 @@ let test_migration_from_ghostnet =
     check_kernel_version
       ~evm_node:sequencer
       ~equal:true
-      Constant.WASM.ghostnet_evm_commit
+      Constant.WASM.basenet_evm_commit
   in
   let* _kernel_version =
     check_kernel_version
       ~evm_node:proxy
       ~equal:true
-      Constant.WASM.ghostnet_evm_commit
+      Constant.WASM.basenet_evm_commit
   in
 
   (* Produces a few blocks. *)
@@ -2040,7 +2040,7 @@ let test_migration_from_ghostnet =
     check_kernel_version
       ~evm_node:sequencer
       ~equal:false
-      Constant.WASM.ghostnet_evm_commit
+      Constant.WASM.basenet_evm_commit
   in
   (* Runs sequencer and proxy with --devmode. *)
   let* () = Evm_node.terminate proxy in
@@ -2788,7 +2788,7 @@ let () =
   test_delayed_transfer_timeout_fails_l1_levels protocols ;
   test_delayed_inbox_flushing protocols ;
   test_no_automatic_block_production protocols ;
-  test_migration_from_ghostnet protocols ;
+  test_migration_from_basenet protocols ;
   test_sequencer_upgrade protocols ;
   test_sequencer_diverge protocols ;
   test_sequencer_can_catch_up_on_event protocols ;

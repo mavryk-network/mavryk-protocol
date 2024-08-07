@@ -1378,7 +1378,7 @@
       "client",
       "evm",
       "evm_node",
-      "ghostnet_evm_kernel",
+      "basenet_evm_kernel",
       "hash",
       "node",
       "regression",

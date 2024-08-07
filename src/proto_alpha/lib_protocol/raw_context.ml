@@ -1267,7 +1267,7 @@ let prepare_first_block ~level ~timestamp _chain_id ctxt =
         let block_time_is_at_least_8s =
           (* This check is used to trigger the constants changes at migration on
              this protocol for network that have block time strictly greater
-             than 7s such as mainnet and ghostnet *)
+             than 7s such as mainnet and basenet *)
           Compare.Int64.(Period_repr.to_seconds c.minimal_block_delay >= 8L)
         in
         let* ctxt, constants =

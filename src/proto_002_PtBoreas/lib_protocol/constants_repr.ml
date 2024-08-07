@@ -30,7 +30,7 @@ let version = "v1"
 
 let mainnet_id = Chain_id.of_b58check_exn "NetXdQprcVkpaWU"
 
-let ghostnet_id = Chain_id.of_b58check_exn "NetXnHfVqm9iesp"
+let basenet_id = Chain_id.of_b58check_exn "NetXnHfVqm9iesp"
 
 let fitness_version_number = "\002"
 

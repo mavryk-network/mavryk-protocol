@@ -1185,7 +1185,7 @@ Version 14.1
 
 - Removed Giganode from the list of bootstrap peers for Mainnet.
 
-- Add third user-activated upgrade to the ``--network ghostnet`` built-in
+- Add third user-activated upgrade to the ``--network basenet`` built-in
   network alias (at level 1191936 for Kathmandu).
 
 Version 14.0
@@ -1267,7 +1267,7 @@ Node
 - **Breaking change**: the built-in network alias for Ithacanet
   (``--network ithacanet``) has been removed.
 
-- Added the built-in network alias for Basenet (``--network ghostnet``).
+- Added the built-in network alias for Basenet (``--network basenet``).
 
 - Updated the encoding of worker events JSON messages.
 
