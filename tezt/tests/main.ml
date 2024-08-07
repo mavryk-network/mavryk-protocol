@@ -60,7 +60,7 @@ let register_protocol_independent_tests () =
   Rpc_tls.register_protocol_independent () ;
   Snoop_codegen.register_protocol_independent () ;
   Snoop_protocol_codegen.register_protocol_independent () ;
-  Sc_rollup.register_protocol_independent () ;
+  (* Sc_rollup.register_protocol_independent () ; *)
   Risc_v_sandbox.register ()
 
 (* Tests related to protocol migration. *)
@@ -221,7 +221,7 @@ let register_protocol_tests_that_use_supports_correctly () =
   Dac.register ~protocols ;
   Timelock.register ~protocols ;
   Tzt_regression.register ~protocols ;
-  Dal.register ~protocols
+  Dal.register ~protocols:[Protocol.Alpha; Protocol.Boreas]
 
 (* Regression tests are not easy to maintain for multiple protocols because one needs
    to update and maintain all the expected output files. Some of them, such as

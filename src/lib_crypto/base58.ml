@@ -350,7 +350,7 @@ module Prefix = struct
      $ ./scripts/base58_prefix.py mv1 20
      36 434591 [6L, 161L, 159L]
      $ dune utop src/lib_crypto
-     utop # Mavryk_crypto.Base58.make_encoded_prefix "\006\161\159" 20 ;;
+     utop # Mavryk_crypto.Base58.make_encoded_prefix "\005\186\196" 20 ;;
      - : string * int = ("mv1", 36)
   *)
 

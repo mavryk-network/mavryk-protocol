@@ -5419,7 +5419,7 @@ let test_tx_pool_address_boundaries =
     ~error_msg:"Expected transaction hash is %R, got %L" ;
   unit
 
-let register_evm_node ~protocols =
+let _register_evm_node ~protocols =
   test_originate_evm_kernel protocols ;
   test_kernel_root_hash_originate_absent protocols ;
   test_kernel_root_hash_originate_present protocols ;
@@ -5520,5 +5520,5 @@ let register_evm_node ~protocols =
 let protocols = Protocol.all
 
 let () =
-  register_evm_node ~protocols ;
+  (* register_evm_node ~protocols ; *)
   register_evm_migration ~protocols

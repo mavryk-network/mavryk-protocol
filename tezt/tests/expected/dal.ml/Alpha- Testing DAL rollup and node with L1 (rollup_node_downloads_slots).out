@@ -12,13 +12,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the validator: ṁ0.000441
+    Fee to the baker: ṁ0.00011
+    Fee to the protocol treasury: ṁ0.00011
+    Fee to the burn address: ṁ0.000221
     Expected counter: 1
     Gas limit: 2031
     Storage limit: 6572 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000441
-      payload fees(the block proposer) ....... +ṁ0.000441
+      total block fees ....................... +ṁ0.000441
     Smart rollup origination:
       Kind: arith
       Parameter type: string
@@ -51,13 +53,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.000279
+    Fee to the baker: ṁ0.000069
+    Fee to the protocol treasury: ṁ0.000069
+    Fee to the burn address: ṁ0.000141
     Expected counter: 1
     Gas limit: 271
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000279
-      payload fees(the block proposer) ....... +ṁ0.000279
+      total block fees ....................... +ṁ0.000279
     Smart rollup messages submission:
       This smart rollup messages submission was successfully applied
       Consumed gas: 170.836

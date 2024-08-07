@@ -12,13 +12,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.000271
+    Fee to the baker: ṁ0.000067
+    Fee to the protocol treasury: ṁ0.000067
+    Fee to the burn address: ṁ0.000137
     Expected counter: 1
     Gas limit: 169
     Storage limit: 277 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000271
-      payload fees(the block proposer) ....... +ṁ0.000271
+      total block fees ....................... +ṁ0.000271
     Transaction:
       Amount: ṁ500000
       From: [PUBLIC_KEY_HASH]
@@ -50,13 +52,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.000275
+    Fee to the baker: ṁ0.000068
+    Fee to the protocol treasury: ṁ0.000068
+    Fee to the burn address: ṁ0.000139
     Expected counter: 2
     Gas limit: 171
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000275
-      payload fees(the block proposer) ....... +ṁ0.000275
+      total block fees ....................... +ṁ0.000275
     Revelation of manager public key:
       Contract: [PUBLIC_KEY_HASH]
       Key: [PUBLIC_KEY]
@@ -64,13 +68,15 @@ This sequence of operations was run:
       Consumed gas: 170.503
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.000159
+    Fee to the baker: ṁ0.000039
+    Fee to the protocol treasury: ṁ0.000039
+    Fee to the burn address: ṁ0.000081
     Expected counter: 3
     Gas limit: 100
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000159
-      payload fees(the block proposer) ....... +ṁ0.000159
+      total block fees ....................... +ṁ0.000159
     Delegation:
       Contract: [PUBLIC_KEY_HASH]
       To: [PUBLIC_KEY_HASH]
@@ -91,13 +97,15 @@ and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:
     From: [PUBLIC_KEY_HASH]
-    Fee to the baker: ṁ0.000623
+    Fee to the baker: ṁ0.000155
+    Fee to the protocol treasury: ṁ0.000155
+    Fee to the burn address: ṁ0.000313
     Expected counter: 4
     Gas limit: 3630
     Storage limit: 0 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000623
-      payload fees(the block proposer) ....... +ṁ0.000623
+      total block fees ....................... +ṁ0.000623
     Transaction:
       Amount: ṁ499900
       From: [PUBLIC_KEY_HASH]

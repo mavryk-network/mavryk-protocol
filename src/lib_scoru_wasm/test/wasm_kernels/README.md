@@ -18,7 +18,7 @@ You will need `docker`, `git` and `wasm-strip` installed, alongside either `bash
 
 Next, clone the *tezos/kernel* repository:
 ``` shell
-git clone https://gitlab.com/tezos/kernel.git wasm_kernel
+git clone https://gitlab.com/mavryk-network/kernel.git wasm_kernel
 cd wasm_kernel
 ```
 and then follow the instructions below for the required kernel.
