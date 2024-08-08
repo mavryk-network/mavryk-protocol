@@ -2,9 +2,9 @@
 # shellcheck source=/dev/null
 # for not checking the existence of sourced file $HOME/.cargo/env
 # shellcheck disable=SC2154
-# for undefined variable in: opam switch create for_tezos $ocaml_version
+# for undefined variable in: opam switch create for_mavryk $ocaml_version
 # shellcheck disable=SC2086
-# for omitting quotes in: opam switch create for_tezos $ocaml_version
+# for omitting quotes in: opam switch create for_mavryk $ocaml_version
 # shellcheck disable=SC2046
 # for omitting quotes in: eval $(opam env)
 
@@ -27,7 +27,7 @@ export OPAMSOLVERTIMEOUT=1200
 # [install ocaml compiler]
 wget -O latest-release:version.sh https://gitlab.com/mavryk-network/mavryk-protocol/raw/latest-release/scripts/version.sh
 . ./latest-release:version.sh
-opam switch create for_tezos $ocaml_version
+opam switch create for_mavryk $ocaml_version
 eval $(opam env)
 # [get system dependencies]
 # depext handling is done directly by opam 2.1 and later

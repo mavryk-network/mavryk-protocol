@@ -18,7 +18,7 @@ let _mavkit_tooling =
   public_lib
     "mavryk-tooling"
     ~path:"src/tooling"
-    ~synopsis:"Tezos: tooling for the project"
+    ~synopsis:"Mavryk: tooling for the project"
     ~modules:[]
     ~opam_only_deps:
       [

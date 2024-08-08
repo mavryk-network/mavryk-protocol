@@ -64,7 +64,7 @@ let _mavkit_codec_kaitai =
     ~release_status:Unreleased
     ~internal_name:"codec"
     ~synopsis:
-      "Tezos: `mavkit-codec-kaitai` binary to generate kaitai descriptions"
+      "Mavryk: `mavkit-codec-kaitai` binary to generate kaitai descriptions"
     ~with_macos_security_framework:true
     ~deps:
       ([
