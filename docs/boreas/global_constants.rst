@@ -133,9 +133,9 @@ Global Constants at Runtime
 Contracts that use global constants are semantically equivalent to the
 contract with all constants expanded.
 
-Note that using the `UNPACK <https://protocol.mavryk.org/michelson-reference/#instr-UNPACK>`__ 
+Note that using the `UNPACK <https://tezos.gitlab.io/michelson-reference/#instr-UNPACK>`__ 
 operation to deserialize a lambda which contains a reference to a global
 constant is not supported. Similarly, originating a contract which contains
 a reference to a global constant using the
-`CREATE_CONTRACT <https://protocol.mavryk.org/michelson-reference/#instr-CREATE_CONTRACT>`__ 
+`CREATE_CONTRACT <https://tezos.gitlab.io/michelson-reference/#instr-CREATE_CONTRACT>`__ 
 instruction will also fail.

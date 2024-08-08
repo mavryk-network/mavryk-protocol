@@ -418,7 +418,7 @@ fn parse_ty_with_entrypoints(
         App(ticket, [t], _) => {
             let t = parse_ty(ctx, t)?;
             // NB: The inner type of ticket only needs to be comparable.
-            // See https://protocol.mavryk.org/michelson-reference/#type-ticket
+            // See https://tezos.gitlab.io/michelson-reference/#type-ticket
             t.ensure_prop(&mut ctx.gas, TypeProperty::Comparable)?;
             Type::new_ticket(t)
         }
@@ -451,7 +451,7 @@ fn parse_ty_with_entrypoints(
             // NB: despite `contract` type being duplicable and packable, its
             // argument doesn't need to be. The only constraint is that it needs
             // to be passable, as it represents the contract's parameter type.
-            // See https://protocol.mavryk.org/michelson-reference/#type-contract
+            // See https://tezos.gitlab.io/michelson-reference/#type-contract
             t.ensure_prop(&mut ctx.gas, TypeProperty::Passable)?;
             Type::new_contract(t)
         }
@@ -1376,7 +1376,7 @@ pub(crate) fn typecheck_instruction<'a>(
         (App(FAILWITH, [], _), [.., _]) => {
             let ty = pop!();
             // NB: the docs for the FAILWITH instruction
-            // https://protocol.mavryk.org/michelson-reference/#instr-FAILWITH claim
+            // https://tezos.gitlab.io/michelson-reference/#instr-FAILWITH claim
             // the type needs to be packable, but that's not quite correct, as
             // `contract _` is forbidden. The correct constraint is seemingly
             // "pushable", as "pushable" is just "packable" without `contract _`
@@ -2044,7 +2044,7 @@ pub(crate) fn typecheck_instruction<'a>(
             let emit_type_arg = parse_ty(ctx, t)?;
             ensure_ty_eq(&mut ctx.gas, &emit_type_arg, &emit_val_type)?;
             // NB: the docs for the EMIT instruction
-            // https://protocol.mavryk.org/michelson-reference/#instr-EMIT claim
+            // https://tezos.gitlab.io/michelson-reference/#instr-EMIT claim
             // the type needs to be packable, but that's not quite correct, as
             // `contract _` is forbidden. The correct constraint is seemingly
             // "pushable", as "pushable" is just "packable" without `contract _`
@@ -2256,7 +2256,7 @@ pub(crate) fn typecheck_value<'a>(
         (T::BigMap(m), v) => {
             let (id_opt, vs_opt) = match v {
                 // All valid instantiations of big map are mentioned in
-                // https://protocol.mavryk.org/michelson-reference/#type-big_map
+                // https://tezos.gitlab.io/michelson-reference/#type-big_map
                 V::Int(i) => (Some(i.clone()), None),
                 V::Seq(vs) => (None, Some(vs)),
                 V::App(Prim::Pair, [V::Int(i), V::Seq(vs)], _) => (Some(i.clone()), Some(vs)),
