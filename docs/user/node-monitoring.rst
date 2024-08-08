@@ -7,7 +7,7 @@ and :doc:`the RPC references <../shell/rpc>`.
 
 Most practically, however, is to use Mavkit Metrics to gather information and statistics, which has been integrated directly into the node
 since Mavkit version 14. Users are now able to get metrics without using an external tool,
-such as `mavryk-metrics <https://gitlab.com/nomadic-labs/mavryk-metrics>`_ (which is now deprecated).
+such as `mavryk-metrics <https://gitlab.com/nomadic-labs/tezos-metrics>`_ (which is now deprecated).
 The node now includes a server that registers the implemented metrics and outputs them for each received ``/metrics`` http request.
 So now you can configure and launch your node with a metrics exporter.
 

@@ -100,7 +100,7 @@ If you want to know more about the *technology* underlying Mavkit and the Mavryk
 
 **Are you a Mavryk developer?** Find here some useful reference pages!
 
-If you are a developer on the Mavryk platform, you must know the `Mavryk Developer Portal <https://mavryk.org/developers/>`__ or `Open Mavryk <https://openmavryk.org>`__, giving accessible and pedagogical expositions on how to write smart contracts or Dapps.
+If you are a developer on the Mavryk platform, you must know the `Mavryk Developer Portal <https://mavryk.org/developers/>`__ or `Mavryk Documentation <https://documentation.mavryk.org>`__, giving accessible and pedagogical expositions on how to write smart contracts or Dapps.
 
 This website complements those resources with reference documentation, mostly in section ``Developer reference``, including:
 

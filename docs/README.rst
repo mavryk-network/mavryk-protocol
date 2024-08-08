@@ -2,7 +2,7 @@
 Documenting
 ***********
 
-The documentation is available online at `protocol.mavryk.org <http://protocol.mavryk.org/>`_,
+The documentation is available online at `protocol.mavryk.org <https://protocol.mavryk.org/>`_,
 and always up to date with branch ``master`` on `GitLab <https://gitlab.com/mavryk-network/mavryk-protocol>`_.
 
 Building the documentation

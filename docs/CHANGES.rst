@@ -2900,7 +2900,7 @@ Node
 
 -  Changed signal handling and exit codes for most binaries. The codes’
    significance are detailed in `the user
-   documentation <http://protocol.mavryk.org/user/various.html#mavryk_binaries_signals_and_exit_codes>`__.
+   documentation <https://protocol.mavryk.org/user/various.html#mavryk_binaries_signals_and_exit_codes>`__.
 
 -  Command ``mavkit-node --version`` now exits with exit code 0 instead
    of 1.
@@ -3272,7 +3272,7 @@ Multinetwork
 
 -  The network name is printed in the logs on startup.
 
-For more information, see: http://protocol.mavryk.org/user/multinetwork.html
+For more information, see: https://protocol.mavryk.org/user/multinetwork.html
 
 
 Node

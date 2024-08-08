@@ -9,7 +9,7 @@ Context library for storing ledger and operations on disk and in memory
 
 ## Overview
 
-There are two containers that are used to store different things. The reunion of the two is called the [storage](http://protocol.mavryk.org/shell/storage.html). It can be described rapidly like this:
+There are two containers that are used to store different things. The reunion of the two is called the [storage](https://protocol.mavryk.org/shell/storage.html). It can be described rapidly like this:
 
 - storage
   - `store`

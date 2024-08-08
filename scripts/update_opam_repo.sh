@@ -18,7 +18,7 @@ To update dependencies, you have to:
     (copy opam/virtual/mavkit-deps.opam.locked from mavryk-network/mavryk-protocol)
 
 More information in the documentation:
-http://protocol.mavryk.org/developer/contributing-adding-a-new-opam-dependency.html
+https://protocol.mavryk.org/developer/contributing-adding-a-new-opam-dependency.html
 EOT
 
 exit 1

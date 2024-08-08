@@ -33,4 +33,4 @@ storage.
 
 ## API Documentation
 
-- http://protocol.mavryk.org/api/odoc/_html/mavryk-storage/index.html
+- https://protocol.mavryk.org/api/odoc/_html/mavryk-storage/index.html

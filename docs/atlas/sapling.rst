@@ -1,8 +1,8 @@
 Sapling support
 ===============
 
-This page first give some details on Sapling and its underlying concepts, and then describes the support for Sapling in Mavkit and in the Michelson language (part of the Mavryk protocol).
-For support in high-level smart contract languages, see the `Sapling documentation in OpenMavryk <https://documentation.mavryk.org/smart-contracts/smart-contracts-concepts/#sapling>`__.
+This page first give some details on Sapling and its underlying concepts, and then describes the support for Sapling in Octez and in the Michelson language (part of the Tezos protocol).
+For support in high-level smart contract languages, see the `Sapling documentation in OpenTezos <https://opentezos.com/smart-contracts/smart-contracts-concepts/#sapling>`__.
 
 Sapling
 -------
@@ -40,7 +40,7 @@ transaction and produce the zero-knowledge proofs, which are
 computationally too intensive for an embedded device.
 
 More details can be found in the `specification document
-<https://github.com/zcash/zips/blob/main/protocol/sapling.pdf>`_.
+<https://github.com/zcash/zips/blob/main/rendered/protocol/sapling.pdf>`_.
 
 Shielded transactions
 ~~~~~~~~~~~~~~~~~~~~~
@@ -80,7 +80,7 @@ Diffie-Hellman key exchange using the recipient address and an
 ephemeral key.
 In principle this *ciphertext* can be transmitted off-chain as it's
 not needed to verify the integrity of the pool. For convenience, in
-Mavryk, it is stored together with the commitment and the nullifier on
+Tezos, it is stored together with the commitment and the nullifier on
 chain.
 
 For reasons of efficiency the commitments are stored in an incremental
@@ -109,13 +109,13 @@ bytes that gets signed by the user's Sapling key.
 This field can be used to bind the transaction to another
 application's logic.
 For example during an unshield operation it is important to include in
-the ``bound_data`` the Mavryk account that will receive the unshielded
+the ``bound_data`` the Tezos account that will receive the unshielded
 tokens.
 Without any ``bound_data``, a Sapling unshield operation authorizes any
 party that submits it to claim the unshielded tokens. An adversary can
-intercept the Mavryk operation containing the unshield and resubmit it
-using its own Mavryk account.
-This malleability attack is prevented by including the recipient Mavryk
+intercept the Tezos operation containing the unshield and resubmit it
+using its own Tezos account.
+This malleability attack is prevented by including the recipient Tezos
 account in the ``bound_data``, which is signed by the owner of the
 Sapling keys, and that can be used by the Smart Contract to transfer
 the tokens.
@@ -193,9 +193,9 @@ Sapling integration
 
 The reference implementation of Sapling,
 `librustzcash <https://github.com/zcash/librustzcash>`_, has been
-integrated in the Mavkit codebase, and Sapling features were made available for production use with the Edo protocol amendment in early 2021.
+integrated in the Octez codebase, and Sapling features were made available for production use with the Edo protocol amendment in early 2021.
 
-Librustzcash and the Mavkit integration implement the protocol
+Librustzcash and the Octez integration implement the protocol
 described in this `specification
 <https://github.com/zcash/zips/blob/2e26bb072dfd5f842fe9e779bdec8cabeb4fa9bf/protocol/protocol.pdf>`_, version 2020.1.0.
 
@@ -262,7 +262,7 @@ is zero.
 Additionally in case of an unshield, it must use the bound data to
 authorize the transfer of unshielded tokens.
 For example it could convert the bound data to a public-key hash and
-use it as recipient address of a Mavryk transfer.
+use it as recipient address of a Tezos transfer.
 
 Example contracts
 ~~~~~~~~~~~~~~~~~
@@ -270,7 +270,7 @@ Example contracts
 Shielded tez
 ^^^^^^^^^^^^
 
-An example contract implementing a shielded pool of tokens with a 1 to 1 conversion rate to mumav is available in the tests of the protocol at
+An example contract implementing a shielded pool of tokens with a 1 to 1 conversion rate to mutez is available in the tests of the protocol at
 :src:`src/proto_alpha/lib_protocol/test/integration/michelson/contracts/sapling_contract.tz`.
 
 Simple Voting Contract
@@ -307,7 +307,7 @@ can use the Fiat-Shamir heuristic.
 Fees issue
 ~~~~~~~~~~
 
-The Sapling integration in Mavryk exhibits a privacy issue that Z-cash doesn't have. When
+The Sapling integration in Tezos exhibits a privacy issue that Z-cash doesn't have. When
 interacting with a shielded pool one interacts with a smart contract
 via a normal transaction and therefore have to pay fees from an
 implicit account.
@@ -349,7 +349,7 @@ Client support
 Wallet
 ^^^^^^
 
-``mavkit-client`` supports Sapling keys and can send
+``octez-client`` supports Sapling keys and can send
 shielded transactions to smart contracts.
 
 The client supports two ways to generate a new Sapling spending key.
@@ -358,14 +358,14 @@ It can be generated from a mnemonic using `BIP39
 that it can be recovered in case of loss using the mnemonic.
 Alternatively it is possible to derive new keys from existing ones
 using `ZIP32
-<https://github.com/zcash/zips/blob/main/zip-0032.rst>`_, a Sapling
+<https://github.com/zcash/zips/blob/main/zips/zip-0032.rst>`_, a Sapling
 variant of `BIP32
 <https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki>`_ for
 hierarchical deterministic wallets. As usual, in this case it is
 important to note the derivation path of the key to be able to recover
 it in case of loss.
 At the moment there is no hardware wallet support, keys are stored in
-``~/.mavryk-client/sapling_keys`` by default encrypted with a password.
+``~/.tezos-client/sapling_keys`` by default encrypted with a password.
 **Users should take care to backup this file.**
 
 The client can also derive addresses from viewing keys.
@@ -450,7 +450,7 @@ The update is done using the RPCs to recover the new updates since the
 last known position.
 
 The state of all Sapling contracts is stored in
-``~/.mavryk-client/sapling_states``. This file can be regenerated from
+``~/.tezos-client/sapling_states``. This file can be regenerated from
 the chain in case of loss. However disclosure of this file will reveal
 the balance and the unspent outputs of all viewing keys.
 
@@ -482,52 +482,52 @@ unshielding.
 ::
 
    # set up the sandbox
-   ./src/bin_node/mavkit-sandboxed-node.sh 1 --connections 0 &
-   eval `./src/bin_client/mavkit-init-sandboxed-client.sh 1`
-   mavkit-activate-alpha
+   ./src/bin_node/octez-sandboxed-node.sh 1 --connections 0 &
+   eval `./src/bin_client/octez-init-sandboxed-client.sh 1`
+   octez-activate-alpha
 
    # originate the contract with its initial empty sapling storage,
    # bake a block to include it.
    # { } represents an empty Sapling state.
-   mavkit-client originate contract shielded-tez transferring 0 from bootstrap1 \
+   octez-client originate contract shielded-tez transferring 0 from bootstrap1 \
    running src/proto_alpha/lib_protocol/test/integration/michelson/contracts/sapling_contract.tz \
    --init '{ }' --burn-cap 3 &
-   mavkit-client bake for bootstrap1
+   octez-client bake for bootstrap1
 
-   # if necessary, you can get information from the mavkit-client manual
-   mavkit-client sapling man
+   # if necessary, you can get information from the octez-client manual
+   octez-client sapling man
 
    # generate two shielded keys for Alice and Bob and use them for the shielded-tez contract
    # the memo size has to be indicated
-   mavkit-client sapling gen key alice
-   mavkit-client sapling use key alice for contract shielded-tez --memo-size 8
-   mavkit-client sapling gen key bob
-   mavkit-client sapling use key bob for contract shielded-tez --memo-size 8
+   octez-client sapling gen key alice
+   octez-client sapling use key alice for contract shielded-tez --memo-size 8
+   octez-client sapling gen key bob
+   octez-client sapling use key bob for contract shielded-tez --memo-size 8
 
    # generate an address for Alice to receive shielded tokens.
-   mavkit-client sapling gen address alice
+   octez-client sapling gen address alice
    zet1AliceXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX # Alice's address
 
 
    # shield 10 tez from bootstrap1 to alice
-   mavkit-client sapling shield 10 from bootstrap1 to zet1AliceXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX using shielded-tez --burn-cap 2 &
-   mavkit-client bake for bootstrap1
-   mavkit-client sapling get balance for alice in contract shielded-tez
+   octez-client sapling shield 10 from bootstrap1 to zet1AliceXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX using shielded-tez --burn-cap 2 &
+   octez-client bake for bootstrap1
+   octez-client sapling get balance for alice in contract shielded-tez
 
    # generate an address for Bob to receive shielded tokens.
-   mavkit-client sapling gen address bob
+   octez-client sapling gen address bob
    zet1BobXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX # Bob's address
 
    # forge a shielded transaction from alice to bob that is saved to a file
-   mavkit-client sapling forge transaction 10 from alice to zet1BobXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX using shielded-tez
+   octez-client sapling forge transaction 10 from alice to zet1BobXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX using shielded-tez
 
    # submit the shielded transaction from any transparent account
-   mavkit-client sapling submit sapling_transaction from bootstrap2 using shielded-tez --burn-cap 1 &
-   mavkit-client bake for bootstrap1
-   mavkit-client sapling get balance for bob in contract shielded-tez
+   octez-client sapling submit sapling_transaction from bootstrap2 using shielded-tez --burn-cap 1 &
+   octez-client bake for bootstrap1
+   octez-client sapling get balance for bob in contract shielded-tez
 
    # unshield from bob to any transparent account
-   mavkit-client sapling unshield 10 from bob to bootstrap1 using shielded-tez --burn-cap 1
+   octez-client sapling unshield 10 from bob to bootstrap1 using shielded-tez --burn-cap 1
    ctrl+z # to put the process in background
-   mavkit-client bake for bootstrap1
+   octez-client bake for bootstrap1
    fg # to put resume the transfer

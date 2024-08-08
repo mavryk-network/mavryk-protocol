@@ -183,4 +183,4 @@ See also
 
 An in-depth description of the internals of developing a new Mavryk
 protocol can be found in the blog post: `How to write a Mavryk protocol
-<https://research-development.nomadic-labs.com/how-to-write-a-mavryk-protocol.html>`_.
+<https://research-development.nomadic-labs.com/how-to-write-a-tezos-protocol.html>`_.

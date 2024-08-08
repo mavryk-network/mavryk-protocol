@@ -43,7 +43,7 @@ TODAY=$(date +"%Y%m%d_%H%M")
 # C04HZHR11DW is the identifier for the #gas-benchmarks-reports channel (it can
 # be found in its URL).
 slack() {
-  curl -X POST -H 'Authorization: Bearer '"$(cat /data/mavryk-benchmarks/slack_token)" -H 'Content-type: application/json; charset=utf-8' --data "{\"channel\":\"C04HZHR11DW\",\"text\":\"$1\"}" https://mavryk-dev.slack.com/api/chat.postMessage
+  curl -X POST -H 'Authorization: Bearer '"$(cat /data/mavryk-benchmarks/slack_token)" -H 'Content-type: application/json; charset=utf-8' --data "{\"channel\":\"C04HZHR11DW\",\"text\":\"$1\"}" https://tezos-dev.slack.com/api/chat.postMessage
 }
 
 anomaly() {

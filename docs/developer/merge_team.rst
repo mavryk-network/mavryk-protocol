@@ -52,7 +52,7 @@ of the merge coordinator include:
 * Improve and augment the documentation about the MR process.
 
 To make it easy to find out who the current merge coordinator is,
-:gl:`meta-issue 1062 <mavryk-network/mavryk-protocol#1062>` is assigned to the merge coordinator.
+:gl:`meta-issue 1062 <tezos/tezos#1062>` is assigned to the merge coordinator.
 Don't hesitate to contact the merge coordinator if you think you can
 benefit of their help to move your merge request forward.
 
@@ -80,7 +80,7 @@ The Mavkit merge team is always looking for software engineers with at least the
   repository, i.e. ``OCaml``, ``python``, ``CI``, building, packaging, etc.
 
 To apply for being included in the Mavkit merge team, contact the :ref:`merge coordinator <merge_coordinator>` or
-an existing member on the `mavryk-dev <https://mavryk-dev.slack.com/>`_ Slack. Your application
+an existing member on the `mavryk-dev <https://tezos-dev.slack.com/>`_ Slack. Your application
 will be discussed during the next weekly meeting of the Mavkit merge team.
 
 Helping the Mavkit Merge Team

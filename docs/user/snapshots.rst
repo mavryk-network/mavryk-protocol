@@ -210,4 +210,4 @@ download. These include:
 
 * `Mavryk Snapshots <https://snapshots.mavryk.network>`_
 * `Lambs on acid <https://lambsonacid.nl/>`_
-* `Marigold snapshots <https://snapshots.tezos.marigold.dev/>`_
+* `Snapshots <https://snapshots.mavryk.network/>`_

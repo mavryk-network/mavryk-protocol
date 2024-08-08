@@ -68,7 +68,7 @@ TOK="$(cat "$HOME"/slack_token)"
 
 slack() {
   if [ "$DISABLE_SLACK_MESSAGING" = "" ]; then
-    curl -X POST -H 'Authorization: Bearer '"$TOK" -H 'Content-type: application/json; charset=utf-8' --data "{\"channel\":\"$CHAN\",\"text\":\"$1\"}" https://mavryk-dev.slack.com/api/chat.postMessage
+    curl -X POST -H 'Authorization: Bearer '"$TOK" -H 'Content-type: application/json; charset=utf-8' --data "{\"channel\":\"$CHAN\",\"text\":\"$1\"}" https://tezos-dev.slack.com/api/chat.postMessage
   else
     echo "Message \"$1\" would be sent on Slack but Slack messaging has been disabled."
   fi
@@ -76,7 +76,7 @@ slack() {
 
 slack_send_file() {
   if [ "$DISABLE_SLACK_MESSAGING" = "" ]; then
-    curl -F file=@"$1" -F "initial_comment=$2" -F channels="$CHAN" -F token="$TOK" https://mavryk-dev.slack.com/api/files.upload
+    curl -F file=@"$1" -F "initial_comment=$2" -F channels="$CHAN" -F token="$TOK" https://tezos-dev.slack.com/api/files.upload
   else
     echo "File \"$1\" would be sent on Slack with message \"$2\" but Slack messaging has been disabled."
   fi

@@ -16,7 +16,7 @@ This page details the process of creating a new environment by copying the lates
 Bootstrap
 ---------
 
-The following steps are roughly the steps taken in the `V6 bootstrap MR <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/4961>`__
+The following steps are roughly the steps taken in the `V6 bootstrap MR <https://gitlab.com/tezos/tezos/-/merge_requests/4961>`__
 
 1. Copy the existing environment files:
 
@@ -107,7 +107,7 @@ Bump environment version in:
 
 And finally, bump environment version in ``src/proto_alpha/lib_protocol/MAVRYK_PROTOCOL``, and run ``make -C manifest``.
 
-For an example, check `the MR in which the environment V6 was activated <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/4961>`__.
+For an example, check `the MR in which the environment V6 was activated <https://gitlab.com/tezos/tezos/-/merge_requests/4961>`__.
 
 Additionally, you have to update the documentation of protocol Alpha to reflect the fact that it now uses environment ``V<N>``. For that, see meta-issue :gl:`#4155`, which explains all the necessary changes (don't worry, the changes are very limited).
 
@@ -116,7 +116,7 @@ Making changes in the environment
 
 You can make changes to the newly created environment until it is released. For this purpose release candidates do not count. Below are examples of changes from previous work on the environment.
 
-* `Adding the Result module in environment V3 <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/3154/diffs?commit_id=9aa7bee8a73f9495787dc9ee257e5021d31bee33>`__
+* `Adding the Result module in environment V3 <https://gitlab.com/tezos/tezos/-/merge_requests/3154/diffs?commit_id=9aa7bee8a73f9495787dc9ee257e5021d31bee33>`__
 
   * Add the interface file ``src/lib_protocol_environment/sigs/v3/result.mli``
 
@@ -124,13 +124,13 @@ You can make changes to the newly created environment until it is released. For 
 
   * Declare the ``Result`` module in the functor in ``src/lib_protocol_environment/environment_V3.ml``
 
-* `Updating the data-encoding dependency <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/3149>`__
+* `Updating the data-encoding dependency <https://gitlab.com/tezos/tezos/-/merge_requests/3149>`__
 
   * Provide backwards compatibility layers for older environments
 
   * Modify existing ``src/lib_protocol_environment/sigs/v3/data_encoding.mli``
 
-* `Rehauling the List module in the environment V3 <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/3116/diffs?commit_id=697b3da1e4b7135b0109dbdc6543e08a21038658>`__
+* `Rehauling the List module in the environment V3 <https://gitlab.com/tezos/tezos/-/merge_requests/3116/diffs?commit_id=697b3da1e4b7135b0109dbdc6543e08a21038658>`__
 
   * Replace some of the environment modules with a new one (remove old files)
 

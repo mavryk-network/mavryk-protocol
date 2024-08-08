@@ -48,7 +48,7 @@ echo "- full_opam_repository_tag    = $full_opam_repository_tag (from tezos/tezo
 
 if [ "$opam_repository_commit_hash" != "$full_opam_repository_tag" ]; then
   echo "Error: values do not match."
-  echo "See http://protocol.mavryk.org/developer/contributing-adding-a-new-opam-dependency.html"
+  echo "See https://protocol.mavryk.org/developer/contributing-adding-a-new-opam-dependency.html"
   exit 1
 fi
 

@@ -82,7 +82,7 @@ The OpenAPI specifications for the RPCs of the smart rollup node for the Atlas
 (``PtAtLas``) protocol can be found at:
 
 - `atlas-smart-rollup-node-openapi.json (version 19.1)
-  <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/PtAtLas-smart-rollup-node-openapi.json>`_
+  <https://gitlab.com/mavryk-network/mavryk-protocol/-/blob/master/docs/api/atlas-smart-rollup-node-openapi.json>`_
 
 .. _openapi_generate:
 

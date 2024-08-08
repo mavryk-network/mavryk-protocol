@@ -45,7 +45,7 @@ License](https://opensource.org/licenses/MIT).
 
 All development of the Mavryk code happens on
 GitLab at https://gitlab.com/mavryk-network/mavryk-protocol. Merge requests
-(https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests) should usually
+(https://gitlab.com/tezos/tezos/-/merge_requests) should usually
 target the `master` branch; see [the contribution
 instructions](https://protocol.mavryk.org/developer/contributing.html).
 

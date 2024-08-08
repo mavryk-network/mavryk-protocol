@@ -244,7 +244,7 @@ References:
    --------------------
 
    The `Michelson unit test proposal
-   <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/1487>`__ defines a
+   <https://gitlab.com/tezos/tezos/-/merge_requests/1487>`__ defines a
    format for unit tests for Michelson snippets. If the proposal is eventually accepted, then these
    tests will be executable through ``mavkit-client``.
 
@@ -254,7 +254,7 @@ References:
     - Conformance testing for Michelson interpreters.
 
    References:
-    - `Merge request defining the Michelson unit test format <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/1487>`_
+    - `Merge request defining the Michelson unit test format <https://gitlab.com/tezos/tezos/-/merge_requests/1487>`_
     - `A conformance test suite for Michelson interpreter using the Michelson unit test format <https://github.com/runtimeverification/michelson-semantics/tree/master/tests/unit>`_
 
 .. _gitlab_test_ci:

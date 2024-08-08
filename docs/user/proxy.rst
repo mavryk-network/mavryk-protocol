@@ -191,6 +191,6 @@ Regarding clients, either:
   list.
 
 We refer to the proxy mode's
-`merge request <https://gitlab.com/mavryk-network/mavryk-protocol/-/merge_requests/1943>`_
+`merge request <https://gitlab.com/tezos/tezos/-/merge_requests/1943>`_
 for details regarding how we did the benchmarks that led us to the conclusions
 of this section.
