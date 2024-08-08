@@ -219,7 +219,7 @@ let register_protocol_tests_that_use_supports_correctly () =
   Zk_rollup.register ~protocols ;
   Tx_sc_rollup.register ~protocols ;
   Dac.register ~protocols ;
-  Timelock.register ~protocols ;
+  Timelock.register ~protocols:[Protocol.Atlas; Protocol.Boreas] ;
   Tzt_regression.register ~protocols ;
   Dal.register ~protocols:[Protocol.Alpha; Protocol.Boreas]
 
