@@ -183,7 +183,7 @@ When all discussions are resolved, and the MR has got at least two
 approvals from Mavkit Merge Team members, the developer should squash
 any fix-up commits that were applied (remembering to edit the commit
 message appropriately). Then the developer (or anyone else when not possible) can assign the MR to the `Nomadic
-Marge-bot <https://gitlab.com/nomadic-margebot>`__, which will
+Marge-bot <https://gitlab.com/MavrykCowbot>`__, which will
 automatically rebase the branch on top of master and finally merge it.
 
 Merge Queue Order

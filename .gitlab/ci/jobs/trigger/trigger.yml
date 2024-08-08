@@ -7,7 +7,7 @@ trigger:
   tags:
   - saas-linux-2xlarge-amd64
   rules:
-  - if: $CI_MERGE_REQUEST_ASSIGNEES !~ /nomadic-margebot/
+  - if: $CI_MERGE_REQUEST_ASSIGNEES !~ /MavrykCowbot/
     when: manual
     allow_failure: false
   - when: always

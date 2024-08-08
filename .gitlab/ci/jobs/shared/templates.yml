@@ -93,7 +93,7 @@
 # trigger
 .rules__mavkit_changes_and_not_margebot:
   rules:
-    - if: '$GITLAB_USER_LOGIN == "nomadic-margebot"'
+    - if: '$GITLAB_USER_LOGIN == "MavrykCowbot"'
       when: never
     - changes:
         - src/**/*

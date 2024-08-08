@@ -46,8 +46,8 @@ val has_tag_match : string -> If.t
 (** A rule that is true if the comma-separated list [CI_MERGE_REQUEST_LABELS] contains a given label. *)
 val has_mr_label : string -> If.t
 
-(** A rule that is true if [CI_MERGE_REQUEST_ASSIGNEES] contains [nomadic-margebot]. *)
+(** A rule that is true if [CI_MERGE_REQUEST_ASSIGNEES] contains [MavrykCowbot]. *)
 val assigned_to_marge_bot : If.t
 
-(** A rule that is true if [CI_USER_LOGIN] equals [nomadic-margebot]. *)
+(** A rule that is true if [CI_USER_LOGIN] equals [MavrykCowbot]. *)
 val triggered_by_marge_bot : If.t

@@ -26,7 +26,7 @@ opam:bls12-381:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 6 minutes
   - when: never
@@ -218,7 +218,7 @@ opam:mavkit-alcotezt:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 6 minutes
   - when: never
@@ -538,7 +538,7 @@ opam:mavkit-crawler:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 4 minutes
   - when: never
@@ -794,7 +794,7 @@ opam:mavkit-distributed-internal:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 7 minutes
   - when: never
@@ -858,7 +858,7 @@ opam:mavkit-distributed-lwt-internal:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 6 minutes
   - when: never
@@ -922,7 +922,7 @@ opam:mavkit-injector:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 3 minutes
   - when: never
@@ -986,7 +986,7 @@ opam:mavkit-internal-libs:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 6 minutes
   - when: never
@@ -1050,7 +1050,7 @@ opam:mavkit-l2-libs:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 5 minutes
   - when: never
@@ -1114,7 +1114,7 @@ opam:mavkit-libs:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 6 minutes
   - when: never
@@ -1242,7 +1242,7 @@ opam:mavkit-node-config:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 4 minutes
   - when: never
@@ -1306,7 +1306,7 @@ opam:mavkit-proto-libs:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 5 minutes
   - when: never
@@ -1370,7 +1370,7 @@ opam:mavkit-protocol-000-Ps9mPmXa-libs:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 3 minutes
   - when: never
@@ -1434,7 +1434,7 @@ opam:mavkit-protocol-001-PtAtLas-libs:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 2 minutes
   - when: never
@@ -1498,7 +1498,7 @@ opam:mavkit-protocol-002-PtBoreas-libs:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 3 minutes
   - when: never
@@ -1562,7 +1562,7 @@ opam:mavkit-protocol-alpha-libs:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 3 minutes
   - when: never
@@ -1754,7 +1754,7 @@ opam:mavkit-rpc-process:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 3 minutes
   - when: never
@@ -1818,7 +1818,7 @@ opam:mavkit-shell-libs:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 5 minutes
   - when: never
@@ -2010,7 +2010,7 @@ opam:mavkit-smart-rollup-node-PtAtLas:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 2 minutes
   - when: never
@@ -2074,7 +2074,7 @@ opam:mavkit-smart-rollup-node-PtBoreas:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 2 minutes
   - when: never
@@ -2138,7 +2138,7 @@ opam:mavkit-smart-rollup-node-alpha:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 2 minutes
   - when: never
@@ -2202,7 +2202,7 @@ opam:mavkit-smart-rollup-node-lib:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 3 minutes
   - when: never
@@ -2330,7 +2330,7 @@ opam:mavkit-smart-rollup-wasm-debugger-lib:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 2 minutes
   - when: never
@@ -2394,7 +2394,7 @@ opam:mavkit-smart-rollup-wasm-debugger-plugin:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 7 minutes
   - when: never
@@ -2522,7 +2522,7 @@ opam:mavryk-benchmark:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 6 minutes
   - when: never
@@ -2586,7 +2586,7 @@ opam:mavryk-client-demo-counter:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 3 minutes
   - when: never
@@ -2650,7 +2650,7 @@ opam:mavryk-client-genesis:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 3 minutes
   - when: never
@@ -2714,7 +2714,7 @@ opam:mavryk-dac-client-lib:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 4 minutes
   - when: never
@@ -2778,7 +2778,7 @@ opam:mavryk-dac-lib:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 4 minutes
   - when: never
@@ -2842,7 +2842,7 @@ opam:mavryk-dac-node-lib:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 3 minutes
   - when: never
@@ -2906,7 +2906,7 @@ opam:mavryk-dal-node-lib:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 4 minutes
   - when: never
@@ -2970,7 +2970,7 @@ opam:mavryk-dal-node-services:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 6 minutes
   - when: never
@@ -3034,7 +3034,7 @@ opam:mavryk-openapi:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 7 minutes
   - when: never
@@ -3098,7 +3098,7 @@ opam:mavryk-protocol-000-Ps9mPmXa:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 4 minutes
   - when: never
@@ -3162,7 +3162,7 @@ opam:mavryk-protocol-001-PtAtLas:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 4 minutes
   - when: never
@@ -3226,7 +3226,7 @@ opam:mavryk-protocol-002-PtBoreas:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 4 minutes
   - when: never
@@ -3290,7 +3290,7 @@ opam:mavryk-protocol-alpha:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 5 minutes
   - when: never
@@ -3354,7 +3354,7 @@ opam:mavryk-protocol-demo-counter:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 5 minutes
   - when: never
@@ -3418,7 +3418,7 @@ opam:mavryk-protocol-demo-noops:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 5 minutes
   - when: never
@@ -3482,7 +3482,7 @@ opam:mavryk-protocol-genesis:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 5 minutes
   - when: never
@@ -3546,7 +3546,7 @@ opam:mavryk-proxy-server-config:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 6 minutes
   - when: never
@@ -3610,7 +3610,7 @@ opam:tezt-mavryk:
     - manifest/main.ml
     - scripts/opam-prepare-repo.sh
     - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "nomadic-margebot"
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
     when: delayed
     start_in: 6 minutes
   - when: never
