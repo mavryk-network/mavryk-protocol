@@ -80,7 +80,7 @@ type opam_package = {
   batch_index : int;
 }
 
-let opam_rules ~only_marge_bot ?batch_index () =
+let opam_rules ~only_cowbot ?batch_index () =
   let when_ =
     match batch_index with
     | Some batch_index -> Delayed (Minutes batch_index)
@@ -91,8 +91,8 @@ let opam_rules ~only_marge_bot ?batch_index () =
     job_rule ~if_:(Rules.has_mr_label "ci--opam") ~when_ ();
     job_rule
       ~if_:
-        (if only_marge_bot then
-         If.(Rules.merge_request && Rules.triggered_by_marge_bot)
+        (if only_cowbot then
+         If.(Rules.merge_request && Rules.triggered_by_cowbot)
         else Rules.merge_request)
       ~changes:changeset_opam_jobs
       ~when_
@@ -113,7 +113,7 @@ let job_opam_package ?dependencies {name; group; batch_index} : mavryk_job =
          Therefore, a retry was added. This should be removed once the
          underlying tests have been fixed. *)
     ~retry:2
-    ~rules:(opam_rules ~only_marge_bot:(group = All) ~batch_index ())
+    ~rules:(opam_rules ~only_cowbot:(group = All) ~batch_index ())
     ~variables:
       [
         (* See [.gitlab-ci.yml] for details on [RUNTEZTALIAS] *)
@@ -425,7 +425,7 @@ let jobs pipeline_type =
             ~rules:
               [
                 job_rule
-                  ~if_:(If.not Rules.assigned_to_marge_bot)
+                  ~if_:(If.not Rules.assigned_to_cowbot)
                   ~allow_failure:No
                   ~when_:Manual
                   ();
@@ -721,7 +721,7 @@ let jobs pipeline_type =
         ~dependencies:dependencies_needs_trigger
         ~before_script:(before_script ~eval_opam:true [])
         ~artifacts:(artifacts ["_opam-repo-for-release/"])
-        ~rules:(opam_rules ~only_marge_bot:false ~batch_index:1 ())
+        ~rules:(opam_rules ~only_cowbot:false ~batch_index:1 ())
         [
           "git init _opam-repo-for-release";
           "./scripts/opam-prepare-repo.sh dev ./ ./_opam-repo-for-release";

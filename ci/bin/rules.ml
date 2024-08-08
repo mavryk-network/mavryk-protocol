@@ -42,10 +42,10 @@ let not_on_mavryk_namespace =
 
 let has_tag_match tag = Predefined_vars.ci_commit_tag =~ tag
 
-let assigned_to_marge_bot =
+let assigned_to_cowbot =
   Predefined_vars.ci_merge_request_assignees =~ "/MavrykCowbot/"
 
-let triggered_by_marge_bot =
+let triggered_by_cowbot =
   Predefined_vars.gitlab_user_login == str "MavrykCowbot"
 
 let has_mr_label label =

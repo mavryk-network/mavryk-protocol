@@ -47,7 +47,7 @@ val has_tag_match : string -> If.t
 val has_mr_label : string -> If.t
 
 (** A rule that is true if [CI_MERGE_REQUEST_ASSIGNEES] contains [MavrykCowbot]. *)
-val assigned_to_marge_bot : If.t
+val assigned_to_cowbot : If.t
 
 (** A rule that is true if [CI_USER_LOGIN] equals [MavrykCowbot]. *)
-val triggered_by_marge_bot : If.t
+val triggered_by_cowbot : If.t
