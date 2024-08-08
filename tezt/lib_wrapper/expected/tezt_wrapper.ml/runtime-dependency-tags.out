@@ -1,8 +1,8 @@
 injector_server: _build/default/contrib/mavkit_injector_server/mavkit_injector_server.exe
 dal_echo_kernel: dal_echo_kernel.wasm
+basenet_evm_kernel: etherlink/kernel_evm/kernel/tests/resources/basenet_evm_kernel.wasm
 debug_kernel: etherlink/kernel_evm/kernel/tests/resources/debug_kernel.wasm
 failed_migration: etherlink/kernel_evm/kernel/tests/resources/failed_migration.wasm
-basenet_evm_kernel: etherlink/kernel_evm/kernel/tests/resources/basenet_evm_kernel.wasm
 evm_kernel: evm_kernel.wasm
 accuser_ptatlas: mavkit-accuser-PtAtLas
 accuser_ptboreas: mavkit-accuser-PtBoreas

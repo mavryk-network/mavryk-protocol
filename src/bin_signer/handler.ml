@@ -28,7 +28,10 @@ module High_watermark = struct
   let encoding =
     let open Data_encoding in
     let raw_hash =
-      conv Mavryk_crypto.Blake2B.to_bytes Mavryk_crypto.Blake2B.of_bytes_exn bytes
+      conv
+        Mavryk_crypto.Blake2B.to_bytes
+        Mavryk_crypto.Blake2B.of_bytes_exn
+        bytes
     in
     conv
       (List.map (fun (chain_id, marks) ->

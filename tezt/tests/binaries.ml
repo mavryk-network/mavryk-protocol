@@ -54,13 +54,13 @@ let lookup_or_fail path =
        ^ " has no corresponding Uses.t. Try to add it to Constant.Unused.")
   | Some uses -> uses
 
-(* We remove octez-node as it will be checked separately. It is the
+(* We remove mavkit-node as it will be checked separately. It is the
    binary whose version we assume to be canonical. *)
 let read_executable_list path =
   read_file path |> String.split_on_char '\n'
   |> ( List.filter @@ fun str ->
        (not (String.equal str String.empty))
-       && not (String.equal str "octez-node") )
+       && not (String.equal str "mavkit-node") )
   |> List.map lookup_or_fail
 
 let test_versions commands =
@@ -80,7 +80,7 @@ let test_versions commands =
   Lwt_list.iter_s loop commands
 
 (* Test that all released binaries support the --version flag, and
-   that they report the same version value as the Octez node. *)
+   that they report the same version value as the Mavkit node. *)
 let test_released_versions () =
   let executables = read_executable_list Constant.released_executables in
   Test.register
@@ -91,7 +91,7 @@ let test_released_versions () =
   @@ fun () -> test_versions executables
 
 (* Test that all experimental binaries support the --version flag, and
-   that they report the same version value as the Octez node. *)
+   that they report the same version value as the Mavkit node. *)
 let test_experimental_versions () =
   let executables = read_executable_list Constant.experimental_executables in
   Test.register

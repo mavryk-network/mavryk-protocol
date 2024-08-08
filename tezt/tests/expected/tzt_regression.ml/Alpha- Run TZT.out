@@ -27,8 +27,47 @@ Expected: { Stack_elt
 tzt_reference_test_suite/setdelegate_00.tzt:
 Got output: { Stack_elt
     operation
-    0x011d23c1d3d2f8a4ea5e8784b8f7ecf2ad304c0fe600000003ff002431516be31f3f7bb3c8169f930a024142696af7 }
-Expected: { Stack_elt operation (Set_delegate (Some "tz1NwQ6hkenkn6aYYio8VnJvjtb4K1pfeU1Z") _) }
+    0x011d23c1d3d2f8a4ea5e8784b8f7ecf2ad304c0fe600000003ff0092b9866d8384f4b80483273e3687c228a043c4ce }
+Expected: { Stack_elt operation (Set_delegate (Some "mv1MPJuEDMsEhdmU3LzQbkMG4mGkPvxk9jQJ") _) }
+
+tzt_reference_test_suite/pack_keyhash_04.tzt:
+Got output: StaticError
+  "Error:\n  { \"id\": \"proto.alpha.michelson_v1.invalid_constant\",\n  \"description\": \"A data expression was invalid for its expected type.\",\n  \"data\":\n    { \"location\": 0, \"expected_type\": { \"prim\": \"key_hash\" },\n      \"wrong_expression\":\n        { \"string\": \"tz4DfEv3KKcYXQ5ZMTeErJ6kvnWfzBRTPc8B\" } } },\n  trace:\n  { \"id\": \"proto.alpha.michelson_v1.invalid_syntactic_constant\",\n  \"description\": \"A compile-time constant was invalid for its expected form.\",\n  \"data\":\n    { \"location\": 0, \"expected_form\": \"a valid key hash\",\n      \"wrong_expression\":\n        { \"string\": \"tz4DfEv3KKcYXQ5ZMTeErJ6kvnWfzBRTPc8B\" } } }\n  { \"id\": \"proto.alpha.michelson_v1.invalid_constant\",\n  \"description\": \"A data expression was invalid for its expected type.\",\n  \"data\":\n    { \"location\": 0, \"expected_type\": { \"prim\": \"key_hash\" },\n      \"wrong_expression\":\n        { \"string\": \"tz4DfEv3KKcYXQ5ZMTeErJ6kvnWfzBRTPc8B\" } } }\n"
+Expected: { Stack_elt bytes 0x050a0000001503330fc02e20a6d72bd868264517bf4f8b6da85685 }
+
+tzt_reference_test_suite/pack_keyhash_03.tzt:
+Got output: { Stack_elt bytes 0x050a00000015029c3728da24069b5aadc5a6d36f6df7e000718abb }
+Expected: { Stack_elt bytes 0x050a0000001502fb405367e9ab231bfc5a79c13fd4099f1d2ce20b }
+
+tzt_reference_test_suite/pack_keyhash_02.tzt:
+Got output: { Stack_elt bytes 0x050a0000001501eeac20b941b49824c6b9a005d6dc22516070c7a5 }
+Expected: { Stack_elt bytes 0x050a0000001501e37c61b158f6626985ef211c2261ffc0f3a87655 }
+
+tzt_reference_test_suite/pack_keyhash_01.tzt:
+Got output: { Stack_elt bytes 0x050a000000150067b0e6d79c0de05e79645798a69528e9f9555ddb }
+Expected: { Stack_elt bytes 0x050a0000001500088c36d101ba785bc2e2bbcfd5e552870e1fdfd2 }
+
+tzt_reference_test_suite/pack_contract_00.tzt:
+Got output: StaticError
+  "Error:\n  { \"id\": \"proto.alpha.michelson_v1.invalid_constant\",\n  \"description\": \"A data expression was invalid for its expected type.\",\n  \"data\":\n    { \"location\": 0,\n      \"expected_type\": { \"prim\": \"contract\", \"args\": [ { \"prim\": \"unit\" } ] },\n      \"wrong_expression\":\n        { \"string\": \"tz1LQ5c9xSrgLnLkS95ydhCyZr4cuv5WfUi9\" } } },\n  trace:\n  { \"id\": \"proto.alpha.destination_repr.invalid_b58check\",\n  \"description\":\n    \"Failed to read a valid destination from a b58check_encoding data\",\n  \"data\": { \"input\": \"tz1LQ5c9xSrgLnLkS95ydhCyZr4cuv5WfUi9\" } }\n  { \"id\": \"proto.alpha.michelson_v1.invalid_constant\",\n  \"description\": \"A data expression was invalid for its expected type.\",\n  \"data\":\n    { \"location\": 0,\n      \"expected_type\": { \"prim\": \"contract\", \"args\": [ { \"prim\": \"unit\" } ] },\n      \"wrong_expression\":\n        { \"string\": \"tz1LQ5c9xSrgLnLkS95ydhCyZr4cuv5WfUi9\" } } }\n"
+Expected: { Stack_elt bytes 0x050a0000001600000854bc32bfe1ce7a82d58e37ea42a4f9100e03b4 }
+
+tzt_reference_test_suite/pack_address_04.tzt:
+Got output: StaticError
+  "Error:\n  { \"id\": \"proto.alpha.michelson_v1.invalid_constant\",\n  \"description\": \"A data expression was invalid for its expected type.\",\n  \"data\":\n    { \"location\": 0, \"expected_type\": { \"prim\": \"address\" },\n      \"wrong_expression\":\n        { \"string\": \"tz4DfEv3KKcYXQ5ZMTeErJ6kvnWfzBRTPc8B\" } } },\n  trace:\n  { \"id\": \"proto.alpha.destination_repr.invalid_b58check\",\n  \"description\":\n    \"Failed to read a valid destination from a b58check_encoding data\",\n  \"data\": { \"input\": \"tz4DfEv3KKcYXQ5ZMTeErJ6kvnWfzBRTPc8B\" } }\n  { \"id\": \"proto.alpha.michelson_v1.invalid_constant\",\n  \"description\": \"A data expression was invalid for its expected type.\",\n  \"data\":\n    { \"location\": 0, \"expected_type\": { \"prim\": \"address\" },\n      \"wrong_expression\":\n        { \"string\": \"tz4DfEv3KKcYXQ5ZMTeErJ6kvnWfzBRTPc8B\" } } }\n"
+Expected: { Stack_elt bytes 0x050a000000160003330fc02e20a6d72bd868264517bf4f8b6da85685 }
+
+tzt_reference_test_suite/pack_address_03.tzt:
+Got output: { Stack_elt bytes 0x050a0000001600029c3728da24069b5aadc5a6d36f6df7e000718abb }
+Expected: { Stack_elt bytes 0x050a000000160002fb405367e9ab231bfc5a79c13fd4099f1d2ce20b }
+
+tzt_reference_test_suite/pack_address_02.tzt:
+Got output: { Stack_elt bytes 0x050a000000160001eeac20b941b49824c6b9a005d6dc22516070c7a5 }
+Expected: { Stack_elt bytes 0x050a000000160001e37c61b158f6626985ef211c2261ffc0f3a87655 }
+
+tzt_reference_test_suite/pack_address_01.tzt:
+Got output: { Stack_elt bytes 0x050a00000016000067b0e6d79c0de05e79645798a69528e9f9555ddb }
+Expected: { Stack_elt bytes 0x050a000000160000088c36d101ba785bc2e2bbcfd5e552870e1fdfd2 }
 
 tzt_reference_test_suite/createcontract_01.tzt:
 Got output: { Stack_elt
@@ -50,7 +89,7 @@ Expected: { Stack_elt
 tzt_reference_test_suite/createcontract_00.tzt:
 Got output: { Stack_elt
     operation
-    0x011d23c1d3d2f8a4ea5e8784b8f7ecf2ad304c0fe6000000020cff002431516be31f3f7bb3c8169f930a024142696af70000001e02000000190502020000000a0320034f053d036d03420501036c0500036c00000002030b ;
+    0x011d23c1d3d2f8a4ea5e8784b8f7ecf2ad304c0fe6000000020cff0092b9866d8384f4b80483273e3687c228a043c4ce0000001e02000000190502020000000a0320034f053d036d03420501036c0500036c00000002030b ;
   Stack_elt address "KT1Mjjcb6tmSsLm7Cb3DSQszePjfchPM4Uxm" }
 Expected: { Stack_elt
     operation
@@ -58,12 +97,12 @@ Expected: { Stack_elt
        { code { DROP ; UNIT ; NIL operation ; PAIR } ;
          storage unit ;
          parameter unit }
-       (Some "tz1NwQ6hkenkn6aYYio8VnJvjtb4K1pfeU1Z")
+       (Some "mv1MPJuEDMsEhdmU3LzQbkMG4mGkPvxk9jQJ")
        12
        Unit
        _) ;
   Stack_elt address _ }
 
-Test results: Passed:621 Failed:7 Total:628
+Test results: Passed:612 Failed:16 Total:628
 Fatal error:
   Some tests have failed

@@ -2356,13 +2356,13 @@ should be replaced by :ref:`a wildcard pattern
 
 Here is an example unit test for the ``SET_DELEGATE`` instruction used
 to set the delegate of the current contract to the account at address
-``tz1NwQ6hkenkn6aYYio8VnJvjtb4K1pfeU1Z``:
+``mv1MPJuEDMsEhdmU3LzQbkMG4mGkPvxk9jQJ``:
 
 ::
 
-  input { Stack_elt (option key_hash) (Some "tz1NwQ6hkenkn6aYYio8VnJvjtb4K1pfeU1Z") } ;
+  input { Stack_elt (option key_hash) (Some "mv1MPJuEDMsEhdmU3LzQbkMG4mGkPvxk9jQJ") } ;
   code SET_DELEGATE ;
-  output { Stack_elt operation (Set_delegate (Some "tz1NwQ6hkenkn6aYYio8VnJvjtb4K1pfeU1Z") _) }
+  output { Stack_elt operation (Set_delegate (Some "mv1MPJuEDMsEhdmU3LzQbkMG4mGkPvxk9jQJ") _) }
 
 .. _syntax_of_other_contracts_boreas:
 

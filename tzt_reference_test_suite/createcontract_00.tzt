@@ -5,7 +5,7 @@ code {
            parameter unit }
      } ;
 input {
-        Stack_elt (option key_hash) (Some "tz1NwQ6hkenkn6aYYio8VnJvjtb4K1pfeU1Z") ;
+        Stack_elt (option key_hash) (Some "mv1MPJuEDMsEhdmU3LzQbkMG4mGkPvxk9jQJ") ;
         Stack_elt mumav 12 ;
         Stack_elt unit Unit
       } ;
@@ -14,7 +14,7 @@ output {
            operation
            (Create_contract
               { code { DROP ; UNIT ; NIL operation ; PAIR } ; storage unit ; parameter unit }
-              (Some "tz1NwQ6hkenkn6aYYio8VnJvjtb4K1pfeU1Z")
+              (Some "mv1MPJuEDMsEhdmU3LzQbkMG4mGkPvxk9jQJ")
               12
               Unit
               _
