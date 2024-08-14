@@ -6,8 +6,8 @@ set -eu
 find . ! -path "./_opam/*" -name "*.opam" -exec opam lint {} +
 
 # Check that python environment is synchronized with the image's.
-diff poetry.lock /home/tezos/poetry.lock
-diff pyproject.toml /home/tezos/pyproject.toml
+diff poetry.lock /home/mavryk/poetry.lock
+diff pyproject.toml /home/mavryk/pyproject.toml
 
 make check-linting
 

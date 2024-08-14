@@ -57,7 +57,7 @@ def secret_code(pkh, blind):
 def genesis_commitments(wallets, blind):
     commitments = []
     for pkh_b58, amount in wallets.iteritems():
-        # Public key hash corresponding to this Tezos address.
+        # Public key hash corresponding to this Mavryk address.
         pkh = bitcoin.b58check_to_bin(pkh_b58)[2:]
         # The redemption code is unique to the public key hash and deterministically
         # constructed using a secret blinding value.

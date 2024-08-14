@@ -27,14 +27,14 @@ RUN opam init --bare --disable-sandboxing
 # we do not need everything to run build-deps
 # we copy the mininum amount of files to use
 # the caching mechanism more efficiently
-COPY --link scripts/install_build_deps.sh root/tezos/scripts/
-COPY --link scripts/install_build_deps.rust.sh root/tezos/scripts/
-COPY --link scripts/version.sh root/tezos/scripts/
-COPY --link Makefile root/tezos/
-COPY --link opam/virtual/mavkit-deps.opam.locked root/tezos/opam/virtual/
-COPY --link opam root/tezos/
+COPY --link scripts/install_build_deps.sh root/mavryk/scripts/
+COPY --link scripts/install_build_deps.rust.sh root/mavryk/scripts/
+COPY --link scripts/version.sh root/mavryk/scripts/
+COPY --link Makefile root/mavryk/
+COPY --link opam/virtual/mavkit-deps.opam.locked root/mavryk/opam/virtual/
+COPY --link opam root/mavryk/
 
-WORKDIR root/tezos
+WORKDIR root/mavryk
 RUN . /tmp/version.sh && \
     echo $opam_repository_tag > opam_repository_tag
 RUN eval $(opam env) ; \

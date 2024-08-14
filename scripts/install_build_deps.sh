@@ -17,7 +17,7 @@ create_opam_switch() {
     echo "create_opam_switch expects a non-empty argument"
     return 1
   }
-  opam switch create "$1" --repositories=tezos "ocaml-base-compiler.$ocaml_version" --no-install
+  opam switch create "$1" --repositories=mavryk "ocaml-base-compiler.$ocaml_version" --no-install
 }
 
 if [ "$1" = "--dev" ]; then
@@ -34,8 +34,8 @@ unset OPAMSWITCH
 
 echo "Use opam repository commit: $full_opam_repository_tag"
 opam_repository="https://github.com/ocaml/opam-repository.git#$full_opam_repository_tag"
-opam repository set-url tezos --dont-select "$opam_repository" ||
-  opam repository add tezos --dont-select "$opam_repository" > /dev/null 2>&1
+opam repository set-url mavryk --dont-select "$opam_repository" ||
+  opam repository add mavryk --dont-select "$opam_repository" > /dev/null 2>&1
 
 # Note: there should be no need to 'opam update' since 'opam repository add/set-url'
 # should have fetched already and the repository cannot change since it is
@@ -71,7 +71,7 @@ if opam remote -s | grep -q default; then
   default_switch=yes
 fi
 
-# remove the default repo so install tezos dependencies
+# remove the default repo so install mavryk dependencies
 opam repository remove default > /dev/null 2>&1
 
 if [ "$(ocaml -vnum)" != "$ocaml_version" ]; then

@@ -27,7 +27,7 @@
 #############################################################################
 
 # This is a script to benchmark the Mavryk gas parameters from a clone of
-# https://gitlab.com/tezos/tezos.
+# https://gitlab.com/mavryk-network/mavryk-protocol.
 
 # -x: echo run commands to stderr.
 # -e: stop on first error.
@@ -47,7 +47,7 @@ dated_log "Starting benchmarks processes"
 
 # Clean _opam to have a fresh dependencies environment and fetch the latest
 # commit.
-cd /data/mavryk-benchmarks/tezos
+cd /data/mavryk-benchmarks/mavryk
 rm -rf _opam
 dated_log "Pulling repository."
 git pull
@@ -85,7 +85,7 @@ dated_log "End of benchmarks run"
 
 # Move results from mavryk to their dedicated directory.
 cd ..
-mv tezos/_snoop/*_results "$SNOOP_RESULT_DIR"/
+mv mavryk/_snoop/*_results "$SNOOP_RESULT_DIR"/
 chmod +rx "$SNOOP_RESULT_DIR"/*_results
 
 # Save results in the cloud.

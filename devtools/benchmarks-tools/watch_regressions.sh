@@ -82,7 +82,7 @@ slack_send_file() {
   fi
 }
 
-MAVKIT_DIR="/data/redbull/tezos"
+MAVKIT_DIR="/data/redbull/mavryk"
 
 # Check if a directory more recent than the last known one exists on the bucket.
 # If not, we have nothing to do so we stop immediately.
@@ -164,7 +164,7 @@ else
   DIRS="$DIRS $REF_DIR"
 fi
 
-DUNE="/data/redbull/tezos/_opam/bin/dune"
+DUNE="/data/redbull/mavryk/_opam/bin/dune"
 
 GPD_DIR="$MAVKIT_DIR/devtools/gas_parameter_diff"
 

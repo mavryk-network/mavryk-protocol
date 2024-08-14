@@ -19,7 +19,7 @@ docker-do-%:
 	@cd .. \
 	    && . ./scripts/version.sh \
 	    && docker run -it -w$$(pwd) -v$$(pwd):$$(pwd) --entrypoint opam \
-	         registry.gitlab.com/tezos/opam-repository:runtime-build-dependencies--$${opam_repository_tag} exec -- \
+	         registry.gitlab.com/mavryk-network/opam-repository:runtime-build-dependencies--$${opam_repository_tag} exec -- \
 			 make --always-make -C ci $* # --always-make to not mix build artifacts from host and guest system.
 
 .PHONY: docker-all

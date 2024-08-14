@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     python3 \
 # openssh-server is needed for sshd
     openssh-server \
-# Tezos dependencies
+# Mavryk dependencies
     libgmp-dev curl libev-dev libhidapi-dev \
 # Necessary certificates for mirages dependencies
     ca-certificates \

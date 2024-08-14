@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=registry.gitlab.com/tezos/opam-repository
+ARG BASE_IMAGE=registry.gitlab.com/mavryk-network/opam-repository
 ARG BASE_IMAGE_VERSION
 ARG RUST_TOOLCHAIN_IMAGE
 ARG RUST_TOOLCHAIN_IMAGE_TAG
@@ -13,25 +13,25 @@ ARG MAVKIT_EXECUTABLES
 ARG GIT_SHORTREF
 ARG GIT_DATETIME
 ARG GIT_VERSION
-WORKDIR /home/tezos
-RUN mkdir -p /home/tezos/mavryk/scripts /home/tezos/mavryk/script-inputs /home/tezos/mavryk/parameters /home/tezos/evm_kernel
-COPY --chown=tezos:nogroup Makefile mavryk
-COPY --chown=tezos:nogroup script-inputs/active_protocol_versions mavryk/script-inputs/
-COPY --chown=tezos:nogroup script-inputs/active_protocol_versions_without_number mavryk/script-inputs/
-COPY --chown=tezos:nogroup script-inputs/released-executables mavryk/script-inputs/
-COPY --chown=tezos:nogroup script-inputs/experimental-executables mavryk/script-inputs/
-COPY --chown=tezos:nogroup script-inputs/dev-executables mavryk/script-inputs/
-COPY --chown=tezos:nogroup dune mavryk
-COPY --chown=tezos:nogroup scripts/version.sh mavryk/scripts/
-COPY --chown=tezos:nogroup src mavryk/src
-COPY --chown=tezos:nogroup irmin mavryk/irmin
-COPY --chown=tezos:nogroup tezt mavryk/tezt
-COPY --chown=tezos:nogroup opam mavryk/opam
-COPY --chown=tezos:nogroup dune mavryk/dune
-COPY --chown=tezos:nogroup dune-workspace mavryk/dune-workspace
-COPY --chown=tezos:nogroup dune-project mavryk/dune-project
-COPY --chown=tezos:nogroup vendors mavryk/vendors
-COPY --chown=tezos:nogroup devtools/testnet_experiment_tools mavryk/devtools/testnet_experiment_tools
+WORKDIR /home/mavryk
+RUN mkdir -p /home/mavryk/mavryk/scripts /home/mavryk/mavryk/script-inputs /home/mavryk/mavryk/parameters /home/mavryk/evm_kernel
+COPY --chown=mavryk:nogroup Makefile mavryk
+COPY --chown=mavryk:nogroup script-inputs/active_protocol_versions mavryk/script-inputs/
+COPY --chown=mavryk:nogroup script-inputs/active_protocol_versions_without_number mavryk/script-inputs/
+COPY --chown=mavryk:nogroup script-inputs/released-executables mavryk/script-inputs/
+COPY --chown=mavryk:nogroup script-inputs/experimental-executables mavryk/script-inputs/
+COPY --chown=mavryk:nogroup script-inputs/dev-executables mavryk/script-inputs/
+COPY --chown=mavryk:nogroup dune mavryk
+COPY --chown=mavryk:nogroup scripts/version.sh mavryk/scripts/
+COPY --chown=mavryk:nogroup src mavryk/src
+COPY --chown=mavryk:nogroup irmin mavryk/irmin
+COPY --chown=mavryk:nogroup tezt mavryk/tezt
+COPY --chown=mavryk:nogroup opam mavryk/opam
+COPY --chown=mavryk:nogroup dune mavryk/dune
+COPY --chown=mavryk:nogroup dune-workspace mavryk/dune-workspace
+COPY --chown=mavryk:nogroup dune-project mavryk/dune-project
+COPY --chown=mavryk:nogroup vendors mavryk/vendors
+COPY --chown=mavryk:nogroup devtools/testnet_experiment_tools mavryk/devtools/testnet_experiment_tools
 ENV GIT_SHORTREF=${GIT_SHORTREF}
 ENV GIT_DATETIME=${GIT_DATETIME}
 ENV GIT_VERSION=${GIT_VERSION}
@@ -44,4 +44,4 @@ RUN while read -r protocol; do \
   cp mavryk/src/proto_"$(echo "$protocol" | tr - _)"/parameters/*.json mavryk/parameters/"$protocol"-parameters; \
   done < mavryk/script-inputs/active_protocol_versions
 
-WORKDIR /home/tezos/
+WORKDIR /home/mavryk/

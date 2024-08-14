@@ -79,8 +79,8 @@ let alpine_version =
 
    For documentation on the [runtime_X_dependencies] and the
    [rust_toolchain] images, refer to
-   {{:https://gitlab.com/tezos/opam-repository/}
-   tezos/opam-repository}. *)
+   {{:https://gitlab.com/mavryk-network/opam-repository/}
+   mavryk-network/opam-repository}. *)
 module Images = struct
   let runtime_e2etest_dependencies =
     Image.register

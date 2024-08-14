@@ -41,7 +41,7 @@ EOF
 # defaults
 image_name="mavryk-"
 image_version="latest"
-build_deps_image_name="registry.gitlab.com/tezos/opam-repository"
+build_deps_image_name="registry.gitlab.com/mavryk-network/opam-repository"
 build_deps_image_version=$opam_repository_tag
 executables=$(cat script-inputs/released-executables)
 commit_short_sha=$(git rev-parse --short HEAD)

@@ -11,7 +11,7 @@ To update dependencies, you have to:
   - update the lock file in: opam/virtual/mavkit-deps.opam.locked
     (for instance using: scripts/update_opam_lock.sh)
 
-- in tezos/opam-repository:
+- in mavryk-network/opam-repository:
   - update opam_repository_commit_hash in: scripts/version.sh
     (to match full_opam_repository_tag from scripts/version.sh from mavryk-network/mavryk-protocol)
   - update the opam lock file: mavkit-deps.opam.locked

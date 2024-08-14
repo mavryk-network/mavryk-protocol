@@ -9,7 +9,7 @@ SUFFIX=crypto_data.csv
 BIN=$DIR/yes-wallet/test/bench_signature_perf.exe
 SRC=$DIR/yes-wallet/test/bench_signature_perf.ml
 
-# Going into tezos root directory
+# Going into mavryk root directory
 cd "$DIR" || exit
 cd ..
 

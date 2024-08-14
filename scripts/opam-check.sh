@@ -2,10 +2,10 @@
 
 # Implementation of CI job 'misc_opam_checks'.
 
-# This script expects a copy of scripts/version.sh from tezos/opam-repository
-# to be available at: /home/tezos/version.sh
+# This script expects a copy of scripts/version.sh from mavryk-network/opam-repository
+# to be available at: /home/mavryk/version.sh
 # This is the case if this script runs in one of the Docker images that are
-# built by tezos/opam-repository.
+# built by mavryk-network/opam-repository.
 
 script_dir="$(cd "$(dirname "$0")" && echo "$(pwd -P)/")"
 
@@ -28,23 +28,23 @@ if ! opam install opam/virtual/mavkit-deps.opam.locked --deps-only --with-test -
   exit 1
 fi
 
-# Check that the value of opam_repository_commit_hash in tezos/opam-repository
-# matches the value of full_opam_repository_tag in tezos/tezos.
-# It happens that tezos/opam-repository keeps its version.sh in the Docker image,
+# Check that the value of opam_repository_commit_hash in mavryk-network/opam-repository
+# matches the value of full_opam_repository_tag in mavryk-network/mavryk-protocol.
+# It happens that mavryk-network/opam-repository keeps its version.sh in the Docker image,
 # so we read the value of opam_repository_commit_hash from it.
 echo "## Checking opam repository commit hash..."
 
-# Source the copy of `version.sh` in the image produced by tezos/opam-repository
+# Source the copy of `version.sh` in the image produced by mavryk-network/opam-repository
 opam_repository_commit_hash=$(
-  # '/home/tezos/version.sh' is not in the source repo but in
+  # '/home/mavryk/version.sh' is not in the source repo but in
   # one if the images, so shellcheck cannot analyze it.
   # shellcheck disable=SC1091
-  . /home/tezos/version.sh
+  . /home/mavryk/version.sh
   echo "$opam_repository_commit_hash"
 )
 
-echo "- opam_repository_commit_hash = $opam_repository_commit_hash (from tezos/opam-repository)"
-echo "- full_opam_repository_tag    = $full_opam_repository_tag (from tezos/tezos)"
+echo "- opam_repository_commit_hash = $opam_repository_commit_hash (from mavryk-network/opam-repository)"
+echo "- full_opam_repository_tag    = $full_opam_repository_tag (from mavryk-network/mavryk-protocol)"
 
 if [ "$opam_repository_commit_hash" != "$full_opam_repository_tag" ]; then
   echo "Error: values do not match."

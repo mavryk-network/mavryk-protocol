@@ -74,4 +74,4 @@ fi
 
 echo "Launching new container:"
 # TODO: fix log-driver issue on benchmark server
-docker run --log-driver none --name "$CONTAINER_NAME" -d --mount type=bind,src="$OUTPUT",target=/home/tezos/output "$IMAGE_NAME" "$*"
+docker run --log-driver none --name "$CONTAINER_NAME" -d --mount type=bind,src="$OUTPUT",target=/home/mavryk/output "$IMAGE_NAME" "$*"

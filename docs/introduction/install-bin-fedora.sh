@@ -20,7 +20,7 @@ else
   exit 1
 fi
 
-# TODO tezos/tezos#2170: search shifted protocol name/number & adapt
+# TODO mavryk-network/mavryk-protocol#2170: search shifted protocol name/number & adapt
 set -e
 set -x
 # [install prerequisites]

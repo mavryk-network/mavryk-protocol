@@ -28,7 +28,7 @@ if [ -n "${FF_KUBERNETES_HONOR_ENTRYPOINT}" ]; then
   echo "Note: Remove this workaround when the issue above is fixed."
   touch /.dockerenv
 fi
-# TODO tezos/tezos#2170: search shifted protocol name/number & adapt
+# TODO mavryk-network/mavryk-protocol#2170: search shifted protocol name/number & adapt
 set -e
 set -x
 # [install prerequisites]

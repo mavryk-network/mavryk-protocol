@@ -1,24 +1,24 @@
-FROM tezos/tezos-debug:amd64_master
+FROM mavryk-network/mavryk-protocol-debug:amd64_master
 
-WORKDIR /home/tezos
+WORKDIR /home/mavryk
 
 RUN mkdir -p scripts
 RUN mkdir -p output
 
 # environment variables
 ENV NODE_ENV=production
-ENV EXTERNAL_RESSOURCES=/usr/local/share/tezos/evm_kernel
-ENV OUTPUT=/home/tezos/output
+ENV EXTERNAL_RESSOURCES=/usr/local/share/mavryk/evm_kernel
+ENV OUTPUT=/home/mavryk/output
 
 # install node dependencies
 USER root
 RUN apk add nodejs npm
-USER tezos
+USER mavryk
 
 # copy scripts
-COPY --chown=tezos:nogroup package.json .
-COPY --chown=tezos:nogroup scripts scripts
-COPY --chown=tezos:nogroup docker/command.sh .
+COPY --chown=mavryk:nogroup package.json .
+COPY --chown=mavryk:nogroup scripts scripts
+COPY --chown=mavryk:nogroup docker/command.sh .
 RUN chmod +x command.sh
 
 # install scripts dependencies

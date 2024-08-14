@@ -227,7 +227,7 @@ else # \$mig_level > 28082
     ! [ -f "$context_dir/identity.json" ] && generate_identities "$context_dir"
     create_yes_wallet
   else
-    context_dir="path/to/tezos-node-context"
+    context_dir="path/to/mavryk-node-context"
     echo "
 No snapshot file provided. Please use the following commands to import a context
 manually:

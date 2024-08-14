@@ -26,7 +26,7 @@ To this end:
 - the CI uses Docker images that come with those dependencies pre-compiled.
 
 The Docker images for the CI are built by the CI of another repository,
-the so-called `Tezos opam repository <https://gitlab.com/tezos/opam-repository>`__.
+the so-called `Tezos opam repository <https://gitlab.com/mavryk-network/opam-repository>`__.
 The set of dependencies that is used to build those images is also defined
 by a lock file and a commit hash from the public opam repository.
 Both must be kept synchronized with their counterpart in the ``tezos/tezos`` repository.
@@ -38,7 +38,7 @@ Both must be kept synchronized with their counterpart in the ``tezos/tezos`` rep
 
 Adding, removing or updating dependencies thus requires to work both
 on the `main codebase <https://gitlab.com/tezos/tezos>`__ and on
-the `Tezos opam repository <https://gitlab.com/tezos/opam-repository>`__.
+the `Tezos opam repository <https://gitlab.com/mavryk-network/opam-repository>`__.
 Moreover, work between those two components must happen in a specific order.
 
 The rest of this document explains the process from the point-of-view of
@@ -120,7 +120,7 @@ the environment for the *Mavkit MR* that we will create below.
 In order to create the opam repository MR:
 
 - If you haven’t already done so, clone
-  `the Tezos opam repository <https://gitlab.com/tezos/opam-repository>`__.
+  `the Tezos opam repository <https://gitlab.com/mavryk-network/opam-repository>`__.
 - Create a branch from the repository's ``master`` and switch to it.
 - Update file ``scripts/version.sh`` (in the Tezos opam repository)
   to set the value of ``opam_repository_commit_hash``
@@ -156,8 +156,8 @@ review.
 
 That’s it. You now have two MRs:
 
-- The *opam-repository MR* from ``tezos/opam-repository:<your-branch>``
-  onto ``tezos/opam-repository:master`` updates the environment in which
+- The *opam-repository MR* from ``mavryk-network/opam-repository:<your-branch>``
+  onto ``mavryk-network/opam-repository:master`` updates the environment in which
   the Mavkit libraries and binaries are built.
 - The *Mavkit MR* from ``<your-organisation>/tezos:<your-branch>``
   onto ``tezos/tezos:master`` uses this new environment.
@@ -205,8 +205,8 @@ As a developer:
   a recent version of the public default opam repository.
 - You update :src:`opam/virtual/mavkit-deps.opam.locked`,
   for instance by executing :src:`scripts/update_opam_lock.sh`.
-- You open an opam repository MR from ``tezos/opam-repository:<your-branch>``
-  onto ``tezos/opam-repository:master`` that updates:
+- You open an opam repository MR from ``mavryk-network/opam-repository:<your-branch>``
+  onto ``mavryk-network/opam-repository:master`` that updates:
 
   - variable ``opam_repository_commit_hash`` in ``scripts/version.sh``;
   - file ``mavkit-deps.opam.locked`` at the root.

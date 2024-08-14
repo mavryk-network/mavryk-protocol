@@ -10,7 +10,7 @@ set -eu
 trace_file="_build/output.txt"
 
 if ! [ -f $trace_file ]; then
-  echo "Should be run within docs/ under the Tezos root directory"
+  echo "Should be run within docs/ under the Mavryk root directory"
   echo "The log of \`make linkcheck\`, which is assumed to be executed before,"
   echo "must be in _build/output.txt (under docs/)"
   exit 1

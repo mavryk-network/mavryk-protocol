@@ -24,7 +24,7 @@ let _mavkit_tooling =
       [
         bisect_ppx;
         (* These next are only used in the CI, we add this dependency so that
-           it is added to tezos/opam-repository. *)
+           it is added to mavryk-network/opam-repository. *)
         ocamlformat;
       ]
     ~npm_deps:

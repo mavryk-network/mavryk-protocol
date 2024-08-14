@@ -67,26 +67,26 @@ ENV PATH="/usr/local/kaitai-struct-compiler-${KSC_VERSION}/bin:${PATH}"
 
 # Create a static system group and system user (no password + login shell)
 # Prepare sudo, ssh and run
-RUN echo 'tezos:x:1000:tezos' >> /etc/group \
- && echo 'tezos:x:1000:1000:tezos:/home/tezos:/bin/sh' >> /etc/passwd \
- && echo 'tezos:!::0:::::' >> /etc/shadow \
- && mkdir -pv /home/tezos/.ssh /run/tezos/client /run/tezos/node \
- && chown -R tezos:tezos /home/tezos /run/tezos \
- && chmod 700 /home/tezos/.ssh \
+RUN echo 'mavryk:x:1000:mavryk' >> /etc/group \
+ && echo 'mavryk:x:1000:1000:mavryk:/home/mavryk:/bin/sh' >> /etc/passwd \
+ && echo 'mavryk:!::0:::::' >> /etc/shadow \
+ && mkdir -pv /home/mavryk/.ssh /run/mavryk/client /run/mavryk/node \
+ && chown -R mavryk:mavryk /home/mavryk /run/mavryk \
+ && chmod 700 /home/mavryk/.ssh \
  && mkdir -pv /etc/sudoers.d \
- && echo 'tezos ALL=(ALL:ALL) NOPASSWD:ALL' > /etc/sudoers.d/tezos \
- && chmod 440 /etc/sudoers.d/tezos
+ && echo 'mavryk ALL=(ALL:ALL) NOPASSWD:ALL' > /etc/sudoers.d/mavryk \
+ && chmod 440 /etc/sudoers.d/mavryk
 
-USER tezos
-ENV USER=tezos
-WORKDIR /home/tezos
+USER mavryk
+ENV USER=mavryk
+WORKDIR /home/mavryk
 
-COPY --chown=tezos:tezos install-nvm.sh /tmp/install-nvm.sh
+COPY --chown=mavryk:mavryk install-nvm.sh /tmp/install-nvm.sh
 RUN /tmp/install-nvm.sh && rm -rf /tmp/install-nvm.sh
 
 # Install the recommended Node version and the Mavkit JS dependencies.
 ARG recommended_node_version=18.18.2
-COPY --chown=tezos:tezos install_build_deps.js.sh /tmp/install_build_deps.js.sh
-COPY --chown=tezos:tezos package.json /home/tezos/package.json
-COPY --chown=tezos:tezos package-lock.json /home/tezos/package-lock.json
-RUN /tmp/install_build_deps.js.sh && rm -rf /tmp/install_build_deps.js.sh /home/tezos/package.json /home/tezos/package-lock.json
+COPY --chown=mavryk:mavryk install_build_deps.js.sh /tmp/install_build_deps.js.sh
+COPY --chown=mavryk:mavryk package.json /home/mavryk/package.json
+COPY --chown=mavryk:mavryk package-lock.json /home/mavryk/package-lock.json
+RUN /tmp/install_build_deps.js.sh && rm -rf /tmp/install_build_deps.js.sh /home/mavryk/package.json /home/mavryk/package-lock.json

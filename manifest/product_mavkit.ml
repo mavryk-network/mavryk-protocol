@@ -7467,9 +7467,9 @@ let _mavkit_injector_server =
 
 (* We use Dune's select statement and keep uTop optional *)
 (* Keeping uTop optional lets `make build` succeed, *)
-(* which uses tezos/opam-repository to resolve dependencies, *)
+(* which uses mavryk-network/opam-repository to resolve dependencies, *)
 (* on the CI. This prevents having to add dev-dependency to *)
-(* tezos/opam-repository unnecessarily *)
+(* mavryk-network/opam-repository unnecessarily *)
 (* We set [~static] to false because we don't release this as a static binary. *)
 let _tztop =
   public_exe

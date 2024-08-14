@@ -90,7 +90,7 @@ exclude_patterns = [
     'doc_gen',
     'atlas',
 ]
-# TODO tezos/tezos#2170: exclude the active protocol 'NNN' above
+# TODO mavryk-network/mavryk-protocol#2170: exclude the active protocol 'NNN' above
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -192,7 +192,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, 'tezos', 'Mavryk Documentation', [author], 1)]
+man_pages = [(master_doc, 'mavryk', 'Mavryk Documentation', [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------

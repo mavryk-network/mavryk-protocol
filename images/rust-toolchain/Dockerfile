@@ -4,8 +4,8 @@
 # - rust dependencies
 #
 # This image is intended for
-# - building kernels, testing kernels and building the kernel SDK in the tezos/tezos CI
-# - building the EVM kernel distributed in the tezos/tezos Docker images.
+# - building kernels, testing kernels and building the kernel SDK in the mavryk-network/mavryk-protocol CI
+# - building the EVM kernel distributed in the mavryk-network/mavryk-protocol Docker images.
 
 FROM debian:sid
 

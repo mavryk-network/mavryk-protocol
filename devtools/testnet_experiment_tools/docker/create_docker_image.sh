@@ -23,7 +23,7 @@ cd "$src_dir"
 
 image_name="${1:-mavryk-}"
 image_version="${2:-latest}"
-build_deps_image_name=${3:-registry.gitlab.com/tezos/opam-repository}
+build_deps_image_name=${3:-registry.gitlab.com/mavryk-network/opam-repository}
 build_deps_image_version=${4:-$opam_repository_tag}
 executables=${5:-$(cat "$devtools_docker_dir"/executables)}
 commit_short_sha="${6:-$(git rev-parse --short HEAD)}"

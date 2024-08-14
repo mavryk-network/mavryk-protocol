@@ -35,7 +35,7 @@ sudo apt-get install -y sudo
 export OPAMYES=true
 # [install packages]
 # [Temporary fix: removes mavryk folder from PATH if added with Mavkit <= v13 instructions]
-PATH=${PATH##"$HOME"/tezos/:}
+PATH=${PATH##"$HOME"/mavryk/:}
 sudo apt-get install -y rsync git m4 build-essential patch unzip wget opam jq bc
 # [install rust]
 wget https://sh.rustup.rs/rustup-init.sh

@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=registry.gitlab.com/tezos/opam-repository
+ARG BASE_IMAGE=registry.gitlab.com/mavryk-network/opam-repository
 ARG BASE_IMAGE_VERSION
 ARG RUST_TOOLCHAIN_IMAGE
 ARG RUST_TOOLCHAIN_IMAGE_TAG
@@ -13,25 +13,25 @@ ARG MAVKIT_EXECUTABLES
 ARG GIT_SHORTREF
 ARG GIT_DATETIME
 ARG GIT_VERSION
-WORKDIR /home/tezos
-RUN mkdir -p /home/tezos/mavryk/scripts /home/tezos/mavryk/script-inputs /home/tezos/mavryk/parameters /home/tezos/evm_kernel
-COPY --chown=tezos:nogroup Makefile mavryk
-COPY --chown=tezos:nogroup script-inputs/active_protocol_versions mavryk/script-inputs/
-COPY --chown=tezos:nogroup script-inputs/active_protocol_versions_without_number mavryk/script-inputs/
-COPY --chown=tezos:nogroup script-inputs/released-executables mavryk/script-inputs/
-COPY --chown=tezos:nogroup script-inputs/experimental-executables mavryk/script-inputs/
-COPY --chown=tezos:nogroup script-inputs/dev-executables mavryk/script-inputs/
-COPY --chown=tezos:nogroup dune mavryk
-COPY --chown=tezos:nogroup scripts/version.sh mavryk/scripts/
-COPY --chown=tezos:nogroup src mavryk/src
-COPY --chown=tezos:nogroup irmin mavryk/irmin
-COPY --chown=tezos:nogroup etherlink mavryk/etherlink
-COPY --chown=tezos:nogroup tezt mavryk/tezt
-COPY --chown=tezos:nogroup opam mavryk/opam
-COPY --chown=tezos:nogroup dune mavryk/dune
-COPY --chown=tezos:nogroup dune-workspace mavryk/dune-workspace
-COPY --chown=tezos:nogroup dune-project mavryk/dune-project
-COPY --chown=tezos:nogroup vendors mavryk/vendors
+WORKDIR /home/mavryk
+RUN mkdir -p /home/mavryk/mavryk/scripts /home/mavryk/mavryk/script-inputs /home/mavryk/mavryk/parameters /home/mavryk/evm_kernel
+COPY --chown=mavryk:nogroup Makefile mavryk
+COPY --chown=mavryk:nogroup script-inputs/active_protocol_versions mavryk/script-inputs/
+COPY --chown=mavryk:nogroup script-inputs/active_protocol_versions_without_number mavryk/script-inputs/
+COPY --chown=mavryk:nogroup script-inputs/released-executables mavryk/script-inputs/
+COPY --chown=mavryk:nogroup script-inputs/experimental-executables mavryk/script-inputs/
+COPY --chown=mavryk:nogroup script-inputs/dev-executables mavryk/script-inputs/
+COPY --chown=mavryk:nogroup dune mavryk
+COPY --chown=mavryk:nogroup scripts/version.sh mavryk/scripts/
+COPY --chown=mavryk:nogroup src mavryk/src
+COPY --chown=mavryk:nogroup irmin mavryk/irmin
+COPY --chown=mavryk:nogroup etherlink mavryk/etherlink
+COPY --chown=mavryk:nogroup tezt mavryk/tezt
+COPY --chown=mavryk:nogroup opam mavryk/opam
+COPY --chown=mavryk:nogroup dune mavryk/dune
+COPY --chown=mavryk:nogroup dune-workspace mavryk/dune-workspace
+COPY --chown=mavryk:nogroup dune-project mavryk/dune-project
+COPY --chown=mavryk:nogroup vendors mavryk/vendors
 ENV GIT_SHORTREF=${GIT_SHORTREF}
 ENV GIT_DATETIME=${GIT_DATETIME}
 ENV GIT_VERSION=${GIT_VERSION}
@@ -43,11 +43,11 @@ RUN while read -r protocol; do \
     done < mavryk/script-inputs/active_protocol_versions
 
 FROM ${RUST_TOOLCHAIN_IMAGE}:${RUST_TOOLCHAIN_IMAGE_TAG} AS layer2-builder
-WORKDIR /home/tezos/
-RUN mkdir -p /home/tezos/evm_kernel
-COPY --chown=tezos:nogroup kernels.mk etherlink.mk evm_kernel/
-COPY --chown=tezos:nogroup src evm_kernel/src
-COPY --chown=tezos:nogroup etherlink evm_kernel/etherlink
+WORKDIR /home/mavryk/
+RUN mkdir -p /home/mavryk/evm_kernel
+COPY --chown=mavryk:nogroup kernels.mk etherlink.mk evm_kernel/
+COPY --chown=mavryk:nogroup src evm_kernel/src
+COPY --chown=mavryk:nogroup etherlink evm_kernel/etherlink
 RUN make -C evm_kernel -f etherlink.mk build-deps \
   && make -C evm_kernel -f etherlink.mk EVM_CONFIG=etherlink/config/dailynet.yaml evm_installer.wasm \
   && make -C evm_kernel -f etherlink.mk evm_benchmark_kernel.wasm
@@ -55,8 +55,8 @@ RUN make -C evm_kernel -f etherlink.mk build-deps \
 # We move the EVM kernel in the final image in a dedicated stage to parallelize
 # the two builder stages.
 FROM without-evm-artifacts as with-evm-artifacts
-COPY --from=layer2-builder --chown=tezos:nogroup /home/tezos/evm_kernel/evm_installer.wasm evm_kernel
-COPY --from=layer2-builder --chown=tezos:nogroup /home/tezos/evm_kernel/_evm_installer_preimages/ evm_kernel/_evm_installer_preimages
-COPY --from=layer2-builder --chown=tezos:nogroup /home/tezos/evm_kernel/evm_benchmark_kernel.wasm evm_kernel
-COPY --from=layer2-builder --chown=tezos:nogroup /home/tezos/evm_kernel/etherlink/config/benchmarking.yaml evm_kernel
-COPY --from=layer2-builder --chown=tezos:nogroup /home/tezos/evm_kernel/etherlink/config/benchmarking_sequencer.yaml evm_kernel
+COPY --from=layer2-builder --chown=mavryk:nogroup /home/mavryk/evm_kernel/evm_installer.wasm evm_kernel
+COPY --from=layer2-builder --chown=mavryk:nogroup /home/mavryk/evm_kernel/_evm_installer_preimages/ evm_kernel/_evm_installer_preimages
+COPY --from=layer2-builder --chown=mavryk:nogroup /home/mavryk/evm_kernel/evm_benchmark_kernel.wasm evm_kernel
+COPY --from=layer2-builder --chown=mavryk:nogroup /home/mavryk/evm_kernel/etherlink/config/benchmarking.yaml evm_kernel
+COPY --from=layer2-builder --chown=mavryk:nogroup /home/mavryk/evm_kernel/etherlink/config/benchmarking_sequencer.yaml evm_kernel

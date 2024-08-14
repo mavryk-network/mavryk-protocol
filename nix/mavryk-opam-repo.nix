@@ -11,4 +11,4 @@
     ''
   );
 in
-  fetchTarball "https://gitlab.com/tezos/opam-repository/-/archive/${revision}/opam-repository-${revision}.tar.gz"
+  fetchTarball "https://gitlab.com/mavryk-network/opam-repository/-/archive/${revision}/opam-repository-${revision}.tar.gz"

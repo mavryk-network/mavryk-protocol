@@ -10,7 +10,7 @@ script_dir=$(dirname "$0")
 run_in_docker() {
   bin="$1"
   shift 1
-  docker_run=(docker run -v "${HOST_MAVRYK_DATA_DIR}":/home/tezos mavryk/mavryk-bare:"${MAVKIT_TAG}")
+  docker_run=(docker run -v "${HOST_MAVRYK_DATA_DIR}":/home/mavryk mavryk/mavryk-bare:"${MAVKIT_TAG}")
   "${docker_run[@]}" "/usr/local/bin/${bin}" "$@"
 }
 
@@ -154,7 +154,7 @@ init_mavkit_node() {
   # download snapshot
   if [[ -n ${SNAPSHOT_URL} ]]; then
     wget -O "${HOST_MAVRYK_DATA_DIR}/snapshot" "${SNAPSHOT_URL}"
-    run_in_docker mavkit-node snapshot import /home/tezos/snapshot
+    run_in_docker mavkit-node snapshot import /home/mavryk/snapshot
   fi
 }
 

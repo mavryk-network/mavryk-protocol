@@ -11,9 +11,9 @@ GL_URL = "https://gitlab.com/"
 
 
 def expand_gitlab_shortlink(
-    text, default_namespace="tezos", default_project="tezos"
+    text, default_namespace="mavryk-network", default_project="mavryk-protocol"
 ):
-    """Expands Gitlab Special References, i.e. tezos/tezos!99 to URLs."""
+    """Expands Gitlab Special References, i.e. mavryk-network/mavryk-protocol!99 to URLs."""
 
     def re_expander(pattern):
         return lambda match: re.sub(
