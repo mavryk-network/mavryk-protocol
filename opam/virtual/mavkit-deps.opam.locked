@@ -7,7 +7,6 @@ description:
   "Install this package to install all dependencies needed to build the subset of Mavkit denoted by profile mavkit-deps."
 maintainer: "info@mavryk.io"
 authors: [
-  "Tezos devteam"
   "Mavryk Dynamics"
 ]
 license: "MIT"

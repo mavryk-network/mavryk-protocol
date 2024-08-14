@@ -51,7 +51,7 @@ test_node_run() {
 
   "$script_dir/install_sapling_parameters.sh"
 
-  if ! timeout 20 "$bin_dir/mavkit-node" run --expected-pow=-0.0 | grep 'Tezos node is now running'; then
+  if ! timeout 20 "$bin_dir/mavkit-node" run --expected-pow=-0.0 | grep 'Mavryk node is now running'; then
     echo "Could not verify that node is running."
     exit 1
   fi

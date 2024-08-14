@@ -16,7 +16,7 @@ current_dir=$(cd "$(dirname "${0}")" && pwd)
 # GitLab constraints on images:
 # https://docs.gitlab.com/ee/user/packages/container_registry/#image-naming-convention
 
-# /!\ CI_REGISTRY is overriden to use AWS ECR in `nomadic-labs` and `tezos` GitLab namespaces
+# /!\ CI_REGISTRY is overriden to use AWS ECR in `mavryk-network` GitLab namespaces
 
 # Create directory for Docker JSON configuration (if does not exist)
 mkdir -pv ~/.docker
@@ -32,7 +32,7 @@ echo "RUST_TOOLCHAIN_IMAGE=${RUST_TOOLCHAIN_IMAGE:-}"
 
 # CI_DOCKER_HUB is used to switch to Docker Hub if credentials are available with CI_DOCKER_AUTH
 # /!\ CI_DOCKER_HUB can be unset, CI_DOCKER_AUTH is only available on protected branches
-if [ "${CI_DOCKER_HUB:-}" = 'true' ] && [ "${CI_PROJECT_NAMESPACE}" = "tezos" ] && [ -n "${CI_DOCKER_AUTH:-}" ]; then
+if [ "${CI_DOCKER_HUB:-}" = 'true' ] && [ "${CI_PROJECT_NAMESPACE}" = "mavryk-network" ] && [ -n "${CI_DOCKER_AUTH:-}" ]; then
   # Docker Hub
   echo "### Logging into Docker Hub for pushing images"
   docker_image_name="docker.io/${CI_PROJECT_PATH}-"

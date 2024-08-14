@@ -5,7 +5,7 @@ set -e
 ci_dir="$(cd "$(dirname "$0")" && echo "$(pwd -P)/")"
 script_dir="$(dirname "$ci_dir")"
 
-opam_repository_fork="git@github.com:tezos/opam-repository"
+opam_repository_fork="git@github.com:mavryk-network/opam-repository"
 opam_dir="opam-repository"
 
 log() {
@@ -17,7 +17,7 @@ log() {
 
 # set up ssh credentials to access github
 mkdir -p "$HOME/.ssh"
-cp "$TEZOS_GITHUB_OPAM_REPOSITORY_MACHINE_USER_PRIVATE_SSH_KEY" "$HOME/.ssh/id_rsa"
+cp "$MAVRYK_GITHUB_OPAM_REPOSITORY_MACHINE_USER_PRIVATE_SSH_KEY" "$HOME/.ssh/id_rsa"
 cat "$GITHUB_SSH_HOST_KEYS" >> "$HOME/.ssh/known_hosts"
 chmod 600 "$HOME/.ssh/known_hosts"
 chmod 600 "$HOME/.ssh/id_rsa"
@@ -47,4 +47,4 @@ log "Pushing $branch_name to $opam_repository_fork..."
 git push --force-with-lease github "${branch_name}:${branch_name}"
 
 log "Create the pull request at:"
-log "https://github.com/ocaml/opam-repository/compare/master...tezos:opam-repository:${branch_name}"
+log "https://github.com/ocaml/opam-repository/compare/master...mavryk-network:opam-repository:${branch_name}"

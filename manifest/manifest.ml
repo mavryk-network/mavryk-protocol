@@ -3423,7 +3423,7 @@ let generate_opam ?release for_package (internals : Target.internal list) :
   in
   {
     maintainer = "info@mavryk.io";
-    authors = "Mavryk Dynamics" :: "Tezos devteam" :: extra_authors;
+    authors = "Mavryk Dynamics" :: extra_authors;
     homepage =
       get_consistent_value
         ~name:"opam_homepage"

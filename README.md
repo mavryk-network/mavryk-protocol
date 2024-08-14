@@ -6,6 +6,8 @@ Mavryk is a blockchain that offers both  _consensus_ and _meta-consensus_, by wh
 protocol and the nodes should adapt and upgrade.
 For more information about the project, see https://mavrykdynamics.com.
 
+Mavryk is a fork of the [Tezos blockchain](https://gitlab.com/tezos/tezos)
+
 ## Getting started
 
 Instructions to

@@ -74,11 +74,11 @@ echo "Build ${image_name}"
   --build-arg=BUILDKIT_INLINE_CACHE=1 \
   --cache-from="${image_base}:${docker_image_ref_tag}" \
   --cache-from="${image_base}:${CI_DEFAULT_BRANCH}" \
-  --label "com.tezos.build-pipeline-id"="${CI_PIPELINE_ID}" \
-  --label "com.tezos.build-pipeline-url"="${CI_PIPELINE_URL}" \
-  --label "com.tezos.build-job-id"="${CI_JOB_ID}" \
-  --label "com.tezos.build-job-url"="${CI_JOB_URL}" \
-  --label "com.tezos.build-tezos-revision"="${CI_COMMIT_SHA}" \
+  --label "com.mavryk.build-pipeline-id"="${CI_PIPELINE_ID}" \
+  --label "com.mavryk.build-pipeline-url"="${CI_PIPELINE_URL}" \
+  --label "com.mavryk.build-job-id"="${CI_JOB_ID}" \
+  --label "com.mavryk.build-job-url"="${CI_JOB_URL}" \
+  --label "com.mavryk.build-mavryk-revision"="${CI_COMMIT_SHA}" \
   -t "${image_base}:${docker_image_ref_tag}"
 
 ./images/client-libs-dependencies/check_versions.sh "${image_base}" "${image_tag}"

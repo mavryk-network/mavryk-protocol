@@ -2,10 +2,10 @@
 (formatting (enabled_for ocaml))
 (name mavryk-time-measurement)
 
-(maintainers contact@tezos.com)
-(authors "Tezos devteam")
-(homepage https://www.tezos.com/)
-(bug_reports https://gitlab.com/tezos/tezos/issues)
+(maintainers info@mavryk.io)
+(authors "Mavryk Dynamics")
+(homepage https://mavrykdynamics.com/)
+(bug_reports https://gitlab.com/mavryk-network/mavryk-protocol/issues)
 (source (uri git+https://gitlab.com/mavryk-network/mavryk-protocol.git))
 (license MIT)
 
@@ -13,7 +13,7 @@
 
 (package
   (name mavryk-time-measurement)
-  (synopsis "Tezos time measurement tooling")
+  (synopsis "Mavryk time measurement tooling")
   (depends
     (ppxlib (>= 0.22.2))
     (data-encoding (>= 0.4))
