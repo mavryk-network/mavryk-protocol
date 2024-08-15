@@ -17,7 +17,8 @@ log() {
 
 # set up ssh credentials to access github
 mkdir -p "$HOME/.ssh"
-cp "$MAVRYK_GITHUB_OPAM_REPOSITORY_MACHINE_USER_PRIVATE_SSH_KEY" "$HOME/.ssh/id_rsa"
+echo "$MAVRYK_GITHUB_OPAM_REPOSITORY_MACHINE_USER_PRIVATE_SSH_KEY" | base64 -d > "$HOME/.ssh/id_rsa"
+# cp "$MAVRYK_GITHUB_OPAM_REPOSITORY_MACHINE_USER_PRIVATE_SSH_KEY" "$HOME/.ssh/id_rsa"
 cat "$GITHUB_SSH_HOST_KEYS" >> "$HOME/.ssh/known_hosts"
 chmod 600 "$HOME/.ssh/known_hosts"
 chmod 600 "$HOME/.ssh/id_rsa"
