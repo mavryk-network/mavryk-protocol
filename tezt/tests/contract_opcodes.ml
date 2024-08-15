@@ -714,12 +714,12 @@ let test_protocol_independent =
       (* Test building Fr element from nat. *)
       (* The initial storage is dropped then any value is valid. *)
       (* Random values can be generated using the following OCaml program. *)
-      (* let r = Bls12_381.Fr.(random ()) in *)
-      (* let x = Bls12_381.Fr.random () in *)
+      (* let r = Mavryk_bls12_381.Fr.(random ()) in *)
+      (* let x = Mavryk_bls12_381.Fr.random () in *)
       (* Printf.printf "Param = (Pair %s 0x%s). Result = 0x%s" *)
-      (*  (Bls12_381.Fr.to_string r) *)
-      (*  (Hex.(show (of_bytes (Bls12_381.Fr.to_bytes x)))) *)
-      (*  (Hex.(show (of_bytes (Bls12_381.Fr.(to_bytes (mul r x)))))) *)
+      (*  (Mavryk_bls12_381.Fr.to_string r) *)
+      (*  (Hex.(show (of_bytes (Mavryk_bls12_381.Fr.to_bytes x)))) *)
+      (*  (Hex.(show (of_bytes (Mavryk_bls12_381.Fr.(to_bytes (mul r x)))))) *)
       ( "bls12_381_fr_z_nat",
         "0x01000000000000000000000000000000000000000000000000000000000"
         ^ "00000",
@@ -847,12 +847,12 @@ let test_protocol_independent =
       (* Test building Fr element from nat. *)
       (* The initial storage is dropped then any value is valid. *)
       (* Random values can be generated using the following OCaml program. *)
-      (* let r = Bls12_381.Fr.(random ()) in *)
-      (* let x = Bls12_381.Fr.random () in *)
+      (* let r = Mavryk_bls12_381.Fr.(random ()) in *)
+      (* let x = Mavryk_bls12_381.Fr.random () in *)
       (* Printf.printf "Param = (Pair %s 0x%s). Result = 0x%s" *)
-      (*  (Bls12_381.Fr.to_string r) *)
-      (*  (Hex.(show (of_bytes (Bls12_381.Fr.to_bytes x)))) *)
-      (*  (Hex.(show (of_bytes (Bls12_381.Fr.(to_bytes (mul r x)))))) *)
+      (*  (Mavryk_bls12_381.Fr.to_string r) *)
+      (*  (Hex.(show (of_bytes (Mavryk_bls12_381.Fr.to_bytes x)))) *)
+      (*  (Hex.(show (of_bytes (Mavryk_bls12_381.Fr.(to_bytes (mul r x)))))) *)
       ( "bls12_381_z_fr_nat",
         "0x01000000000000000000000000000000000000000000000000000000000"
         ^ "00000",
@@ -1011,10 +1011,10 @@ let test_protocol_independent =
       ("bls12_381_fr_to_int", "0", "0x00", "0");
       ("bls12_381_fr_to_int", "0", "0x01", "1");
       (* Generated using *)
-      (* let r = Bls12_381.Fr.(random ()) in *)
+      (* let r = Mavryk_bls12_381.Fr.(random ()) in *)
       (* Printf.printf "%s = 0x%s" *)
-      (*   (Bls12_381.Fr.to_string r) *)
-      (*   (Hex.(show (of_bytes (Bls12_381.Fr.to_bytes r)))) *)
+      (*   (Mavryk_bls12_381.Fr.to_string r) *)
+      (*   (Hex.(show (of_bytes (Mavryk_bls12_381.Fr.to_bytes r)))) *)
       ( "bls12_381_fr_to_int",
         "0",
         "0x28db8e57af88d9576acd181b89f24e50a89a6423f939026ed91349fc9"

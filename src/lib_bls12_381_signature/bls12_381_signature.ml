@@ -3,21 +3,21 @@ module CommonStubs = struct
 
   type scalar
 
-  external allocate_g1_affine : unit -> Bls12_381.G1.affine
+  external allocate_g1_affine : unit -> Mavryk_bls12_381.G1.affine
     = "allocate_p1_affine_stubs"
 
-  external allocate_g2_affine : unit -> Bls12_381.G2.affine
+  external allocate_g2_affine : unit -> Mavryk_bls12_381.G2.affine
     = "allocate_p2_affine_stubs"
 
-  external uncompress_g1 : Bls12_381.G1.affine -> Bytes.t -> int
+  external uncompress_g1 : Mavryk_bls12_381.G1.affine -> Bytes.t -> int
     = "caml_blst_p1_uncompress_stubs"
 
-  external uncompress_g2 : Bls12_381.G2.affine -> Bytes.t -> int
+  external uncompress_g2 : Mavryk_bls12_381.G2.affine -> Bytes.t -> int
     = "caml_blst_p2_uncompress_stubs"
 
   external allocate_scalar : unit -> scalar = "allocate_scalar_stubs"
 
-  external scalar_of_fr : scalar -> Bls12_381.Fr.t -> int
+  external scalar_of_fr : scalar -> Mavryk_bls12_381.Fr.t -> int
     = "caml_blst_scalar_from_fr_stubs"
 
   external scalar_to_bytes_le : Bytes.t -> scalar -> int
@@ -62,22 +62,22 @@ let with_aggregation_ctxt ciphersuite f =
 
 type sk = CommonStubs.scalar
 
-let sk_size_in_bytes = Bls12_381.Fr.size_in_bytes
+let sk_size_in_bytes = Mavryk_bls12_381.Fr.size_in_bytes
 
 let sk_of_bytes_exn bytes =
   let buffer = CommonStubs.allocate_scalar () in
   let exn =
     Invalid_argument
       "Input should be maximum 32 bytes, encoded the secret key in little \
-       endian and must be smaller than the order of Bls12_381.Fr"
+       endian and must be smaller than the order of Mavryk_bls12_381.Fr"
   in
   if Bytes.length bytes > 32 then raise exn
   else
     try
-      let sk = Bls12_381.Fr.of_bytes_exn bytes in
+      let sk = Mavryk_bls12_381.Fr.of_bytes_exn bytes in
       ignore @@ CommonStubs.scalar_of_fr buffer sk ;
       buffer
-    with Bls12_381.Fr.Not_in_field _ -> raise exn
+    with Mavryk_bls12_381.Fr.Not_in_field _ -> raise exn
 
 let sk_of_bytes_opt bytes =
   try Some (sk_of_bytes_exn bytes) with Invalid_argument _ -> None
@@ -116,18 +116,20 @@ let generate_sk ?(key_info = Bytes.empty) ikm =
 
 module MinPk = struct
   module Stubs = struct
-    external sk_to_pk : Bls12_381.G1.t -> CommonStubs.scalar -> int
+    external sk_to_pk : Mavryk_bls12_381.G1.t -> CommonStubs.scalar -> int
       = "caml_bls12_381_signature_blst_sk_to_pk_in_g1_stubs"
 
     external sign :
-      Bls12_381.G2.t -> Bls12_381.G2.t -> CommonStubs.scalar -> int
-      = "caml_bls12_381_signature_blst_sign_pk_in_g1_stubs"
+      Mavryk_bls12_381.G2.t ->
+      Mavryk_bls12_381.G2.t ->
+      CommonStubs.scalar ->
+      int = "caml_bls12_381_signature_blst_sign_pk_in_g1_stubs"
 
     external pairing_chk_n_mul_n_aggr_pk_in_g1 :
       CommonStubs.ctxt ->
-      Bls12_381.G1.affine ->
+      Mavryk_bls12_381.G1.affine ->
       bool ->
-      Bls12_381.G2.affine option ->
+      Mavryk_bls12_381.G2.affine option ->
       bool ->
       Bytes.t ->
       Unsigned.Size_t.t ->
@@ -141,12 +143,12 @@ module MinPk = struct
 
   type pk = Bytes.t
 
-  let pk_size_in_bytes = Bls12_381.G1.size_in_bytes / 2
+  let pk_size_in_bytes = Mavryk_bls12_381.G1.size_in_bytes / 2
 
   let unsafe_pk_of_bytes pk_bytes = Bytes.copy pk_bytes
 
   let pk_of_bytes_exn pk_bytes =
-    let pk_opt = Bls12_381.G1.of_compressed_bytes_opt pk_bytes in
+    let pk_opt = Mavryk_bls12_381.G1.of_compressed_bytes_opt pk_bytes in
     match pk_opt with
     | None ->
         raise
@@ -157,24 +159,24 @@ module MinPk = struct
     | Some _ -> Bytes.copy pk_bytes
 
   let pk_of_bytes_opt pk_bytes =
-    let pk_opt = Bls12_381.G1.of_compressed_bytes_opt pk_bytes in
+    let pk_opt = Mavryk_bls12_381.G1.of_compressed_bytes_opt pk_bytes in
     match pk_opt with None -> None | Some _ -> Some (Bytes.copy pk_bytes)
 
   let pk_to_bytes pk_bytes = Bytes.copy pk_bytes
 
   let derive_pk sk =
-    let buffer_g1 = Bls12_381.G1.(copy zero) in
+    let buffer_g1 = Mavryk_bls12_381.G1.(copy zero) in
     ignore @@ Stubs.sk_to_pk buffer_g1 sk ;
-    Bls12_381.G1.to_compressed_bytes buffer_g1
+    Mavryk_bls12_381.G1.to_compressed_bytes buffer_g1
 
   type signature = Bytes.t
 
-  let signature_size_in_bytes = Bls12_381.G2.size_in_bytes / 2
+  let signature_size_in_bytes = Mavryk_bls12_381.G2.size_in_bytes / 2
 
   let unsafe_signature_of_bytes bytes = Bytes.copy bytes
 
   let signature_of_bytes_exn bytes =
-    let opt = Bls12_381.G2.of_compressed_bytes_opt bytes in
+    let opt = Mavryk_bls12_381.G2.of_compressed_bytes_opt bytes in
     match opt with
     | None ->
         raise
@@ -185,16 +187,16 @@ module MinPk = struct
     | Some _ -> Bytes.copy bytes
 
   let signature_of_bytes_opt bytes =
-    let opt = Bls12_381.G2.of_compressed_bytes_opt bytes in
+    let opt = Mavryk_bls12_381.G2.of_compressed_bytes_opt bytes in
     match opt with None -> None | Some _ -> Some (Bytes.copy bytes)
 
   let signature_to_bytes bytes = Bytes.copy bytes
 
   let core_sign sk message ciphersuite =
-    let hash = Bls12_381.G2.hash_to_curve message ciphersuite in
-    let buffer = Bls12_381.G2.(copy zero) in
+    let hash = Mavryk_bls12_381.G2.hash_to_curve message ciphersuite in
+    let buffer = Mavryk_bls12_381.G2.(copy zero) in
     ignore @@ Stubs.sign buffer hash sk ;
-    Bls12_381.G2.to_compressed_bytes buffer
+    Mavryk_bls12_381.G2.to_compressed_bytes buffer
 
   let core_verify pk msg signature_bytes ciphersuite =
     with_aggregation_ctxt ciphersuite (fun ctxt ->
@@ -245,15 +247,17 @@ module MinPk = struct
       match signatures with
       | [] -> Some acc
       | signature :: signatures -> (
-          let signature = Bls12_381.G2.of_compressed_bytes_opt signature in
+          let signature =
+            Mavryk_bls12_381.G2.of_compressed_bytes_opt signature
+          in
           match signature with
           | None -> None
           | Some signature ->
-              let acc = Bls12_381.G2.(add signature acc) in
+              let acc = Mavryk_bls12_381.G2.(add signature acc) in
               aux signatures acc)
     in
-    let res = aux signatures Bls12_381.G2.zero in
-    Option.map Bls12_381.G2.to_compressed_bytes res
+    let res = aux signatures Mavryk_bls12_381.G2.zero in
+    Option.map Mavryk_bls12_381.G2.to_compressed_bytes res
 
   let core_aggregate_verify pks_with_msgs aggregated_signature ciphersuite =
     let rec aux aggregated_signature pks_with_msgs ctxt =
@@ -293,7 +297,7 @@ module MinPk = struct
     (* IMPORTANT: the verification the aggregated signature is in the subgroup
        is performed here. *)
     let aggregated_signature_opt =
-      Bls12_381.G2.of_compressed_bytes_opt aggregated_signature
+      Mavryk_bls12_381.G2.of_compressed_bytes_opt aggregated_signature
     in
     (* Converts the pk received as bytes in points on the curve. There are no
        checks about points belonging to the subgroup. It is verified when
@@ -321,7 +325,7 @@ module MinPk = struct
       | Some aggregated_signature ->
           with_aggregation_ctxt ciphersuite (fun ctxt ->
               let signature_affine =
-                Bls12_381.G2.affine_of_jacobian aggregated_signature
+                Mavryk_bls12_381.G2.affine_of_jacobian aggregated_signature
               in
               let res = aux (Some signature_affine) pks_with_msgs ctxt in
               if res then (
@@ -401,15 +405,19 @@ module MinPk = struct
 
     let aggregate_verify pks_with_pops msg aggregated_signature =
       let pks_bytes = List.map fst pks_with_pops in
-      let pks_opts = List.map Bls12_381.G1.of_compressed_bytes_opt pks_bytes in
+      let pks_opts =
+        List.map Mavryk_bls12_381.G1.of_compressed_bytes_opt pks_bytes
+      in
       let pks_are_ok = List.for_all Option.is_some pks_opts in
       if not pks_are_ok then false
       else
         let pks = List.map Option.get pks_opts in
         let aggregated_pk =
-          List.fold_left Bls12_381.G1.add Bls12_381.G1.zero pks
+          List.fold_left Mavryk_bls12_381.G1.add Mavryk_bls12_381.G1.zero pks
         in
-        let aggregated_pk = Bls12_381.G1.to_compressed_bytes aggregated_pk in
+        let aggregated_pk =
+          Mavryk_bls12_381.G1.to_compressed_bytes aggregated_pk
+        in
         let signature_check = verify aggregated_pk msg aggregated_signature in
         let pop_checks =
           List.for_all
@@ -422,18 +430,20 @@ end
 
 module MinSig = struct
   module Stubs = struct
-    external sk_to_pk : Bls12_381.G2.t -> CommonStubs.scalar -> int
+    external sk_to_pk : Mavryk_bls12_381.G2.t -> CommonStubs.scalar -> int
       = "caml_bls12_381_signature_blst_sk_to_pk_in_g2_stubs"
 
     external sign :
-      Bls12_381.G1.t -> Bls12_381.G1.t -> CommonStubs.scalar -> int
-      = "caml_bls12_381_signature_blst_sign_pk_in_g2_stubs"
+      Mavryk_bls12_381.G1.t ->
+      Mavryk_bls12_381.G1.t ->
+      CommonStubs.scalar ->
+      int = "caml_bls12_381_signature_blst_sign_pk_in_g2_stubs"
 
     external pairing_chk_n_mul_n_aggr_pk_in_g2 :
       CommonStubs.ctxt ->
-      Bls12_381.G2.affine ->
+      Mavryk_bls12_381.G2.affine ->
       bool ->
-      Bls12_381.G1.affine option ->
+      Mavryk_bls12_381.G1.affine option ->
       bool ->
       Bytes.t ->
       Unsigned.Size_t.t ->
@@ -447,12 +457,12 @@ module MinSig = struct
 
   type pk = Bytes.t
 
-  let pk_size_in_bytes = Bls12_381.G2.size_in_bytes / 2
+  let pk_size_in_bytes = Mavryk_bls12_381.G2.size_in_bytes / 2
 
   let unsafe_pk_of_bytes pk_bytes = Bytes.copy pk_bytes
 
   let pk_of_bytes_exn pk_bytes =
-    let pk_opt = Bls12_381.G2.of_compressed_bytes_opt pk_bytes in
+    let pk_opt = Mavryk_bls12_381.G2.of_compressed_bytes_opt pk_bytes in
     match pk_opt with
     | None ->
         raise
@@ -463,24 +473,24 @@ module MinSig = struct
     | Some _ -> Bytes.copy pk_bytes
 
   let pk_of_bytes_opt pk_bytes =
-    let pk_opt = Bls12_381.G2.of_compressed_bytes_opt pk_bytes in
+    let pk_opt = Mavryk_bls12_381.G2.of_compressed_bytes_opt pk_bytes in
     match pk_opt with None -> None | Some _ -> Some (Bytes.copy pk_bytes)
 
   let pk_to_bytes pk_bytes = Bytes.copy pk_bytes
 
   let derive_pk sk =
-    let buffer = Bls12_381.G2.(copy one) in
+    let buffer = Mavryk_bls12_381.G2.(copy one) in
     ignore @@ Stubs.sk_to_pk buffer sk ;
-    Bls12_381.G2.to_compressed_bytes buffer
+    Mavryk_bls12_381.G2.to_compressed_bytes buffer
 
   type signature = Bytes.t
 
-  let signature_size_in_bytes = Bls12_381.G1.size_in_bytes / 2
+  let signature_size_in_bytes = Mavryk_bls12_381.G1.size_in_bytes / 2
 
   let unsafe_signature_of_bytes bytes = Bytes.copy bytes
 
   let signature_of_bytes_exn bytes =
-    let opt = Bls12_381.G1.of_compressed_bytes_opt bytes in
+    let opt = Mavryk_bls12_381.G1.of_compressed_bytes_opt bytes in
     match opt with
     | None ->
         raise
@@ -491,16 +501,16 @@ module MinSig = struct
     | Some _ -> Bytes.copy bytes
 
   let signature_of_bytes_opt bytes =
-    let opt = Bls12_381.G1.of_compressed_bytes_opt bytes in
+    let opt = Mavryk_bls12_381.G1.of_compressed_bytes_opt bytes in
     match opt with None -> None | Some _ -> Some (Bytes.copy bytes)
 
   let signature_to_bytes bytes = Bytes.copy bytes
 
   let core_sign sk message ciphersuite =
-    let hash = Bls12_381.G1.hash_to_curve message ciphersuite in
-    let buffer = Bls12_381.G1.(copy one) in
+    let hash = Mavryk_bls12_381.G1.hash_to_curve message ciphersuite in
+    let buffer = Mavryk_bls12_381.G1.(copy one) in
     ignore @@ Stubs.sign buffer hash sk ;
-    Bls12_381.G1.to_compressed_bytes buffer
+    Mavryk_bls12_381.G1.to_compressed_bytes buffer
 
   let core_verify pk msg signature_bytes ciphersuite =
     with_aggregation_ctxt ciphersuite (fun ctxt ->
@@ -551,15 +561,17 @@ module MinSig = struct
       match signatures with
       | [] -> Some acc
       | signature :: signatures -> (
-          let signature = Bls12_381.G1.of_compressed_bytes_opt signature in
+          let signature =
+            Mavryk_bls12_381.G1.of_compressed_bytes_opt signature
+          in
           match signature with
           | None -> None
           | Some signature ->
-              let acc = Bls12_381.G1.(add signature acc) in
+              let acc = Mavryk_bls12_381.G1.(add signature acc) in
               aux signatures acc)
     in
-    let res = aux signatures Bls12_381.G1.zero in
-    Option.map Bls12_381.G1.to_compressed_bytes res
+    let res = aux signatures Mavryk_bls12_381.G1.zero in
+    Option.map Mavryk_bls12_381.G1.to_compressed_bytes res
 
   let core_aggregate_verify pks_with_msgs aggregated_signature ciphersuite =
     let rec aux aggregated_signature pks_with_msgs ctxt =
@@ -599,7 +611,7 @@ module MinSig = struct
     (* IMPORTANT: the verification the aggregated signature is in the subgroup
        is performed here. *)
     let aggregated_signature_opt =
-      Bls12_381.G1.of_compressed_bytes_opt aggregated_signature
+      Mavryk_bls12_381.G1.of_compressed_bytes_opt aggregated_signature
     in
     (* Converts the pk received as bytes in points on the curve. There are no
        checks about points belonging to the subgroup. It is verified when
@@ -627,7 +639,7 @@ module MinSig = struct
       | Some aggregated_signature ->
           with_aggregation_ctxt ciphersuite (fun ctxt ->
               let signature_affine =
-                Bls12_381.G1.affine_of_jacobian aggregated_signature
+                Mavryk_bls12_381.G1.affine_of_jacobian aggregated_signature
               in
               let res = aux (Some signature_affine) pks_with_msgs ctxt in
               if res then (
@@ -707,15 +719,19 @@ module MinSig = struct
 
     let aggregate_verify pks_with_pops msg aggregated_signature =
       let pks_bytes = List.map fst pks_with_pops in
-      let pks_opts = List.map Bls12_381.G2.of_compressed_bytes_opt pks_bytes in
+      let pks_opts =
+        List.map Mavryk_bls12_381.G2.of_compressed_bytes_opt pks_bytes
+      in
       let pks_are_ok = List.for_all Option.is_some pks_opts in
       if not pks_are_ok then false
       else
         let pks = List.map Option.get pks_opts in
         let aggregated_pk =
-          List.fold_left Bls12_381.G2.add Bls12_381.G2.zero pks
+          List.fold_left Mavryk_bls12_381.G2.add Mavryk_bls12_381.G2.zero pks
         in
-        let aggregated_pk = Bls12_381.G2.to_compressed_bytes aggregated_pk in
+        let aggregated_pk =
+          Mavryk_bls12_381.G2.to_compressed_bytes aggregated_pk
+        in
         let signature_check = verify aggregated_pk msg aggregated_signature in
         let pop_checks =
           List.for_all

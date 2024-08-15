@@ -1,1 +1,1 @@
-let () = assert Bls12_381.built_with_blst_portable
+let () = assert Mavryk_bls12_381.built_with_blst_portable

@@ -74,7 +74,7 @@ struct
 
     type t = Pack.commitment [@@deriving repr]
 
-    (* [PC.Commitment.t] is required to be [Bls12_381.G1.t SMap.t],
+    (* [PC.Commitment.t] is required to be [Mavryk_bls12_381.G1.t SMap.t],
        containing all the commitments that were packed *)
     type prover_aux = PC.Commitment.t * PC.Commitment.prover_aux
     [@@deriving repr]
@@ -198,7 +198,7 @@ struct
     let f_list = List.map (batch_polys r) f_map_list in
     let s_list = List.map (batch_answers r) answer_list in
     (* [cmts_list] is a list of G1.t SMap.t, containing the PC commitments to
-       every polynomial (note that PC.Commitment.t = Bls12_381.G1.t SMap.t) *)
+       every polynomial (note that PC.Commitment.t = Mavryk_bls12_381.G1.t SMap.t) *)
     let cmts_list =
       List.map
         (fun (cmts, _prover_aux) -> SMap.values cmts |> Array.of_list)

@@ -16,7 +16,8 @@ module type PARAMETERS = sig
   val alphainv : Z.t
 end
 
-module Make (Param : PARAMETERS) (Scalar : Bls12_381.Ff_sig.PRIME) = struct
+module Make (Param : PARAMETERS) (Scalar : Mavryk_bls12_381.Ff_sig.PRIME) =
+struct
   open Param
 
   (* Verify the constants are consistent *)

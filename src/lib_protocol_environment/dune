@@ -8,7 +8,7 @@
  (libraries
   zarith
   zarith_stubs_js
-  bls12-381
+  mavryk-bls12-381
   mavkit-libs.plonk
   mavkit-libs.crypto-dal
   class_group_vdf

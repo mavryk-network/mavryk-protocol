@@ -106,7 +106,7 @@ module type EC_carray_sig = sig
 end
 
 module Make
-    (EC_point : Bls12_381.CURVE)
+    (EC_point : Mavryk_bls12_381.CURVE)
     (EC_point_array : Carray.Carray_sig with type elt = EC_point.t)
     (Stubs : Stubs_sig
                with type fr_array = Fr_carray.t
@@ -190,8 +190,8 @@ module Make
     res
 end
 
-module G1 = Bls12_381.G1
-module G2 = Bls12_381.G2
+module G1 = Mavryk_bls12_381.G1
+module G2 = Mavryk_bls12_381.G2
 
 module G1_Elt = struct
   type t = G1.t
@@ -266,14 +266,14 @@ end
 
 module G1_carray :
   EC_carray_sig
-    with type elt = Bls12_381.G1.t
+    with type elt = Mavryk_bls12_381.G1.t
      and type domain = Domain.t
      and type evaluations = Evaluations.t =
   Make (G1) (G1_array_internal) (Stubs_g1)
 
 module G2_carray :
   EC_carray_sig
-    with type elt = Bls12_381.G2.t
+    with type elt = Mavryk_bls12_381.G2.t
      and type domain = Domain.t
      and type evaluations = Evaluations.t =
   Make (G2) (G2_array_internal) (Stubs_g2)

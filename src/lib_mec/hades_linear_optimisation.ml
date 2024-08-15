@@ -1,4 +1,4 @@
-module MakePoly (R : Bls12_381.Ff_sig.PRIME) = struct
+module MakePoly (R : Mavryk_bls12_381.Ff_sig.PRIME) = struct
   (* We encode the polynomials as a list with decreasing degree.
      Invariants to respect for the type:
      - all coefficients are non null.
@@ -92,8 +92,8 @@ module MakePoly (R : Bls12_381.Ff_sig.PRIME) = struct
 end
 
 let compute_updated_constants_one_batch (type a)
-    (module Fp : Bls12_381.Ff_sig.PRIME with type t = a) width batch_size mds
-    k_cols =
+    (module Fp : Mavryk_bls12_381.Ff_sig.PRIME with type t = a) width batch_size
+    mds k_cols =
   let var_name ?(s2 = "") s1 i = s1 ^ "_" ^ string_of_int i ^ s2 in
   (* We will represent the variables with monomials of increasing degree.
      For width = 3 and batch = 4, we would have the following matching:
@@ -221,7 +221,7 @@ let compute_updated_constants_one_batch (type a)
   coeffs
 
 let compute_updated_constants (type a)
-    (module Fp : Bls12_381.Ff_sig.PRIME with type t = a) r_p r_f width
+    (module Fp : Mavryk_bls12_381.Ff_sig.PRIME with type t = a) r_p r_f width
     batch_size arc mds =
   (* We retrieve the partial rounds' round constants by offsetting with the
      number of constants used in the first full rounds and the first shifted
@@ -310,7 +310,8 @@ module type PARAMETERS = sig
   val alpha : Z.t
 end
 
-module Make (Param : PARAMETERS) (Scalar : Bls12_381.Ff_sig.PRIME) = struct
+module Make (Param : PARAMETERS) (Scalar : Mavryk_bls12_381.Ff_sig.PRIME) =
+struct
   open Param
 
   (* Verify:

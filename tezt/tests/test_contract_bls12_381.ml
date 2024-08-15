@@ -70,7 +70,7 @@ module type CLASS = sig
 
   val add : t -> t -> t
 
-  val mul : t -> Bls12_381.Fr.t -> t
+  val mul : t -> Mavryk_bls12_381.Fr.t -> t
 
   val random : state:Random.State.t -> t
 
@@ -82,7 +82,8 @@ module type CLASS = sig
 
   val check_add : Protocol.t -> Client.t -> t -> t -> unit Lwt.t
 
-  val check_mul : Protocol.t -> Client.t -> t -> Bls12_381.Fr.t -> unit Lwt.t
+  val check_mul :
+    Protocol.t -> Client.t -> t -> Mavryk_bls12_381.Fr.t -> unit Lwt.t
 
   val check_negate : Protocol.t -> Client.t -> t -> unit Lwt.t
 end
@@ -103,7 +104,7 @@ module Make (M : sig
 
   val negate : t -> t
 
-  val mul : t -> Bls12_381.Fr.t -> t
+  val mul : t -> Mavryk_bls12_381.Fr.t -> t
 
   val random : ?state:Random.State.t -> unit -> t
 end) : CLASS with type t = M.t = struct
@@ -141,7 +142,7 @@ end) : CLASS with type t = M.t = struct
   let check_mul protocol client arg0 arg1 =
     let expected_storage = to_hex_string (mul arg0 arg1) in
     let arg0 = to_hex_string arg0 in
-    let fr_to_hex v = Hex.of_bytes @@ Bls12_381.Fr.to_bytes v in
+    let fr_to_hex v = Hex.of_bytes @@ Mavryk_bls12_381.Fr.to_bytes v in
     let arg1 = hex_to_string (fr_to_hex arg1) in
     check_binop
       protocol
@@ -162,27 +163,27 @@ end) : CLASS with type t = M.t = struct
       ~expected_storage
 end
 
-module Fr : CLASS with type t = Bls12_381.Fr.t = Make (struct
-  include Bls12_381.Fr
+module Fr : CLASS with type t = Mavryk_bls12_381.Fr.t = Make (struct
+  include Mavryk_bls12_381.Fr
 
   let name = "fr"
 end)
 
 module G1 = Make (struct
-  include Bls12_381.G1
+  include Mavryk_bls12_381.G1
 
   let name = "g1"
 end)
 
 module G2 = Make (struct
-  include Bls12_381.G2
+  include Mavryk_bls12_381.G2
 
   let name = "g2"
 end)
 
 let check_pairing_check protocol client args =
   let expected_storage =
-    if Bls12_381.Pairing.pairing_check args then "True" else "False"
+    if Mavryk_bls12_381.Pairing.pairing_check args then "True" else "False"
   in
   let input =
     "{"

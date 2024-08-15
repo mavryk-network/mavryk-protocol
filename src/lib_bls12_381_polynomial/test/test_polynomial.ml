@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Fr = Bls12_381.Fr
-module G1 = Bls12_381.G1
+module Fr = Mavryk_bls12_381.Fr
+module G1 = Mavryk_bls12_381.G1
 module Poly = Polynomial.MakeUnivariate (Fr)
 
 module Fr_carray = Mavkit_bls12_381_polynomial.Internal_for_tests.Fr_carray
@@ -564,21 +564,21 @@ let test_vectors_fft () =
 let test_big_vectors_fft () =
   (* Vectors generated with the following program:
      {[
-     module Poly = Polynomial.MakeUnivariate (Bls12_381.Fr)
+     module Poly = Polynomial.MakeUnivariate (Mavryk_bls12_381.Fr)
 
      let fft_polynomial () = Random.self_init ()
 
      let n = 16 in
-     let root = Bls12_381.Fr.of_string "16624801632831727463500847948913128838752380757508923660793891075002624508302" in
-     let domain = Array.init n (fun i -> Bls12_381.Fr.pow root (Z.of_int i)) in
-     let pts = List.init (1 + Random.int (n - 1)) (fun _ -> Bls12_381.Fr.random ()) in
+     let root = Mavryk_bls12_381.Fr.of_string "16624801632831727463500847948913128838752380757508923660793891075002624508302" in
+     let domain = Array.init n (fun i -> Mavryk_bls12_381.Fr.pow root (Z.of_int i)) in
+     let pts = List.init (1 + Random.int (n - 1)) (fun _ -> Mavryk_bls12_381.Fr.random ()) in
      let polynomial = Poly.of_coefficients (List.mapi (fun i a -> (a, i)) pts) in
      let result_fft = Poly.evaluation_fft ~domain polynomial in
      Printf.printf "Random generated points: [%s]\n"
-     (String.concat "; " (List.map (fun s -> Printf.sprintf "\"%s\"" (Bls12_381.Fr.to_string s)) pts))
+     (String.concat "; " (List.map (fun s -> Printf.sprintf "\"%s\"" (Mavryk_bls12_381.Fr.to_string s)) pts))
 
      Printf.printf "Results FFT: [%s]\n"
-     (String.concat "; " (List.map (fun s -> Printf.sprintf "\"%s\"" (Bls12_381.Fr.to_string s)) result_fft))
+     (String.concat "; " (List.map (fun s -> Printf.sprintf "\"%s\"" (Mavryk_bls12_381.Fr.to_string s)) result_fft))
      ]} *)
   [
     ( [|

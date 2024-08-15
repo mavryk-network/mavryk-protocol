@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Scalar = Bls12_381.Fr
+module Scalar = Mavryk_bls12_381.Fr
 
 module Elt = struct
   type t = Scalar.t

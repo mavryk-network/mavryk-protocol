@@ -57,7 +57,7 @@ struct
 
     let make ?(unsafe = false) v ~bound =
       let bound = (bound : 'a Bound.t :> Z.t) in
-      assert (bound < Bls12_381.Fr.order) ;
+      assert (bound < Mavryk_bls12_381.Fr.order) ;
       if not unsafe then assert (v < bound) ;
       (v, bound)
 
@@ -65,25 +65,25 @@ struct
 
     let add ?(unsafe = false) (a, bnd) (b, bnd') =
       let n_bnd = Z.(bnd + bnd') in
-      if not unsafe then assert (n_bnd < Bls12_381.Fr.order) ;
+      if not unsafe then assert (n_bnd < Mavryk_bls12_381.Fr.order) ;
       let r = Z.add a b in
       if not unsafe then assert (Z.zero <= r && r < n_bnd) ;
       (r, n_bnd)
 
     let add_left ?(unsafe = false) (a, bnd) (b, bnd') =
-      if not unsafe then assert (Z.(bnd + bnd' < Bls12_381.Fr.order)) ;
+      if not unsafe then assert (Z.(bnd + bnd' < Mavryk_bls12_381.Fr.order)) ;
       let r = Z.add a b in
       if not unsafe then assert (Z.zero <= r && r < bnd) ;
       (r, bnd)
 
     let sub_left ?(unsafe = false) (a, bnd) (b, bnd') =
-      if not unsafe then assert (Z.(bnd + bnd' < Bls12_381.Fr.order)) ;
+      if not unsafe then assert (Z.(bnd + bnd' < Mavryk_bls12_381.Fr.order)) ;
       let r = Z.sub a b in
       if not unsafe then assert (Z.zero <= r && r < bnd) ;
       (r, bnd)
 
     let succ ?(unsafe = false) (a, bnd) =
-      if not unsafe then assert (Z.(bnd + one < Bls12_381.Fr.order)) ;
+      if not unsafe then assert (Z.(bnd + one < Mavryk_bls12_381.Fr.order)) ;
       let r = Z.succ a in
       if not unsafe then assert (Z.zero <= r && r < bnd) ;
       (r, bnd)
@@ -130,13 +130,13 @@ struct
 
     let make w ~bound =
       let bound = (bound : 'a Bound.t :> Z.t) in
-      assert (bound < Bls12_381.Fr.order) ;
+      assert (bound < Mavryk_bls12_381.Fr.order) ;
       with_bool_check (Num.is_upper_bounded w ~bound) >* ret (w, bound)
 
     let make_unsafe w ~bound = (w, Bound.v bound)
 
     let add ?(unsafe = false) (a, bound) (b, bound') =
-      assert (Z.(bound + bound' < Bls12_381.Fr.order)) ;
+      assert (Z.(bound + bound' < Mavryk_bls12_381.Fr.order)) ;
       let* r = Num.add a b in
       if unsafe then ret (r, Z.add bound bound')
       else
@@ -145,7 +145,7 @@ struct
         >* ret (r, Z.add bound bound')
 
     let add_left ?(unsafe = false) (a, bound) (b, bound') =
-      assert (Z.(bound + bound' < Bls12_381.Fr.order)) ;
+      assert (Z.(bound + bound' < Mavryk_bls12_381.Fr.order)) ;
       let* r = Num.add a b in
       let nb_bits = Z.(numbits (add bound bound')) in
       if unsafe then ret (r, bound)
@@ -154,13 +154,13 @@ struct
         >* ret (r, bound)
 
     let sub_left ?(unsafe = false) (a, bound) (b, bound') =
-      assert (Z.(bound + bound' < Bls12_381.Fr.order)) ;
+      assert (Z.(bound + bound' < Mavryk_bls12_381.Fr.order)) ;
       let* r = Num.add ~qr:S.mone a b in
       if unsafe then ret (r, bound)
       else with_bool_check (Num.geq (a, bound) (b, bound')) >* ret (r, bound)
 
     let succ ?(unsafe = false) (a, bound) =
-      assert (Z.(bound + one < Bls12_381.Fr.order)) ;
+      assert (Z.(bound + one < Mavryk_bls12_381.Fr.order)) ;
       let* r = Num.add_constant S.one a in
       let nb_bits = Z.(numbits (succ bound)) in
       if unsafe then ret (r, bound)

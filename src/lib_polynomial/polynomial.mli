@@ -201,10 +201,13 @@ end
     [g^{i}] to be used in FFT related algorithms. [generator] must be a [n]-th
     principal root of unity in the finite field [Fp] *)
 val generate_evaluation_domain :
-  (module Bls12_381.Ff_sig.PRIME with type t = 'a) -> int -> 'a -> 'a array
+  (module Mavryk_bls12_381.Ff_sig.PRIME with type t = 'a) ->
+  int ->
+  'a ->
+  'a array
 
 (** [Make(Fp)] builds a module of type [T] where the coefficients are in the prime field Fp *)
-module MakeUnivariate : functor (R : Bls12_381.Ff_sig.PRIME) ->
+module MakeUnivariate : functor (R : Mavryk_bls12_381.Ff_sig.PRIME) ->
   UNIVARIATE with type scalar = R.t
 
 module Utils : sig

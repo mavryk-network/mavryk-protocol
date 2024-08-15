@@ -308,7 +308,7 @@ module type LIB = sig
     val with_assertion :
       ('p repr -> unit repr t) -> ('o, 'u, 'p) encoding -> ('o, 'u, 'p) encoding
 
-    val scalar_encoding : (Bls12_381.Fr.t, scalar repr, scalar) encoding
+    val scalar_encoding : (Mavryk_bls12_381.Fr.t, scalar repr, scalar) encoding
 
     val bool_encoding : (bool, bool repr, bool) encoding
 

@@ -1,4 +1,4 @@
-open Bls12_381.Ff_sig
+open Mavryk_bls12_381.Ff_sig
 
 module MakeFp (S : sig
   val prime_order : Z.t

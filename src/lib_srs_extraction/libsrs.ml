@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-open Bls12_381
+open Mavryk_bls12_381
 module G1 = G1
 module G2 = G2
 module G1_carray = Mavkit_bls12_381_polynomial.G1_carray

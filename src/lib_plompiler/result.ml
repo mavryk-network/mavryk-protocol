@@ -473,16 +473,19 @@ end
 module Anemoi = struct
   module AnemoiPerm = Bls12_381_hash.Permutation.Anemoi
 
-  let beta = S.of_string (Bls12_381.Fr.to_string AnemoiPerm.Parameters.beta)
+  let beta =
+    S.of_string (Mavryk_bls12_381.Fr.to_string AnemoiPerm.Parameters.beta)
 
-  let gamma = S.of_string (Bls12_381.Fr.to_string AnemoiPerm.Parameters.gamma)
+  let gamma =
+    S.of_string (Mavryk_bls12_381.Fr.to_string AnemoiPerm.Parameters.gamma)
 
-  let g = S.of_string (Bls12_381.Fr.to_string AnemoiPerm.Parameters.g)
+  let g = S.of_string (Mavryk_bls12_381.Fr.to_string AnemoiPerm.Parameters.g)
 
-  let delta = S.of_string (Bls12_381.Fr.to_string AnemoiPerm.Parameters.delta)
+  let delta =
+    S.of_string (Mavryk_bls12_381.Fr.to_string AnemoiPerm.Parameters.delta)
 
   let alpha_inv =
-    S.of_string (Bls12_381.Fr.to_string AnemoiPerm.Parameters.alpha_inv)
+    S.of_string (Mavryk_bls12_381.Fr.to_string AnemoiPerm.Parameters.alpha_inv)
 
   let anemoi_round ~kx ~ky (x0, y0) =
     let x0 = of_s x0 in

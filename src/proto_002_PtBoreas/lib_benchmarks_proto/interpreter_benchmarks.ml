@@ -3496,9 +3496,9 @@ module Registration_section = struct
   (* when benchmarking, compile bls12-381-unix without ADX, see
      https://gitlab.com/dannywillems/ocaml-bls12-381/-/blob/71d0b4d467fbfaa6452d702fcc408d7a70916a80/README.md#install
   *)
-  module Bls12_381 = struct
+  module Mavryk_bls12_381 = struct
     let check () =
-      if not Bls12_381.built_with_blst_portable then (
+      if not Mavryk_bls12_381.built_with_blst_portable then (
         Format.eprintf
           "BLS must be built without ADX to run the BLS benchmarks. Try \
            compiling again after setting the environment variable \

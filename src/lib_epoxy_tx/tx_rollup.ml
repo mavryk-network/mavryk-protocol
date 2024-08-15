@@ -222,7 +222,7 @@ module P = struct
 
   let hash_op (t : unsigned_tx) =
     let module Curve = Mec.Curve.Jubjub.AffineEdwards in
-    let module S = Bls12_381.Fr in
+    let module S = Mavryk_bls12_381.Fr in
     match t with
     (* Do not use wildcard patterns, make sure we never forget to sign a field *)
     | Transfer {header; payload = {src; dst; fee; amount; cnt}} ->
@@ -304,7 +304,7 @@ module P = struct
 
   let sign_op sk (t : unsigned_tx) : tx =
     let module Curve = Mec.Curve.Jubjub.AffineEdwards in
-    let module S = Bls12_381.Fr in
+    let module S = Mavryk_bls12_381.Fr in
     let msg = hash_op t in
     match t with
     (* Do not use wildcard patterns, make sure we never forget to sign a field *)

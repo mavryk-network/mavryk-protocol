@@ -11,7 +11,7 @@
   mavkit-libs.lwt-result-stdlib
   mavkit-l2-libs.scoru-wasm
   data-encoding
-  bls12-381
+  mavryk-bls12-381
   mavkit-libs.plonk)
  (flags
   (:standard)

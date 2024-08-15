@@ -156,7 +156,7 @@ let () =
   let module Bls_Props =
     Aggregate_Signature_Properties
       (struct
-        let name = "Bls12_381"
+        let name = "Mavryk_bls12_381"
       end)
       (struct
         include Signature.Bls

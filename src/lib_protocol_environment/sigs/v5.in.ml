@@ -79,7 +79,7 @@ module type T = sig
 
   module Blake2B : [%sig "v5/blake2B.mli"]
 
-  module Bls12_381 : [%sig "v5/bls12_381.mli"]
+  module Mavryk_bls12_381 : [%sig "v5/bls12_381.mli"]
 
   module Bls_signature : [%sig "v5/bls_signature.mli"]
 

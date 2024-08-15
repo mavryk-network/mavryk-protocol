@@ -33,7 +33,7 @@ let max_nb_accounts = Int.shift_left 1 accounts_depth
 
 let max_nb_tickets = Int.shift_left 1 tickets_depth
 
-let tez_id = Bls12_381.Fr.zero
+let tez_id = Mavryk_bls12_381.Fr.zero
 
 type position
 

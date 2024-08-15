@@ -9,7 +9,7 @@
   mavkit-alcotezt
   qcheck-alcotest
   mavkit-libs.polynomial
-  bls12-381
+  mavryk-bls12-381
   mavkit-libs.bls12-381-polynomial)
  (library_flags (:standard -linkall))
  (flags

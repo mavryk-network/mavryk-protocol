@@ -218,7 +218,7 @@ module Raw_context_tests = struct
             price = {id = Ticket_hash_repr.zero; amount = Z.zero};
             l1_dst = pkh;
             rollup_id = rollup;
-            payload = [|Bls12_381.Fr.one|];
+            payload = [|Mavryk_bls12_381.Fr.one|];
           }
     in
     let*@ ctx, _size = Zk_rollup_storage.add_to_pending ctx rollup [op; op] in
@@ -239,7 +239,7 @@ module Raw_context_tests = struct
             price = {id = Ticket_hash_repr.zero; amount = Z.zero};
             l1_dst = pkh;
             rollup_id = rollup;
-            payload = [|Bls12_381.Fr.one|];
+            payload = [|Mavryk_bls12_381.Fr.one|];
           }
     in
     (* Initialise the pending list with 2 operations *)
@@ -286,7 +286,7 @@ module Raw_context_tests = struct
             price = {id = Ticket_hash_repr.zero; amount = Z.zero};
             l1_dst = pkh;
             rollup_id = rollup;
-            payload = [|Bls12_381.Fr.one|];
+            payload = [|Mavryk_bls12_381.Fr.one|];
           }
     in
     (* Populate rollup with 2 ops *)
@@ -323,7 +323,7 @@ module Raw_context_tests = struct
             price = {id = Ticket_hash_repr.zero; amount = Z.zero};
             l1_dst = pkh;
             rollup_id = rollup;
-            payload = [|Bls12_381.Fr.one|];
+            payload = [|Mavryk_bls12_381.Fr.one|];
           }
     in
     (* Populate rollup with 2 ops *)

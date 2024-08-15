@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Fr = Bls12_381.Fr
+module Fr = Mavryk_bls12_381.Fr
 
 module Stubs = struct
   type fr = Fr.t
@@ -432,7 +432,7 @@ end
 
 module type Polynomial_sig = sig
   (**
-   This library implements polynomials of Bls12_381.Fr as arrays of contiguous
+   This library implements polynomials of Mavryk_bls12_381.Fr as arrays of contiguous
    memory in C, allowing much better performances for algorithms that scan the
    polynomials.
 
@@ -630,7 +630,7 @@ module type Polynomial_unsafe_sig = sig
 end
 
 module Polynomial_unsafe :
-  Polynomial_unsafe_sig with type scalar = Bls12_381.Fr.t =
+  Polynomial_unsafe_sig with type scalar = Mavryk_bls12_381.Fr.t =
   Polynomial_impl
 
 include (

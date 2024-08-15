@@ -28,7 +28,7 @@ let rec non_null_int bound =
   let r = Random.int bound in
   if r = 0 then non_null_int bound else r
 
-module Scalar = Bls12_381.Fr
+module Scalar = Mavryk_bls12_381.Fr
 module Domain = Mavkit_bls12_381_polynomial.Domain
 module Poly = Mavkit_bls12_381_polynomial.Polynomial
 module Evaluations = Mavkit_bls12_381_polynomial.Evaluations

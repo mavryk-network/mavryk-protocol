@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Fr = Bls12_381.Fr
+module Fr = Mavryk_bls12_381.Fr
 
 module Fr_carray = Mavkit_bls12_381_polynomial.Internal_for_tests.Fr_carray
 
@@ -69,7 +69,7 @@ let primitive_nth_root_of_unity n factorization_n =
 let test_generator () =
   let generator = Fr_carray.generator in
   let factorization_n =
-    (* output of {[ Fr_generation.factors_naive Z.(Bls12_381.Fr.order - one) |> List.map (fun (i,j) -> Z.to_string i, j) ]} *)
+    (* output of {[ Fr_generation.factors_naive Z.(Mavryk_bls12_381.Fr.order - one) |> List.map (fun (i,j) -> Z.to_string i, j) ]} *)
     [
       ("254760293", 2);
       ("52437899", 1);

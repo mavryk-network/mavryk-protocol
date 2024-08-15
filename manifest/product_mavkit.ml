@@ -679,7 +679,7 @@ let _mavkit_risc_v_pvm_test =
 
 let bls12_381 =
   public_lib
-    "bls12-381"
+    "mavryk-bls12-381"
     ~path:"src/lib_bls12_381"
     ~available:(N_ary_and [No_32; No_ppc; No_s390x])
     ~synopsis:
@@ -853,7 +853,7 @@ let bls12_381 =
               S "caml_bls12_381_stubs.h";
             ];
             [S "section"; S "lib"];
-            [S "package"; S "bls12-381"];
+            [S "package"; S "mavryk-bls12-381"];
           ];
         ]
 
@@ -873,7 +873,7 @@ let _bls12_381_tests =
       "test_ec_make";
     ]
     ~path:"src/lib_bls12_381/test"
-    ~opam:"bls12-381"
+    ~opam:"mavryk-bls12-381"
     ~deps:[alcotezt; qcheck_alcotest; bls12_381]
     ~modes:[Native; JS]
     ~js_compatible:true
@@ -894,7 +894,7 @@ let _mavkit_bls12_381_utils =
   private_exes
     names
     ~path:"src/lib_bls12_381/utils"
-    ~opam:"bls12-381"
+    ~opam:"mavryk-bls12-381"
     ~bisect_ppx:No
     ~modules:names
     ~deps:[hex; bls12_381]

@@ -28,7 +28,7 @@ module Public_key_hash = struct
     Blake2B.Make
       (Base58)
       (struct
-        let name = "Bls12_381.Public_key_hash"
+        let name = "Mavryk_bls12_381.Public_key_hash"
 
         let title = "A Bls12_381 public key hash"
 
@@ -49,7 +49,7 @@ module Public_key = struct
 
   type t = Bls12_381_signature.MinPk.pk
 
-  let name = "Bls12_381.Public_key"
+  let name = "Mavryk_bls12_381.Public_key"
 
   let title = "A Bls12_381 public key"
 
@@ -136,7 +136,7 @@ end
 module Secret_key = struct
   type t = Bls12_381_signature.sk
 
-  let name = "Bls12_381.Secret_key"
+  let name = "Mavryk_bls12_381.Secret_key"
 
   let title = "A Bls12_381 secret key"
 
@@ -378,7 +378,7 @@ let aggregate_check pk_msg_list signature =
 let aggregate_signature_opt = Bls12_381_signature.MinPk.aggregate_signature_opt
 
 module Primitive = struct
-  include Bls12_381
+  include Mavryk_bls12_381
 
-  let pairing_check = Bls12_381.Pairing.pairing_check
+  let pairing_check = Mavryk_bls12_381.Pairing.pairing_check
 end

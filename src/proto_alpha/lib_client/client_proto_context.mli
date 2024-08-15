@@ -922,7 +922,7 @@ val zk_rollup_originate :
   source:public_key_hash ->
   public_parameters:Environment.Plonk.public_parameters ->
   circuits_info:[`Fee | `Private | `Public] Zk_rollup.Account.SMap.t ->
-  init_state:Bls12_381.Fr.t array ->
+  init_state:Mavryk_bls12_381.Fr.t array ->
   nb_ops:int ->
   src_pk:public_key ->
   src_sk:Client_keys.sk_uri ->

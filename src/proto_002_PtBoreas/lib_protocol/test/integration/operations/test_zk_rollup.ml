@@ -51,14 +51,14 @@ let true_op l1_dst rollup_id =
       price = Operator.Internal_for_tests.true_op.price;
       l1_dst;
       rollup_id;
-      payload = [|Bls12_381.Fr.one|];
+      payload = [|Mavryk_bls12_381.Fr.one|];
     }
 
 let of_plonk_smap s = Zk_rollup.Account.SMap.of_seq @@ Kzg.SMap.to_seq s
 
 (* Operation with payload = 0 *)
 let false_op l1_dst rollup_id =
-  {(true_op l1_dst rollup_id) with payload = [|Bls12_381.Fr.zero|]}
+  {(true_op l1_dst rollup_id) with payload = [|Mavryk_bls12_381.Fr.zero|]}
 
 (** [check_proto_error_f f t] checks that the first error of [t]
     satisfies the boolean function [f]. *)

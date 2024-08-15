@@ -14,7 +14,8 @@ module type PARAMETERS = sig
   val alpha : Z.t
 end
 
-module Make (Param : PARAMETERS) (Scalar : Bls12_381.Ff_sig.PRIME) = struct
+module Make (Param : PARAMETERS) (Scalar : Mavryk_bls12_381.Ff_sig.PRIME) =
+struct
   open Param
 
   (* Verify: - the constants are consistent - the sbox is a permutation, i.e.

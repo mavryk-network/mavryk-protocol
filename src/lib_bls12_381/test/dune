@@ -10,7 +10,7 @@
   tezt.core
   mavkit-alcotezt
   qcheck-alcotest
-  bls12-381)
+  mavryk-bls12-381)
  (js_of_ocaml)
  (library_flags (:standard -linkall))
  (flags
@@ -42,7 +42,7 @@
 
 (rule
  (alias runtest)
- (package bls12-381)
+ (package mavryk-bls12-381)
  (deps (glob_files_rec test_vectors/*))
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))
@@ -63,7 +63,7 @@
 
 (rule
  (alias runtest_js)
- (package bls12-381)
+ (package mavryk-bls12-381)
  (deps (glob_files_rec test_vectors/*))
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run node %{dep:./main_js.bc.js})))

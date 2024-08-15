@@ -35,7 +35,7 @@ let test_state_getter_setter () =
   let open Bls12_381_hash.Permutation.Poseidon.Parameters in
   let state =
     Array.init security_128_state_size_3.state_size (fun _ ->
-        Bls12_381.Fr.random ())
+        Mavryk_bls12_381.Fr.random ())
   in
   let ctxt =
     Bls12_381_hash.Permutation.Poseidon.allocate_ctxt security_128_state_size_3
@@ -43,7 +43,7 @@ let test_state_getter_setter () =
   let () = Bls12_381_hash.Permutation.Poseidon.set_state ctxt state in
   assert (
     Array.for_all2
-      Bls12_381.Fr.eq
+      Mavryk_bls12_381.Fr.eq
       state
       (Bls12_381_hash.Permutation.Poseidon.get_state ctxt))
 
@@ -105,7 +105,7 @@ let test_consistent_with_mec () =
   List.iter
     (fun (state, expected_output) ->
       let open Bls12_381_hash.Permutation.Poseidon.Parameters in
-      let state = Array.map Bls12_381.Fr.of_string state in
+      let state = Array.map Mavryk_bls12_381.Fr.of_string state in
       let ctxt =
         Bls12_381_hash.Permutation.Poseidon.allocate_ctxt
           security_128_state_size_3
@@ -113,14 +113,16 @@ let test_consistent_with_mec () =
       let () = Bls12_381_hash.Permutation.Poseidon.set_state ctxt state in
       let () = Bls12_381_hash.Permutation.Poseidon.apply_permutation ctxt in
       let output = Bls12_381_hash.Permutation.Poseidon.get_state ctxt in
-      let expected_output = Array.map Bls12_381.Fr.of_string expected_output in
+      let expected_output =
+        Array.map Mavryk_bls12_381.Fr.of_string expected_output
+      in
       Array.iter2
         (fun a b ->
-          if not (Bls12_381.Fr.eq a b) then
+          if not (Mavryk_bls12_381.Fr.eq a b) then
             Alcotest.failf
               "Expected output is %s, computed %s\n"
-              (Bls12_381.Fr.to_string a)
-              (Bls12_381.Fr.to_string b))
+              (Mavryk_bls12_381.Fr.to_string a)
+              (Mavryk_bls12_381.Fr.to_string b))
         expected_output
         output)
     test_vectors
@@ -129,7 +131,7 @@ let test_poseidon128_with_different_batch_size () =
   let open Bls12_381_hash.Permutation.Poseidon.Parameters in
   let state =
     Array.init security_128_state_size_3.state_size (fun _ ->
-        Bls12_381.Fr.random ())
+        Mavryk_bls12_381.Fr.random ())
   in
   let compute_output () =
     let batch_size' =
@@ -148,11 +150,11 @@ let test_poseidon128_with_different_batch_size () =
   let output' = compute_output () in
   Array.iter2
     (fun a b ->
-      if not (Bls12_381.Fr.eq a b) then
+      if not (Mavryk_bls12_381.Fr.eq a b) then
         Alcotest.failf
           "Output is %s, output' is %s\n"
-          (Bls12_381.Fr.to_string a)
-          (Bls12_381.Fr.to_string b))
+          (Mavryk_bls12_381.Fr.to_string a)
+          (Mavryk_bls12_381.Fr.to_string b))
     output
     output'
 
@@ -162,12 +164,12 @@ let test_random_instanciations_of_poseidon_with_different_batch_size () =
   let nb_of_full_rounds = (1 + Random.int 10) * 2 in
   let nb_of_partial_rounds = 2 + Random.int 100 in
   let ark_length = state_size * (nb_of_full_rounds + nb_of_partial_rounds) in
-  let ark = Array.init ark_length (fun _ -> Bls12_381.Fr.random ()) in
+  let ark = Array.init ark_length (fun _ -> Mavryk_bls12_381.Fr.random ()) in
   let mds =
     Array.init state_size (fun _ ->
-        Array.init state_size (fun _ -> Bls12_381.Fr.random ()))
+        Array.init state_size (fun _ -> Mavryk_bls12_381.Fr.random ()))
   in
-  let state = Array.init state_size (fun _ -> Bls12_381.Fr.random ()) in
+  let state = Array.init state_size (fun _ -> Mavryk_bls12_381.Fr.random ()) in
   let compute_output () =
     let batch_size = 1 + Random.int nb_of_partial_rounds in
     let parameters =
@@ -191,11 +193,11 @@ let test_random_instanciations_of_poseidon_with_different_batch_size () =
   let output' = compute_output () in
   Array.iter2
     (fun a b ->
-      if not (Bls12_381.Fr.eq a b) then
+      if not (Mavryk_bls12_381.Fr.eq a b) then
         Alcotest.failf
           "Output is %s, output' is %s\n"
-          (Bls12_381.Fr.to_string a)
-          (Bls12_381.Fr.to_string b))
+          (Mavryk_bls12_381.Fr.to_string a)
+          (Mavryk_bls12_381.Fr.to_string b))
     output
     output'
 
@@ -205,7 +207,7 @@ let test_regression_tests_for_poseidon252 () =
     [
       ( Array.make
           security_256_state_size_5.state_size
-          (Bls12_381.Fr.of_string "19"),
+          (Mavryk_bls12_381.Fr.of_string "19"),
         [|
           "2f26f38f20a624eb7ddc58a28f94a868824a320a64a05c7b028be716c3d47938";
           "577a6555ceb8acfcec1024f76a647a63bef97ef490fa875d5d8d640e9c477973";
@@ -219,7 +221,7 @@ let test_regression_tests_for_poseidon252 () =
     (fun (state, expected_output) ->
       let expected_output =
         Array.map
-          (fun x -> Bls12_381.Fr.of_bytes_exn (Hex.to_bytes (`Hex x)))
+          (fun x -> Mavryk_bls12_381.Fr.of_bytes_exn (Hex.to_bytes (`Hex x)))
           expected_output
       in
       let ctxt =
@@ -231,11 +233,11 @@ let test_regression_tests_for_poseidon252 () =
       let output = Bls12_381_hash.Permutation.Poseidon.get_state ctxt in
       Array.iter2
         (fun a b ->
-          if not (Bls12_381.Fr.eq a b) then
+          if not (Mavryk_bls12_381.Fr.eq a b) then
             Alcotest.failf
               "Expected output is %s, computed is %s\n"
-              (Bls12_381.Fr.to_string a)
-              (Bls12_381.Fr.to_string b))
+              (Mavryk_bls12_381.Fr.to_string a)
+              (Mavryk_bls12_381.Fr.to_string b))
         expected_output
         output)
     vectors
