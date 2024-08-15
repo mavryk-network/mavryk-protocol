@@ -677,7 +677,7 @@ let _mavkit_risc_v_pvm_test =
     ~synopsis:"Tests for RISC-V interpreter bindings"
     ~deps:[alcotezt; mavkit_risc_v_pvm]
 
-let bls12_381 =
+let mavryk_bls12_381 =
   public_lib
     "mavryk-bls12-381"
     ~path:"src/lib_bls12_381"
@@ -686,7 +686,7 @@ let bls12_381 =
       "Implementation of the BLS12-381 curve (wrapper for the Blst library)"
     ~modules:
       [
-        "bls12_381";
+        "mavryk_bls12_381";
         "ff_sig";
         "fr";
         "fq12";
@@ -874,7 +874,7 @@ let _bls12_381_tests =
     ]
     ~path:"src/lib_bls12_381/test"
     ~opam:"mavryk-bls12-381"
-    ~deps:[alcotezt; qcheck_alcotest; bls12_381]
+    ~deps:[alcotezt; qcheck_alcotest; mavryk_bls12_381]
     ~modes:[Native; JS]
     ~js_compatible:true
     ~dep_globs_rec:["test_vectors/*"]
@@ -897,14 +897,14 @@ let _mavkit_bls12_381_utils =
     ~opam:"mavryk-bls12-381"
     ~bisect_ppx:No
     ~modules:names
-    ~deps:[hex; bls12_381]
+    ~deps:[hex; mavryk_bls12_381]
 
 let mavkit_bls12_381_signature =
   mavkit_lib
     "bls12-381-signature"
     ~path:"src/lib_bls12_381_signature"
     ~internal_name:"bls12_381_signature"
-    ~deps:[bls12_381]
+    ~deps:[mavryk_bls12_381]
     ~modules:["bls12_381_signature"]
     ~js_compatible:true
     ~foreign_stubs:
@@ -941,7 +941,7 @@ let _mavkit_bls12_381_signature_tests =
          This test is affected by the [FinalizationRegistry] hangs in JS,
          so although JS compatible, we only test in [Native] mode *)
     ~modes:[Native]
-    ~deps:[bls12_381; mavkit_bls12_381_signature; alcotezt; integers_stubs_js]
+    ~deps:[mavryk_bls12_381; mavkit_bls12_381_signature; alcotezt; integers_stubs_js]
     ~dep_globs_rec:["test_vectors/*"] (* See above *)
     ~js_compatible:false
 
@@ -973,7 +973,7 @@ let mavkit_crypto =
         aches;
         zarith;
         zarith_stubs_js;
-        bls12_381;
+        mavryk_bls12_381;
         mavkit_bls12_381_signature;
       ]
     ~js_compatible:true
@@ -1041,7 +1041,7 @@ let mavkit_bls12_381_hash =
     ~path:"src/lib_bls12_381_hash"
     ~internal_name:"bls12_381_hash"
     ~c_library_flags:["-Wall"; "-Wextra"; ":standard"; "-lpthread"]
-    ~deps:[bls12_381]
+    ~deps:[mavryk_bls12_381]
     ~js_compatible:false
     ~foreign_stubs:
       {
@@ -1066,7 +1066,7 @@ let _mavkit_bls12_381_hash_tests =
     ["test_poseidon"; "test_rescue"; "test_anemoi"; "test_griffin"; "test_jive"]
     ~path:"src/lib_bls12_381_hash/test"
     ~opam:"mavkit-libs"
-    ~deps:[alcotezt; bls12_381; mavkit_bls12_381_hash]
+    ~deps:[alcotezt; mavryk_bls12_381; mavkit_bls12_381_hash]
     ~flags:(Flags.standard ~disable_warnings:[3] ())
 
 let mavkit_mec =
@@ -1074,7 +1074,7 @@ let mavkit_mec =
     "mec"
     ~path:"src/lib_mec"
     ~internal_name:"mec"
-    ~deps:[alcotest; bls12_381; bigarray_compat; eqaf]
+    ~deps:[alcotest; mavryk_bls12_381; bigarray_compat; eqaf]
 
 let _mavkit_mec_tests =
   tezt
@@ -1147,14 +1147,14 @@ let mavkit_polynomial =
     ~path:"src/lib_polynomial"
     ~internal_name:"polynomial"
     ~synopsis:"Polynomials over finite fields"
-    ~deps:[bls12_381; zarith]
+    ~deps:[mavryk_bls12_381; zarith]
 
 let _mavkit_polynomial_tests =
   tezt
     ["test_with_finite_field"; "test_utils"; "polynomial_pbt"]
     ~path:"src/lib_polynomial/test"
     ~opam:"mavkit-libs"
-    ~deps:[bls12_381; mavkit_mec; alcotezt; mavkit_polynomial]
+    ~deps:[mavryk_bls12_381; mavkit_mec; alcotezt; mavkit_polynomial]
 
 let mavkit_bls12_381_polynomial =
   mavkit_lib
@@ -1166,7 +1166,7 @@ let mavkit_bls12_381_polynomial =
        Mavkit"
     ~c_library_flags:["-Wall"; "-Wextra"; ":standard"]
     ~preprocess:[pps ppx_repr]
-    ~deps:[bls12_381; ppx_repr; bigstringaf]
+    ~deps:[mavryk_bls12_381; ppx_repr; bigstringaf]
     ~js_compatible:false
     ~foreign_stubs:
       {
@@ -1202,7 +1202,7 @@ let _mavkit_bls12_381_polynomial_tests =
         alcotezt;
         qcheck_alcotest;
         mavkit_polynomial;
-        bls12_381;
+        mavryk_bls12_381;
         mavkit_bls12_381_polynomial;
       ]
     ~dep_files:["srs_zcash_g1_5"]
@@ -1214,7 +1214,7 @@ let mavkit_srs_extraction =
     ~path:"src/lib_srs_extraction"
     ~modules:["libsrs"]
     ~bisect_ppx:No
-    ~deps:[bls12_381; mavkit_bls12_381_polynomial |> open_]
+    ~deps:[mavryk_bls12_381; mavkit_bls12_381_polynomial |> open_]
 
 let _mavkit_srs_extraction_main =
   private_exe
@@ -1228,7 +1228,7 @@ let _mavkit_srs_extraction_main =
         mavkit_srs_extraction |> open_;
         cmdliner;
         unix;
-        bls12_381;
+        mavryk_bls12_381;
         mavkit_bls12_381_polynomial |> open_;
       ]
 
@@ -1468,7 +1468,7 @@ let _mavkit_plonk_test_plompiler_afl =
     ~opam:"mavkit-libs"
     ~modules:["afl"]
     ~bisect_ppx:No
-    ~deps:[mavkit_plompiler; mavkit_plonk; bls12_381]
+    ~deps:[mavkit_plompiler; mavkit_plonk; mavryk_bls12_381]
 
 let _mavkit_plonk_test_plompiler_main =
   private_exe
@@ -2903,7 +2903,7 @@ let mavkit_protocol_environment_structs =
         mavkit_lwt_result_stdlib;
         mavkit_scoru_wasm;
         data_encoding;
-        bls12_381;
+        mavryk_bls12_381;
         mavkit_plonk |> open_;
       ]
 
@@ -2917,7 +2917,7 @@ let mavkit_protocol_environment =
       [
         zarith;
         zarith_stubs_js;
-        bls12_381;
+        mavryk_bls12_381;
         mavkit_plonk |> open_;
         mavkit_crypto_dal;
         vdf;

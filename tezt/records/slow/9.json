@@ -945,7 +945,7 @@
   },
   {
     "file": "src/lib_crypto/test/test_run.ml",
-    "title": "tezos-crypto: bls12_381-encodings (b58check.invalid)",
+    "title": "tezos-crypto: mavryk_bls12_381-encodings (b58check.invalid)",
     "tags": [
       "alcotezt",
       "slow"

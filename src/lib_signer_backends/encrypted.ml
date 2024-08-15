@@ -188,7 +188,7 @@ module Encodings = struct
         if String.length buf <> length then None else Some (Bytes.of_string buf))
       ~wrap:(fun sk -> Encrypted_p256 sk)
 
-  let bls12_381 =
+  let mavryk_bls12_381 =
     let length =
       (* 32 + 16 + 8 = 56 *)
       Bls12_381_signature.sk_size_in_bytes + Mavryk_crypto.Crypto_box.tag_length
@@ -216,7 +216,7 @@ module Encodings = struct
     Mavryk_crypto.Base58.check_encoded_prefix ed25519 "edesk" 88 ;
     Mavryk_crypto.Base58.check_encoded_prefix secp256k1 "spesk" 88 ;
     Mavryk_crypto.Base58.check_encoded_prefix p256 "p2esk" 88 ;
-    Mavryk_crypto.Base58.check_encoded_prefix bls12_381 "BLesk" 88 ;
+    Mavryk_crypto.Base58.check_encoded_prefix mavryk_bls12_381 "BLesk" 88 ;
     Mavryk_crypto.Base58.check_encoded_prefix secp256k1_scalar "seesk" 93
 end
 
@@ -392,7 +392,7 @@ let common_encrypt sk password =
     | Decrypted_sk (Secp256k1 _) -> Encodings.secp256k1
     | Decrypted_sk (P256 _) -> Encodings.p256
     | Decrypted_sk (Bls _) | Decrypted_aggregate_sk (Mavryk_bls12_381 _) ->
-        Encodings.bls12_381
+        Encodings.mavryk_bls12_381
   in
   Mavryk_crypto.Base58.simple_encode encoding payload
 

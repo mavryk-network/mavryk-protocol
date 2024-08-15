@@ -957,7 +957,7 @@
   },
   {
     "file": "src/lib_crypto/test/test_prop_signature.ml",
-    "title": "tezos-crypto-prop-signature: bls12_381 (Aggregate_signature_Bls12_381_sign_check)",
+    "title": "tezos-crypto-prop-signature: mavryk_bls12_381 (Aggregate_signature_Bls12_381_sign_check)",
     "tags": [
       "alcotezt",
       "slow"

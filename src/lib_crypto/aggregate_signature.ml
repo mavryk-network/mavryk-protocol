@@ -110,16 +110,16 @@ module Public_key_hash = struct
 
   let to_path key l =
     match key with
-    | Mavryk_bls12_381 h -> "bls12_381" :: Bls.Public_key_hash.to_path h l
+    | Mavryk_bls12_381 h -> "mavryk_bls12_381" :: Bls.Public_key_hash.to_path h l
 
   let of_path = function
-    | "bls12_381" :: q ->
+    | "mavryk_bls12_381" :: q ->
         Bls.Public_key_hash.of_path q
         |> Option.map (fun pkh -> Mavryk_bls12_381 pkh)
     | _ -> assert false
 
   let of_path_exn = function
-    | "bls12_381" :: q -> Mavryk_bls12_381 (Bls.Public_key_hash.of_path_exn q)
+    | "mavryk_bls12_381" :: q -> Mavryk_bls12_381 (Bls.Public_key_hash.of_path_exn q)
     | _ -> assert false
 
   let path_length = 1 + Bls.Public_key_hash.path_length
@@ -189,7 +189,7 @@ module Public_key = struct
 
   let name = "Aggregate_signature.Public_key"
 
-  let title = "A bls12_381 public key"
+  let title = "A mavryk_bls12_381 public key"
 
   let hash pk =
     match pk with

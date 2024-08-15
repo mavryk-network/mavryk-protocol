@@ -1437,7 +1437,7 @@
   },
   {
     "file": "src/lib_crypto/test/test_run.ml",
-    "title": "tezos-crypto: bls12_381-encodings (b58check.roundtrip)",
+    "title": "tezos-crypto: mavryk_bls12_381-encodings (b58check.roundtrip)",
     "tags": [
       "alcotezt",
       "quick"
@@ -2649,7 +2649,7 @@
     "tags": [
       "regression",
       "admin_client",
-      "bls12_381",
+      "mavryk_bls12_381",
       "client",
       "contract",
       "crypto",

@@ -182,7 +182,7 @@ let () =
     (name, qcheck_wrap XProps.tests)
   in
 
-  [("bls12_381", qcheck_wrap Bls_Props.tests)]
+  [("mavryk_bls12_381", qcheck_wrap Bls_Props.tests)]
   @ List.map
       f
       [
