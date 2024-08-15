@@ -83,4 +83,4 @@ echo "Build ${image_name}"
 
 # Push image
 docker push --all-tags "${image_base}"
-CI_DOCKER_HUB=true
+CI_DOCKER_HUB=true ./scripts/ci/docker_initialize.sh
