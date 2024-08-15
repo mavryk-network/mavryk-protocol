@@ -1,19 +1,19 @@
 # If you modify this file, generate the lock file using `poetry lock` and copy
 # the resulting poetry.lock file with this one in https://gitlab.com/mavryk-network/opam-repository
 [tool.poetry]
-name = "tezos"
+name = "mavryk"
 version = "0.1.0"
-description = "Python documentation & scripts for Tezos"
+description = "Python documentation & scripts for Mavryk"
 
 readme = "README.md"
 
 authors = [
-  "Tezos community <tezos@tezos.com>"
+  "Mavryk Dynamics <info@mavryk.io>"
 ]
-repository = "https://gitlab.com/tezos/tezos"
-homepage = "https://gitlab.com/tezos/tezos"
+repository = "https://gitlab.com/mavryk-network/mavryk-protocol"
+homepage = "https://gitlab.com/mavryk-network/mavryk-protocol"
 
-keywords = ["tezos"]
+keywords = ["mavryk"]
 
 
 [tool.poetry.dependencies]

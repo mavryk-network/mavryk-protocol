@@ -52,4 +52,4 @@ let committer_date =
 
 let mavkit_version = Generated_git_info.git_describe_mavkit
 
-let etherlink_version = Generated_git_info.git_describe_etherlink
+let etherlink_version = Generated_git_info.git_describe_mavkit
