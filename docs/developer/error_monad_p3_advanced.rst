@@ -110,11 +110,11 @@ For error reporting or debugging purpose, you may need to show traces to
 users. You can do so with the following values.
 
 -  ``pp_print_trace``: a ``%a``-`compatible
-   formatter <https://ocaml.org/api/Format.html>`__. Note that the trace
+   formatter <https://ocaml.org/manual/5.2/api/Format.html>`__. Note that the trace
    formatting is unspecified and subject to change. Also be aware that
    it generally prints the trace over multiple lines.
 -  ``pp_print_top_error_of_trace``: a ``%a``-`compatible
-   formatter <https://ocaml.org/api/Format.html>`__ that only shows the
+   formatter <https://ocaml.org/manual/5.2/api/Format.html>`__ that only shows the
    most recent error in the trace (or one of the most recent errors if
    there are several). This is useful to get shorter error messages.
    Most often used for the declaration of logging events in

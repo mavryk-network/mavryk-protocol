@@ -16,7 +16,7 @@ defined as
    | Error of 'b
 
 (See `reference
-manual <https://ocaml.org/api/Stdlib.html#1_Resulttype>`__.)
+manual <https://ocaml.org/manual/5.2/api/Stdlib.html#1_Resulttype>`__.)
 
 The constructors of the ``result`` type have meaning: ``Ok`` is for
 normal, successful cases that carry a value that is somewhat expected.
@@ -88,7 +88,7 @@ The nested ``match``-``with`` constructs lead to further and further
 indentation. The ``Error`` cases are all identical and simply add noise.
 
 To circumvent this, in Mavkit we use a `binding
-operator <https://ocaml.org/manual/bindingops.html>`__: a user-defined
+operator <https://ocaml.org/manual/5.2/bindingops.html>`__: a user-defined
 ``let``-binding. Specifically, you can open the ``Result_syntax`` module
 which includes the binding operator ``let*`` dedicated to ``result``.
 
@@ -215,7 +215,7 @@ may be re-used in other parts of the code, you may move the expression
 inside a vanilla function which you can call inside the ``match``-``with``.
 
 You can also use the functions from `the standard library’s Result
-module <https://ocaml.org/api/Result.html>`__. Note however, that some
+module <https://ocaml.org/manual/5.2/api/Result.html>`__. Note however, that some
 of these functions are shadowed in the extended library of Mavkit, which
 you will learn more about later.
 
@@ -832,7 +832,7 @@ data-encoding <https://nomadic-labs.gitlab.io/data-encoding/data-encoding/Data_e
 
 In some cases, the different functions of a module may each fail with
 different subsets of a common set of errors. In such a case, you can use
-`polymorphic variants <https://ocaml.org/manual/polyvariant.html>`__ to
+`polymorphic variants <https://ocaml.org/manual/5.2/ocamldoc.html#s%3aocamldoc-comments>`__ to
 represent errors. E.g.,
 
 ::

@@ -1945,7 +1945,7 @@ Node
    consumption. This policy can be changed using the ``OCAMLRUNPARAM``
    environment variable. For example, to set back this value to ``0``,
    one can do ``OCAMLRUNPARAM="a=0"``. More information on this
-   environment variable can be found `here <https://ocaml.org/manual/runtime.html>`__.
+   environment variable can be found `here <https://ocaml.org/manual/5.2/runtime.html>`__.
 
 -  Improved the performance of the ``raw/bytes`` RPC call.
    In particular, this prevents stack overflows that could happen
@@ -2900,7 +2900,7 @@ Node
 
 -  Changed signal handling and exit codes for most binaries. The codes’
    significance are detailed in `the user
-   documentation <https://protocol.mavryk.org/user/various.html#mavryk_binaries_signals_and_exit_codes>`__.
+   documentation <https://protocol.mavryk.org/user/exits.html#mavryk_binaries_signals_and_exit_codes>`__.
 
 -  Command ``mavkit-node --version`` now exits with exit code 0 instead
    of 1.

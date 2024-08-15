@@ -189,7 +189,7 @@ At the granularity of the library, you can optionally include an ``index.mld`` f
 This file is used to generate the landing page for the online API of the library.
 If you do not include this file, the landing page is automatically generated and only includes a list of all top-level modules.
 
-An ``mld`` file is written in the `ocamldoc markup language <https://ocaml.org/manual/ocamldoc.html#s%3Aocamldoc-comments>`_.
+An ``mld`` file is written in the `ocamldoc markup language <https://ocaml.org/manual/5.2/ocamldoc.html#s%3Aocamldoc-comments>`_.
 
 Because it is used for the online API of the library it should contain information that might be of interest to the users.
 This includes
@@ -460,7 +460,7 @@ If the answer is no: the guideline is to expose an internal module as part of yo
 + ``Internal_for_tests`` for internal types, functions and sub-modules that are only meant to be accessed by tests
 + ``Internal`` for internal types, functions and sub-modules that are meant to be accessed by production code (but may also be accessed by tests)
 
-Additionally you should add the ``(**/**)`` `Stop special comment <https://ocaml.org/manual/ocamldoc.html#ss:ocamldoc-stop>`_ so that this module is
+Additionally you should add the ``(**/**)`` `Stop special comment <https://ocaml.org/manual/5.2/ocamldoc.html#ss:ocamldoc-stop>`_ so that this module is
 not displayed in the public module documentation.
 
 The rationale of ``Internal_for_tests`` is to make it explicit both for developers writing code and for reviewers that this module must not be used in production code.
