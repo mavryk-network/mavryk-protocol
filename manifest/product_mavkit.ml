@@ -941,7 +941,10 @@ let _mavkit_bls12_381_signature_tests =
          This test is affected by the [FinalizationRegistry] hangs in JS,
          so although JS compatible, we only test in [Native] mode *)
     ~modes:[Native]
-    ~deps:[mavryk_bls12_381; mavkit_bls12_381_signature; alcotezt; integers_stubs_js]
+    ~deps:
+      [
+        mavryk_bls12_381; mavkit_bls12_381_signature; alcotezt; integers_stubs_js;
+      ]
     ~dep_globs_rec:["test_vectors/*"] (* See above *)
     ~js_compatible:false
 

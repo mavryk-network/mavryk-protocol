@@ -218,7 +218,14 @@ let register ~protocols =
         ~__FILE__
         ~title:(sf "Bls12_381 contract primitives, %s: store" Class.name)
         ~tags:
-          ["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; Class.name; "store"]
+          [
+            "michelson";
+            "crypto";
+            "contract";
+            "mavryk_bls12_381";
+            Class.name;
+            "store";
+          ]
         ~uses_node:false
         (fun protocol ->
           let open Class in
@@ -230,7 +237,14 @@ let register ~protocols =
         ~__FILE__
         ~title:(sf "Bls12_381 contract primitives, %s: add" Class.name)
         ~tags:
-          ["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; Class.name; "add"]
+          [
+            "michelson";
+            "crypto";
+            "contract";
+            "mavryk_bls12_381";
+            Class.name;
+            "add";
+          ]
         ~uses_node:false
         (fun protocol ->
           let open Class in
@@ -243,7 +257,14 @@ let register ~protocols =
         ~__FILE__
         ~title:(sf "Bls12_381 contract primitives, %s: mul" Class.name)
         ~tags:
-          ["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; Class.name; "mul"]
+          [
+            "michelson";
+            "crypto";
+            "contract";
+            "mavryk_bls12_381";
+            Class.name;
+            "mul";
+          ]
         ~uses_node:false
         (fun protocol ->
           let open Class in
@@ -257,7 +278,14 @@ let register ~protocols =
         ~__FILE__
         ~title:(sf "Bls12_381 contract primitives, %s: negate" Class.name)
         ~tags:
-          ["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; Class.name; "negate"]
+          [
+            "michelson";
+            "crypto";
+            "contract";
+            "mavryk_bls12_381";
+            Class.name;
+            "negate";
+          ]
         ~uses_node:false
         (fun protocol ->
           let open Class in
@@ -271,7 +299,8 @@ let register ~protocols =
   Protocol.register_regression_test
     ~__FILE__
     ~title:(sf "Bls12_381 contract primitives: pairing_check empty")
-    ~tags:["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; "pairing_check"]
+    ~tags:
+      ["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; "pairing_check"]
     ~uses_node:false
     (fun protocol ->
       let* client = Client.init_mockup ~protocol () in
@@ -280,7 +309,8 @@ let register ~protocols =
   Protocol.register_regression_test
     ~__FILE__
     ~title:(sf "Bls12_381 contract primitives: pairing_check(pos, pos)")
-    ~tags:["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; "pairing_check"]
+    ~tags:
+      ["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; "pairing_check"]
     ~uses_node:false
     (fun protocol ->
       let state = Random.State.make [||] in
@@ -293,7 +323,8 @@ let register ~protocols =
   Protocol.register_regression_test
     ~__FILE__
     ~title:(sf "Bls12_381 contract primitives: pairing_check(neg, pos)")
-    ~tags:["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; "pairing_check"]
+    ~tags:
+      ["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; "pairing_check"]
     ~uses_node:false
     (fun protocol ->
       let state = Random.State.make [||] in
@@ -306,7 +337,8 @@ let register ~protocols =
   Protocol.register_regression_test
     ~__FILE__
     ~title:(sf "Bls12_381 contract primitives: pairing_check(pos, neg)")
-    ~tags:["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; "pairing_check"]
+    ~tags:
+      ["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; "pairing_check"]
     ~uses_node:false
     (fun protocol ->
       let state = Random.State.make [||] in

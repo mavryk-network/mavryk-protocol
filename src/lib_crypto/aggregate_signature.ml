@@ -110,7 +110,8 @@ module Public_key_hash = struct
 
   let to_path key l =
     match key with
-    | Mavryk_bls12_381 h -> "mavryk_bls12_381" :: Bls.Public_key_hash.to_path h l
+    | Mavryk_bls12_381 h ->
+        "mavryk_bls12_381" :: Bls.Public_key_hash.to_path h l
 
   let of_path = function
     | "mavryk_bls12_381" :: q ->
@@ -119,7 +120,8 @@ module Public_key_hash = struct
     | _ -> assert false
 
   let of_path_exn = function
-    | "mavryk_bls12_381" :: q -> Mavryk_bls12_381 (Bls.Public_key_hash.of_path_exn q)
+    | "mavryk_bls12_381" :: q ->
+        Mavryk_bls12_381 (Bls.Public_key_hash.of_path_exn q)
     | _ -> assert false
 
   let path_length = 1 + Bls.Public_key_hash.path_length
