@@ -35,7 +35,7 @@ echo "RUST_TOOLCHAIN_IMAGE=${RUST_TOOLCHAIN_IMAGE:-}"
 if [ "${CI_DOCKER_HUB:-}" = 'true' ] && [ "${CI_PROJECT_NAMESPACE}" = "mavryk-network" ] && [ -n "${CI_DOCKER_AUTH:-}" ]; then
   # Docker Hub
   echo "### Logging into Docker Hub for pushing images"
-  docker_image_name="docker.io/${CI_PROJECT_PATH}-"
+  docker_image_name="docker.io/mavrykdynamics/mavryk-"
   echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"${CI_DOCKER_AUTH}\"}}}" > ~/.docker/config.json
 else
   # GitLab container registry
