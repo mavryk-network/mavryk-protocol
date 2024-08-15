@@ -57,7 +57,7 @@ docker_image_ref_tag=$(echo "${CI_COMMIT_REF_NAME}" | sanitizeTag)
 # Store the image name for jobs that use it.
 echo "rust_toolchain_image_tag=$image_tag" > rust_toolchain_image_tag.env
 
-./scripts/ci/docker_initialize.sh
+CI_DOCKER_HUB=false ./scripts/ci/docker_initialize.sh
 
 # Build image unless it already exists in the registry.
 if [ -z "${RUST_TOOLCHAIN_ALWAYS_REBUILD:-}" ] && docker manifest inspect "${image_name}" > /dev/null; then
@@ -83,3 +83,4 @@ echo "Build ${image_name}"
 
 # Push image
 docker push --all-tags "${image_base}"
+CI_DOCKER_HUB=true
