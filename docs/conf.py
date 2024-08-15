@@ -90,7 +90,7 @@ exclude_patterns = [
     'doc_gen',
     'atlas',
 ]
-# TODO mavryk-network/mavryk-protocol#2170:
+# TODO mavryk-network/mavryk-protocol#2170: 
 # exclude the active protocol 'NNN' above
 
 # The name of the Pygments (syntax highlighting) style to use.
