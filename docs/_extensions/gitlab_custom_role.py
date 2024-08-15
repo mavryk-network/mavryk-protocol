@@ -11,7 +11,7 @@ GL_URL = "https://gitlab.com/"
 
 
 def expand_gitlab_shortlink(
-    text, default_namespace="mavryk-network", default_project="mavryk-protocol"
+    text, default_namespace="tezos", default_project="tezos"
 ):
     """
     Expands Gitlab Special References,
