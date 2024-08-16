@@ -14,6 +14,9 @@ depends: [
   "mavkit-shell-libs" { = version }
   "mavryk-protocol-000-Ps9mPmXa" { = version }
 ]
+conflicts: [
+  "stdcompat" { < "19" }
+]
 build: [
   ["rm" "-r" "vendors" "contrib"]
   ["dune" "build" "-p" name "-j" jobs]

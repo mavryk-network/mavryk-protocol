@@ -34,7 +34,7 @@ let alcotest = external_lib ~js_compatible:true "alcotest" V.(at_least "1.5.0")
 
 let astring = external_lib ~js_compatible:true "astring" V.True
 
-let bheap = external_lib "bheap" V.True
+let bheap = external_lib "bheap" V.(at_least "2.0.0")
 
 let bigarray_compat = external_lib ~js_compatible:true "bigarray-compat" V.True
 
@@ -100,7 +100,7 @@ let data_encoding =
     "data-encoding"
     V.(at_least "1.0.1" && less_than "1.1")
 
-let digestif = external_lib "digestif" V.True
+let digestif = external_lib "digestif" V.(at_least "0.9.0")
 
 let dune_configurator = external_lib "dune-configurator" V.True
 
@@ -360,6 +360,8 @@ module Conflicts = struct
   let checkseum = external_lib "checkseum" V.(exactly "0.5.0")
 
   let hacl_x25519 = external_lib "hacl_x25519" V.True
+
+  let stdcompat = external_lib "stdcompat" V.(less_than "19")
 end
 
 (* DEVELOPMENT-ONLY DEPENDENCIES *)

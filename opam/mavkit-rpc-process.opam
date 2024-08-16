@@ -17,6 +17,9 @@ depends: [
   "lwt-exit"
   "prometheus-app" { >= "1.2" }
 ]
+conflicts: [
+  "stdcompat" { < "19" }
+]
 build: [
   ["rm" "-r" "vendors" "contrib"]
   ["dune" "build" "-p" name "-j" jobs]

@@ -392,7 +392,7 @@ let mavkit_hacl =
           G (Dune.of_atom_list (js_generated :: js_helper :: js_stubs));
         ];
       ]
-    ~conflicts:[Conflicts.hacl_x25519]
+    ~conflicts:[Conflicts.hacl_x25519; Conflicts.stdcompat]
     ~dune:
       Dune.
         [
@@ -2404,6 +2404,7 @@ let tezt_mavryk =
         mavkit_base_unix;
         cohttp_lwt_unix;
       ]
+    ~conflicts:[Conflicts.stdcompat]
     ~cram:true
     ~release_status:Released
 
@@ -2916,6 +2917,7 @@ let mavkit_protocol_environment =
     ~internal_name:"mavryk_protocol_environment"
     ~path:"src/lib_protocol_environment"
     ~documentation:[Dune.[S "package"; S "mavkit-proto-libs"]]
+    ~conflicts:[Conflicts.stdcompat]
     ~deps:
       [
         zarith;
@@ -3032,6 +3034,7 @@ let mavkit_protocol_compiler_lib =
         ocplib_ocamlres;
         unix;
       ]
+    ~conflicts:[Conflicts.stdcompat]
     ~opam_only_deps:[mavkit_protocol_environment]
     ~modules:
       [
@@ -3383,6 +3386,7 @@ let mavkit_shell =
           [S "package"; S "mavkit-shell-libs"]; [S "mld_files"; S "mavkit_shell"];
         ]
     ~inline_tests:ppx_expect
+    ~conflicts:[Conflicts.stdcompat]
     ~deps:
       [
         lwt_watcher;
@@ -4133,7 +4137,7 @@ let mavkit_layer2_store =
         mavkit_context_helpers;
       ]
     ~linkall:true
-    ~conflicts:[Conflicts.checkseum]
+    ~conflicts:[Conflicts.checkseum; Conflicts.stdcompat]
 
 let _mavkit_layer2_indexed_store_test =
   tezt
@@ -4283,6 +4287,7 @@ let mavkit_node_config =
     "mavkit-node-config"
     ~path:"src/lib_node_config"
     ~synopsis:"Mavkit: `mavkit-node-config` library"
+    ~conflicts:[Conflicts.stdcompat]
     ~deps:
       [
         mavkit_base |> open_ ~m:"TzPervasives" |> open_;
@@ -4301,6 +4306,7 @@ let mavkit_rpc_process =
     "mavkit-rpc-process"
     ~path:"src/lib_rpc_process"
     ~synopsis:"Mavryk: RPC process"
+    ~conflicts:[Conflicts.stdcompat]
     ~deps:
       [
         mavkit_base |> open_ ~m:"TzPervasives" |> open_;
@@ -4320,6 +4326,7 @@ let mavkit_crawler =
     ~internal_name:"mavkit_crawler"
     ~path:"src/lib_crawler"
     ~synopsis:"Mavkit: library to crawl blocks of the L1 chain"
+    ~conflicts:[Conflicts.stdcompat]
     ~deps:
       [
         mavkit_base |> open_ ~m:"TzPervasives" |> open_;
@@ -5380,6 +5387,10 @@ include Mavryk_protocol_environment.V%d.Make(Name)()
               mavryk_protocol_environment_sigs;
               raw_protocol;
             ]
+          ~conflicts:
+            (match number with
+            | Other -> []
+            | Alpha | V _ -> [Conflicts.stdcompat])
           ~dune:
             Dune.
               [
@@ -5782,6 +5793,7 @@ let hash = Protocol.hash
         ~path:(path // "lib_plugin")
         ~synopsis:"Protocol plugin registerer"
         ~release_status:optional_library_release_status
+        ~conflicts:[Conflicts.stdcompat]
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
@@ -5804,6 +5816,7 @@ let hash = Protocol.hash
         ~path:(path // "lib_client")
         ~synopsis:("Protocol specific library for " ^ client_name)
         ~release_status:optional_library_release_status
+        ~conflicts:[Conflicts.stdcompat]
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
@@ -6178,6 +6191,7 @@ let hash = Protocol.hash
         ~synopsis:(sf "Mavryk/Protocol: %s binary" daemon)
         ~release_status:executable_release_status
         ~with_macos_security_framework:true
+        ~conflicts:[Conflicts.stdcompat]
         ~deps:
           [
             mavkit_base |> open_ ~m:"TzPervasives"
@@ -6397,7 +6411,7 @@ let hash = Protocol.hash
             mavkit_crypto_dal |> if_ N.(number >= 001) |> open_;
             mavkit_version_value;
           ]
-        ~conflicts:[Conflicts.checkseum]
+        ~conflicts:[Conflicts.checkseum; Conflicts.stdcompat]
     in
     let _mavkit_sc_rollup_node_test =
       only_if (active && N.(number >= 001)) @@ fun () ->
@@ -7233,6 +7247,7 @@ let _mavkit_node =
     ~synopsis:"Mavryk: `mavkit-node` binary"
     ~release_status:Released
     ~with_macos_security_framework:true
+    ~conflicts:[Conflicts.stdcompat]
     ~deps:
       ([
          mavkit_base |> open_ ~m:"TzPervasives" |> open_;
@@ -7306,6 +7321,7 @@ let _mavkit_client =
     ~opam:"mavkit-client"
     ~synopsis:"Mavryk: `mavkit-client` binary"
     ~release_status:Released
+    ~conflicts:[Conflicts.stdcompat]
     ~deps:
       ([
          mavkit_base |> open_ ~m:"TzPervasives";
@@ -7357,6 +7373,7 @@ let _mavkit_codec =
     ~synopsis:"Mavryk: `mavkit-codec` binary to encode and decode values"
     ~release_status:Released
     ~with_macos_security_framework:true
+    ~conflicts:[Conflicts.stdcompat]
     ~deps:
       ([
          data_encoding |> open_;
@@ -7392,6 +7409,7 @@ let _mavkit_proxy_server =
     ~synopsis:"Mavkit: `mavkit-proxy-server` binary"
     ~release_status:Released
     ~with_macos_security_framework:true
+    ~conflicts:[Conflicts.stdcompat]
     ~deps:
       ([
          mavkit_base |> open_ ~m:"TzPervasives" |> open_;
@@ -7507,6 +7525,7 @@ let _mavkit_signer =
     ~synopsis:"Mavryk: `mavkit-signer` binary"
     ~release_status:Released
     ~with_macos_security_framework:true
+    ~conflicts:[Conflicts.stdcompat]
     ~deps:
       [
         mavkit_base |> open_ ~m:"TzPervasives";
@@ -7640,7 +7659,7 @@ let _mavkit_dal_node =
          prometheus;
        ]
       @ protocol_deps)
-    ~conflicts:[Conflicts.checkseum]
+    ~conflicts:[Conflicts.checkseum; Conflicts.stdcompat]
 
 let _mavkit_dac_node =
   let protocol_deps =
@@ -7693,7 +7712,7 @@ let _mavkit_dac_node =
          irmin;
        ]
       @ protocol_deps)
-    ~conflicts:[Conflicts.checkseum]
+    ~conflicts:[Conflicts.checkseum; Conflicts.stdcompat]
 
 let _mavkit_dac_client =
   let protocol_deps =

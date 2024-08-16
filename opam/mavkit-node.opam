@@ -35,6 +35,7 @@ depopts: [
   "mavkit-protocol-alpha-libs"
 ]
 conflicts: [
+  "stdcompat" { < "19" }
   "mavryk-protocol-genesis" { != version }
   "mavryk-protocol-demo-noops" { != version }
   "mavryk-protocol-demo-counter" { != version }

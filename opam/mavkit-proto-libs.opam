@@ -24,6 +24,9 @@ depends: [
   "qcheck-alcotest" { with-test & >= "0.20" }
   "lwt" { with-test & >= "5.7.0" }
 ]
+conflicts: [
+  "stdcompat" { < "19" }
+]
 build: [
   ["rm" "-r" "vendors" "contrib"]
   ["dune" "build" "-p" name "-j" jobs]
