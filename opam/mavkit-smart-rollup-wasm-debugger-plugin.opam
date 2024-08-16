@@ -16,4 +16,5 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
+available: os != "win32"
 synopsis: "Plugin interface for the Mavkit Smart Rollup WASM Debugger"

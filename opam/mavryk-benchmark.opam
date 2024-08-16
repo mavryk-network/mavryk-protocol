@@ -22,4 +22,5 @@ depends: [
   "hashcons"
 ]
 build: [["rm" "-r" "vendors" "contrib"] ["dune" "build" "-p" name "-j" jobs]]
+available: os != "win32"
 synopsis: "Mavryk: library for writing benchmarks and performing simple parameter inference"
