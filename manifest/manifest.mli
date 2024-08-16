@@ -611,6 +611,7 @@ type available =
   | No_ppc
   | No_arm
   | No_s390x
+  | No_win
   | N_ary_and of available list
 
 (** Whether to add the [dune runtest] command in the [.opam] file.

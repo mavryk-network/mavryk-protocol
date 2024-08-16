@@ -17,4 +17,5 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
+available: os != "win32"
 synopsis: "Provide the interface of Alcotest for Mavkit, but with Tezt as backend"

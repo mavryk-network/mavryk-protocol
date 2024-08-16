@@ -608,6 +608,7 @@ type available =
   | No_ppc
   | No_arm
   | No_s390x
+  | No_win
   | N_ary_and of available list
 
 let string_of_available = function
@@ -618,6 +619,7 @@ let string_of_available = function
   | No_ppc -> "No_ppc"
   | No_arm -> "No_arm"
   | No_s390x -> "No_s390x"
+  | No_win -> "No_win"
   | N_ary_and _ -> "N_ary_and"
 
 type with_test = Always | Never | Only_on_64_arch
@@ -842,11 +844,20 @@ module Opam = struct
     let available =
       let rec condition_of_available = function
         | No_32 ->
-            ["arch != \"arm32\""; "arch != \"x86_32\""; "arch != \"ppc32\""]
-        | No_x86 -> ["arch != \"x86_32\""; "arch != \"x86_64\""]
-        | No_arm -> ["arch != \"arm32\""; "arch != \"arm64\""]
-        | No_ppc -> ["arch != \"ppc64\""; "arch != \"ppc64\""]
-        | No_s390x -> ["arch != \"s390x\""]
+            [
+              "arch != \"arm32\"";
+              "arch != \"x86_32\"";
+              "arch != \"ppc32\"";
+              "os != \"win32\"";
+            ]
+        | No_x86 ->
+            ["arch != \"x86_32\""; "arch != \"x86_64\""; "os != \"win32\""]
+        | No_arm ->
+            ["arch != \"arm32\""; "arch != \"arm64\""; "os != \"win32\""]
+        | No_ppc ->
+            ["arch != \"ppc64\""; "arch != \"ppc64\""; "os != \"win32\""]
+        | No_s390x -> ["arch != \"s390x\""; "arch != \"win32\""]
+        | No_win -> ["os != \"win32\""]
         | Always -> []
         | Never -> ["false"]
         | N_ary_and available_list ->
@@ -3278,7 +3289,7 @@ let generate_opam ?release for_package (internals : Target.internal list) :
     List.fold_left
       (fun (available : available) (internal : Target.internal) ->
         merge_available available internal.available)
-      Always
+      No_win
       internals
   in
   let conflicts =
