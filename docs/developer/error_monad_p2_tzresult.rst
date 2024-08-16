@@ -7,7 +7,7 @@ This is Part 2 of 4 of the :doc:`./error_monad` tutorial.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``error`` type is an `extensible variant
-type <https://ocaml.org/manual/extensiblevariants.html>`__ defined in
+type <https://ocaml.org/manual/5.2/extensiblevariants.html>`__ defined in
 the ``Error_monad`` module.
 
 Each part of the Mavkit source code can extend it to include some errors
@@ -76,7 +76,7 @@ They do not even require the syntax modules to be open.
         retry original_limit f
 
    You can use all the formatting percent-escapes from the `Format
-   module <https://ocaml.org/api/Format.html>`__. However, you should
+   module <https://ocaml.org/manual/5.2/api/Format.html>`__. However, you should
    generally keep the message on a single line so that it can be printed
    nicely in logs.
 

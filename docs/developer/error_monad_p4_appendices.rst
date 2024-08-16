@@ -50,7 +50,7 @@ is to avoid having to write ``bind`` within ``bind`` within ``bind``.
 E.g., Haskell relies heavily on monads and has the dedicated
 ``do``-notation. In OCaml, you can use one of the following methods:
 
--  `binding operators <https://ocaml.org/manual/bindingops.html>`__
+-  `binding operators <https://ocaml.org/manual/5.2/bindingops.html>`__
    (since OCaml 4.08.0)
 
    ::
@@ -62,7 +62,7 @@ E.g., Haskell relies heavily on monads and has the dedicated
         Some (string_of_int (x + y))
 
 -  `infix
-   operators <https://ocaml.org/manual/lex.html#sss:lex-ops-symbols>`__
+   operators <https://ocaml.org/manual/5.2/lex.html#sss:lex-ops-symbols>`__
 
    ::
 

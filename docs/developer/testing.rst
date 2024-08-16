@@ -622,7 +622,7 @@ follow this convention:
 3. Each file name must be prefixed by ``test_`` to preserve a uniform
    directory structure.
 
-4. OCaml comments must be valid ``ocamldoc`` `special comments <https://ocaml.org/manual/ocamldoc.html#s:ocamldoc-comments>`_.
+4. OCaml comments must be valid ``ocamldoc`` `special comments <https://ocaml.org/manual/5.2/ocamldoc.html#s:ocamldoc-comments>`_.
 
 5. If a test takes 2 minutes or more on the CI, it should be tagged as ``slow``
    (see :ref:`Tezt integration and regression tests<gitlab_tezt_ci>`). Note
