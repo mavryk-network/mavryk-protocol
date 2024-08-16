@@ -22,6 +22,7 @@ depopts: [
   "mavkit-protocol-alpha-libs"
 ]
 conflicts: [
+  "stdcompat" { < "19" }
   "mavkit-protocol-001-PtAtLas-libs" { != version }
   "mavkit-protocol-002-PtBoreas-libs" { != version }
   "mavkit-protocol-alpha-libs" { != version }

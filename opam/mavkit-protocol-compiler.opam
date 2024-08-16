@@ -17,6 +17,9 @@ depends: [
   "base-unix"
   "mavkit-version" { = version }
 ]
+conflicts: [
+  "stdcompat" { < "19" }
+]
 build: [
   ["rm" "-r" "vendors" "contrib"]
   ["dune" "build" "-p" name "-j" jobs]

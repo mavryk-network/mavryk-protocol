@@ -33,6 +33,9 @@ depends: [
   "mavkit-alcotezt" { with-test & = version }
   "mavryk-dac-node-lib" { with-test & = version }
 ]
+conflicts: [
+  "stdcompat" { < "19" }
+]
 build: [
   ["rm" "-r" "vendors" "contrib"]
   ["dune" "build" "-p" name "-j" jobs]

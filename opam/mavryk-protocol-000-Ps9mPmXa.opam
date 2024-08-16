@@ -13,6 +13,9 @@ depends: [
   "mavkit-proto-libs" { = version }
   "mavkit-shell-libs" { = version }
 ]
+conflicts: [
+  "stdcompat" { < "19" }
+]
 build: [
   ["rm" "-r" "vendors" "contrib"]
   ["dune" "build" "-p" name "-j" jobs]
