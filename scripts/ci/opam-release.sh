@@ -42,6 +42,7 @@ branch_name="mavkit-$(echo "$opam_release_tag" | tr '~' -)"
 log "While we're here, update master on the fork..."
 cd "$opam_dir"
 git remote add github "$opam_repository_fork"
+git pull github --prune
 git push github master:master
 
 log "Pushing $branch_name to $opam_repository_fork..."
