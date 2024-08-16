@@ -69,7 +69,7 @@ module MinPk : sig
   val pk_of_bytes_opt : Bytes.t -> pk option
 
   (** Returns a bytes representation of a value of type {!pk}. The output is
-      the compressed form of the point [Bls12_381.G1.t] the [pk] represents. *)
+      the compressed form of the point [Mavryk_bls12_381.G1.t] the [pk] represents. *)
   val pk_to_bytes : pk -> Bytes.t
 
   (** [derive_pk sk] derives the corresponding public key of [sk]. *)
@@ -106,7 +106,7 @@ module MinPk : sig
   val signature_of_bytes_opt : Bytes.t -> signature option
 
   (** Returns a bytes representation of a value of type [signature]. The
-      output is the compressed form of a point {!Bls12_381.G2.t} the signature
+      output is the compressed form of a point {!Mavryk_bls12_381.G2.t} the signature
       represents. *)
   val signature_to_bytes : signature -> Bytes.t
 
@@ -247,7 +247,7 @@ module MinSig : sig
   val pk_of_bytes_opt : Bytes.t -> pk option
 
   (** Returns a bytes representation of a value of type [pk]. The output is
-      the compressed form of the point [Bls12_381.Bls12_381.G2.t] the [pk] represents. *)
+      the compressed form of the point [Mavryk_bls12_381.Mavryk_bls12_381.G2.t] the [pk] represents. *)
   val pk_to_bytes : pk -> Bytes.t
 
   (** [derive_pk sk] derives the corresponding public key of [sk]. *)
@@ -288,7 +288,7 @@ module MinSig : sig
   val signature_of_bytes_opt : Bytes.t -> signature option
 
   (** Returns a bytes representation of a value of type [signature]. The
-      output is the compressed form a the point [Bls12_381.G1.t] the [signature]
+      output is the compressed form a the point [Mavryk_bls12_381.G1.t] the [signature]
       represents. *)
   val signature_to_bytes : signature -> Bytes.t
 

@@ -2,8 +2,11 @@ module Stubs = struct
   type ctxt
 
   external allocate_ctxt :
-    int -> int -> Bls12_381.Fr.t array -> Bls12_381.Fr.t array -> ctxt
-    = "caml_bls12_381_hash_griffin_allocate_ctxt_stubs"
+    int ->
+    int ->
+    Mavryk_bls12_381.Fr.t array ->
+    Mavryk_bls12_381.Fr.t array ->
+    ctxt = "caml_bls12_381_hash_griffin_allocate_ctxt_stubs"
 
   external apply_perm : ctxt -> unit
     = "caml_bls12_381_hash_griffin_apply_permutation_stubs"
@@ -11,10 +14,10 @@ module Stubs = struct
   external apply_one_round : ctxt -> int -> unit
     = "caml_bls12_381_hash_griffin_apply_one_round_stubs"
 
-  external get_state : Bls12_381.Fr.t array -> ctxt -> unit
+  external get_state : Mavryk_bls12_381.Fr.t array -> ctxt -> unit
     = "caml_bls12_381_hash_griffin_get_state_stubs"
 
-  external set_state : ctxt -> Bls12_381.Fr.t array -> unit
+  external set_state : ctxt -> Mavryk_bls12_381.Fr.t array -> unit
     = "caml_bls12_381_hash_griffin_set_state_stubs"
 
   external get_state_size : ctxt -> int
@@ -25,14 +28,14 @@ module Parameters = struct
   type t = {
     nb_of_rounds : int;
     state_size : int;
-    round_constants : Bls12_381.Fr.t array;
-    alpha_beta_s : Bls12_381.Fr.t array;
+    round_constants : Mavryk_bls12_381.Fr.t array;
+    alpha_beta_s : Mavryk_bls12_381.Fr.t array;
   }
 
-  let d = Bls12_381.Fr.of_string "5"
+  let d = Mavryk_bls12_381.Fr.of_string "5"
 
   let d_inv =
-    Bls12_381.Fr.of_string
+    Mavryk_bls12_381.Fr.of_string
       "20974350070050476191779096203274386335076221000211055129041463479975432473805"
 
   let security_128_state_size_3 =
@@ -40,7 +43,7 @@ module Parameters = struct
       nb_of_rounds = 12;
       state_size = 3;
       round_constants =
-        Bls12_381.Fr.
+        Mavryk_bls12_381.Fr.
           [|
             of_string
               "34128550609306794648855049790941029207260430992267281605932459023961690971527";
@@ -113,7 +116,7 @@ module Parameters = struct
             of_string "0";
           |];
       alpha_beta_s =
-        Bls12_381.Fr.
+        Mavryk_bls12_381.Fr.
           [|
             of_string
               "20950244155795017333954742965657628047481163604901233004908207073969011285354";
@@ -127,7 +130,7 @@ module Parameters = struct
       nb_of_rounds = 11;
       state_size = 4;
       round_constants =
-        Bls12_381.Fr.
+        Mavryk_bls12_381.Fr.
           [|
             of_string
               "34128550609306794648855049790941029207260430992267281605932459023961690971527";
@@ -215,7 +218,7 @@ module Parameters = struct
             of_string "0";
           |];
       alpha_beta_s =
-        Bls12_381.Fr.
+        Mavryk_bls12_381.Fr.
           [|
             of_string
               "11565587016645966220743989368574475058372014904683361799482031042545234168865";
@@ -267,6 +270,8 @@ let set_state ctxt state =
 
 let get_state ctxt =
   let state_size = Stubs.get_state_size ctxt in
-  let state = Array.init state_size (fun _ -> Bls12_381.Fr.(copy zero)) in
+  let state =
+    Array.init state_size (fun _ -> Mavryk_bls12_381.Fr.(copy zero))
+  in
   Stubs.get_state state ctxt ;
   state

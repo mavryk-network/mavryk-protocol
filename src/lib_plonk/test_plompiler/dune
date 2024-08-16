@@ -6,7 +6,7 @@
  (libraries
   mavkit-libs.plompiler
   mavkit-libs.plonk
-  bls12-381)
+  mavryk-bls12-381)
  (modules afl))
 
 (executable

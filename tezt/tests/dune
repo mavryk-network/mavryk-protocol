@@ -8,7 +8,7 @@
   mavkit-libs.test-helpers
   mavkit-libs.tezt-wrapper
   str
-  bls12-381
+  mavryk-bls12-381
   tezt-mavryk
   tezt_risc_v_sandbox
   tezt_tx_kernel

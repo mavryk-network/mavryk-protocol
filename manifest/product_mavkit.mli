@@ -9,7 +9,7 @@
 
 val alcotezt : Manifest.target
 
-val bls12_381 : Manifest.target
+val mavryk_bls12_381 : Manifest.target
 
 val mavkit_base : Manifest.target
 

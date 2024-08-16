@@ -31,7 +31,7 @@ let random_int ~jsoo n =
   | Other "js_of_ocaml" -> Random.int jsoo
   | Native | Bytecode | Other _ -> Random.int n
 
-module MakeBulkOperations (G : Bls12_381.CURVE) = struct
+module MakeBulkOperations (G : Mavryk_bls12_381.CURVE) = struct
   let test_bulk_add () =
     let n = 10 + random_int ~jsoo:50 1_000 in
     let xs = List.init n (fun _ -> G.random ()) in
@@ -267,7 +267,7 @@ module MakeBulkOperations (G : Bls12_381.CURVE) = struct
       ] )
 end
 
-module MakeInplaceOperations (G : Bls12_381.CURVE) = struct
+module MakeInplaceOperations (G : Mavryk_bls12_381.CURVE) = struct
   let test_mul_inplace () =
     let n = G.Scalar.random () in
     let g = G.random () in
@@ -292,7 +292,7 @@ module MakeInplaceOperations (G : Bls12_381.CURVE) = struct
       ] )
 end
 
-module MakeEquality (G : Bls12_381.CURVE) = struct
+module MakeEquality (G : Mavryk_bls12_381.CURVE) = struct
   (** Verify the equality is correct with the value zero *)
   let zero () = assert (G.eq G.zero G.zero)
 
@@ -315,7 +315,7 @@ module MakeEquality (G : Bls12_381.CURVE) = struct
       ] )
 end
 
-module MakeValueGeneration (G : Bls12_381.CURVE) = struct
+module MakeValueGeneration (G : Mavryk_bls12_381.CURVE) = struct
   let random () = ignore @@ G.random ()
 
   let negation_with_random () =
@@ -349,7 +349,7 @@ module MakeValueGeneration (G : Bls12_381.CURVE) = struct
       ] )
 end
 
-module MakeIsZero (G : Bls12_381.CURVE) = struct
+module MakeIsZero (G : Mavryk_bls12_381.CURVE) = struct
   let with_zero_value () = assert (G.is_zero G.zero = true)
 
   let with_one_value () = assert (G.is_zero G.one = false)
@@ -367,7 +367,7 @@ module MakeIsZero (G : Bls12_381.CURVE) = struct
       ] )
 end
 
-module MakeECProperties (G : Bls12_381.CURVE) = struct
+module MakeECProperties (G : Mavryk_bls12_381.CURVE) = struct
   (** Verify that a random point is valid *)
   let check_bytes_random () = assert (G.(check_bytes @@ to_bytes @@ random ()))
 
@@ -591,7 +591,7 @@ module MakeECProperties (G : Bls12_381.CURVE) = struct
       ] )
 end
 
-module MakeCompressedRepresentation (G : Bls12_381.CURVE) = struct
+module MakeCompressedRepresentation (G : Mavryk_bls12_381.CURVE) = struct
   let test_recover_correct_point_uncompressed () =
     let g = G.random () in
     let compressed_bytes = G.to_compressed_bytes g in

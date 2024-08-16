@@ -53,7 +53,7 @@ module type HASH = sig
   val get : ctxt -> scalar
 end
 
-module Make (C : PARAMETERS) (Scalar : Bls12_381.Ff_sig.PRIME) : sig
+module Make (C : PARAMETERS) (Scalar : Mavryk_bls12_381.Ff_sig.PRIME) : sig
   module Strategy : STRATEGY with type scalar = Scalar.t
 
   module Hash : HASH with type scalar = Scalar.t

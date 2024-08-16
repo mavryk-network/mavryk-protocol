@@ -12,8 +12,8 @@ module Permutation : sig
         nb_of_partial_rounds : int;
         nb_of_full_rounds : int;
         batch_size : int;
-        round_constants : Bls12_381.Fr.t array;
-        linear_layer : Bls12_381.Fr.t array array;
+        round_constants : Mavryk_bls12_381.Fr.t array;
+        linear_layer : Mavryk_bls12_381.Fr.t array array;
       }
 
       (** Parameters for Poseidon with a state size of [3] for a security of
@@ -47,8 +47,8 @@ module Permutation : sig
       instantiations given in the reference paper *)
     module Parameters : sig
       type t = {
-        linear_layer : Bls12_381.Fr.t array array;
-        round_constants : Bls12_381.Fr.t array;
+        linear_layer : Mavryk_bls12_381.Fr.t array array;
+        round_constants : Mavryk_bls12_381.Fr.t array;
         state_size : int;
         nb_of_rounds : int;
       }
@@ -88,7 +88,7 @@ module Permutation : sig
         need support for other instances than the default parameters provided by
         the library.
     *)
-      val create : int -> int -> Bls12_381.Fr.t array array -> t
+      val create : int -> int -> Mavryk_bls12_381.Fr.t array array -> t
         [@@deprecated
           "It is highly recommended to follow the recommandation in the paper \
            for the choice of security parameters. Please open an issue if you \
@@ -96,25 +96,25 @@ module Permutation : sig
            provided by the library."]
 
       (** Exponent for the substitution box. For BLS12-381, it is [5] *)
-      val alpha : Bls12_381.Fr.t
+      val alpha : Mavryk_bls12_381.Fr.t
 
       (** Inverse of the exponent for the substitution box. For BLS12-381, it is
         [20974350070050476191779096203274386335076221000211055129041463479975432473805] *)
-      val alpha_inv : Bls12_381.Fr.t
+      val alpha_inv : Mavryk_bls12_381.Fr.t
 
       (** For BLS12-381, it is
         [14981678621464625851270783002338847382197300714436467949315331057125308909861]
     *)
-      val delta : Bls12_381.Fr.t
+      val delta : Mavryk_bls12_381.Fr.t
 
       (** First generator of the scalar field of BLS12-381, i.e. [7] *)
-      val g : Bls12_381.Fr.t
+      val g : Mavryk_bls12_381.Fr.t
 
       (** Same than {!g} *)
-      val beta : Bls12_381.Fr.t
+      val beta : Mavryk_bls12_381.Fr.t
 
       (** Set to [0] for BLS12-381 *)
-      val gamma : Bls12_381.Fr.t
+      val gamma : Mavryk_bls12_381.Fr.t
 
       (** [compute_number_of_rounds state_size security] computes the minimal
         number of rounds for an instance of Anemoi with a state size of
@@ -125,11 +125,11 @@ module Permutation : sig
       (** [generate_constants nb_rounds l] generates the constants for the
         instance of Anemoi for a state size of [m = 2 * l]. The output contains
         the C's followed by the D's as described in the paper in section 5.1 *)
-      val generate_constants : int -> int -> Bls12_381.Fr.t array
+      val generate_constants : int -> int -> Mavryk_bls12_381.Fr.t array
 
-      val get_round_constants : t -> Bls12_381.Fr.t array
+      val get_round_constants : t -> Mavryk_bls12_381.Fr.t array
 
-      val get_matrix : t -> Bls12_381.Fr.t array array
+      val get_matrix : t -> Mavryk_bls12_381.Fr.t array array
 
       val get_number_of_rounds : t -> int
 
@@ -182,12 +182,14 @@ module Permutation : sig
     (** [jive128_1 x y] calls the permutation Anemoi for [l = 1] with the state
       [S = (x, y)] and apply Jive on the output. Expected security is 128
       bits *)
-    val jive128_1 : Bls12_381.Fr.t -> Bls12_381.Fr.t -> Bls12_381.Fr.t
+    val jive128_1 :
+      Mavryk_bls12_381.Fr.t -> Mavryk_bls12_381.Fr.t -> Mavryk_bls12_381.Fr.t
 
     (** [jive141_1 x y] calls the permutation Anemoi for [l = 1] with the state
       [S = (x, y)] and apply Jive on the output. Expected security is 141
       bits *)
-    val jive141_1 : Bls12_381.Fr.t -> Bls12_381.Fr.t -> Bls12_381.Fr.t
+    val jive141_1 :
+      Mavryk_bls12_381.Fr.t -> Mavryk_bls12_381.Fr.t -> Mavryk_bls12_381.Fr.t
   end
 
   (** {{: https://eprint.iacr.org/2022/403.pdf } Griffin } over the scalar field
@@ -198,16 +200,16 @@ module Permutation : sig
       type t = {
         nb_of_rounds : int;
         state_size : int;
-        round_constants : Bls12_381.Fr.t array;
-        alpha_beta_s : Bls12_381.Fr.t array;
+        round_constants : Mavryk_bls12_381.Fr.t array;
+        alpha_beta_s : Mavryk_bls12_381.Fr.t array;
       }
 
       (** Exponent for the substitution box. For BLS12-381, it is [5] *)
-      val d : Bls12_381.Fr.t
+      val d : Mavryk_bls12_381.Fr.t
 
       (** Inverse of the exponent for the substitution box. For BLS12-381, it is
         [20974350070050476191779096203274386335076221000211055129041463479975432473805] *)
-      val d_inv : Bls12_381.Fr.t
+      val d_inv : Mavryk_bls12_381.Fr.t
 
       (** Parameters for Griffin with a state size of [3] for a security of
         128bits
@@ -231,8 +233,8 @@ module Mode : sig
     val digest_b :
       (module S.PERMUTATION with type parameters = 'p) ->
       'p ->
-      Bls12_381.Fr.t array ->
+      Mavryk_bls12_381.Fr.t array ->
       int ->
-      Bls12_381.Fr.t array
+      Mavryk_bls12_381.Fr.t array
   end
 end

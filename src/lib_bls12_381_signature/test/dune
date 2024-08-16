@@ -6,7 +6,7 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   tezt.core
-  bls12-381
+  mavryk-bls12-381
   mavkit-libs.bls12-381-signature
   mavkit-alcotezt
   integers_stubs_js)

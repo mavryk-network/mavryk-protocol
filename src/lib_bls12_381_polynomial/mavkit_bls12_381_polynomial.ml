@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type scalar = Bls12_381.Fr.t
+type scalar = Mavryk_bls12_381.Fr.t
 
 module Domain = Domain
 module Polynomial = Polynomial

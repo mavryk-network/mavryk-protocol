@@ -25,9 +25,9 @@
 
 (* Testing
    -------
-   Component:    Michelson: bls12_381
+   Component:    Michelson: mavryk_bls12_381
    Invocation:   dune exec tezt/tests/main.exe -- --file test_contract_bls12_381.ml
-   Subject:      Test Michelson bls12_381 primitives
+   Subject:      Test Michelson mavryk_bls12_381 primitives
 *)
 
 let random_iterations = 10
@@ -70,7 +70,7 @@ module type CLASS = sig
 
   val add : t -> t -> t
 
-  val mul : t -> Bls12_381.Fr.t -> t
+  val mul : t -> Mavryk_bls12_381.Fr.t -> t
 
   val random : state:Random.State.t -> t
 
@@ -82,7 +82,8 @@ module type CLASS = sig
 
   val check_add : Protocol.t -> Client.t -> t -> t -> unit Lwt.t
 
-  val check_mul : Protocol.t -> Client.t -> t -> Bls12_381.Fr.t -> unit Lwt.t
+  val check_mul :
+    Protocol.t -> Client.t -> t -> Mavryk_bls12_381.Fr.t -> unit Lwt.t
 
   val check_negate : Protocol.t -> Client.t -> t -> unit Lwt.t
 end
@@ -103,7 +104,7 @@ module Make (M : sig
 
   val negate : t -> t
 
-  val mul : t -> Bls12_381.Fr.t -> t
+  val mul : t -> Mavryk_bls12_381.Fr.t -> t
 
   val random : ?state:Random.State.t -> unit -> t
 end) : CLASS with type t = M.t = struct
@@ -141,7 +142,7 @@ end) : CLASS with type t = M.t = struct
   let check_mul protocol client arg0 arg1 =
     let expected_storage = to_hex_string (mul arg0 arg1) in
     let arg0 = to_hex_string arg0 in
-    let fr_to_hex v = Hex.of_bytes @@ Bls12_381.Fr.to_bytes v in
+    let fr_to_hex v = Hex.of_bytes @@ Mavryk_bls12_381.Fr.to_bytes v in
     let arg1 = hex_to_string (fr_to_hex arg1) in
     check_binop
       protocol
@@ -162,27 +163,27 @@ end) : CLASS with type t = M.t = struct
       ~expected_storage
 end
 
-module Fr : CLASS with type t = Bls12_381.Fr.t = Make (struct
-  include Bls12_381.Fr
+module Fr : CLASS with type t = Mavryk_bls12_381.Fr.t = Make (struct
+  include Mavryk_bls12_381.Fr
 
   let name = "fr"
 end)
 
 module G1 = Make (struct
-  include Bls12_381.G1
+  include Mavryk_bls12_381.G1
 
   let name = "g1"
 end)
 
 module G2 = Make (struct
-  include Bls12_381.G2
+  include Mavryk_bls12_381.G2
 
   let name = "g2"
 end)
 
 let check_pairing_check protocol client args =
   let expected_storage =
-    if Bls12_381.Pairing.pairing_check args then "True" else "False"
+    if Mavryk_bls12_381.Pairing.pairing_check args then "True" else "False"
   in
   let input =
     "{"
@@ -217,7 +218,14 @@ let register ~protocols =
         ~__FILE__
         ~title:(sf "Bls12_381 contract primitives, %s: store" Class.name)
         ~tags:
-          ["michelson"; "crypto"; "contract"; "bls12_381"; Class.name; "store"]
+          [
+            "michelson";
+            "crypto";
+            "contract";
+            "mavryk_bls12_381";
+            Class.name;
+            "store";
+          ]
         ~uses_node:false
         (fun protocol ->
           let open Class in
@@ -229,7 +237,14 @@ let register ~protocols =
         ~__FILE__
         ~title:(sf "Bls12_381 contract primitives, %s: add" Class.name)
         ~tags:
-          ["michelson"; "crypto"; "contract"; "bls12_381"; Class.name; "add"]
+          [
+            "michelson";
+            "crypto";
+            "contract";
+            "mavryk_bls12_381";
+            Class.name;
+            "add";
+          ]
         ~uses_node:false
         (fun protocol ->
           let open Class in
@@ -242,7 +257,14 @@ let register ~protocols =
         ~__FILE__
         ~title:(sf "Bls12_381 contract primitives, %s: mul" Class.name)
         ~tags:
-          ["michelson"; "crypto"; "contract"; "bls12_381"; Class.name; "mul"]
+          [
+            "michelson";
+            "crypto";
+            "contract";
+            "mavryk_bls12_381";
+            Class.name;
+            "mul";
+          ]
         ~uses_node:false
         (fun protocol ->
           let open Class in
@@ -256,7 +278,14 @@ let register ~protocols =
         ~__FILE__
         ~title:(sf "Bls12_381 contract primitives, %s: negate" Class.name)
         ~tags:
-          ["michelson"; "crypto"; "contract"; "bls12_381"; Class.name; "negate"]
+          [
+            "michelson";
+            "crypto";
+            "contract";
+            "mavryk_bls12_381";
+            Class.name;
+            "negate";
+          ]
         ~uses_node:false
         (fun protocol ->
           let open Class in
@@ -270,7 +299,8 @@ let register ~protocols =
   Protocol.register_regression_test
     ~__FILE__
     ~title:(sf "Bls12_381 contract primitives: pairing_check empty")
-    ~tags:["michelson"; "crypto"; "contract"; "bls12_381"; "pairing_check"]
+    ~tags:
+      ["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; "pairing_check"]
     ~uses_node:false
     (fun protocol ->
       let* client = Client.init_mockup ~protocol () in
@@ -279,7 +309,8 @@ let register ~protocols =
   Protocol.register_regression_test
     ~__FILE__
     ~title:(sf "Bls12_381 contract primitives: pairing_check(pos, pos)")
-    ~tags:["michelson"; "crypto"; "contract"; "bls12_381"; "pairing_check"]
+    ~tags:
+      ["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; "pairing_check"]
     ~uses_node:false
     (fun protocol ->
       let state = Random.State.make [||] in
@@ -292,7 +323,8 @@ let register ~protocols =
   Protocol.register_regression_test
     ~__FILE__
     ~title:(sf "Bls12_381 contract primitives: pairing_check(neg, pos)")
-    ~tags:["michelson"; "crypto"; "contract"; "bls12_381"; "pairing_check"]
+    ~tags:
+      ["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; "pairing_check"]
     ~uses_node:false
     (fun protocol ->
       let state = Random.State.make [||] in
@@ -305,7 +337,8 @@ let register ~protocols =
   Protocol.register_regression_test
     ~__FILE__
     ~title:(sf "Bls12_381 contract primitives: pairing_check(pos, neg)")
-    ~tags:["michelson"; "crypto"; "contract"; "bls12_381"; "pairing_check"]
+    ~tags:
+      ["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; "pairing_check"]
     ~uses_node:false
     (fun protocol ->
       let state = Random.State.make [||] in
@@ -324,7 +357,7 @@ let register ~protocols =
         "michelson";
         "crypto";
         "contract";
-        "bls12_381";
+        "mavryk_bls12_381";
         "pairing_check";
         "signature_aggregation";
       ]
@@ -363,7 +396,7 @@ let register ~protocols =
   Protocol.register_regression_test
     ~__FILE__
     ~title:(sf "Bls12_381 contract primitives: test_groth16")
-    ~tags:["michelson"; "crypto"; "contract"; "bls12_381"; "groth16"]
+    ~tags:["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; "groth16"]
     ~uses_node:false
     (fun protocol ->
       let* client = Client.init_mockup ~protocol () in
@@ -407,7 +440,7 @@ let register ~protocols =
     ~title:
       (sf
          "Bls12_381 contract primitives: fr bytes parameters more than 32 bytes")
-    ~tags:["michelson"; "crypto"; "contract"; "bls12_381"; "fr"]
+    ~tags:["michelson"; "crypto"; "contract"; "mavryk_bls12_381"; "fr"]
     ~uses_node:false
     (fun protocol ->
       let* client = Client.init_mockup ~protocol () in

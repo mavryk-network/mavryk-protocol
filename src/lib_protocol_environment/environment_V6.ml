@@ -98,7 +98,7 @@ module type T = sig
        and type Bls_signature.pk = Bls12_381_signature.MinPk.pk
        and type Bls_signature.signature = Bls12_381_signature.MinPk.signature
        and type ('a, 'b) Either.t = ('a, 'b) Stdlib.Either.t
-       and type Bls12_381.Fr.t = Bls12_381.Fr.t
+       and type Mavryk_bls12_381.Fr.t = Mavryk_bls12_381.Fr.t
 
   type error += Ecoproto_error of Error_monad.error
 
@@ -258,10 +258,10 @@ struct
 
   module Time = Time.Protocol
 
-  module Bls12_381 = struct
-    include Bls12_381
+  module Mavryk_bls12_381 = struct
+    include Mavryk_bls12_381
 
-    let pairing_check = Bls12_381.Pairing.pairing_check
+    let pairing_check = Mavryk_bls12_381.Pairing.pairing_check
   end
 
   module Bls_signature = struct

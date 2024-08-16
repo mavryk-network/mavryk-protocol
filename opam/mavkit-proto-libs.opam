@@ -13,7 +13,7 @@ depends: [
   "mavkit-libs" { = version }
   "mavkit-l2-libs" { = version }
   "data-encoding" { >= "1.0.1" & < "1.1" }
-  "bls12-381" { = version }
+  "mavryk-bls12-381" { = version }
   "zarith" { >= "1.13" & < "1.14" }
   "zarith_stubs_js" { >= "0.16.1" }
   "class_group_vdf" { >= "0.0.4" }

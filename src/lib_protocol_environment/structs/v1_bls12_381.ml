@@ -37,18 +37,18 @@
    correctly implemented. Therefore, the implementation is replaced with a
    `failwith "Not implemented".
 
-   Also, bls12-381.1.0.0 added Bls12_381.Pairing.pairing_check which does
+   Also, bls12-381.1.0.0 added Mavryk_bls12_381.Pairing.pairing_check which does
    exactly the same job than the Michelson instruction IPairing_check_bls12_381
    is expected to do. Therefore, the complete module Pairing is not required
    anymore in Mavryk_crypto.
 *)
 
-module Fr = Bls12_381.Fr
-module G1 = Bls12_381.G1
-module G2 = Bls12_381.G2
+module Fr = Mavryk_bls12_381.Fr
+module G1 = Mavryk_bls12_381.G1
+module G2 = Mavryk_bls12_381.G2
 
 module Fq12 = struct
-  include Bls12_381.Fq12
+  include Mavryk_bls12_381.Fq12
 
   let check_bytes _x = failwith "Not implemented"
 
@@ -65,7 +65,7 @@ end
    Therefore, we must serialize a point in GT and deserialize it in Fq12.
 
    The conversions are not required for further environments as
-   Bls12_381.Pairing.pairing_check is used and abstract the algebraic
+   Mavryk_bls12_381.Pairing.pairing_check is used and abstract the algebraic
    structures.
    Using F12.of_bytes_exn is not problematic as GT is a subgroup of Fq12.
    Therefore any serialized value of GT will give a valid point by
@@ -73,11 +73,11 @@ end
 *)
 module Gt = Fq12
 
-let gt_to_fq12 x = Bls12_381.GT.to_bytes x |> Fq12.of_bytes_exn
+let gt_to_fq12 x = Mavryk_bls12_381.GT.to_bytes x |> Fq12.of_bytes_exn
 
 let final_exponentiation_opt x =
-  Bls12_381.Pairing.final_exponentiation_opt x |> Option.map gt_to_fq12
+  Mavryk_bls12_381.Pairing.final_exponentiation_opt x |> Option.map gt_to_fq12
 
-let pairing g1 g2 = Bls12_381.Pairing.pairing g1 g2 |> gt_to_fq12
+let pairing g1 g2 = Mavryk_bls12_381.Pairing.pairing g1 g2 |> gt_to_fq12
 
-let miller_loop = Bls12_381.Pairing.miller_loop
+let miller_loop = Mavryk_bls12_381.Pairing.miller_loop

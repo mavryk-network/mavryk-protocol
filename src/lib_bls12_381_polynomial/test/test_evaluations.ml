@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Fr = Bls12_381.Fr
+module Fr = Mavryk_bls12_381.Fr
 module Domain = Mavkit_bls12_381_polynomial.Domain
 module Poly_c = Mavkit_bls12_381_polynomial.Polynomial
 module Eval = Mavkit_bls12_381_polynomial.Evaluations

@@ -35,7 +35,7 @@ module type PARAMETERS = sig
 end
 
 (** Build an HADES SP network based on the parameters and a scalar field *)
-module Make (Param : PARAMETERS) (Scalar : Bls12_381.Ff_sig.PRIME) : sig
+module Make (Param : PARAMETERS) (Scalar : Mavryk_bls12_381.Ff_sig.PRIME) : sig
   (** The state of the permutation *)
   type state
 

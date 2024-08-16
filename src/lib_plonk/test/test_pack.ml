@@ -45,7 +45,7 @@ module External = struct
 
   let srs =
     let open Mavkit_bls12_381_polynomial.Srs in
-    let x = Bls12_381.Fr.random () in
+    let x = Mavryk_bls12_381.Fr.random () in
     (Srs_g1.generate_insecure 2 x, Srs_g2.generate_insecure 256 x)
 
   let test_prove_and_verify_single () =

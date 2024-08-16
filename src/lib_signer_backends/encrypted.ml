@@ -79,7 +79,7 @@ module Raw = struct
           Data_encoding.Binary.to_bytes_exn
             Signature.P256.Secret_key.encoding
             sk
-      | Decrypted_sk (Bls sk) | Decrypted_aggregate_sk (Bls12_381 sk) ->
+      | Decrypted_sk (Bls sk) | Decrypted_aggregate_sk (Mavryk_bls12_381 sk) ->
           Data_encoding.Binary.to_bytes_exn Signature.Bls.Secret_key.encoding sk
     in
     Bytes.cat salt (Mavryk_crypto.Crypto_box.Secretbox.secretbox key msg nonce)
@@ -140,7 +140,8 @@ module Raw = struct
         | Some sk ->
             return_some
               (Decrypted_aggregate_sk
-                 (Bls12_381 sk : Mavryk_crypto.Aggregate_signature.Secret_key.t))
+                 (Mavryk_bls12_381 sk
+                   : Mavryk_crypto.Aggregate_signature.Secret_key.t))
         | None ->
             failwith
               "Corrupted wallet, deciphered key is not a valid BLS12_381 \
@@ -187,7 +188,7 @@ module Encodings = struct
         if String.length buf <> length then None else Some (Bytes.of_string buf))
       ~wrap:(fun sk -> Encrypted_p256 sk)
 
-  let bls12_381 =
+  let mavryk_bls12_381 =
     let length =
       (* 32 + 16 + 8 = 56 *)
       Bls12_381_signature.sk_size_in_bytes + Mavryk_crypto.Crypto_box.tag_length
@@ -215,7 +216,7 @@ module Encodings = struct
     Mavryk_crypto.Base58.check_encoded_prefix ed25519 "edesk" 88 ;
     Mavryk_crypto.Base58.check_encoded_prefix secp256k1 "spesk" 88 ;
     Mavryk_crypto.Base58.check_encoded_prefix p256 "p2esk" 88 ;
-    Mavryk_crypto.Base58.check_encoded_prefix bls12_381 "BLesk" 88 ;
+    Mavryk_crypto.Base58.check_encoded_prefix mavryk_bls12_381 "BLesk" 88 ;
     Mavryk_crypto.Base58.check_encoded_prefix secp256k1_scalar "seesk" 93
 end
 
@@ -390,8 +391,8 @@ let common_encrypt sk password =
     | Decrypted_sk (Ed25519 _) -> Encodings.ed25519
     | Decrypted_sk (Secp256k1 _) -> Encodings.secp256k1
     | Decrypted_sk (P256 _) -> Encodings.p256
-    | Decrypted_sk (Bls _) | Decrypted_aggregate_sk (Bls12_381 _) ->
-        Encodings.bls12_381
+    | Decrypted_sk (Bls _) | Decrypted_aggregate_sk (Mavryk_bls12_381 _) ->
+        Encodings.mavryk_bls12_381
   in
   Mavryk_crypto.Base58.simple_encode encoding payload
 

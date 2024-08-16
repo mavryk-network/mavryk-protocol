@@ -42,7 +42,7 @@ let test_sk_size_in_bytes () =
     = Bytes.length (Bls12_381_signature.sk_to_bytes sk))
 
 let test_sk_of_bytes_exn_and_to_bytes_are_inverse_functions () =
-  let bytes = Bls12_381.Fr.(to_bytes (random ())) in
+  let bytes = Mavryk_bls12_381.Fr.(to_bytes (random ())) in
   assert (
     Bytes.equal Bls12_381_signature.(sk_to_bytes (sk_of_bytes_exn bytes)) bytes) ;
   let sk = Bls12_381_signature.(generate_sk (generate_random_bytes 32)) in
@@ -53,7 +53,7 @@ let test_sk_of_bytes_exn_and_to_bytes_are_inverse_functions () =
       Bls12_381_signature.(sk_to_bytes (sk_of_bytes_exn sk_bytes)))
 
 let test_sk_of_bytes_opt_and_to_bytes_are_inverse_functions () =
-  let bytes = Bls12_381.Fr.(to_bytes (random ())) in
+  let bytes = Mavryk_bls12_381.Fr.(to_bytes (random ())) in
   assert (
     Bytes.equal
       Bls12_381_signature.(sk_to_bytes (Option.get @@ sk_of_bytes_opt bytes))
@@ -66,11 +66,15 @@ let test_sk_of_bytes_opt_and_to_bytes_are_inverse_functions () =
       Bls12_381_signature.(sk_to_bytes (Option.get @@ sk_of_bytes_opt sk_bytes)))
 
 let test_sk_of_bytes_opt_valid_values () =
-  let bytes = Bytes.of_string @@ Z.to_bits Bls12_381.Fr.(to_z (random ())) in
+  let bytes =
+    Bytes.of_string @@ Z.to_bits Mavryk_bls12_381.Fr.(to_z (random ()))
+  in
   assert (Option.is_some (Bls12_381_signature.sk_of_bytes_opt bytes))
 
 let test_sk_of_bytes_exn_valid_values () =
-  let bytes = Bytes.of_string @@ Z.to_bits Bls12_381.Fr.(to_z (random ())) in
+  let bytes =
+    Bytes.of_string @@ Z.to_bits Mavryk_bls12_381.Fr.(to_z (random ()))
+  in
   ignore @@ Bls12_381_signature.sk_of_bytes_exn bytes
 
 (* let test_sk_of_bytes_opt_accepts_less_than_32_bytes () = *)
@@ -85,7 +89,7 @@ let test_sk_of_bytes_exn_does_not_accept_more_than_32_bytes () =
   let bytes = generate_random_bytes (32 + Random.int 1_000_000) in
   let err_msg =
     "Input should be maximum 32 bytes, encoded the secret key in little endian \
-     and must be smaller than the order of Bls12_381.Fr"
+     and must be smaller than the order of Mavryk_bls12_381.Fr"
   in
   Alcotest.check_raises "" (Invalid_argument err_msg) (fun () ->
       ignore @@ Bls12_381_signature.sk_of_bytes_exn bytes)
@@ -96,7 +100,7 @@ let test_sk_of_bytes_opt_does_not_accept_more_than_32_bytes () =
 
 let test_sk_of_bytes_opt_does_not_accept_elements_higher_than_the_modulus_but_still_on_32_bytes
     () =
-  (* last byte of Bls12_381.Fr.order is 115 *)
+  (* last byte of Mavryk_bls12_381.Fr.order is 115 *)
   let r =
     Bytes.init 32 (fun i ->
         char_of_int
@@ -106,7 +110,7 @@ let test_sk_of_bytes_opt_does_not_accept_elements_higher_than_the_modulus_but_st
 
 let test_sk_of_bytes_exn_does_not_accept_elements_higher_than_the_modulus_but_still_on_32_bytes
     () =
-  (* last byte of Bls12_381.Fr.order is 115 *)
+  (* last byte of Mavryk_bls12_381.Fr.order is 115 *)
   let bytes =
     Bytes.init 32 (fun i ->
         char_of_int
@@ -114,7 +118,7 @@ let test_sk_of_bytes_exn_does_not_accept_elements_higher_than_the_modulus_but_st
   in
   let err_msg =
     "Input should be maximum 32 bytes, encoded the secret key in little endian \
-     and must be smaller than the order of Bls12_381.Fr"
+     and must be smaller than the order of Mavryk_bls12_381.Fr"
   in
   Alcotest.check_raises "" (Invalid_argument err_msg) (fun () ->
       ignore @@ Bls12_381_signature.sk_of_bytes_exn bytes)
@@ -145,8 +149,8 @@ module MakeTestsForInstantiation (MISC : sig
 
   val signature_not_in_subgroup : string list
 end)
-(PkGroup : Bls12_381.CURVE)
-(SigGroup : Bls12_381.CURVE)
+(PkGroup : Mavryk_bls12_381.CURVE)
+(SigGroup : Mavryk_bls12_381.CURVE)
 (SignatureM : SIGNATURE_INSTANTIATION) =
 struct
   let test_pk_size_in_bytes () =
@@ -587,7 +591,8 @@ struct
         (fun invalid_pk_bytes ->
           let invalid_pk_bytes = Hex.(to_bytes (`Hex invalid_pk_bytes)) in
           let sk =
-            Bls12_381_signature.sk_of_bytes_exn Bls12_381.Fr.(to_bytes one)
+            Bls12_381_signature.sk_of_bytes_exn
+              Mavryk_bls12_381.Fr.(to_bytes one)
           in
           let pk = SignatureM.unsafe_pk_of_bytes invalid_pk_bytes in
           let msg = Bytes.of_string "Hello" in
@@ -1064,8 +1069,8 @@ let () =
             path_test_vectors "pop_g2" // "pop_g2_rfc6979_blst";
           ]
       end)
-      (Bls12_381.G1)
-      (Bls12_381.G2)
+      (Mavryk_bls12_381.G1)
+      (Mavryk_bls12_381.G2)
       (Bls12_381_signature.MinPk)
   in
   let module TestMinSig =
@@ -1176,8 +1181,8 @@ let () =
             path_test_vectors "pop_g1" // "pop_g1_rfc6979_blst";
           ]
       end)
-      (Bls12_381.G2)
-      (Bls12_381.G1)
+      (Mavryk_bls12_381.G2)
+      (Mavryk_bls12_381.G1)
       (Bls12_381_signature.MinSig)
   in
   let min_pk_tests = TestMinPk.get_tests () in

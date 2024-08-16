@@ -46,7 +46,7 @@ module Make (L : LIB) = struct
       (Array.length rc + 2)
       (fun i ->
         (* We pad with two zeroes *)
-        if i / 2 = nb_rounds then Bls12_381.Fr.zero
+        if i / 2 = nb_rounds then Mavryk_bls12_381.Fr.zero
         else if i mod 2 = 0 then rc.(i / 2)
         else rc.(nb_rounds + (i / 2)))
 

@@ -36,15 +36,15 @@ let preprocess_equal (d1, a1) (d2, a2) =
 
    [x]_1 (resp. [x]_2) is a shorthand for x.g where
    - [x] is a scalar element of type [Scalar.t]
-   - [g] is a generator of the subgroup [Bls12_381.G1] (resp. [Bls12_381.G2])
+   - [g] is a generator of the subgroup [Mavryk_bls12_381.G1] (resp. [Mavryk_bls12_381.G2])
    - ( . ) is the elliptic curve scalar multiplication in the subgroup
-   [Bls12_381.G1] (resp. [Bls12_381.G2])
+   [Mavryk_bls12_381.G1] (resp. [Mavryk_bls12_381.G2])
 
    The SRS (Structure Reference String) is defined as:
    ([1]_1, [τ]_1, [τ^2]_1, [τ^3]_1, ..., [τ^{Srs_g1.length t.srs.raw.srs_g1 - 1}]_1)
    where τ is secret.
 
-   e : [Bls12_381.G1] * [Bls12_381.G2] → [Bls12_381.GT] is a pairing
+   e : [Mavryk_bls12_381.G1] * [Mavryk_bls12_381.G2] → [Mavryk_bls12_381.GT] is a pairing
    (bilinear, non-degenerate map such that e(g1, g2) = gT where
    G1=<g1>, G2=<g2>, GT=<gT>).
 
@@ -359,7 +359,7 @@ let interpolation_poly ~root ~domain ~evaluations =
 
    Implements the "Multi-reveals" section above. *)
 let verify t ~commitment ~srs_point ~domain ~root ~evaluations ~proof =
-  let open Bls12_381 in
+  let open Mavryk_bls12_381 in
   (* Compute r_i(x). *)
   let remainder = interpolation_poly ~root ~domain ~evaluations in
   (* Compute [r_i(τ)]_1. *)
@@ -389,7 +389,7 @@ let verify t ~commitment ~srs_point ~domain ~root ~evaluations ~proof =
   e(c, \sum_i w_i R_i,1)*e(sum_i aplha_i*w_i*pi_i,[X]) =? 1 *)
 let verify_multi t ~commitment ~srs_point ~domain ~root_list ~evaluations_list
     ~proof_list =
-  let open Bls12_381 in
+  let open Mavryk_bls12_381 in
   (* Compute r_i(x). *)
   let remainder_list =
     List.map2

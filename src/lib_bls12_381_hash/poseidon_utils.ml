@@ -201,7 +201,7 @@ end
 
 (* Partial copy of
    https://gitlab.com/dannywillems/ocaml-polynomial/-/blob/950dc70e8c3070918329d1e7e722f8361c25e182/src/polynomial.ml#L233 *)
-module MakePoly (R : Bls12_381.Ff_sig.PRIME) = struct
+module MakePoly (R : Mavryk_bls12_381.Ff_sig.PRIME) = struct
   (* We encode the polynomials as a list with decreasing degree.
      Invariants to respect for the type:
      - all coefficients are non null.
@@ -301,7 +301,7 @@ let compute_updated_constants_one_batch width batch_size mds k_cols =
        x_0, x_1, x_2^5, a,  a^5,  b,  b^5,  c,  c^5, y_0,  y_1,  y_2
         |    |    |     |    |    |    |    |    |    |     |    |
        x^1, x^2, x^3,  x^4, x^5, x^6, x^7, x^8, x^9, x^10, x^11, x^12 *)
-  let module Poly = MakePoly (Bls12_381.Fr) in
+  let module Poly = MakePoly (Mavryk_bls12_381.Fr) in
   let module Poly_Module = Make_Module (struct
     include Poly
 
@@ -339,7 +339,7 @@ let compute_updated_constants_one_batch width batch_size mds k_cols =
     SMap.of_seq @@ List.(to_seq @@ mapi (fun i s -> (s, i + 1)) vars)
   in
   let get_var s = try SMap.find s varsMap with e -> raise e in
-  let pvar s = Poly.of_coefficients [(Bls12_381.Fr.one, get_var s)] in
+  let pvar s = Poly.of_coefficients [(Mavryk_bls12_381.Fr.one, get_var s)] in
 
   (* We convert the MDS and round constants into matrices of constant polynomials. *)
   let to_poly = Array.(map (map (fun c -> Poly.of_coefficients [(c, 0)]))) in
@@ -395,7 +395,7 @@ let compute_updated_constants_one_batch width batch_size mds k_cols =
       (* This function gives coefficients in decending order of degree *)
       let coeffs = Poly.get_dense_polynomial_coefficients eq in
       let size = nb_coefs - List.length coeffs in
-      List.(rev coeffs @ init size (fun _ -> Bls12_381.Fr.zero))
+      List.(rev coeffs @ init size (fun _ -> Mavryk_bls12_381.Fr.zero))
       |> Array.of_list
     in
     List.map row_of_eq (polys_tmp_var @ polys_final)

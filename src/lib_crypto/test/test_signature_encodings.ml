@@ -174,7 +174,7 @@ module Test_Bls =
   Make_tests
     (Signature.Bls)
     (struct
-      let name = "bls12_381"
+      let name = "mavryk_bls12_381"
 
       let pkh_vectors = Key_encoding_vectors.bls12_381_pkhs
 

@@ -11,17 +11,17 @@ let test_vectors_g1_from_bls_sigs_ref_files () =
           (List.nth contents 0, List.nth contents 2)
         in
         let msg = Hex.(to_bytes (`Hex msg_str)) in
-        let res = Bls12_381.G1.hash_to_curve msg ciphersuite in
+        let res = Mavryk_bls12_381.G1.hash_to_curve msg ciphersuite in
         let expected_result =
-          Bls12_381.G1.of_compressed_bytes_exn
+          Mavryk_bls12_381.G1.of_compressed_bytes_exn
             Hex.(to_bytes (`Hex expected_result_str))
         in
-        if not @@ Bls12_381.G1.eq res expected_result then
+        if not @@ Mavryk_bls12_381.G1.eq res expected_result then
           Alcotest.failf
             "Expected result is %s on input %s, but computed %s"
-            Hex.(show (of_bytes (Bls12_381.G1.to_bytes expected_result)))
+            Hex.(show (of_bytes (Mavryk_bls12_381.G1.to_bytes expected_result)))
             msg_str
-            Hex.(show (of_bytes (Bls12_381.G1.to_bytes res))))
+            Hex.(show (of_bytes (Mavryk_bls12_381.G1.to_bytes res))))
       contents
   in
   aux (path_test_vectors ("hash_to_curve_g1" // "g1_fips_186_3_B233")) ;
@@ -49,17 +49,17 @@ let test_vectors_g2_from_bls_sigs_ref_files () =
           (List.nth contents 0, List.nth contents 2)
         in
         let msg = Hex.(to_bytes (`Hex msg_str)) in
-        let res = Bls12_381.G2.hash_to_curve msg ciphersuite in
+        let res = Mavryk_bls12_381.G2.hash_to_curve msg ciphersuite in
         let expected_result =
-          Bls12_381.G2.of_compressed_bytes_exn
+          Mavryk_bls12_381.G2.of_compressed_bytes_exn
             Hex.(to_bytes (`Hex expected_result_str))
         in
-        if not @@ Bls12_381.G2.eq res expected_result then
+        if not @@ Mavryk_bls12_381.G2.eq res expected_result then
           Alcotest.failf
             "Expected result is %s on input %s, but computed %s"
-            Hex.(show (of_bytes (Bls12_381.G2.to_bytes expected_result)))
+            Hex.(show (of_bytes (Mavryk_bls12_381.G2.to_bytes expected_result)))
             msg_str
-            Hex.(show (of_bytes (Bls12_381.G2.to_bytes res))))
+            Hex.(show (of_bytes (Mavryk_bls12_381.G2.to_bytes res))))
       contents
   in
   aux (path_test_vectors ("hash_to_curve_g2" // "g2_fips_186_3_B233")) ;
@@ -107,34 +107,34 @@ let regression_test () =
       let msg = Hex.(to_bytes (`Hex msg_hex)) in
       let dst = Hex.(to_bytes (`Hex dst_hex)) in
       let exp_res_g1 =
-        Bls12_381.G1.of_bytes_exn (Hex.to_bytes (`Hex exp_res_g1_hex))
+        Mavryk_bls12_381.G1.of_bytes_exn (Hex.to_bytes (`Hex exp_res_g1_hex))
       in
       let exp_res_g2 =
-        Bls12_381.G2.of_bytes_exn (Hex.to_bytes (`Hex exp_res_g2_hex))
+        Mavryk_bls12_381.G2.of_bytes_exn (Hex.to_bytes (`Hex exp_res_g2_hex))
       in
-      let res_g1 = Bls12_381.G1.hash_to_curve msg dst in
-      let res_g2 = Bls12_381.G2.hash_to_curve msg dst in
-      if not (Bls12_381.G1.eq res_g1 exp_res_g1) then
+      let res_g1 = Mavryk_bls12_381.G1.hash_to_curve msg dst in
+      let res_g2 = Mavryk_bls12_381.G2.hash_to_curve msg dst in
+      if not (Mavryk_bls12_381.G1.eq res_g1 exp_res_g1) then
         Alcotest.failf
           "On msg %s and dst %s, expected value for G1 is %s but computed %s"
           msg_hex
           dst_hex
           exp_res_g1_hex
-          Hex.(show (of_bytes (Bls12_381.G1.to_bytes res_g1))) ;
-      if not (Bls12_381.G2.eq res_g2 exp_res_g2) then
+          Hex.(show (of_bytes (Mavryk_bls12_381.G1.to_bytes res_g1))) ;
+      if not (Mavryk_bls12_381.G2.eq res_g2 exp_res_g2) then
         Alcotest.failf
           "On msg %s and dst %s, expected value for G2 is %s but computed %s"
           msg_hex
           dst_hex
           exp_res_g2_hex
-          Hex.(show (of_bytes (Bls12_381.G2.to_bytes res_g2))))
+          Hex.(show (of_bytes (Mavryk_bls12_381.G2.to_bytes res_g2))))
     v
 
 let test_hash_to_curve_accepts_dst_longer_than_255_characters () =
   let dst = generate_random_bytes (256 + Random.int 1000) in
   let msg = generate_random_bytes (Random.int 10000) in
-  ignore @@ Bls12_381.G1.hash_to_curve msg dst ;
-  ignore @@ Bls12_381.G2.hash_to_curve msg dst
+  ignore @@ Mavryk_bls12_381.G1.hash_to_curve msg dst ;
+  ignore @@ Mavryk_bls12_381.G2.hash_to_curve msg dst
 
 let () =
   let open Alcotest in

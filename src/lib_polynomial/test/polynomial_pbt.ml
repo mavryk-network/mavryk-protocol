@@ -32,7 +32,7 @@ let rec non_null_int bound =
   if r = 0 then non_null_int bound else r
 
 module MakeTestConstant
-    (Scalar : Bls12_381.Ff_sig.PRIME)
+    (Scalar : Mavryk_bls12_381.Ff_sig.PRIME)
     (Poly : Polynomial.UNIVARIATE with type scalar = Scalar.t) =
 struct
   let test_zero () = assert (Poly.is_constant Poly.zero)
@@ -63,7 +63,7 @@ struct
 end
 
 module MakeTestDegree
-    (Scalar : Bls12_381.Ff_sig.PRIME)
+    (Scalar : Mavryk_bls12_381.Ff_sig.PRIME)
     (Poly : Polynomial.UNIVARIATE with type scalar = Scalar.t) =
 struct
   let test_degree_zero_is_infinity () =
@@ -141,7 +141,7 @@ struct
 end
 
 module MakeTestEvaluation
-    (Scalar : Bls12_381.Ff_sig.PRIME)
+    (Scalar : Mavryk_bls12_381.Ff_sig.PRIME)
     (Poly : Polynomial.UNIVARIATE with type scalar = Scalar.t) =
 struct
   let test_eval_random_point_zero_polynomial () =
@@ -197,7 +197,7 @@ struct
 end
 
 module MakeTestLagrangeInterpolation
-    (Scalar : Bls12_381.Ff_sig.PRIME)
+    (Scalar : Mavryk_bls12_381.Ff_sig.PRIME)
     (Poly : Polynomial.UNIVARIATE with type scalar = Scalar.t) =
 struct
   let rec test_with_random_number_of_points () =
@@ -247,7 +247,7 @@ struct
 end
 
 module MakeTestEuclidianDivision
-    (Scalar : Bls12_381.Ff_sig.PRIME)
+    (Scalar : Mavryk_bls12_381.Ff_sig.PRIME)
     (Poly : Polynomial.UNIVARIATE with type scalar = Scalar.t) =
 struct
   let test_verify_equality_with_random () =
@@ -302,7 +302,7 @@ struct
 end
 
 module MakeTestDensifiedPolynomial
-    (Scalar : Bls12_381.Ff_sig.PRIME)
+    (Scalar : Mavryk_bls12_381.Ff_sig.PRIME)
     (Poly : Polynomial.UNIVARIATE with type scalar = Scalar.t) =
 struct
   let test_vectors () =
@@ -357,7 +357,7 @@ struct
 end
 
 module MakeTestDensifiedPolynomialWithDegree
-    (Scalar : Bls12_381.Ff_sig.PRIME)
+    (Scalar : Mavryk_bls12_381.Ff_sig.PRIME)
     (Poly : Polynomial.UNIVARIATE with type scalar = Scalar.t) =
 struct
   let test_vectors () =
@@ -419,7 +419,7 @@ struct
 end
 
 module MakeTestExtendedEuclide
-    (Scalar : Bls12_381.Ff_sig.PRIME)
+    (Scalar : Mavryk_bls12_381.Ff_sig.PRIME)
     (Poly : Polynomial.UNIVARIATE with type scalar = Scalar.t) =
 struct
   let test_random_properties () =
@@ -476,7 +476,7 @@ struct
 end
 
 module MakeTestPolynomialMultiplication
-    (Scalar : Bls12_381.Ff_sig.PRIME)
+    (Scalar : Mavryk_bls12_381.Ff_sig.PRIME)
     (Poly : Polynomial.UNIVARIATE with type scalar = Scalar.t) =
 struct
   let test_multiply_by_zero_is_zero () =
@@ -551,7 +551,7 @@ struct
 end
 
 module MakeTestInterpolationFFT
-    (Scalar : Bls12_381.Ff_sig.PRIME)
+    (Scalar : Mavryk_bls12_381.Ff_sig.PRIME)
     (Poly : Polynomial.UNIVARIATE with type scalar = Scalar.t) =
 struct
   let test_interpolation_fft_random_values_against_lagrange_interpolation
@@ -614,7 +614,7 @@ struct
 end
 
 module MakeTestEvaluationFFT
-    (Scalar : Bls12_381.Ff_sig.PRIME)
+    (Scalar : Mavryk_bls12_381.Ff_sig.PRIME)
     (Poly : Polynomial.UNIVARIATE with type scalar = Scalar.t) =
 struct
   let test_evaluation_fft_zero ~generator ~power () =
@@ -763,7 +763,7 @@ struct
 end
 
 module MakeTestPolynomialMultiplicationFFT
-    (Scalar : Bls12_381.Ff_sig.PRIME)
+    (Scalar : Mavryk_bls12_381.Ff_sig.PRIME)
     (Poly : Polynomial.UNIVARIATE with type scalar = Scalar.t) =
 struct
   let test_with_zero_polynomial ~generator ~power () =

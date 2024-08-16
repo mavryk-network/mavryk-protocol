@@ -12,5 +12,5 @@ module Constant : Poseidon_core.PARAMETERS = struct
   let partial_round_idx_to_permute = 2
 end
 
-module Make (Scalar : Bls12_381.Ff_sig.PRIME) =
+module Make (Scalar : Mavryk_bls12_381.Ff_sig.PRIME) =
   Poseidon_core.Make (Constant) (Scalar)

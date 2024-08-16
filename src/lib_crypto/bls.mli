@@ -36,7 +36,7 @@ include S.RAW_DATA with type t := t
 
 (** Module to access/expose the primitives of BLS12-381 *)
 module Primitive : sig
-  module Fr : S.PRIME_FIELD with type t = Bls12_381.Fr.t
+  module Fr : S.PRIME_FIELD with type t = Mavryk_bls12_381.Fr.t
 
   module G1 : S.CURVE with type Scalar.t = Fr.t
 

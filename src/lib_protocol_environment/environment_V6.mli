@@ -99,7 +99,7 @@ module type T = sig
        and type Bls_signature.pk = Bls12_381_signature.MinPk.pk
        and type Bls_signature.signature = Bls12_381_signature.MinPk.signature
        and type ('a, 'b) Either.t = ('a, 'b) Stdlib.Either.t
-       and type Bls12_381.Fr.t = Bls12_381.Fr.t
+       and type Mavryk_bls12_381.Fr.t = Mavryk_bls12_381.Fr.t
 
   (** An [Ecoproto_error e] is a shell error that carry a protocol error.
 

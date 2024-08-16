@@ -19,7 +19,7 @@ module type PARAMETERS = sig
   val alphainv : Z.t
 end
 
-module Make (Param : PARAMETERS) (Scalar : Bls12_381.Ff_sig.PRIME) : sig
+module Make (Param : PARAMETERS) (Scalar : Mavryk_bls12_381.Ff_sig.PRIME) : sig
   (** The state of the strategy *)
   type state
 

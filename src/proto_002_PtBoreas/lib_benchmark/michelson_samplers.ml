@@ -766,21 +766,21 @@ end)
 
     and generate_bls12_381_g1 : Script_bls.G1.t sampler =
      fun rng_state ->
-      let b = Bls12_381.G1.(to_bytes (random ~state:rng_state ())) in
+      let b = Mavryk_bls12_381.G1.(to_bytes (random ~state:rng_state ())) in
       match Script_bls.G1.of_bytes_opt b with
       | Some x -> x
       | None -> assert false
 
     and generate_bls12_381_g2 : Script_bls.G2.t sampler =
      fun rng_state ->
-      let b = Bls12_381.G2.(to_bytes (random ~state:rng_state ())) in
+      let b = Mavryk_bls12_381.G2.(to_bytes (random ~state:rng_state ())) in
       match Script_bls.G2.of_bytes_opt b with
       | Some x -> x
       | None -> assert false
 
     and generate_bls12_381_fr : Script_bls.Fr.t sampler =
      fun rng_state ->
-      let b = Bls12_381.Fr.(to_bytes (random ~state:rng_state ())) in
+      let b = Mavryk_bls12_381.Fr.(to_bytes (random ~state:rng_state ())) in
       match Script_bls.Fr.of_bytes_opt b with
       | Some x -> x
       | None -> assert false

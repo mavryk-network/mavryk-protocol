@@ -5,7 +5,7 @@
  (name mavkit_srs_extraction)
  (public_name mavkit-libs.srs-extraction)
  (libraries
-  bls12-381
+  mavryk-bls12-381
   mavkit-libs.bls12-381-polynomial)
  (flags
   (:standard)
@@ -18,7 +18,7 @@
   mavkit-libs.srs-extraction
   cmdliner
   unix
-  bls12-381
+  mavryk-bls12-381
   mavkit-libs.bls12-381-polynomial)
  (flags
   (:standard)

@@ -23,8 +23,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Fr = Bls12_381.Fr
-module G1 = Bls12_381.G1
+module Fr = Mavryk_bls12_381.Fr
+module G1 = Mavryk_bls12_381.G1
 module Poly = Mavkit_bls12_381_polynomial.Polynomial
 module Srs = Mavkit_bls12_381_polynomial.Srs.Srs_g1
 
@@ -39,11 +39,11 @@ let test_pippenger () =
   let len = 1 + Random.int (n - start) in
   let srs = Array.init n (fun _ -> G1.random ()) in
   let scalars = Array.init n (fun _ -> Fr.random ()) in
-  let exp_output = Bls12_381.G1.pippenger ~start ~len srs scalars in
+  let exp_output = Mavryk_bls12_381.G1.pippenger ~start ~len srs scalars in
   let pippenger_ctxt = Srs.of_array srs in
   let poly = Poly.of_dense scalars in
   let output = Srs.pippenger ~offset:start ~len pippenger_ctxt poly in
-  assert (Bls12_381.G1.eq output exp_output)
+  assert (Mavryk_bls12_381.G1.eq output exp_output)
 
 let test_add_and_extract_srs_from_pippenger_ctxt () =
   let logn = 1 + Random.int 3 in
@@ -51,7 +51,7 @@ let test_add_and_extract_srs_from_pippenger_ctxt () =
   let srs = Array.init n (fun _ -> G1.random ()) in
   let pippenger_ctxt = Srs.of_array srs in
   let extracted_srs = Srs.to_array pippenger_ctxt in
-  assert (Array.for_all2 Bls12_381.G1.eq srs extracted_srs)
+  assert (Array.for_all2 Mavryk_bls12_381.G1.eq srs extracted_srs)
 
 let test_vector_pippenger () =
   let vectors =
@@ -129,22 +129,22 @@ let test_vector_pippenger () =
     (fun (srs_bytes, scalars_bs) ->
       let srs =
         List.map
-          (fun x -> Bls12_381.G1.of_bytes_exn (Hex.to_bytes (`Hex x)))
+          (fun x -> Mavryk_bls12_381.G1.of_bytes_exn (Hex.to_bytes (`Hex x)))
           srs_bytes
         |> Array.of_list
       in
       let scalars =
         List.map
-          (fun x -> Bls12_381.Fr.of_bytes_exn (Hex.to_bytes (`Hex x)))
+          (fun x -> Mavryk_bls12_381.Fr.of_bytes_exn (Hex.to_bytes (`Hex x)))
           scalars_bs
         |> Array.of_list
       in
       let start = 1 in
-      let exp_output = Bls12_381.G1.pippenger ~start srs scalars in
+      let exp_output = Mavryk_bls12_381.G1.pippenger ~start srs scalars in
       let pippenger_ctxt = Srs.of_array srs in
       let poly = Poly.of_dense scalars in
       let output = Srs.pippenger ~offset:start pippenger_ctxt poly in
-      assert (Bls12_381.G1.eq output exp_output))
+      assert (Mavryk_bls12_381.G1.eq output exp_output))
     vectors
 
 let bigstring_of_file filename =
@@ -180,7 +180,9 @@ let test_load_from_file_vector () =
   in
   List.iteri
     (fun i expected ->
-      let (`Hex e) = Bls12_381.G1.to_bytes (Srs.get srs i) |> Hex.of_bytes in
+      let (`Hex e) =
+        Mavryk_bls12_381.G1.to_bytes (Srs.get srs i) |> Hex.of_bytes
+      in
       assert (e = expected))
     v
 

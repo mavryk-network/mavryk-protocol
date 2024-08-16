@@ -40,12 +40,12 @@ let test_state_getter_setter () =
   let state =
     Array.init
       parameters.Bls12_381_hash.Permutation.Griffin.Parameters.state_size
-      (fun _ -> Bls12_381.Fr.random ())
+      (fun _ -> Mavryk_bls12_381.Fr.random ())
   in
   let () = Bls12_381_hash.Permutation.Griffin.set_state ctxt state in
   assert (
     Array.for_all2
-      Bls12_381.Fr.eq
+      Mavryk_bls12_381.Fr.eq
       state
       (Bls12_381_hash.Permutation.Griffin.get_state ctxt))
 
@@ -78,12 +78,12 @@ let test_vectors_griffin_3 () =
   in
   List.iter
     (fun ((x1_s, x2_s, x3_s), (exp_res1_s, exp_res2_s, exp_res3_s)) ->
-      let x1 = Bls12_381.Fr.of_string x1_s in
-      let x2 = Bls12_381.Fr.of_string x2_s in
-      let x3 = Bls12_381.Fr.of_string x3_s in
-      let exp_res1 = Bls12_381.Fr.of_string exp_res1_s in
-      let exp_res2 = Bls12_381.Fr.of_string exp_res2_s in
-      let exp_res3 = Bls12_381.Fr.of_string exp_res3_s in
+      let x1 = Mavryk_bls12_381.Fr.of_string x1_s in
+      let x2 = Mavryk_bls12_381.Fr.of_string x2_s in
+      let x3 = Mavryk_bls12_381.Fr.of_string x3_s in
+      let exp_res1 = Mavryk_bls12_381.Fr.of_string exp_res1_s in
+      let exp_res2 = Mavryk_bls12_381.Fr.of_string exp_res2_s in
+      let exp_res3 = Mavryk_bls12_381.Fr.of_string exp_res3_s in
       let ctxt =
         Bls12_381_hash.Permutation.Griffin.allocate_ctxt
           Bls12_381_hash.Permutation.Griffin.Parameters
@@ -96,9 +96,9 @@ let test_vectors_griffin_3 () =
       let res = Bls12_381_hash.Permutation.Griffin.get_state ctxt in
       let res1, res2, res3 = (res.(0), res.(1), res.(2)) in
       let b =
-        Bls12_381.Fr.eq exp_res1 res1
-        && Bls12_381.Fr.eq exp_res2 res2
-        && Bls12_381.Fr.eq exp_res3 res3
+        Mavryk_bls12_381.Fr.eq exp_res1 res1
+        && Mavryk_bls12_381.Fr.eq exp_res2 res2
+        && Mavryk_bls12_381.Fr.eq exp_res3 res3
       in
       if not b then
         Alcotest.failf
@@ -107,9 +107,9 @@ let test_vectors_griffin_3 () =
           exp_res1_s
           exp_res2_s
           exp_res3_s
-          (Bls12_381.Fr.to_string res1)
-          (Bls12_381.Fr.to_string res2)
-          (Bls12_381.Fr.to_string res3)
+          (Mavryk_bls12_381.Fr.to_string res1)
+          (Mavryk_bls12_381.Fr.to_string res2)
+          (Mavryk_bls12_381.Fr.to_string res3)
           x1_s
           x2_s
           x3_s)
@@ -130,14 +130,14 @@ let test_vectors_griffin_4 () =
   List.iter
     (fun ( (x1_s, x2_s, x3_s, x4_s),
            (exp_res1_s, exp_res2_s, exp_res3_s, exp_res4_s) ) ->
-      let x1 = Bls12_381.Fr.of_string x1_s in
-      let x2 = Bls12_381.Fr.of_string x2_s in
-      let x3 = Bls12_381.Fr.of_string x3_s in
-      let x4 = Bls12_381.Fr.of_string x4_s in
-      let exp_res1 = Bls12_381.Fr.of_string exp_res1_s in
-      let exp_res2 = Bls12_381.Fr.of_string exp_res2_s in
-      let exp_res3 = Bls12_381.Fr.of_string exp_res3_s in
-      let exp_res4 = Bls12_381.Fr.of_string exp_res4_s in
+      let x1 = Mavryk_bls12_381.Fr.of_string x1_s in
+      let x2 = Mavryk_bls12_381.Fr.of_string x2_s in
+      let x3 = Mavryk_bls12_381.Fr.of_string x3_s in
+      let x4 = Mavryk_bls12_381.Fr.of_string x4_s in
+      let exp_res1 = Mavryk_bls12_381.Fr.of_string exp_res1_s in
+      let exp_res2 = Mavryk_bls12_381.Fr.of_string exp_res2_s in
+      let exp_res3 = Mavryk_bls12_381.Fr.of_string exp_res3_s in
+      let exp_res4 = Mavryk_bls12_381.Fr.of_string exp_res4_s in
       let ctxt =
         Bls12_381_hash.Permutation.Griffin.(
           allocate_ctxt Parameters.security_128_state_size_4)
@@ -149,10 +149,10 @@ let test_vectors_griffin_4 () =
       let res = Bls12_381_hash.Permutation.Griffin.get_state ctxt in
       let res1, res2, res3, res4 = (res.(0), res.(1), res.(2), res.(3)) in
       let b =
-        Bls12_381.Fr.eq exp_res1 res1
-        && Bls12_381.Fr.eq exp_res2 res2
-        && Bls12_381.Fr.eq exp_res3 res3
-        && Bls12_381.Fr.eq exp_res4 res4
+        Mavryk_bls12_381.Fr.eq exp_res1 res1
+        && Mavryk_bls12_381.Fr.eq exp_res2 res2
+        && Mavryk_bls12_381.Fr.eq exp_res3 res3
+        && Mavryk_bls12_381.Fr.eq exp_res4 res4
       in
       if not b then
         Alcotest.failf
@@ -162,10 +162,10 @@ let test_vectors_griffin_4 () =
           exp_res2_s
           exp_res3_s
           exp_res4_s
-          (Bls12_381.Fr.to_string res1)
-          (Bls12_381.Fr.to_string res2)
-          (Bls12_381.Fr.to_string res3)
-          (Bls12_381.Fr.to_string res4)
+          (Mavryk_bls12_381.Fr.to_string res1)
+          (Mavryk_bls12_381.Fr.to_string res2)
+          (Mavryk_bls12_381.Fr.to_string res3)
+          (Mavryk_bls12_381.Fr.to_string res4)
           x1_s
           x2_s
           x3_s
@@ -173,7 +173,7 @@ let test_vectors_griffin_4 () =
     vectors
 
 (*
-    Bls12_381.Fr.
+    Mavryk_bls12_381.Fr.
       [| of_string
            "42055013899249843001963096382529769773374725832883030314842616909329673256554";
          of_string

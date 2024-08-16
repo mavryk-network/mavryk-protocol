@@ -1,6 +1,6 @@
 open Utils
 
-module type GROUP = module type of Bls12_381.GT
+module type GROUP = module type of Mavryk_bls12_381.GT
 
 module MakeEquality (G : GROUP) = struct
   (** Verify the equality is correct with the value zero *)
@@ -101,27 +101,29 @@ module MakeGroupProperties (G : GROUP) = struct
   (** Verify that multiplying a random point by a scalar gives a valid point *)
   let check_bytes_random_multiplication () =
     assert (
-      G.(check_bytes @@ to_bytes @@ mul (random ()) (Bls12_381.Fr.random ())))
+      G.(
+        check_bytes @@ to_bytes
+        @@ mul (random ()) (Mavryk_bls12_381.Fr.random ())))
 
   (** Verify 0_S * g_EC = 0_EC where 0_S is the zero of the scalar field, 0_EC
       is the point at infinity and g_EC is an element of the EC *)
   let zero_scalar_nullifier_random () =
     let random = G.random () in
-    assert (G.is_zero (G.mul random Bls12_381.Fr.zero))
+    assert (G.is_zero (G.mul random Mavryk_bls12_381.Fr.zero))
 
   (** Verify 0_S * 0_EC = 0_EC where 0_S is the zero of the scalar field and
       0_EC is the point at infinity of the EC *)
   let zero_scalar_nullifier_zero () =
-    assert (G.is_zero (G.mul G.zero Bls12_381.Fr.zero))
+    assert (G.is_zero (G.mul G.zero Mavryk_bls12_381.Fr.zero))
 
   (** Verify 0_S * 1_EC = 0_EC where 0_S is the 0 of the scalar field, 1_EC is a
       fixed generator and 0_EC is the point at infinity of the EC *)
   let zero_scalar_nullifier_one () =
-    assert (G.is_zero (G.mul G.one Bls12_381.Fr.zero))
+    assert (G.is_zero (G.mul G.one Mavryk_bls12_381.Fr.zero))
 
   let multiply_by_one_does_nothing () =
     let g = G.random () in
-    assert (G.(eq (mul g Bls12_381.Fr.one) g))
+    assert (G.(eq (mul g Mavryk_bls12_381.Fr.one) g))
 
   (** Verify -(-g) = g where g is an element of the EC *)
   let opposite_of_opposite () =
@@ -134,7 +136,10 @@ module MakeGroupProperties (G : GROUP) = struct
       G.(
         eq
           r
-          (mul r (Bls12_381.Fr.negate (Bls12_381.Fr.negate Bls12_381.Fr.one)))))
+          (mul
+             r
+             (Mavryk_bls12_381.Fr.negate
+                (Mavryk_bls12_381.Fr.negate Mavryk_bls12_381.Fr.one)))))
 
   (** Verify -(-0_EC) = 0_EC where 0_EC is the point at infinity of the EC *)
   let opposite_of_zero_is_zero () = assert (G.eq (G.negate G.zero) G.zero)
@@ -163,7 +168,7 @@ module MakeGroupProperties (G : GROUP) = struct
   (** Verify a (g1 + g2) = a * g1 + a * g2 where a is a scalar, g1, g2 two
       elements of the EC *)
   let distributivity () =
-    let s = Bls12_381.Fr.random () in
+    let s = Mavryk_bls12_381.Fr.random () in
     let g1 = G.random () in
     let g2 = G.random () in
     assert (G.eq (G.mul (G.add g1 g2) s) (G.add (G.mul g1 s) (G.mul g2 s)))
@@ -176,45 +181,50 @@ module MakeGroupProperties (G : GROUP) = struct
 
   (** Verify (a + -a) * g = a * g - a * g = 0 *)
   let opposite_equality () =
-    let a = Bls12_381.Fr.random () in
+    let a = Mavryk_bls12_381.Fr.random () in
     let g = G.random () in
-    assert (G.(eq (mul g (Bls12_381.Fr.add a (Bls12_381.Fr.negate a))) zero)) ;
-    assert (G.(eq zero (add (mul g a) (mul g (Bls12_381.Fr.negate a))))) ;
     assert (
       G.(
         eq
-          (mul g (Bls12_381.Fr.add a (Bls12_381.Fr.negate a)))
-          (add (mul g a) (mul g (Bls12_381.Fr.negate a)))))
+          (mul g (Mavryk_bls12_381.Fr.add a (Mavryk_bls12_381.Fr.negate a)))
+          zero)) ;
+    assert (G.(eq zero (add (mul g a) (mul g (Mavryk_bls12_381.Fr.negate a))))) ;
+    assert (
+      G.(
+        eq
+          (mul g (Mavryk_bls12_381.Fr.add a (Mavryk_bls12_381.Fr.negate a)))
+          (add (mul g a) (mul g (Mavryk_bls12_381.Fr.negate a)))))
 
   (** a g + b + g = (a + b) g*)
   let additive_associativity_with_scalar () =
-    let a = Bls12_381.Fr.random () in
-    let b = Bls12_381.Fr.random () in
+    let a = Mavryk_bls12_381.Fr.random () in
+    let b = Mavryk_bls12_381.Fr.random () in
     let g = G.random () in
     let left = G.(add (mul g a) (mul g b)) in
-    let right = G.(mul g (Bls12_381.Fr.add a b)) in
+    let right = G.(mul g (Mavryk_bls12_381.Fr.add a b)) in
     assert (G.(eq left right))
 
   (** (a * b) g = a (b g) = b (a g) *)
   let multiplication_properties_on_base_field_element () =
-    let a = Bls12_381.Fr.random () in
-    let b = Bls12_381.Fr.random () in
+    let a = Mavryk_bls12_381.Fr.random () in
+    let b = Mavryk_bls12_381.Fr.random () in
     let g = G.random () in
-    assert (G.(eq (mul g (Bls12_381.Fr.mul a b)) (mul (mul g a) b))) ;
-    assert (G.(eq (mul g (Bls12_381.Fr.mul a b)) (mul (mul g b) a)))
+    assert (G.(eq (mul g (Mavryk_bls12_381.Fr.mul a b)) (mul (mul g a) b))) ;
+    assert (G.(eq (mul g (Mavryk_bls12_381.Fr.mul a b)) (mul (mul g b) a)))
 
   let random_is_in_prime_subgroup () =
     let g = G.random () in
     (* [order] g = 0 *)
-    assert (G.(eq (mul g Bls12_381.Fr.(of_z order)) zero)) ;
+    assert (G.(eq (mul g Mavryk_bls12_381.Fr.(of_z order)) zero)) ;
     (* [order - 1 ] g = [-1] g *)
-    assert (G.(eq (mul g Bls12_381.Fr.(of_z (Z.pred order))) (G.negate g)))
+    assert (
+      G.(eq (mul g Mavryk_bls12_381.Fr.(of_z (Z.pred order))) (G.negate g)))
 
   (** Verify (-s) * g = s * (-g) *)
   let opposite_of_scalar_is_opposite_of_ec () =
-    let s = Bls12_381.Fr.random () in
+    let s = Mavryk_bls12_381.Fr.random () in
     let g = G.random () in
-    let left = G.mul g (Bls12_381.Fr.negate s) in
+    let left = G.mul g (Mavryk_bls12_381.Fr.negate s) in
     let right = G.mul (G.negate g) s in
     assert (G.eq left right)
 
@@ -303,16 +313,18 @@ end
 module Constructors = struct
   let test_value_in_fq12_but_not_in_prime_subgroup () =
     (* High probability a random point in Fq12 is not in the prime subgroup *)
-    let values = [Bls12_381.Fq12.zero; Bls12_381.Fq12.random ()] in
+    let values =
+      [Mavryk_bls12_381.Fq12.zero; Mavryk_bls12_381.Fq12.random ()]
+    in
     List.iter
       (fun x ->
-        let x_bytes = Bls12_381.Fq12.to_bytes x in
-        assert (not @@ Bls12_381.GT.check_bytes x_bytes) ;
-        assert (Option.is_none (Bls12_381.GT.of_bytes_opt x_bytes)) ;
+        let x_bytes = Mavryk_bls12_381.Fq12.to_bytes x in
+        assert (not @@ Mavryk_bls12_381.GT.check_bytes x_bytes) ;
+        assert (Option.is_none (Mavryk_bls12_381.GT.of_bytes_opt x_bytes)) ;
         try
-          ignore @@ Bls12_381.GT.of_bytes_exn x_bytes ;
+          ignore @@ Mavryk_bls12_381.GT.of_bytes_exn x_bytes ;
           assert false
-        with Bls12_381.GT.Not_in_group _ -> ())
+        with Mavryk_bls12_381.GT.Not_in_group _ -> ())
       values
 
   let get_tests () =
@@ -326,11 +338,11 @@ module Constructors = struct
       ] )
 end
 
-module ValueGeneration = MakeValueGeneration (Bls12_381.GT)
-module IsZero = MakeIsZero (Bls12_381.GT)
-module IsOne = MakeIsOne (Bls12_381.GT)
-module Equality = MakeEquality (Bls12_381.GT)
-module GroupProperties = MakeGroupProperties (Bls12_381.GT)
+module ValueGeneration = MakeValueGeneration (Mavryk_bls12_381.GT)
+module IsZero = MakeIsZero (Mavryk_bls12_381.GT)
+module IsOne = MakeIsOne (Mavryk_bls12_381.GT)
+module Equality = MakeEquality (Mavryk_bls12_381.GT)
+module GroupProperties = MakeGroupProperties (Mavryk_bls12_381.GT)
 
 let () =
   let open Alcotest in

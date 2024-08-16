@@ -1,4 +1,3 @@
-bls12-381	all	6
 mavkit-accuser-PtAtLas	exec	1
 mavkit-accuser-PtBoreas	exec	1
 mavkit-alcotezt	all	6
@@ -38,6 +37,7 @@ mavkit-smart-rollup-wasm-debugger-lib	all	2
 mavkit-smart-rollup-wasm-debugger-plugin	all	7
 mavkit-version	exec	5
 mavryk-benchmark	all	6
+mavryk-bls12-381	all	6
 mavryk-client-demo-counter	all	3
 mavryk-client-genesis	all	3
 mavryk-dac-client-lib	all	4
