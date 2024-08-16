@@ -48,21 +48,21 @@ let test_vectors =
   ]
 
 let random_z () =
-  let size = 1 + Random.int Bls12_381.Fr.size_in_bytes in
+  let size = 1 + Random.int Mavryk_bls12_381.Fr.size_in_bytes in
   let r = generate_random_bytes size in
-  Z.erem (Z.of_bits (Bytes.to_string r)) Bls12_381.Fr.order
+  Z.erem (Z.of_bits (Bytes.to_string r)) Mavryk_bls12_381.Fr.order
 
-module Tests = Ff_pbt.MakeAll (Bls12_381.Fr)
+module Tests = Ff_pbt.MakeAll (Mavryk_bls12_381.Fr)
 
 module Memory = struct
   let test_copy () =
-    let x = Bls12_381.Fr.random () in
-    let y = Bls12_381.Fr.copy x in
-    assert (Bls12_381.Fr.eq x y)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let y = Mavryk_bls12_381.Fr.copy x in
+    assert (Mavryk_bls12_381.Fr.eq x y)
 
   let test_size_in_memory () =
     match Sys.backend_type with
-    | Native | Bytecode -> assert (Bls12_381.Fr.size_in_memory = 48)
+    | Native | Bytecode -> assert (Mavryk_bls12_381.Fr.size_in_memory = 48)
     | Other _ ->
         (* Let's not make any assumption on other backends.*)
         (* With js_of_ocaml, [reachable_words] (used to compuite
@@ -81,110 +81,110 @@ end
 
 module InplaceOperations = struct
   let test_add_inplace () =
-    let x = Bls12_381.Fr.random () in
-    let y = Bls12_381.Fr.random () in
-    let res = Bls12_381.Fr.add x y in
-    let res2 = Bls12_381.Fr.(copy one) in
-    Bls12_381.Fr.add_inplace res2 x y ;
-    assert (Bls12_381.Fr.eq res res2)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let y = Mavryk_bls12_381.Fr.random () in
+    let res = Mavryk_bls12_381.Fr.add x y in
+    let res2 = Mavryk_bls12_381.Fr.(copy one) in
+    Mavryk_bls12_381.Fr.add_inplace res2 x y ;
+    assert (Mavryk_bls12_381.Fr.eq res res2)
 
   let test_double_inplace () =
-    let x = Bls12_381.Fr.random () in
-    let res = Bls12_381.Fr.double x in
-    let res2 = Bls12_381.Fr.(copy one) in
-    Bls12_381.Fr.double_inplace res2 x ;
-    assert (Bls12_381.Fr.eq res res2)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let res = Mavryk_bls12_381.Fr.double x in
+    let res2 = Mavryk_bls12_381.Fr.(copy one) in
+    Mavryk_bls12_381.Fr.double_inplace res2 x ;
+    assert (Mavryk_bls12_381.Fr.eq res res2)
 
   let test_square_inplace () =
-    let x = Bls12_381.Fr.random () in
-    let res = Bls12_381.Fr.square x in
-    let res2 = Bls12_381.Fr.(copy one) in
-    Bls12_381.Fr.square_inplace res2 x ;
-    assert (Bls12_381.Fr.eq res res2)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let res = Mavryk_bls12_381.Fr.square x in
+    let res2 = Mavryk_bls12_381.Fr.(copy one) in
+    Mavryk_bls12_381.Fr.square_inplace res2 x ;
+    assert (Mavryk_bls12_381.Fr.eq res res2)
 
   let test_negate_inplace () =
-    let x = Bls12_381.Fr.random () in
-    let res = Bls12_381.Fr.negate x in
-    let res2 = Bls12_381.Fr.(copy one) in
-    Bls12_381.Fr.negate_inplace res2 x ;
-    assert (Bls12_381.Fr.eq res res2)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let res = Mavryk_bls12_381.Fr.negate x in
+    let res2 = Mavryk_bls12_381.Fr.(copy one) in
+    Mavryk_bls12_381.Fr.negate_inplace res2 x ;
+    assert (Mavryk_bls12_381.Fr.eq res res2)
 
   let test_inverse_inplace () =
-    let x = Bls12_381.Fr.random () in
-    let res = Bls12_381.Fr.inverse_exn x in
-    let res2 = Bls12_381.Fr.(copy one) in
-    Bls12_381.Fr.inverse_exn_inplace res2 x ;
-    assert (Bls12_381.Fr.eq res res2)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let res = Mavryk_bls12_381.Fr.inverse_exn x in
+    let res2 = Mavryk_bls12_381.Fr.(copy one) in
+    Mavryk_bls12_381.Fr.inverse_exn_inplace res2 x ;
+    assert (Mavryk_bls12_381.Fr.eq res res2)
 
   let test_add_inplace_with_same_value () =
-    let x = Bls12_381.Fr.random () in
-    let res = Bls12_381.Fr.add x x in
-    let res2 = Bls12_381.Fr.(copy one) in
-    Bls12_381.Fr.add_inplace res2 x x ;
-    assert (Bls12_381.Fr.eq res res2)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let res = Mavryk_bls12_381.Fr.add x x in
+    let res2 = Mavryk_bls12_381.Fr.(copy one) in
+    Mavryk_bls12_381.Fr.add_inplace res2 x x ;
+    assert (Mavryk_bls12_381.Fr.eq res res2)
 
   let test_sub_inplace () =
-    let x = Bls12_381.Fr.random () in
-    let y = Bls12_381.Fr.random () in
-    let res = Bls12_381.Fr.sub x y in
-    let res2 = Bls12_381.Fr.(copy one) in
-    Bls12_381.Fr.sub_inplace res2 x y ;
-    assert (Bls12_381.Fr.eq res res2)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let y = Mavryk_bls12_381.Fr.random () in
+    let res = Mavryk_bls12_381.Fr.sub x y in
+    let res2 = Mavryk_bls12_381.Fr.(copy one) in
+    Mavryk_bls12_381.Fr.sub_inplace res2 x y ;
+    assert (Mavryk_bls12_381.Fr.eq res res2)
 
   let test_sub_inplace_with_same_value () =
-    let x = Bls12_381.Fr.random () in
-    let res = Bls12_381.Fr.sub x x in
-    let res2 = Bls12_381.Fr.(copy one) in
-    Bls12_381.Fr.sub_inplace res2 x x ;
-    assert (Bls12_381.Fr.eq res res2)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let res = Mavryk_bls12_381.Fr.sub x x in
+    let res2 = Mavryk_bls12_381.Fr.(copy one) in
+    Mavryk_bls12_381.Fr.sub_inplace res2 x x ;
+    assert (Mavryk_bls12_381.Fr.eq res res2)
 
   let test_sub_inplace_with_same_value_as_output () =
-    let x = Bls12_381.Fr.random () in
-    let y = Bls12_381.Fr.random () in
-    let res = Bls12_381.Fr.sub x y in
-    Bls12_381.Fr.sub_inplace x x y ;
-    assert (Bls12_381.Fr.eq x res)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let y = Mavryk_bls12_381.Fr.random () in
+    let res = Mavryk_bls12_381.Fr.sub x y in
+    Mavryk_bls12_381.Fr.sub_inplace x x y ;
+    assert (Mavryk_bls12_381.Fr.eq x res)
 
   let test_mul_inplace () =
-    let x = Bls12_381.Fr.random () in
-    let y = Bls12_381.Fr.random () in
-    let res = Bls12_381.Fr.mul x y in
-    let res2 = Bls12_381.Fr.(copy one) in
-    Bls12_381.Fr.mul_inplace res2 x y ;
-    assert (Bls12_381.Fr.eq res res2)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let y = Mavryk_bls12_381.Fr.random () in
+    let res = Mavryk_bls12_381.Fr.mul x y in
+    let res2 = Mavryk_bls12_381.Fr.(copy one) in
+    Mavryk_bls12_381.Fr.mul_inplace res2 x y ;
+    assert (Mavryk_bls12_381.Fr.eq res res2)
 
   let test_mul_inplace_with_same_value () =
-    let x = Bls12_381.Fr.random () in
-    let res = Bls12_381.Fr.mul x x in
-    let res2 = Bls12_381.Fr.(copy one) in
-    Bls12_381.Fr.mul_inplace res2 x x ;
-    assert (Bls12_381.Fr.eq res res2)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let res = Mavryk_bls12_381.Fr.mul x x in
+    let res2 = Mavryk_bls12_381.Fr.(copy one) in
+    Mavryk_bls12_381.Fr.mul_inplace res2 x x ;
+    assert (Mavryk_bls12_381.Fr.eq res res2)
 
   let test_add_inplace_with_same_value_as_output () =
-    let x = Bls12_381.Fr.random () in
-    let y = Bls12_381.Fr.random () in
-    let res = Bls12_381.Fr.add x y in
-    Bls12_381.Fr.add_inplace x x y ;
-    assert (Bls12_381.Fr.eq x res)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let y = Mavryk_bls12_381.Fr.random () in
+    let res = Mavryk_bls12_381.Fr.add x y in
+    Mavryk_bls12_381.Fr.add_inplace x x y ;
+    assert (Mavryk_bls12_381.Fr.eq x res)
 
   let test_mul_inplace_with_same_value_as_output () =
-    let x = Bls12_381.Fr.random () in
-    let y = Bls12_381.Fr.random () in
-    let res = Bls12_381.Fr.mul x y in
-    Bls12_381.Fr.mul_inplace x x y ;
-    assert (Bls12_381.Fr.eq x res)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let y = Mavryk_bls12_381.Fr.random () in
+    let res = Mavryk_bls12_381.Fr.mul x y in
+    Mavryk_bls12_381.Fr.mul_inplace x x y ;
+    assert (Mavryk_bls12_381.Fr.eq x res)
 
   let test_inverse_inplace_with_same_value_as_output () =
-    let x = Bls12_381.Fr.random () in
-    let res = Bls12_381.Fr.inverse_exn x in
-    Bls12_381.Fr.inverse_exn_inplace x x ;
-    assert (Bls12_381.Fr.eq x res)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let res = Mavryk_bls12_381.Fr.inverse_exn x in
+    Mavryk_bls12_381.Fr.inverse_exn_inplace x x ;
+    assert (Mavryk_bls12_381.Fr.eq x res)
 
   let test_negate_inplace_with_same_value_as_output () =
-    let x = Bls12_381.Fr.random () in
-    let res = Bls12_381.Fr.negate x in
-    Bls12_381.Fr.negate_inplace x x ;
-    assert (Bls12_381.Fr.eq x res)
+    let x = Mavryk_bls12_381.Fr.random () in
+    let res = Mavryk_bls12_381.Fr.negate x in
+    Mavryk_bls12_381.Fr.negate_inplace x x ;
+    assert (Mavryk_bls12_381.Fr.eq x res)
 
   let get_tests () =
     let txt = "Inplace operations" in
@@ -235,33 +235,38 @@ end
 
 module StringRepresentation = struct
   let test_to_string_one () =
-    assert (String.equal "1" (Bls12_381.Fr.to_string Bls12_381.Fr.one))
+    assert (
+      String.equal "1" (Mavryk_bls12_381.Fr.to_string Mavryk_bls12_381.Fr.one))
 
   let test_to_string_zero () =
-    assert (String.equal "0" (Bls12_381.Fr.to_string Bls12_381.Fr.zero))
+    assert (
+      String.equal "0" (Mavryk_bls12_381.Fr.to_string Mavryk_bls12_381.Fr.zero))
 
   let test_of_string_with_of_z () =
     List.iter
       (fun x ->
         assert (
-          Bls12_381.Fr.eq
-            (Bls12_381.Fr.of_string x)
-            (Bls12_381.Fr.of_z (Z.of_string x))))
+          Mavryk_bls12_381.Fr.eq
+            (Mavryk_bls12_381.Fr.of_string x)
+            (Mavryk_bls12_381.Fr.of_z (Z.of_string x))))
       test_vectors
 
   let test_of_string_to_string_consistency () =
     List.iter
       (fun x ->
         assert (
-          String.equal (Bls12_381.Fr.to_string (Bls12_381.Fr.of_string x)) x))
+          String.equal
+            (Mavryk_bls12_381.Fr.to_string (Mavryk_bls12_381.Fr.of_string x))
+            x))
       test_vectors
 
   let test_of_string_higher_than_the_modulus () =
     let x = random_z () in
     let x_str = Z.to_string x in
-    let x_plus_order = Z.(add x Bls12_381.Fr.order) in
+    let x_plus_order = Z.(add x Mavryk_bls12_381.Fr.order) in
     let x_plus_order_str = Z.to_string x_plus_order in
-    assert (Bls12_381.Fr.(eq (of_string x_str) (of_string x_plus_order_str)))
+    assert (
+      Mavryk_bls12_381.Fr.(eq (of_string x_str) (of_string x_plus_order_str)))
 
   let get_tests () =
     let open Alcotest in
@@ -286,31 +291,41 @@ end
 
 module ZRepresentation = struct
   let test_of_z_zero () =
-    assert (Bls12_381.Fr.eq Bls12_381.Fr.zero (Bls12_381.Fr.of_z Z.zero))
+    assert (
+      Mavryk_bls12_381.Fr.eq
+        Mavryk_bls12_381.Fr.zero
+        (Mavryk_bls12_381.Fr.of_z Z.zero))
 
   let test_of_z_one () =
     assert (
-      Bls12_381.Fr.eq Bls12_381.Fr.one (Bls12_381.Fr.of_z (Z.of_string "1")))
+      Mavryk_bls12_381.Fr.eq
+        Mavryk_bls12_381.Fr.one
+        (Mavryk_bls12_381.Fr.of_z (Z.of_string "1")))
 
   let test_random_of_z_and_to_z () =
-    let x = Bls12_381.Fr.random () in
-    assert (Bls12_381.Fr.eq x (Bls12_381.Fr.of_z (Bls12_381.Fr.to_z x)))
+    let x = Mavryk_bls12_381.Fr.random () in
+    assert (
+      Mavryk_bls12_381.Fr.eq
+        x
+        (Mavryk_bls12_381.Fr.of_z (Mavryk_bls12_381.Fr.to_z x)))
 
   let test_random_to_z_and_of_z () =
     let x = random_z () in
-    assert (Z.equal (Bls12_381.Fr.to_z (Bls12_381.Fr.of_z x)) x)
+    assert (Z.equal (Mavryk_bls12_381.Fr.to_z (Mavryk_bls12_381.Fr.of_z x)) x)
 
   let test_random_of_z_higher_than_modulo () =
     (* Verify of_z uses the modulo of the parameter (and therefore accepts value
        higher than the order) *)
     let x = random_z () in
-    let x_plus_order = Z.(add x Bls12_381.Fr.order) in
-    assert (Bls12_381.Fr.(eq (of_z x) (of_z x_plus_order)))
+    let x_plus_order = Z.(add x Mavryk_bls12_381.Fr.order) in
+    assert (Mavryk_bls12_381.Fr.(eq (of_z x) (of_z x_plus_order)))
 
   let test_vectors_to_z_and_of_z () =
     let test_vectors = List.map Z.of_string test_vectors in
     List.iter
-      (fun x -> assert (Z.equal (Bls12_381.Fr.to_z (Bls12_381.Fr.of_z x)) x))
+      (fun x ->
+        assert (
+          Z.equal (Mavryk_bls12_381.Fr.to_z (Mavryk_bls12_381.Fr.of_z x)) x))
       test_vectors
 
   let get_tests () =
@@ -343,50 +358,50 @@ module BytesRepresentation = struct
     (* Pad zarith repr *)
     let r_z = random_z () in
     let bytes_z = Bytes.of_string (Z.to_bits r_z) in
-    let bytes = Bytes.make Bls12_381.Fr.size_in_bytes '\000' in
+    let bytes = Bytes.make Mavryk_bls12_381.Fr.size_in_bytes '\000' in
     Bytes.blit bytes_z 0 bytes 0 (Bytes.length bytes_z) ;
     assert (
-      Bls12_381.Fr.eq
-        (Bls12_381.Fr.of_bytes_exn bytes)
-        (Bls12_381.Fr.of_string (Z.to_string r_z))) ;
-    let r = Bls12_381.Fr.random () in
+      Mavryk_bls12_381.Fr.eq
+        (Mavryk_bls12_381.Fr.of_bytes_exn bytes)
+        (Mavryk_bls12_381.Fr.of_string (Z.to_string r_z))) ;
+    let r = Mavryk_bls12_381.Fr.random () in
     (* Use Fr repr *)
-    let bytes_r = Bls12_381.Fr.to_bytes r in
+    let bytes_r = Mavryk_bls12_381.Fr.to_bytes r in
     (* Use the Fr repr to convert in a Z element *)
     let z_r = Z.of_bits (Bytes.to_string bytes_r) in
     (* We should get the same value, using both ways *)
-    assert (Z.equal z_r (Bls12_381.Fr.to_z r)) ;
-    assert (Bls12_381.Fr.(eq (of_z z_r) r))
+    assert (Z.equal z_r (Mavryk_bls12_381.Fr.to_z r)) ;
+    assert (Mavryk_bls12_381.Fr.(eq (of_z z_r) r))
 
   let test_padding_is_done_automatically_with_of_bytes () =
     let z = Z.of_string "32343543534" in
     let z_bytes = Bytes.of_string (Z.to_bits z) in
     (* Checking we are in the case requiring a padding *)
-    assert (Bytes.length z_bytes < Bls12_381.Fr.size_in_bytes) ;
+    assert (Bytes.length z_bytes < Mavryk_bls12_381.Fr.size_in_bytes) ;
     (* Should not raise an exception *)
-    let e = Bls12_381.Fr.of_bytes_exn z_bytes in
+    let e = Mavryk_bls12_381.Fr.of_bytes_exn z_bytes in
     (* Should not be an option *)
-    assert (Option.is_some (Bls12_381.Fr.of_bytes_opt z_bytes)) ;
+    assert (Option.is_some (Mavryk_bls12_381.Fr.of_bytes_opt z_bytes)) ;
     (* Equality in Fr should be fine (require to check to verify the internal
        representation is the same). In the current implementation, we verify the
        internal representation is the padded version. *)
-    assert (Bls12_381.Fr.(eq (of_z z) e)) ;
+    assert (Mavryk_bls12_381.Fr.(eq (of_z z) e)) ;
     (* And as zarith elements, we also have the equality *)
-    assert (Z.equal (Bls12_381.Fr.to_z e) z)
+    assert (Z.equal (Mavryk_bls12_381.Fr.to_z e) z)
 
   let test_of_bytes_exn_and_opt_do_not_accept_elements_higher_than_the_modulus
       () =
-    (* last byte of Bls12_381.Fr.order is 115 *)
+    (* last byte of Mavryk_bls12_381.Fr.order is 115 *)
     let r =
       Bytes.init 32 (fun i ->
           char_of_int
           @@ if i = 31 then 116 + Random.int (256 - 116) else Random.int 256)
     in
-    assert (Option.is_none (Bls12_381.Fr.of_bytes_opt r)) ;
+    assert (Option.is_none (Mavryk_bls12_381.Fr.of_bytes_opt r)) ;
     try
-      ignore @@ Bls12_381.Fr.of_bytes_exn r ;
+      ignore @@ Mavryk_bls12_381.Fr.of_bytes_exn r ;
       assert false
-    with Bls12_381.Fr.Not_in_field _ -> ()
+    with Mavryk_bls12_381.Fr.Not_in_field _ -> ()
 
   let get_tests () =
     let open Alcotest in
@@ -439,37 +454,39 @@ module TestVector = struct
     List.iter
       (fun (e, i) ->
         assert (
-          Bls12_381.Fr.eq
-            (Bls12_381.Fr.inverse_exn (Bls12_381.Fr.of_string e))
-            (Bls12_381.Fr.of_string i)))
+          Mavryk_bls12_381.Fr.eq
+            (Mavryk_bls12_381.Fr.inverse_exn (Mavryk_bls12_381.Fr.of_string e))
+            (Mavryk_bls12_381.Fr.of_string i)))
       test_vectors ;
     List.iter
       (fun (e, i) ->
         assert (
-          Bls12_381.Fr.eq
-            (Bls12_381.Fr.inverse_exn (Bls12_381.Fr.of_string i))
-            (Bls12_381.Fr.of_string e)))
+          Mavryk_bls12_381.Fr.eq
+            (Mavryk_bls12_381.Fr.inverse_exn (Mavryk_bls12_381.Fr.of_string i))
+            (Mavryk_bls12_381.Fr.of_string e)))
       test_vectors
 
   let test_add_bulk () =
     let n = 10 + Random.int 1_000 in
-    let xs = List.init n (fun _ -> Bls12_381.Fr.random ()) in
+    let xs = List.init n (fun _ -> Mavryk_bls12_381.Fr.random ()) in
     assert (
-      Bls12_381.Fr.(
+      Mavryk_bls12_381.Fr.(
         eq
-          (List.fold_left Bls12_381.Fr.add Bls12_381.Fr.zero xs)
-          (Bls12_381.Fr.add_bulk xs)))
+          (List.fold_left Mavryk_bls12_381.Fr.add Mavryk_bls12_381.Fr.zero xs)
+          (Mavryk_bls12_381.Fr.add_bulk xs)))
 
   let test_mul_bulk () =
     let n = 10 + Random.int 1_000 in
-    let xs = List.init n (fun _ -> Bls12_381.Fr.random ()) in
-    let left = List.fold_left Bls12_381.Fr.mul Bls12_381.Fr.one xs in
-    let right = Bls12_381.Fr.mul_bulk xs in
-    if not @@ Bls12_381.Fr.(eq left right) then
+    let xs = List.init n (fun _ -> Mavryk_bls12_381.Fr.random ()) in
+    let left =
+      List.fold_left Mavryk_bls12_381.Fr.mul Mavryk_bls12_381.Fr.one xs
+    in
+    let right = Mavryk_bls12_381.Fr.mul_bulk xs in
+    if not @@ Mavryk_bls12_381.Fr.(eq left right) then
       Alcotest.failf
         "Expected result %s, computed %s\n"
-        (Bls12_381.Fr.to_string left)
-        (Bls12_381.Fr.to_string right)
+        (Mavryk_bls12_381.Fr.to_string left)
+        (Mavryk_bls12_381.Fr.to_string right)
 
   let test_add () =
     let test_vectors =
@@ -495,20 +512,20 @@ module TestVector = struct
     List.iter
       (fun (e1, e2, expected_result) ->
         assert (
-          Bls12_381.Fr.eq
-            (Bls12_381.Fr.add
-               (Bls12_381.Fr.of_string e1)
-               (Bls12_381.Fr.of_string e2))
-            (Bls12_381.Fr.of_string expected_result)))
+          Mavryk_bls12_381.Fr.eq
+            (Mavryk_bls12_381.Fr.add
+               (Mavryk_bls12_381.Fr.of_string e1)
+               (Mavryk_bls12_381.Fr.of_string e2))
+            (Mavryk_bls12_381.Fr.of_string expected_result)))
       test_vectors ;
     List.iter
       (fun (e1, e2, expected_result) ->
         assert (
-          Bls12_381.Fr.eq
-            (Bls12_381.Fr.add
-               (Bls12_381.Fr.of_string e2)
-               (Bls12_381.Fr.of_string e1))
-            (Bls12_381.Fr.of_string expected_result)))
+          Mavryk_bls12_381.Fr.eq
+            (Mavryk_bls12_381.Fr.add
+               (Mavryk_bls12_381.Fr.of_string e2)
+               (Mavryk_bls12_381.Fr.of_string e1))
+            (Mavryk_bls12_381.Fr.of_string expected_result)))
       test_vectors
 
   let test_mul () =
@@ -535,20 +552,20 @@ module TestVector = struct
     List.iter
       (fun (e1, e2, expected_result) ->
         assert (
-          Bls12_381.Fr.eq
-            (Bls12_381.Fr.mul
-               (Bls12_381.Fr.of_string e1)
-               (Bls12_381.Fr.of_string e2))
-            (Bls12_381.Fr.of_string expected_result)))
+          Mavryk_bls12_381.Fr.eq
+            (Mavryk_bls12_381.Fr.mul
+               (Mavryk_bls12_381.Fr.of_string e1)
+               (Mavryk_bls12_381.Fr.of_string e2))
+            (Mavryk_bls12_381.Fr.of_string expected_result)))
       test_vectors ;
     List.iter
       (fun (e1, e2, expected_result) ->
         assert (
-          Bls12_381.Fr.eq
-            (Bls12_381.Fr.mul
-               (Bls12_381.Fr.of_string e2)
-               (Bls12_381.Fr.of_string e1))
-            (Bls12_381.Fr.of_string expected_result)))
+          Mavryk_bls12_381.Fr.eq
+            (Mavryk_bls12_381.Fr.mul
+               (Mavryk_bls12_381.Fr.of_string e2)
+               (Mavryk_bls12_381.Fr.of_string e1))
+            (Mavryk_bls12_381.Fr.of_string expected_result)))
       test_vectors
 
   let test_opposite () =
@@ -571,16 +588,17 @@ module TestVector = struct
     List.iter
       (fun (e1, expected_result) ->
         assert (
-          Bls12_381.Fr.eq
-            (Bls12_381.Fr.negate (Bls12_381.Fr.of_string e1))
-            (Bls12_381.Fr.of_string expected_result)))
+          Mavryk_bls12_381.Fr.eq
+            (Mavryk_bls12_381.Fr.negate (Mavryk_bls12_381.Fr.of_string e1))
+            (Mavryk_bls12_381.Fr.of_string expected_result)))
       test_vectors ;
     List.iter
       (fun (e1, expected_result) ->
         assert (
-          Bls12_381.Fr.eq
-            (Bls12_381.Fr.negate (Bls12_381.Fr.of_string expected_result))
-            (Bls12_381.Fr.of_string e1)))
+          Mavryk_bls12_381.Fr.eq
+            (Mavryk_bls12_381.Fr.negate
+               (Mavryk_bls12_381.Fr.of_string expected_result))
+            (Mavryk_bls12_381.Fr.of_string e1)))
       test_vectors
 
   let test_pow () =
@@ -607,9 +625,11 @@ module TestVector = struct
     List.iter
       (fun (x, e, expected_result) ->
         assert (
-          Bls12_381.Fr.eq
-            (Bls12_381.Fr.pow (Bls12_381.Fr.of_string x) (Z.of_string e))
-            (Bls12_381.Fr.of_string expected_result)))
+          Mavryk_bls12_381.Fr.eq
+            (Mavryk_bls12_381.Fr.pow
+               (Mavryk_bls12_381.Fr.of_string x)
+               (Z.of_string e))
+            (Mavryk_bls12_381.Fr.of_string expected_result)))
       test_vectors
 
   let get_tests () =
@@ -628,58 +648,58 @@ end
 
 module OCamlComparisonOperators = struct
   let test_fr_equal_with_same_random_element () =
-    let x = Bls12_381.Fr.random () in
+    let x = Mavryk_bls12_381.Fr.random () in
     if not (x = x) then
       Alcotest.failf
         "(=) Expected comparison on the same random element must be true, got \
          false"
 
   let test_fr_equal_with_zero () =
-    if not (Bls12_381.Fr.zero = Bls12_381.Fr.zero) then
+    if not (Mavryk_bls12_381.Fr.zero = Mavryk_bls12_381.Fr.zero) then
       Alcotest.failf "(=) Expected comparison on zero must be true, got false"
 
   let test_fr_equal_with_one () =
-    if not (Bls12_381.Fr.one = Bls12_381.Fr.one) then
+    if not (Mavryk_bls12_381.Fr.one = Mavryk_bls12_381.Fr.one) then
       Alcotest.failf "(=) Expected comparison on one must be true, got false"
 
   let test_fr_equality_failing_test_with_random () =
-    let x = Bls12_381.Fr.random () in
-    let y = Bls12_381.Fr.(x + one) in
+    let x = Mavryk_bls12_381.Fr.random () in
+    let y = Mavryk_bls12_381.Fr.(x + one) in
     if x = y then
       Alcotest.failf
         "(=) Expected comparison on a random element and its successor must be \
          false, got true"
 
   let test_fr_different_failing_test_with_same_random_element () =
-    let x = Bls12_381.Fr.random () in
+    let x = Mavryk_bls12_381.Fr.random () in
     if x != x then
       Alcotest.failf
         "(!=) Expected comparison on a random element must be false, got true"
 
   let test_fr_zero_is_smaller_than_one () =
-    if not (Bls12_381.Fr.zero < Bls12_381.Fr.one) then
+    if not (Mavryk_bls12_381.Fr.zero < Mavryk_bls12_381.Fr.one) then
       Alcotest.failf "(<) zero is expected to be smaller than one"
 
   let test_fr_zero_is_not_greater_than_one () =
-    if Bls12_381.Fr.zero > Bls12_381.Fr.one then
+    if Mavryk_bls12_381.Fr.zero > Mavryk_bls12_381.Fr.one then
       Alcotest.failf "(>) zero is not expected to be greater than one"
 
   let test_fr_one_is_greater_than_zero () =
-    if not (Bls12_381.Fr.one > Bls12_381.Fr.zero) then
+    if not (Mavryk_bls12_381.Fr.one > Mavryk_bls12_381.Fr.zero) then
       Alcotest.failf "(>) one is expected to be greater than zero"
 
   let test_fr_one_is_not_smaller_than_zero () =
-    if Bls12_381.Fr.one < Bls12_381.Fr.zero then
+    if Mavryk_bls12_381.Fr.one < Mavryk_bls12_381.Fr.zero then
       Alcotest.failf "(<) one is not expected to be smaller than zero"
 
   let test_fr_successor_is_greater () =
-    let x = Bls12_381.Fr.random () in
-    if not (Bls12_381.Fr.(x + one) > x) then
+    let x = Mavryk_bls12_381.Fr.random () in
+    if not (Mavryk_bls12_381.Fr.(x + one) > x) then
       Alcotest.failf "(>) the successor of an element is expected to be greater"
 
   let test_fr_random_element_is_smaller_than_its_successor () =
-    let x = Bls12_381.Fr.random () in
-    if not (x < Bls12_381.Fr.(x + one)) then
+    let x = Mavryk_bls12_381.Fr.random () in
+    if not (x < Mavryk_bls12_381.Fr.(x + one)) then
       Alcotest.failf
         "(<) a random element (when smaller than order - 1) is smaller than \
          its succesor"
@@ -725,19 +745,19 @@ end
 module InnerProduct = struct
   let test_random_elements () =
     let n = 1 + Random.int 1000 in
-    let a = Array.init n (fun _ -> Bls12_381.Fr.random ()) in
-    let b = Array.init n (fun _ -> Bls12_381.Fr.random ()) in
+    let a = Array.init n (fun _ -> Mavryk_bls12_381.Fr.random ()) in
+    let b = Array.init n (fun _ -> Mavryk_bls12_381.Fr.random ()) in
     let exp_res =
       Array.fold_left
-        Bls12_381.Fr.add
-        Bls12_381.Fr.zero
-        (Array.map2 Bls12_381.Fr.mul a b)
+        Mavryk_bls12_381.Fr.add
+        Mavryk_bls12_381.Fr.zero
+        (Array.map2 Mavryk_bls12_381.Fr.mul a b)
     in
-    let res_exn = Bls12_381.Fr.inner_product_exn a b in
-    let res_opt = Bls12_381.Fr.inner_product_opt a b in
+    let res_exn = Mavryk_bls12_381.Fr.inner_product_exn a b in
+    let res_opt = Mavryk_bls12_381.Fr.inner_product_opt a b in
     assert (Option.is_some res_opt) ;
-    assert (Bls12_381.Fr.eq exp_res res_exn) ;
-    assert (Bls12_381.Fr.eq exp_res (Option.get res_opt))
+    assert (Mavryk_bls12_381.Fr.eq exp_res res_exn) ;
+    assert (Mavryk_bls12_381.Fr.eq exp_res (Option.get res_opt))
 
   let get_tests () =
     let open Alcotest in
@@ -753,25 +773,25 @@ end
 module AdditionalConstructors = struct
   let test_positive_values_as_documented () =
     let n = Random.int 1_000_000 in
-    let n_fr = Bls12_381.Fr.of_int n in
-    assert (Bls12_381.Fr.(eq (of_z (Z.of_int n)) n_fr))
+    let n_fr = Mavryk_bls12_381.Fr.of_int n in
+    assert (Mavryk_bls12_381.Fr.(eq (of_z (Z.of_int n)) n_fr))
 
   let test_positive_values_use_decimal_representation () =
     let n = Random.int 1_000_000 in
-    let n_fr = Bls12_381.Fr.of_int n in
-    assert (String.equal (Bls12_381.Fr.to_string n_fr) (string_of_int n))
+    let n_fr = Mavryk_bls12_381.Fr.of_int n in
+    assert (String.equal (Mavryk_bls12_381.Fr.to_string n_fr) (string_of_int n))
 
   let test_negative_values_as_documented () =
     let n = -Random.int 1_000_000 in
-    let n_fr = Bls12_381.Fr.of_int n in
-    assert (Bls12_381.Fr.(eq (of_z (Z.of_int n)) n_fr))
+    let n_fr = Mavryk_bls12_381.Fr.of_int n in
+    assert (Mavryk_bls12_381.Fr.(eq (of_z (Z.of_int n)) n_fr))
 
   let test_negative_values_use_decimal_representation () =
     let n = -Random.int 1_000_000 in
-    let n_fr = Bls12_381.Fr.of_int n in
-    let res = Bls12_381.Fr.to_string n_fr in
-    let exp_res_z = Z.(add Bls12_381.Fr.order (of_int n)) in
-    let exp_res = Bls12_381.Fr.(to_string (of_z exp_res_z)) in
+    let n_fr = Mavryk_bls12_381.Fr.of_int n in
+    let res = Mavryk_bls12_381.Fr.to_string n_fr in
+    let exp_res_z = Z.(add Mavryk_bls12_381.Fr.order (of_int n)) in
+    let exp_res = Mavryk_bls12_381.Fr.(to_string (of_z exp_res_z)) in
     assert (String.equal res exp_res)
 
   let get_tests () =

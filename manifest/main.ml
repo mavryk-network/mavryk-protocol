@@ -87,7 +87,7 @@ let () =
       mavkit_test_helpers |> open_;
       tezt_wrapper |> open_ |> open_ ~m:"Base";
       str;
-      bls12_381;
+      mavryk_bls12_381;
       tezt_mavryk |> open_ |> open_ ~m:"Runnable.Syntax";
       Mavkit.tezt_risc_v_sandbox;
       tezt_tx_kernel;

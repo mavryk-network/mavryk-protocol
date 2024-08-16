@@ -133,7 +133,7 @@ module Kzg_pack_impl = struct
       Plonk.List.mapn Commitment.recombine_prover_aux prover_aux_list_list
     in
     (* [cmts_list] is a list of G1.t SMap.t, containing the PC commitments to
-       every polynomial (note that PC.Commitment.t = Bls12_381.G1.t SMap.t) *)
+       every polynomial (note that PC.Commitment.t = Mavryk_bls12_381.G1.t SMap.t) *)
     let cmts_list =
       List.map
         (fun (cmts, _prover_aux) ->

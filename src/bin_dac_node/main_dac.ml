@@ -71,7 +71,7 @@ let mv4_address_parameter =
       let open Lwt_result_syntax in
       let*? bls_pkh = Signature.Bls.Public_key_hash.of_b58check s in
       let pkh : Mavryk_crypto.Aggregate_signature.public_key_hash =
-        Mavryk_crypto.Aggregate_signature.Bls12_381 bls_pkh
+        Mavryk_crypto.Aggregate_signature.Mavryk_bls12_381 bls_pkh
       in
       return pkh)
 

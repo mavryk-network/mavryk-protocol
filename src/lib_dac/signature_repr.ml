@@ -48,9 +48,9 @@ let encoding =
     [Aggregate_signature.t] always corresponds to [Unknown] variant. 
     
     Motivation: 
-    [Aggregate_signature.t] has two variants: [Bls12_381 of Bls.t] and
+    [Aggregate_signature.t] has two variants: [Mavryk_bls12_381 of Bls.t] and
     [Unknown of Bytes.t]. Their binary repr is exactly the same. In json though,
-    the encoding adds a prefix. For [Bls12_381] variant it adds the "BLsig"
+    the encoding adds a prefix. For [Mavryk_bls12_381] variant it adds the "BLsig"
     prefix and for [Unknown] variant it adds the "asig" prefix.
     In practice this means that when signature is computed by Committee member,
     it will have "Blsig" json prefix. When read by Coordinator from the store,
@@ -60,7 +60,7 @@ let ensure_unknown_sig_variant signature =
   let open Mavryk_crypto.Aggregate_signature in
   match signature with
   | Unknown _ as unknown -> unknown
-  | Bls12_381 _ as bls -> Unknown (to_bytes bls)
+  | Mavryk_bls12_381 _ as bls -> Unknown (to_bytes bls)
 
 let make root_hash signature signer_pkh =
   {root_hash; signature = ensure_unknown_sig_variant signature; signer_pkh}

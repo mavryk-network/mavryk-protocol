@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type scalar = Bls12_381.Fr.t
+type scalar = Mavryk_bls12_381.Fr.t
 
 module Internal_for_tests : sig
   module Polynomial_unsafe :
@@ -73,10 +73,14 @@ module type Srs_sig = Srs.S with type polynomial = Polynomial.t
 
 module Srs : sig
   module Srs_g1 :
-    Srs.S with type polynomial = Polynomial.t and type elt = Bls12_381.G1.t
+    Srs.S
+      with type polynomial = Polynomial.t
+       and type elt = Mavryk_bls12_381.G1.t
 
   module Srs_g2 :
-    Srs.S with type polynomial = Polynomial.t and type elt = Bls12_381.G2.t
+    Srs.S
+      with type polynomial = Polynomial.t
+       and type elt = Mavryk_bls12_381.G2.t
 
   type t = Srs_g1.t * Srs_g2.t
 
@@ -92,12 +96,12 @@ end
 
 module G1_carray :
   Ec_carray.EC_carray_sig
-    with type elt = Bls12_381.G1.t
+    with type elt = Mavryk_bls12_381.G1.t
      and type domain = Domain.t
      and type evaluations = Evaluations.t
 
 module G2_carray :
   Ec_carray.EC_carray_sig
-    with type elt = Bls12_381.G2.t
+    with type elt = Mavryk_bls12_381.G2.t
      and type domain = Domain.t
      and type evaluations = Evaluations.t

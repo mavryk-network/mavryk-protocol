@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Fr = Bls12_381.Fr
+module Fr = Mavryk_bls12_381.Fr
 
 module Stubs = struct
   type fr = Fr.t
@@ -58,7 +58,7 @@ module Stubs = struct
 end
 
 module Domain_impl = struct
-  type scalar = Bls12_381.Fr.t
+  type scalar = Mavryk_bls12_381.Fr.t
 
   type t = Fr_carray.t [@@deriving repr]
 
@@ -164,7 +164,8 @@ module type Domain_unsafe_sig = sig
   val of_carray : Fr_carray.t -> t
 end
 
-module Domain_unsafe : Domain_unsafe_sig with type scalar = Bls12_381.Fr.t =
+module Domain_unsafe :
+  Domain_unsafe_sig with type scalar = Mavryk_bls12_381.Fr.t =
   Domain_impl
 
 include (

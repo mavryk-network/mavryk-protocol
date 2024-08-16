@@ -970,7 +970,7 @@
   },
   {
     "file": "src/lib_crypto/test/test_run.ml",
-    "title": "tezos-crypto: bls12_381-encodings (b58 pkh encodings)",
+    "title": "tezos-crypto: mavryk_bls12_381-encodings (b58 pkh encodings)",
     "tags": [
       "alcotezt",
       "slow"

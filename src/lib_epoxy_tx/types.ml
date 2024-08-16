@@ -174,7 +174,7 @@ module P = struct
 
     let op_code = Bounded.make ~bound:Bound.max_op_code Z.zero
 
-    let root = Bls12_381.Fr.random ()
+    let root = Mavryk_bls12_381.Fr.random ()
 
     let sk = Curve.Scalar.random ()
 
@@ -194,7 +194,10 @@ module P = struct
       {pk; tez_balance = balance; cnt; tickets_root = root}
 
     let proof depth : proof =
-      {path = List.init depth (fun _ -> (Bls12_381.Fr.random (), true)); root}
+      {
+        path = List.init depth (fun _ -> (Mavryk_bls12_381.Fr.random (), true));
+        root;
+      }
 
     let account_tree_el : account_tree_el =
       {

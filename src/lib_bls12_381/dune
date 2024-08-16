@@ -2,8 +2,8 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name bls12_381)
- (public_name bls12-381)
+ (name mavryk_bls12_381)
+ (public_name mavryk-bls12-381)
  (instrumentation (backend bisect_ppx))
  (libraries
   integers
@@ -13,7 +13,7 @@
   hex)
  (js_of_ocaml (javascript_files runtime_helper.js blst_bindings_stubs.js))
  (library_flags (:standard -linkall))
- (modules bls12_381 ff_sig fr fq12 g1 g2 gt pairing fq fq2)
+ (modules mavryk_bls12_381 ff_sig fr fq12 g1 g2 gt pairing fq fq2)
  (private_modules fq fq2)
  (foreign_archives blst)
  (foreign_stubs
@@ -99,4 +99,4 @@
   blst_misc.h
   caml_bls12_381_stubs.h)
  (section lib)
- (package bls12-381))
+ (package mavryk-bls12-381))

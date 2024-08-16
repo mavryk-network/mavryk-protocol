@@ -2716,7 +2716,7 @@
       "regression",
       "add",
       "admin_client",
-      "bls12_381",
+      "mavryk_bls12_381",
       "client",
       "contract",
       "crypto",

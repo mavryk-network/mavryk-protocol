@@ -7,6 +7,6 @@
  (instrumentation (backend bisect_ppx))
  (libraries
   alcotest
-  bls12-381
+  mavryk-bls12-381
   bigarray-compat
   eqaf))

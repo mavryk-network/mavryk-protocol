@@ -8,15 +8,15 @@ module Stubs = struct
     nb_full_rounds:int ->
     nb_partial_rounds:int ->
     batch_size:int ->
-    ark:Bls12_381.Fr.t array ->
-    mds:Bls12_381.Fr.t array array ->
+    ark:Mavryk_bls12_381.Fr.t array ->
+    mds:Mavryk_bls12_381.Fr.t array array ->
     ctxt
     = "caml_bls12_381_hash_poseidon_allocate_ctxt_stubs_bytecode" "caml_bls12_381_hash_poseidon_allocate_ctxt_stubs"
 
-  external get_state : Bls12_381.Fr.t array -> ctxt -> unit
+  external get_state : Mavryk_bls12_381.Fr.t array -> ctxt -> unit
     = "caml_bls12_381_hash_poseidon_get_state_stubs"
 
-  external set_state : ctxt -> Bls12_381.Fr.t array -> unit
+  external set_state : ctxt -> Mavryk_bls12_381.Fr.t array -> unit
     = "caml_bls12_381_hash_poseidon_set_state_stubs"
 
   external get_state_size : ctxt -> int
@@ -32,8 +32,8 @@ module Parameters = struct
     nb_of_partial_rounds : int;
     nb_of_full_rounds : int;
     batch_size : int;
-    round_constants : Bls12_381.Fr.t array;
-    linear_layer : Bls12_381.Fr.t array array;
+    round_constants : Mavryk_bls12_381.Fr.t array;
+    linear_layer : Mavryk_bls12_381.Fr.t array array;
   }
 
   (* Generated with the command below from ocaml-ec commit
@@ -236,7 +236,7 @@ module Parameters = struct
       "32522116151199401996556140465344290516461661003004520182401454275644784968841";
       "35709586671485611381280332540710898003892567989895109778435218770617343891091";
     |]
-    |> Array.map Bls12_381.Fr.of_string
+    |> Array.map Mavryk_bls12_381.Fr.of_string
 
   (* Generated with the command below from ocaml-ec commit
      cd13dd0e984a4eeadd82e0ac4ce792c275bd3b18 [sage generate_mds.sage 3
@@ -260,7 +260,7 @@ module Parameters = struct
         "46564571507606908377998846740442910952080430324196357605862207064906809134438";
       |];
     |]
-    |> Array.map (Array.map Bls12_381.Fr.of_string)
+    |> Array.map (Array.map Mavryk_bls12_381.Fr.of_string)
 
   let security_128_state_size_3 =
     {
@@ -1236,7 +1236,7 @@ module Parameters = struct
       "8206746691969770388090261805798801614135957851585811798250200766530283892894";
       "8853211220347505554369001872046201218026106125304684911336722654414177119527";
     |]
-    |> Array.map Bls12_381.Fr.of_string
+    |> Array.map Mavryk_bls12_381.Fr.of_string
 
   (* Come from https://github.com/dusk-network/Hades252/tree/7a7a255f6cc48f892de5cf8935b5264eb8893852/assets *)
   let state_size_256_5_mds =
@@ -1277,7 +1277,7 @@ module Parameters = struct
         "37141785804861502213823474505076128362854142474564156061360245762114092148579";
       |];
     |]
-    |> Array.map (Array.map Bls12_381.Fr.of_string)
+    |> Array.map (Array.map Mavryk_bls12_381.Fr.of_string)
 
   let security_256_state_size_5 =
     {
@@ -1317,7 +1317,8 @@ let allocate_ctxt parameters =
         arc_full_round_end;
         (* Adding dummy constants, zeroes, for the last round as we apply the
            round key at the end of a full round. *)
-        Array.init parameters.state_size (fun _ -> Bls12_381.Fr.(copy zero));
+        Array.init parameters.state_size (fun _ ->
+            Mavryk_bls12_381.Fr.(copy zero));
       ]
   in
   let mds_nb_rows = Array.length parameters.linear_layer in
@@ -1351,7 +1352,9 @@ let set_state ctxt state =
 
 let get_state ctxt =
   let state_size = Stubs.get_state_size ctxt in
-  let state = Array.init state_size (fun _ -> Bls12_381.Fr.(copy zero)) in
+  let state =
+    Array.init state_size (fun _ -> Mavryk_bls12_381.Fr.(copy zero))
+  in
   Stubs.get_state state ctxt ;
   state
 

@@ -12,7 +12,7 @@
   generate_hash_to_curve_vectors)
  (libraries
   hex
-  bls12-381)
+  mavryk-bls12-381)
  (modules
   generate_pairing_vectors
   generate_miller_loop_vectors

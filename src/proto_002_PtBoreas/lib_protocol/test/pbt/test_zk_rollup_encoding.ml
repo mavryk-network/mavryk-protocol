@@ -43,7 +43,7 @@ let gen_zkr_address =
   Zk_rollup_repr.Address.of_bytes_exn bytes
 
 let gen_scalar =
-  let s = Bls12_381.Fr.random () in
+  let s = Mavryk_bls12_381.Fr.random () in
   Gen.return s
 
 let gen_l2_state =

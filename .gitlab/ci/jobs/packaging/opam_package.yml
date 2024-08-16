@@ -1,70 +1,6 @@
 # This file was automatically generated, do not edit.
 # Edit file ci/bin/main.ml instead.
 
-opam:bls12-381:
-  image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
-  stage: packaging
-  tags:
-  - saas-linux-2xlarge-amd64
-  rules:
-  - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
-    when: delayed
-    start_in: 6 minutes
-  - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
-    when: delayed
-    start_in: 6 minutes
-  - changes:
-    - '**/dune'
-    - '**/dune.inc'
-    - '**/*.dune.inc'
-    - '**/dune-project'
-    - '**/dune-workspace'
-    - '**/*.opam'
-    - .gitlab/ci/jobs/packaging/opam:prepare.yml
-    - .gitlab/ci/jobs/packaging/opam_package.yml
-    - manifest/manifest.ml
-    - manifest/main.ml
-    - scripts/opam-prepare-repo.sh
-    - scripts/version.sh
-    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
-    when: delayed
-    start_in: 6 minutes
-  - when: never
-  needs:
-  - opam:prepare
-  dependencies:
-  - opam:prepare
-  cache:
-    key: opam-sccache
-    paths:
-    - _build/_sccache
-  before_script:
-  - eval $(opam env)
-  - mkdir -p $CI_PROJECT_DIR/opam_logs
-  - . ./scripts/ci/sccache-start.sh
-  script:
-  - opam remote add dev-repo ./_opam-repo-for-release
-  - opam install --yes ${package}.dev
-  - opam reinstall --yes --with-test ${package}.dev
-  after_script:
-  - sccache --stop-server || true
-  - eval $(opam env)
-  - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
-  variables:
-    RUNTEZTALIAS: "true"
-    package: bls12-381
-    SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
-    RUSTC_WRAPPER: sccache
-    SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
-    SCCACHE_IDLE_TIMEOUT: "0"
-    SCCACHE_LOG: debug
-  artifacts:
-    expire_in: 1 week
-    paths:
-    - opam_logs/
-    when: always
-  retry: 2
-
 opam:mavkit-accuser-PtAtLas:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
@@ -2549,6 +2485,70 @@ opam:mavryk-benchmark:
   variables:
     RUNTEZTALIAS: "true"
     package: mavryk-benchmark
+    SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
+    RUSTC_WRAPPER: sccache
+    SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
+    SCCACHE_IDLE_TIMEOUT: "0"
+    SCCACHE_LOG: debug
+  artifacts:
+    expire_in: 1 week
+    paths:
+    - opam_logs/
+    when: always
+  retry: 2
+
+opam:mavryk-bls12-381:
+  image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
+  stage: packaging
+  tags:
+  - saas-linux-2xlarge-amd64
+  rules:
+  - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
+    when: delayed
+    start_in: 6 minutes
+  - if: $CI_MERGE_REQUEST_LABELS =~ /(?:^|,)ci--opam(?:$|,)/
+    when: delayed
+    start_in: 6 minutes
+  - changes:
+    - '**/dune'
+    - '**/dune.inc'
+    - '**/*.dune.inc'
+    - '**/dune-project'
+    - '**/dune-workspace'
+    - '**/*.opam'
+    - .gitlab/ci/jobs/packaging/opam:prepare.yml
+    - .gitlab/ci/jobs/packaging/opam_package.yml
+    - manifest/manifest.ml
+    - manifest/main.ml
+    - scripts/opam-prepare-repo.sh
+    - scripts/version.sh
+    if: $CI_PIPELINE_SOURCE == "merge_request_event" && $GITLAB_USER_LOGIN == "MavrykCowbot"
+    when: delayed
+    start_in: 6 minutes
+  - when: never
+  needs:
+  - opam:prepare
+  dependencies:
+  - opam:prepare
+  cache:
+    key: opam-sccache
+    paths:
+    - _build/_sccache
+  before_script:
+  - eval $(opam env)
+  - mkdir -p $CI_PROJECT_DIR/opam_logs
+  - . ./scripts/ci/sccache-start.sh
+  script:
+  - opam remote add dev-repo ./_opam-repo-for-release
+  - opam install --yes ${package}.dev
+  - opam reinstall --yes --with-test ${package}.dev
+  after_script:
+  - sccache --stop-server || true
+  - eval $(opam env)
+  - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
+  variables:
+    RUNTEZTALIAS: "true"
+    package: mavryk-bls12-381
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log

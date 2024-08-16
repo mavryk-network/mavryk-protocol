@@ -11,14 +11,14 @@ module type PERMUTATION = sig
   val allocate_ctxt : parameters -> ctxt
 
   (** Return the current state of the context *)
-  val get_state : ctxt -> Bls12_381.Fr.t array
+  val get_state : ctxt -> Mavryk_bls12_381.Fr.t array
 
   (** Return the state size of the context *)
   val get_state_size : ctxt -> int
 
   (** [set_state ctxt state]. Set the context state to the given value. The
       value [state] must be of the same size than the expecting state *)
-  val set_state : ctxt -> Bls12_381.Fr.t array -> unit
+  val set_state : ctxt -> Mavryk_bls12_381.Fr.t array -> unit
 
   (** Apply a permutation on the current state of the context *)
   val apply_permutation : ctxt -> unit
@@ -28,6 +28,6 @@ module type MODE = sig
   val digest :
     (module PERMUTATION with type parameters = 'p) ->
     'p ->
-    Bls12_381.Fr.t array ->
-    Bls12_381.Fr.t
+    Mavryk_bls12_381.Fr.t array ->
+    Mavryk_bls12_381.Fr.t
 end

@@ -199,7 +199,7 @@ module type UNIVARIATE = sig
   val to_string : t -> string
 end
 
-module DomainEvaluation (R : Bls12_381.Ff_sig.PRIME) = struct
+module DomainEvaluation (R : Mavryk_bls12_381.Ff_sig.PRIME) = struct
   type t = {size : int; generator : R.t; domain_values : R.t array}
 
   let generate_domain generator n =
@@ -223,7 +223,8 @@ end
 
 (* TODO: Functions should use DomainEvaluation *)
 let generate_evaluation_domain (type a)
-    (module Fp : Bls12_381.Ff_sig.PRIME with type t = a) size (generator : a) =
+    (module Fp : Mavryk_bls12_381.Ff_sig.PRIME with type t = a) size
+    (generator : a) =
   let module D = DomainEvaluation (Fp) in
   let g = D.generate size generator in
   D.domain_values g
@@ -235,7 +236,7 @@ let inverse_domain_values domain =
   Array.init length_domain (fun i ->
       if i = 0 then domain.(i) else domain.(length_domain - i))
 
-module MakeUnivariate (R : Bls12_381.Ff_sig.PRIME) = struct
+module MakeUnivariate (R : Mavryk_bls12_381.Ff_sig.PRIME) = struct
   type scalar = R.t
 
   (* We encode the polynomials as a list with decreasing degree.

@@ -2,26 +2,29 @@ module Stubs = struct
   type ctxt
 
   external allocate_ctxt :
-    Bls12_381.Fr.t array array -> Bls12_381.Fr.t array -> int -> int -> ctxt
-    = "caml_bls12_381_hash_rescue_allocate_ctxt_stubs"
+    Mavryk_bls12_381.Fr.t array array ->
+    Mavryk_bls12_381.Fr.t array ->
+    int ->
+    int ->
+    ctxt = "caml_bls12_381_hash_rescue_allocate_ctxt_stubs"
 
   external apply_permutation : ctxt -> unit
     = "caml_bls12_381_hash_rescue_apply_permutation_stubs"
 
-  external get_state : Bls12_381.Fr.t array -> ctxt -> unit
+  external get_state : Mavryk_bls12_381.Fr.t array -> ctxt -> unit
     = "caml_bls12_381_hash_rescue_get_state_stubs"
 
   external get_state_size : ctxt -> int
     = "caml_bls12_381_hash_rescue_get_state_size_stubs"
 
-  external set_state : ctxt -> Bls12_381.Fr.t array -> unit
+  external set_state : ctxt -> Mavryk_bls12_381.Fr.t array -> unit
     = "caml_bls12_381_hash_rescue_set_state_stubs"
 end
 
 module Parameters = struct
   type t = {
-    linear_layer : Bls12_381.Fr.t array array;
-    round_constants : Bls12_381.Fr.t array;
+    linear_layer : Mavryk_bls12_381.Fr.t array array;
+    round_constants : Mavryk_bls12_381.Fr.t array;
     state_size : int;
     nb_of_rounds : int;
   }
@@ -44,7 +47,7 @@ module Parameters = struct
         "140050";
       |];
     |]
-    |> Array.map (Array.map Bls12_381.Fr.of_string)
+    |> Array.map (Array.map Mavryk_bls12_381.Fr.of_string)
 
   let state_size_3_round_constants =
     [|
@@ -133,7 +136,7 @@ module Parameters = struct
       "42992712381319065313644044212157260265940162092852802442073735607198967462282";
       "966835047744911231490794763166379188555949592683359886287393788918898119684";
     |]
-    |> Array.map Bls12_381.Fr.of_string
+    |> Array.map Mavryk_bls12_381.Fr.of_string
 
   let security_128_state_size_3 =
     {
@@ -176,6 +179,8 @@ let get_state_size ctxt = Stubs.get_state_size ctxt
 
 let get_state ctxt =
   let state_size = Stubs.get_state_size ctxt in
-  let state = Array.init state_size (fun _ -> Bls12_381.Fr.(copy zero)) in
+  let state =
+    Array.init state_size (fun _ -> Mavryk_bls12_381.Fr.(copy zero))
+  in
   Stubs.get_state state ctxt ;
   state

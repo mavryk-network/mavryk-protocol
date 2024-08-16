@@ -11,11 +11,12 @@ let read_file filename =
     List.rev !lines
 
 (* Both can be used i.e. MinPk or MinSig. They must share the same interface. *)
-module type SIGNATURE_INSTANTIATION = module type of Bls12_381.Signature.MinPk
+module type SIGNATURE_INSTANTIATION =
+    module type of Mavryk_bls12_381.Signature.MinPk
 
 let sig_files (type a)
     (module SignatureM : SIGNATURE_INSTANTIATION with type signature = a)
-    filenames (sign_fn : Bls12_381.Signature.sk -> Bytes.t -> a) =
+    filenames (sign_fn : Mavryk_bls12_381.Signature.sk -> Bytes.t -> a) =
   let generate filename =
     let contents = read_file filename in
     let output_filename = filename ^ "_blst" in
@@ -31,7 +32,7 @@ let sig_files (type a)
         let res_str =
           if Bytes.length ikm < 32 then initial_res_str
           else
-            let sk = Bls12_381.Signature.generate_sk ikm in
+            let sk = Mavryk_bls12_381.Signature.generate_sk ikm in
             let res = sign_fn sk msg in
             let res = SignatureM.signature_to_bytes res in
             Hex.(show (of_bytes res))
@@ -57,7 +58,7 @@ let pop_files (module SignatureM : SIGNATURE_INSTANTIATION) filenames =
         let res_str =
           if Bytes.length ikm < 32 then initial_res_str
           else
-            let sk = Bls12_381.Signature.generate_sk ikm in
+            let sk = Mavryk_bls12_381.Signature.generate_sk ikm in
             Hex.(show (of_bytes (SignatureM.Pop.pop_prove sk)))
         in
         Printf.fprintf output_chan "%s %s %s\n" dummy_str ikm_str res_str)
@@ -80,6 +81,7 @@ let () =
   let instantiation = Sys.argv.(2) in
   let filenames = Array.to_list (Array.sub Sys.argv 3 (argc - 3)) in
   match instantiation with
-  | "minPk" -> exec (module Bls12_381.Signature.MinPk) filetype filenames
-  | "minSig" -> exec (module Bls12_381.Signature.MinSig) filetype filenames
+  | "minPk" -> exec (module Mavryk_bls12_381.Signature.MinPk) filetype filenames
+  | "minSig" ->
+      exec (module Mavryk_bls12_381.Signature.MinSig) filetype filenames
   | _ -> failwith "instantiation must be either minPk or minSig"

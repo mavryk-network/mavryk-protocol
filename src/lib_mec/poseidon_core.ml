@@ -38,7 +38,7 @@ module type HASH = sig
   val get : ctxt -> scalar
 end
 
-module Make (C : PARAMETERS) (Scalar : Bls12_381.Ff_sig.PRIME) = struct
+module Make (C : PARAMETERS) (Scalar : Mavryk_bls12_381.Ff_sig.PRIME) = struct
   open C
 
   (* Verify the constants are consistent *)

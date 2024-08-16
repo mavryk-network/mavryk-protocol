@@ -51,7 +51,7 @@ let linear_selector_name i = "q_" ^ wire_name i
 let add_next_wire_suffix s = s ^ "g"
 
 module Scalar = struct
-  include Bls12_381.Fr
+  include Mavryk_bls12_381.Fr
 
   type scalar = t
 

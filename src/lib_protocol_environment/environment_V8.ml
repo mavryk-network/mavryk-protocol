@@ -101,7 +101,7 @@ module type T = sig
         Mavryk_crypto.Timelock_legacy.opening_result
        and module Sapling = Mavryk_sapling.Core.Validator
        and type ('a, 'b) Either.t = ('a, 'b) Stdlib.Either.t
-       and type Bls.Primitive.Fr.t = Bls12_381.Fr.t
+       and type Bls.Primitive.Fr.t = Mavryk_bls12_381.Fr.t
        and type Plonk.proof = Mavryk_protocol_environment_structs.V8.Plonk.proof
        and type Plonk.public_parameters =
         Mavryk_protocol_environment_structs.V8.Plonk.verifier_public_parameters

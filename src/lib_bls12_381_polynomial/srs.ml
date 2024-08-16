@@ -33,7 +33,7 @@
 
 (* The Elt signature is extended with pippenger. *)
 module type GElt_sig = sig
-  module G : Bls12_381.CURVE
+  module G : Mavryk_bls12_381.CURVE
 
   include Carray.Elt_sig with type t = G.affine
 
@@ -92,7 +92,7 @@ module type S = sig
       in
       ]} *)
 
-  val generate_insecure : int -> Bls12_381.Fr.t -> t
+  val generate_insecure : int -> Mavryk_bls12_381.Fr.t -> t
 
   (** [pippenger ctxt poly] computes the multiscalar exponentiation using the
       SRS saved in the context and the coefficients of the given polynomial *)
@@ -194,7 +194,7 @@ module Make (Elt : GElt_sig) = struct
 end
 
 module Elt_g1 = struct
-  module G = Bls12_381.G1
+  module G = Mavryk_bls12_381.G1
 
   type t = G.affine
 
@@ -215,7 +215,7 @@ module Elt_g1 = struct
 end
 
 module Elt_g2 = struct
-  module G = Bls12_381.G2
+  module G = Mavryk_bls12_381.G2
 
   type t = G.affine
 
@@ -237,15 +237,15 @@ module Elt_g2 = struct
 end
 
 module Srs_g1 :
-  S with type elt = Bls12_381.G1.t and type polynomial = Polynomial.t =
+  S with type elt = Mavryk_bls12_381.G1.t and type polynomial = Polynomial.t =
   Make (Elt_g1)
 
 module Srs_g2 :
-  S with type elt = Bls12_381.G2.t and type polynomial = Polynomial.t =
+  S with type elt = Mavryk_bls12_381.G2.t and type polynomial = Polynomial.t =
   Make (Elt_g2)
 
 module Checks = struct
-  open Bls12_381
+  open Mavryk_bls12_381
 
   let equality g1s g2s =
     let g1 = Srs_g1.get g1s 0 in
@@ -294,7 +294,7 @@ module Srs = struct
   type t = Srs_g1.t * Srs_g2.t
 
   let generate_insecure log_g1 log_g2 =
-    let x = Bls12_381.Fr.random () in
+    let x = Mavryk_bls12_381.Fr.random () in
     ( Srs_g1.generate_insecure (1 lsl log_g1) x,
       Srs_g2.generate_insecure (1 lsl log_g2) x )
 

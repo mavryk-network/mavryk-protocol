@@ -86,15 +86,15 @@ let test_vectors_anemoi128_1 () =
   in
   List.iter
     (fun ((x1_s, x2_s), exp_res_s) ->
-      let x1 = Bls12_381.Fr.of_string x1_s in
-      let x2 = Bls12_381.Fr.of_string x2_s in
-      let exp_res = Bls12_381.Fr.of_string exp_res_s in
+      let x1 = Mavryk_bls12_381.Fr.of_string x1_s in
+      let x2 = Mavryk_bls12_381.Fr.of_string x2_s in
+      let exp_res = Mavryk_bls12_381.Fr.of_string exp_res_s in
       let res = Bls12_381_hash.Permutation.Anemoi.jive128_1 x1 x2 in
-      if not (Bls12_381.Fr.eq res exp_res) then
+      if not (Mavryk_bls12_381.Fr.eq res exp_res) then
         Alcotest.failf
           "Expected result = %s, computed result = %s, input = (%s, %s)"
           exp_res_s
-          (Bls12_381.Fr.to_string res)
+          (Mavryk_bls12_381.Fr.to_string res)
           x1_s
           x2_s)
     vectors
@@ -144,14 +144,14 @@ let test_vectors_anemoi128_2 () =
   List.iter
     (fun ( (x1_s, x2_s, y1_s, y2_s),
            (exp_res_x1_s, exp_res_x2_s, exp_res_y1_s, exp_res_y2_s) ) ->
-      let x1 = Bls12_381.Fr.of_string x1_s in
-      let x2 = Bls12_381.Fr.of_string x2_s in
-      let y1 = Bls12_381.Fr.of_string y1_s in
-      let y2 = Bls12_381.Fr.of_string y2_s in
-      let exp_res_x1 = Bls12_381.Fr.of_string exp_res_x1_s in
-      let exp_res_x2 = Bls12_381.Fr.of_string exp_res_x2_s in
-      let exp_res_y1 = Bls12_381.Fr.of_string exp_res_y1_s in
-      let exp_res_y2 = Bls12_381.Fr.of_string exp_res_y2_s in
+      let x1 = Mavryk_bls12_381.Fr.of_string x1_s in
+      let x2 = Mavryk_bls12_381.Fr.of_string x2_s in
+      let y1 = Mavryk_bls12_381.Fr.of_string y1_s in
+      let y2 = Mavryk_bls12_381.Fr.of_string y2_s in
+      let exp_res_x1 = Mavryk_bls12_381.Fr.of_string exp_res_x1_s in
+      let exp_res_x2 = Mavryk_bls12_381.Fr.of_string exp_res_x2_s in
+      let exp_res_y1 = Mavryk_bls12_381.Fr.of_string exp_res_y1_s in
+      let exp_res_y2 = Mavryk_bls12_381.Fr.of_string exp_res_y2_s in
       let state = [|x1; x2; y1; y2|] in
       let ctxt =
         Bls12_381_hash.Permutation.Anemoi.allocate_ctxt
@@ -163,15 +163,15 @@ let test_vectors_anemoi128_2 () =
       let res_x1, res_x2, res_y1, res_y2 =
         (output.(0), output.(1), output.(2), output.(3))
       in
-      let res_x1_s = Bls12_381.Fr.to_string res_x1 in
-      let res_x2_s = Bls12_381.Fr.to_string res_x2 in
-      let res_y1_s = Bls12_381.Fr.to_string res_y1 in
-      let res_y2_s = Bls12_381.Fr.to_string res_y2 in
+      let res_x1_s = Mavryk_bls12_381.Fr.to_string res_x1 in
+      let res_x2_s = Mavryk_bls12_381.Fr.to_string res_x2 in
+      let res_y1_s = Mavryk_bls12_381.Fr.to_string res_y1 in
+      let res_y2_s = Mavryk_bls12_381.Fr.to_string res_y2 in
       let is_eq =
-        Bls12_381.Fr.eq res_x1 exp_res_x1
-        && Bls12_381.Fr.eq res_x2 exp_res_x2
-        && Bls12_381.Fr.eq res_y1 exp_res_y1
-        && Bls12_381.Fr.eq res_y2 exp_res_y2
+        Mavryk_bls12_381.Fr.eq res_x1 exp_res_x1
+        && Mavryk_bls12_381.Fr.eq res_x2 exp_res_x2
+        && Mavryk_bls12_381.Fr.eq res_y1 exp_res_y1
+        && Mavryk_bls12_381.Fr.eq res_y2 exp_res_y2
       in
       if not is_eq then
         Alcotest.failf
@@ -229,18 +229,18 @@ let test_vectors_anemoi128_3 () =
              exp_res_y1_s,
              exp_res_y2_s,
              exp_res_y3_s ) ) ->
-      let x1 = Bls12_381.Fr.of_string x1_s in
-      let x2 = Bls12_381.Fr.of_string x2_s in
-      let x3 = Bls12_381.Fr.of_string x3_s in
-      let y1 = Bls12_381.Fr.of_string y1_s in
-      let y2 = Bls12_381.Fr.of_string y2_s in
-      let y3 = Bls12_381.Fr.of_string y3_s in
-      let exp_res_x1 = Bls12_381.Fr.of_string exp_res_x1_s in
-      let exp_res_x2 = Bls12_381.Fr.of_string exp_res_x2_s in
-      let exp_res_x3 = Bls12_381.Fr.of_string exp_res_x3_s in
-      let exp_res_y1 = Bls12_381.Fr.of_string exp_res_y1_s in
-      let exp_res_y2 = Bls12_381.Fr.of_string exp_res_y2_s in
-      let exp_res_y3 = Bls12_381.Fr.of_string exp_res_y3_s in
+      let x1 = Mavryk_bls12_381.Fr.of_string x1_s in
+      let x2 = Mavryk_bls12_381.Fr.of_string x2_s in
+      let x3 = Mavryk_bls12_381.Fr.of_string x3_s in
+      let y1 = Mavryk_bls12_381.Fr.of_string y1_s in
+      let y2 = Mavryk_bls12_381.Fr.of_string y2_s in
+      let y3 = Mavryk_bls12_381.Fr.of_string y3_s in
+      let exp_res_x1 = Mavryk_bls12_381.Fr.of_string exp_res_x1_s in
+      let exp_res_x2 = Mavryk_bls12_381.Fr.of_string exp_res_x2_s in
+      let exp_res_x3 = Mavryk_bls12_381.Fr.of_string exp_res_x3_s in
+      let exp_res_y1 = Mavryk_bls12_381.Fr.of_string exp_res_y1_s in
+      let exp_res_y2 = Mavryk_bls12_381.Fr.of_string exp_res_y2_s in
+      let exp_res_y3 = Mavryk_bls12_381.Fr.of_string exp_res_y3_s in
       let state = [|x1; x2; x3; y1; y2; y3|] in
       let ctxt =
         Bls12_381_hash.Permutation.Anemoi.allocate_ctxt
@@ -252,19 +252,19 @@ let test_vectors_anemoi128_3 () =
       let res_x1, res_x2, res_x3, res_y1, res_y2, res_y3 =
         (output.(0), output.(1), output.(2), output.(3), output.(4), output.(5))
       in
-      let res_x1_s = Bls12_381.Fr.to_string res_x1 in
-      let res_x2_s = Bls12_381.Fr.to_string res_x2 in
-      let res_x3_s = Bls12_381.Fr.to_string res_x3 in
-      let res_y1_s = Bls12_381.Fr.to_string res_y1 in
-      let res_y2_s = Bls12_381.Fr.to_string res_y2 in
-      let res_y3_s = Bls12_381.Fr.to_string res_y3 in
+      let res_x1_s = Mavryk_bls12_381.Fr.to_string res_x1 in
+      let res_x2_s = Mavryk_bls12_381.Fr.to_string res_x2 in
+      let res_x3_s = Mavryk_bls12_381.Fr.to_string res_x3 in
+      let res_y1_s = Mavryk_bls12_381.Fr.to_string res_y1 in
+      let res_y2_s = Mavryk_bls12_381.Fr.to_string res_y2 in
+      let res_y3_s = Mavryk_bls12_381.Fr.to_string res_y3 in
       let is_eq =
-        Bls12_381.Fr.eq res_x1 exp_res_x1
-        && Bls12_381.Fr.eq res_x2 exp_res_x2
-        && Bls12_381.Fr.eq res_x3 exp_res_x3
-        && Bls12_381.Fr.eq res_y1 exp_res_y1
-        && Bls12_381.Fr.eq res_y2 exp_res_y2
-        && Bls12_381.Fr.eq res_y3 exp_res_y3
+        Mavryk_bls12_381.Fr.eq res_x1 exp_res_x1
+        && Mavryk_bls12_381.Fr.eq res_x2 exp_res_x2
+        && Mavryk_bls12_381.Fr.eq res_x3 exp_res_x3
+        && Mavryk_bls12_381.Fr.eq res_y1 exp_res_y1
+        && Mavryk_bls12_381.Fr.eq res_y2 exp_res_y2
+        && Mavryk_bls12_381.Fr.eq res_y3 exp_res_y3
       in
       if not is_eq then
         Alcotest.failf
@@ -316,22 +316,22 @@ let test_vectors_anemoi128_4 () =
              exp_res_y2_s,
              exp_res_y3_s,
              exp_res_y4_s ) ) ->
-      let x1 = Bls12_381.Fr.of_string x1_s in
-      let x2 = Bls12_381.Fr.of_string x2_s in
-      let x3 = Bls12_381.Fr.of_string x3_s in
-      let x4 = Bls12_381.Fr.of_string x4_s in
-      let y1 = Bls12_381.Fr.of_string y1_s in
-      let y2 = Bls12_381.Fr.of_string y2_s in
-      let y3 = Bls12_381.Fr.of_string y3_s in
-      let y4 = Bls12_381.Fr.of_string y4_s in
-      let exp_res_x1 = Bls12_381.Fr.of_string exp_res_x1_s in
-      let exp_res_x2 = Bls12_381.Fr.of_string exp_res_x2_s in
-      let exp_res_x3 = Bls12_381.Fr.of_string exp_res_x3_s in
-      let exp_res_x4 = Bls12_381.Fr.of_string exp_res_x4_s in
-      let exp_res_y1 = Bls12_381.Fr.of_string exp_res_y1_s in
-      let exp_res_y2 = Bls12_381.Fr.of_string exp_res_y2_s in
-      let exp_res_y3 = Bls12_381.Fr.of_string exp_res_y3_s in
-      let exp_res_y4 = Bls12_381.Fr.of_string exp_res_y4_s in
+      let x1 = Mavryk_bls12_381.Fr.of_string x1_s in
+      let x2 = Mavryk_bls12_381.Fr.of_string x2_s in
+      let x3 = Mavryk_bls12_381.Fr.of_string x3_s in
+      let x4 = Mavryk_bls12_381.Fr.of_string x4_s in
+      let y1 = Mavryk_bls12_381.Fr.of_string y1_s in
+      let y2 = Mavryk_bls12_381.Fr.of_string y2_s in
+      let y3 = Mavryk_bls12_381.Fr.of_string y3_s in
+      let y4 = Mavryk_bls12_381.Fr.of_string y4_s in
+      let exp_res_x1 = Mavryk_bls12_381.Fr.of_string exp_res_x1_s in
+      let exp_res_x2 = Mavryk_bls12_381.Fr.of_string exp_res_x2_s in
+      let exp_res_x3 = Mavryk_bls12_381.Fr.of_string exp_res_x3_s in
+      let exp_res_x4 = Mavryk_bls12_381.Fr.of_string exp_res_x4_s in
+      let exp_res_y1 = Mavryk_bls12_381.Fr.of_string exp_res_y1_s in
+      let exp_res_y2 = Mavryk_bls12_381.Fr.of_string exp_res_y2_s in
+      let exp_res_y3 = Mavryk_bls12_381.Fr.of_string exp_res_y3_s in
+      let exp_res_y4 = Mavryk_bls12_381.Fr.of_string exp_res_y4_s in
       let state = [|x1; x2; x3; x4; y1; y2; y3; y4|] in
       let ctxt =
         Bls12_381_hash.Permutation.Anemoi.(
@@ -350,23 +350,23 @@ let test_vectors_anemoi128_4 () =
           output.(6),
           output.(7) )
       in
-      let res_x1_s = Bls12_381.Fr.to_string res_x1 in
-      let res_x2_s = Bls12_381.Fr.to_string res_x2 in
-      let res_x3_s = Bls12_381.Fr.to_string res_x3 in
-      let res_x4_s = Bls12_381.Fr.to_string res_x4 in
-      let res_y1_s = Bls12_381.Fr.to_string res_y1 in
-      let res_y2_s = Bls12_381.Fr.to_string res_y2 in
-      let res_y3_s = Bls12_381.Fr.to_string res_y3 in
-      let res_y4_s = Bls12_381.Fr.to_string res_y4 in
+      let res_x1_s = Mavryk_bls12_381.Fr.to_string res_x1 in
+      let res_x2_s = Mavryk_bls12_381.Fr.to_string res_x2 in
+      let res_x3_s = Mavryk_bls12_381.Fr.to_string res_x3 in
+      let res_x4_s = Mavryk_bls12_381.Fr.to_string res_x4 in
+      let res_y1_s = Mavryk_bls12_381.Fr.to_string res_y1 in
+      let res_y2_s = Mavryk_bls12_381.Fr.to_string res_y2 in
+      let res_y3_s = Mavryk_bls12_381.Fr.to_string res_y3 in
+      let res_y4_s = Mavryk_bls12_381.Fr.to_string res_y4 in
       let is_eq =
-        Bls12_381.Fr.eq res_x1 exp_res_x1
-        && Bls12_381.Fr.eq res_x2 exp_res_x2
-        && Bls12_381.Fr.eq res_x3 exp_res_x3
-        && Bls12_381.Fr.eq res_x4 exp_res_x4
-        && Bls12_381.Fr.eq res_y1 exp_res_y1
-        && Bls12_381.Fr.eq res_y2 exp_res_y2
-        && Bls12_381.Fr.eq res_y3 exp_res_y3
-        && Bls12_381.Fr.eq res_y4 exp_res_y4
+        Mavryk_bls12_381.Fr.eq res_x1 exp_res_x1
+        && Mavryk_bls12_381.Fr.eq res_x2 exp_res_x2
+        && Mavryk_bls12_381.Fr.eq res_x3 exp_res_x3
+        && Mavryk_bls12_381.Fr.eq res_x4 exp_res_x4
+        && Mavryk_bls12_381.Fr.eq res_y1 exp_res_y1
+        && Mavryk_bls12_381.Fr.eq res_y2 exp_res_y2
+        && Mavryk_bls12_381.Fr.eq res_y3 exp_res_y3
+        && Mavryk_bls12_381.Fr.eq res_y4 exp_res_y4
       in
       if not is_eq then
         Alcotest.failf
@@ -402,10 +402,11 @@ let test_vectors_anemoi128_4 () =
 let test_state_functions () =
   let l = 5 + Random.int 10 in
   let mds =
-    Array.init l (fun _ -> Array.init l (fun _ -> Bls12_381.Fr.random ()))
+    Array.init l (fun _ ->
+        Array.init l (fun _ -> Mavryk_bls12_381.Fr.random ()))
   in
   let state_size = 2 * l in
-  let state = Array.init state_size (fun _ -> Bls12_381.Fr.random ()) in
+  let state = Array.init state_size (fun _ -> Mavryk_bls12_381.Fr.random ()) in
   let parameters =
     (Bls12_381_hash.Permutation.Anemoi.Parameters.create
        128
@@ -415,19 +416,19 @@ let test_state_functions () =
   let ctxt = Bls12_381_hash.Permutation.Anemoi.allocate_ctxt parameters in
   let () = Bls12_381_hash.Permutation.Anemoi.set_state ctxt state in
   let output = Bls12_381_hash.Permutation.Anemoi.get_state ctxt in
-  if not (Array.for_all2 Bls12_381.Fr.eq state output) then
+  if not (Array.for_all2 Mavryk_bls12_381.Fr.eq state output) then
     Alcotest.failf
       "Exp: [%s], computed: [%s]"
       (String.concat
          "; "
-         (List.map Bls12_381.Fr.to_string (Array.to_list state)))
+         (List.map Mavryk_bls12_381.Fr.to_string (Array.to_list state)))
       (String.concat
          "; "
-         (List.map Bls12_381.Fr.to_string (Array.to_list output)))
+         (List.map Mavryk_bls12_381.Fr.to_string (Array.to_list output)))
 
 let test_anemoi_generic_with_l_one_is_anemoi_jive128_1 () =
   let state_size = 2 in
-  let state = Array.init state_size (fun _ -> Bls12_381.Fr.random ()) in
+  let state = Array.init state_size (fun _ -> Mavryk_bls12_381.Fr.random ()) in
   let ctxt =
     Bls12_381_hash.Permutation.Anemoi.(
       allocate_ctxt Parameters.security_128_state_size_2)
@@ -436,9 +437,9 @@ let test_anemoi_generic_with_l_one_is_anemoi_jive128_1 () =
   let () = Bls12_381_hash.Permutation.Anemoi.apply_permutation ctxt in
   let output = Bls12_381_hash.Permutation.Anemoi.get_state ctxt in
   assert (
-    Bls12_381.Fr.eq
+    Mavryk_bls12_381.Fr.eq
       (Bls12_381_hash.Permutation.Anemoi.jive128_1 state.(0) state.(1))
-      Bls12_381.Fr.(state.(0) + state.(1) + output.(0) + output.(1)))
+      Mavryk_bls12_381.Fr.(state.(0) + state.(1) + output.(0) + output.(1)))
 
 let test_compute_number_of_rounds () =
   assert (
@@ -470,7 +471,7 @@ let test_anemoi_generate_constants () =
   let l = 1 in
   let nb_rounds = 19 in
   let exp_res =
-    Bls12_381.Fr.
+    Mavryk_bls12_381.Fr.
       [|
         of_string "39";
         of_string
@@ -552,7 +553,7 @@ let test_anemoi_generate_constants () =
   let res =
     Bls12_381_hash.Permutation.Anemoi.Parameters.generate_constants nb_rounds l
   in
-  assert (Array.for_all2 Bls12_381.Fr.eq exp_res res)
+  assert (Array.for_all2 Mavryk_bls12_381.Fr.eq exp_res res)
 
 let () =
   let open Alcotest in

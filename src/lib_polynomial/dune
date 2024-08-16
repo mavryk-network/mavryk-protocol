@@ -6,5 +6,5 @@
  (public_name mavkit-libs.polynomial)
  (instrumentation (backend bisect_ppx))
  (libraries
-  bls12-381
+  mavryk-bls12-381
   zarith))

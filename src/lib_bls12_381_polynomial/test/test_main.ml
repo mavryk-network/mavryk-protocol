@@ -27,7 +27,7 @@
     -------
     Component:  Lib_bls12_381_polynomial
     Invocation: dune exec src/lib_bls12_381_polynomial/test/main.exe
-    Subject:    Test for bls12_381 polynomial
+    Subject:    Test for mavryk_bls12_381 polynomial
 *)
 
 let () =

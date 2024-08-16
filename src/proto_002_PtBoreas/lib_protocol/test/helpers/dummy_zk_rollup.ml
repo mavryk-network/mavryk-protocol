@@ -190,10 +190,10 @@ module Types = struct
     let encoding_to_scalar e x =
       let bs = Data_encoding.Binary.to_bytes_exn e x in
       let z = Z.of_bits @@ Bytes.to_string bs in
-      Bls12_381.Fr.of_z z
+      Mavryk_bls12_381.Fr.of_z z
 
     let encoding_of_scalar e x =
-      let z = Bls12_381.Fr.to_z x in
+      let z = Mavryk_bls12_381.Fr.to_z x in
       let bs = Bytes.of_string @@ Z.to_bits z in
       Data_encoding.Binary.of_bytes_exn e bs
 
@@ -394,10 +394,11 @@ end = struct
   let dummy_ticket_hash = Bytes.make 32 '0'
 
   let of_proto_state : Zk_rollup.State.t -> Types.P.state =
-   fun s -> Bls12_381.Fr.is_one s.(0)
+   fun s -> Mavryk_bls12_381.Fr.is_one s.(0)
 
   let to_proto_state : Types.P.state -> Zk_rollup.State.t =
-   fun s -> if s then [|Bls12_381.Fr.one|] else [|Bls12_381.Fr.zero|]
+   fun s ->
+    if s then [|Mavryk_bls12_381.Fr.one|] else [|Mavryk_bls12_381.Fr.zero|]
 
   let dummy_op = T.{header = Dummy.header; payload = false}
 
@@ -479,13 +480,14 @@ end = struct
             if s = of_proto_state Zk_rollup.Operation.(op.payload) then not s
             else s
           in
-          let fee = Bls12_381.Fr.zero in
+          let fee = Mavryk_bls12_381.Fr.zero in
           let pi_to_send =
             Zk_rollup.Update.
               {new_state = to_proto_state new_state; fee; exit_validity}
           in
           let exit_validity_s =
-            if exit_validity then Bls12_381.Fr.one else Bls12_381.Fr.zero
+            if exit_validity then Mavryk_bls12_381.Fr.one
+            else Mavryk_bls12_381.Fr.zero
           in
           let public_inputs =
             Array.concat
@@ -526,7 +528,7 @@ end = struct
                 s
                 batch
             in
-            let fees = Bls12_381.Fr.zero in
+            let fees = Mavryk_bls12_381.Fr.zero in
             let pi_to_send : Zk_rollup.Update.private_inner_pi =
               Zk_rollup.Update.{new_state = to_proto_state new_state; fees}
             in
@@ -559,7 +561,7 @@ end = struct
     let _circ, _pi_size, fee_solver = SMap.find "fee" circuit_map in
     let rev_inputs, fee_pi =
       let fee_pi = Zk_rollup.Update.{new_state = to_proto_state s} in
-      let fees = Bls12_381.Fr.zero in
+      let fees = Mavryk_bls12_381.Fr.zero in
 
       let public_inputs =
         Array.concat [to_proto_state s; to_proto_state s; [|fees|]]
@@ -603,10 +605,10 @@ end = struct
             Data_encoding.Binary.of_bytes_exn
               Zk_rollup.Address.encoding
               dummy_rollup_id;
-          payload = [|Bls12_381.Fr.one|];
+          payload = [|Mavryk_bls12_381.Fr.one|];
         }
 
-    let false_op = {true_op with payload = [|Bls12_381.Fr.zero|]}
+    let false_op = {true_op with payload = [|Mavryk_bls12_381.Fr.zero|]}
 
     let pending = [false_op; true_op; true_op]
 

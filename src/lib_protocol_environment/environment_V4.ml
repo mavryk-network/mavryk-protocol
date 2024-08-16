@@ -272,10 +272,10 @@ struct
 
   module Time = Time.Protocol
 
-  module Bls12_381 = struct
-    include Bls12_381
+  module Mavryk_bls12_381 = struct
+    include Mavryk_bls12_381
 
-    let pairing_check = Bls12_381.Pairing.pairing_check
+    let pairing_check = Mavryk_bls12_381.Pairing.pairing_check
   end
 
   module Bls_signature = struct

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-module Fr = Bls12_381.Fr
+module Fr = Mavryk_bls12_381.Fr
 
 module Stubs = struct
   type fr = Fr.t
@@ -298,7 +298,7 @@ module type Evaluations_sig = sig
   where [n = size domain].
 
   requires:
-  - [size domain] to divide Bls12_381.Fr.order - 1
+  - [size domain] to divide Mavryk_bls12_381.Fr.order - 1
   - [size domain != 2^k]
   - [degree polynomial < size domain] *)
   val dft : domain -> polynomial -> t
@@ -311,7 +311,7 @@ module type Evaluations_sig = sig
   where [n = size domain].
 
   requires:
-  - [size domain] to divide Bls12_381.Fr.order - 1
+  - [size domain] to divide Mavryk_bls12_381.Fr.order - 1
   - [size domain != 2^k]
   - [size domain = size t] *)
   val idft : domain -> t -> polynomial
@@ -322,7 +322,7 @@ module type Evaluations_sig = sig
   See {{: https://en.wikipedia.org/wiki/Prime-factor_FFT_algorithm }the Prime-factor FFT algorithm}.
 
   requires:
-  - [size domain1 * size domain2] to divide Bls12_381.Fr.order - 1
+  - [size domain1 * size domain2] to divide Mavryk_bls12_381.Fr.order - 1
   - [size domain1] and [size domain2] to be coprime
   - if for some k [size domain1 != 2^k] then [size domain1 <= 2^10]
   - if for some k [size domain2 != 2^k] then [size domain2 <= 2^10]
@@ -336,7 +336,7 @@ module type Evaluations_sig = sig
   See {{: https://en.wikipedia.org/wiki/Prime-factor_FFT_algorithm }the Prime-factor FFT algorithm}.
 
   requires:
-  - [size domain1 * size domain2] to divide Bls12_381.Fr.order - 1
+  - [size domain1 * size domain2] to divide Mavryk_bls12_381.Fr.order - 1
   - [size domain1] and [size domain2] to be coprime
   - if for some k [size domain1 != 2^k] then [size domain1 <= 2^10]
   - if for some k [size domain2 != 2^k] then [size domain2 <= 2^10]
@@ -776,7 +776,7 @@ end
 
 module Evaluations_unsafe :
   Evaluations_unsafe_sig
-    with type scalar = Bls12_381.Fr.t
+    with type scalar = Mavryk_bls12_381.Fr.t
      and type domain = Domain.t
      and type polynomial = Polynomial.t =
   Evaluations_impl

@@ -271,7 +271,7 @@ struct
   end
 
   module Time = Time.Protocol
-  module Bls12_381 = Bls12_381
+  module Mavryk_bls12_381 = Mavryk_bls12_381
   module Ed25519 = Signature.Ed25519
   module Secp256k1 = Signature.Secp256k1
   module P256 = Signature.P256

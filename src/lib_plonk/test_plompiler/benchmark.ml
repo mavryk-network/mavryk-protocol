@@ -48,16 +48,16 @@ let max_fee = Z.(shift_left one 10)
 let max_counter = Z.(shift_left one 20)
 
 (* Checks to ensure that we do not have overflows when updating the balance. *)
-let () = assert (Z.(two * max_balance < Bls12_381.Fr.order))
+let () = assert (Z.(two * max_balance < Mavryk_bls12_381.Fr.order))
 
-let () = assert (Z.(two * (max_amount + max_fee) < Bls12_381.Fr.order))
+let () = assert (Z.(two * (max_amount + max_fee) < Mavryk_bls12_381.Fr.order))
 
 (* If size of an account balance and counter < BLS12-381 Fr order, we can
    compress the Merkle leaf to 2 scalars (pk_x, compress(balance, counter)). *)
 let () =
   assert (
     Z.numbits max_balance + Z.numbits max_counter
-    < Z.(numbits Bls12_381.Fr.order))
+    < Z.(numbits Mavryk_bls12_381.Fr.order))
 
 (* If the accumulated size of the two accounts, tx amount, tx fee and
    cnt_src < BLS12-381 Fr order, we can compress the Schnorr message to 1 scalar. *)
@@ -65,7 +65,7 @@ let () =
   assert (
     (2 * depth_tree) + Z.numbits max_amount + Z.numbits max_fee
     + Z.numbits max_counter
-    < Z.(numbits Bls12_381.Fr.order))
+    < Z.(numbits Mavryk_bls12_381.Fr.order))
 
 let nb_bits_base = Z.numbits S.order
 

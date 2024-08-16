@@ -38,12 +38,12 @@ let test_state_getter_setter () =
   in
   let state =
     Array.init security_128_state_size_3.state_size (fun _ ->
-        Bls12_381.Fr.random ())
+        Mavryk_bls12_381.Fr.random ())
   in
   let () = Bls12_381_hash.Permutation.Rescue.set_state ctxt state in
   assert (
     Array.for_all2
-      Bls12_381.Fr.eq
+      Mavryk_bls12_381.Fr.eq
       state
       (Bls12_381_hash.Permutation.Rescue.get_state ctxt))
 
@@ -105,8 +105,10 @@ let test_consistent_with_mec () =
   List.iter
     (fun (inputs, expected_output) ->
       let open Bls12_381_hash.Permutation.Rescue.Parameters in
-      let inputs = Array.map Bls12_381.Fr.of_string inputs in
-      let expected_output = Array.map Bls12_381.Fr.of_string expected_output in
+      let inputs = Array.map Mavryk_bls12_381.Fr.of_string inputs in
+      let expected_output =
+        Array.map Mavryk_bls12_381.Fr.of_string expected_output
+      in
       let ctxt =
         Bls12_381_hash.Permutation.Rescue.allocate_ctxt
           security_128_state_size_3
@@ -116,11 +118,11 @@ let test_consistent_with_mec () =
       let output = Bls12_381_hash.Permutation.Rescue.get_state ctxt in
       Array.iter2
         (fun a b ->
-          if not (Bls12_381.Fr.eq a b) then
+          if not (Mavryk_bls12_381.Fr.eq a b) then
             Alcotest.failf
               "Expected output is %s, computed %s\n"
-              (Bls12_381.Fr.to_string a)
-              (Bls12_381.Fr.to_string b))
+              (Mavryk_bls12_381.Fr.to_string a)
+              (Mavryk_bls12_381.Fr.to_string b))
         expected_output
         output)
     test_vectors

@@ -1,1 +1,1 @@
-let () = assert (not Bls12_381.built_with_blst_portable)
+let () = assert (not Mavryk_bls12_381.built_with_blst_portable)

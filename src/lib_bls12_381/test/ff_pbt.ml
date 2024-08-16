@@ -1,4 +1,4 @@
-open Bls12_381
+open Mavryk_bls12_381
 
 let max_output_alcotest = 100
 

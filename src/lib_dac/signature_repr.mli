@@ -35,7 +35,7 @@ val encoding : t Data_encoding.t
     variant.
     
     Motivation for the [Unknown] variant:
-    [Unknown] variant uses "asig" JSON prefix, whereas [Bls12_381] variant uses
+    [Unknown] variant uses "asig" JSON prefix, whereas [Mavryk_bls12_381] variant uses
     "BLsig" JSON prefix. To ensure consistent signature prefix, when data is
     exchanged accross the DAC network we use [Unknown] variant only. *)
 val make :

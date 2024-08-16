@@ -10,9 +10,9 @@ module type BASE = sig
   (** The size of a point representation, in bytes *)
   val size_in_bytes : int
 
-  module Scalar : Bls12_381.Ff_sig.PRIME
+  module Scalar : Mavryk_bls12_381.Ff_sig.PRIME
 
-  module Base : Bls12_381.Ff_sig.PRIME
+  module Base : Mavryk_bls12_381.Ff_sig.PRIME
 
   (** Check if a point, represented as a byte array, is on the curve **)
   val check_bytes : Bytes.t -> bool
@@ -318,7 +318,7 @@ module type PAIRING = sig
 
   module G2 : BASE
 
-  module GT : Bls12_381.Ff_sig.BASE
+  module GT : Mavryk_bls12_381.Ff_sig.BASE
 
   exception FailToComputeFinalExponentiation of GT.t
 

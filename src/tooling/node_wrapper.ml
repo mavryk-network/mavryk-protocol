@@ -27,7 +27,7 @@ let code_for_lib = function
 (function () {
   var loader = require('ocaml-bls12-381');
   return loader().then(function(loaded) {
-    console.log('bls12-381 loaded');
+    console.log('mavryk-bls12-381 loaded');
     global._BLS12381 = loaded})
 })
 |}
