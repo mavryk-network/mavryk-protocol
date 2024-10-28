@@ -1031,16 +1031,19 @@ and parse_big_map_value_ty ctxt ~stack_depth ~legacy value_ty =
     value_ty
 
 let parse_packable_ty ctxt ~stack_depth ~legacy node =
+  (* LIGO: required since we need to push unforable values
+     (contracts, operations, tickets, etc) onto the stack
+     when running LIGO Michelson functions *)
   (parse_ty [@tailcall])
     ctxt
     ~stack_depth
     ~legacy
     ~allow_lazy_storage:false
-    ~allow_operation:false
-    ~allow_contract:false
+    ~allow_operation:legacy
+    ~allow_contract:legacy
       (* type contract is forbidden in UNPACK because of
          https://gitlab.com/tezos/tezos/-/issues/301 *)
-    ~allow_ticket:false
+    ~allow_ticket:legacy
     ~ret:Don't_parse_entrypoints
     node
 
@@ -2986,7 +2989,7 @@ and parse_instr :
           ~elab_conf
           ~stack_depth:(stack_depth + 1)
           ctxt
-          ~allow_forged_tickets:false
+          ~allow_forged_tickets:legacy
           ~allow_forged_lazy_storage_id:false
           t
           d
