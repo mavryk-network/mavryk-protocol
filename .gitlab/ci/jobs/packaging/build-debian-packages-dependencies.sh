@@ -9,11 +9,11 @@ set -e
 # Determine platform based on runner's tags
 # This works with GCP. If switching to AWS these tags must be changed.
 case "$TAGS" in
-saas-linux-large-arm64 | gcp_dev_arm64)
+saas-linux-small-arm64 | gcp_dev_arm64)
   PLATFORM="linux/arm64"
   ARCHITECTURE="arm64"
   ;;
-saas-linux-2xlarge-amd64 | gcp_dev)
+saas-linux-small-amd64 | gcp_dev)
   PLATFORM="linux/amd64"
   ARCHITECTURE="amd64"
   ;;

@@ -5,7 +5,7 @@ oc.semgrep:
   image: returntocorp/semgrep-agent:sha-c6cd7cf
   stage: test
   tags:
-  - saas-linux-2xlarge-amd64
+  - saas-linux-small-amd64
   rules:
   - changes:
     - src/**/*

@@ -5,7 +5,7 @@ oc.unit:non-proto-x86_64:
   image: ${build_deps_image_name}:runtime-build-test-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-2xlarge-amd64
+  - saas-linux-small-amd64
   rules:
   - changes:
     - src/**/*
@@ -46,7 +46,7 @@ oc.unit:other-x86_64:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-2xlarge-amd64
+  - saas-linux-small-amd64
   rules:
   - changes:
     - src/**/*
@@ -87,7 +87,7 @@ oc.unit:proto-x86_64:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-2xlarge-amd64
+  - saas-linux-small-amd64
   rules:
   - changes:
     - src/**/*
@@ -128,7 +128,7 @@ oc.unit:non-proto-arm64:
   image: ${build_deps_image_name}:runtime-build-test-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-large-arm64
+  - saas-linux-small-arm64
   rules:
   - changes:
     - src/**/*
@@ -167,7 +167,7 @@ oc.unit:webassembly-x86_64:
   image: ${build_deps_image_name}:runtime-build-test-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-2xlarge-amd64
+  - saas-linux-small-amd64
   rules:
   - changes:
     - src/**/*
@@ -193,7 +193,7 @@ oc.unit:js_components:
   image: ${build_deps_image_name}:runtime-build-test-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-2xlarge-amd64
+  - saas-linux-small-amd64
   rules:
   - changes:
     - src/**/*
@@ -223,7 +223,7 @@ oc.unit:protocol_compiles:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-2xlarge-amd64
+  - saas-linux-small-amd64
   rules:
   - changes:
     - src/**/*

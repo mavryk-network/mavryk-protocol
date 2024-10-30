@@ -5,7 +5,7 @@ oc.docker:client-libs-dependencies:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
-  - saas-linux-2xlarge-amd64
+  - saas-linux-small-amd64
   rules:
   - changes:
     - scripts/ci/**/*

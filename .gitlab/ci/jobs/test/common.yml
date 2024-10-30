@@ -110,7 +110,7 @@
     - "oc.tezt:fetch-records"
   tags:
     # - gcp_tezt
-    - saas-linux-2xlarge-amd64
+    - saas-linux-small-amd64
   # Add [BISECT_FILE] to the set of artifacts defined in [.tezt_template]
   artifacts:
     paths:
