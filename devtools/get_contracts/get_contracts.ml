@@ -477,7 +477,7 @@ module Make (P : Sigs.PROTOCOL) : Sigs.MAIN = struct
       if Config.print_contracts then
         File_helpers.print_expr_file
           ~dirname:output_dir
-          ~ext:".tz"
+          ~ext:".mv"
           ~hash_string
           ctr.script ;
       File_helpers.print_to_file
@@ -681,7 +681,7 @@ module Make (P : Sigs.PROTOCOL) : Sigs.MAIN = struct
       if not (ExprMap.is_empty lambda_map) then (
         print_endline "Writing lambda files..." ;
         let dirname = Filename.concat output_dir "lambdas" in
-        File_helpers.print_expr_dir ~dirname ~ext:".tz" lambda_map ;
+        File_helpers.print_expr_dir ~dirname ~ext:".mv" lambda_map ;
         File_helpers.print_expr_dir ~dirname ~ext:".ty" lambda_ty_map ;
         File_helpers.print_legacy_dir
           ~dirname

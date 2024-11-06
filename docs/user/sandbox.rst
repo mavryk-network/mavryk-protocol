@@ -130,8 +130,8 @@ can use the ``DATA_DIR`` environment variable.
 
 ::
 
-    mkdir /tmp/tz-data
-    DATA_DIR='/tmp/tz-data' ./src/bin_node/mavkit-sandboxed-node.sh 1 --connections 1
+    mkdir /tmp/mv-data
+    DATA_DIR='/tmp/mv-data' ./src/bin_node/mavkit-sandboxed-node.sh 1 --connections 1
 
 You can even provide a custom ``identity.json`` and ``config.json`` to the
 sandboxed node by placing them in the data directory.

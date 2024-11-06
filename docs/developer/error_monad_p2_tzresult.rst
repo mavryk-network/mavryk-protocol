@@ -233,7 +233,7 @@ Exercises
         attempted_insertion: int
       }
 
-The ``Result_syntax``'s ``tz`` extensions
+The ``Result_syntax``'s ``mv`` extensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Remember that ``'a tzresult`` is a special case of ``('a, 'e) result``.
@@ -314,12 +314,12 @@ Exercises
         in
         return_unit
 
-The ``Lwt_result_syntax``'s ``tz`` extensions
+The ``Lwt_result_syntax``'s ``mv`` extensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In the same way ``result`` can be combined with Lwt, ``tzresult`` can
 also be combined with Lwt. And in the same way that ``Result_syntax`` exports a
-few ``tz``-specific extensions, ``Lwt_result_syntax`` exports a few Lwt+``tz``
+few ``mv``-specific extensions, ``Lwt_result_syntax`` exports a few Lwt+``mv``
 specific extensions.
 
 There are possibly too many parallels to keep track of, so the diagram

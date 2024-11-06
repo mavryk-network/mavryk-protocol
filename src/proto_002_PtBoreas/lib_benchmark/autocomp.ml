@@ -196,8 +196,8 @@ struct
         sample Michelson_base.timestamp >>= fun tstamp ->
         return (Mikhailsky.Data.timestamp tstamp)
     | Mumav_t ->
-        sample Michelson_base.mav >>= fun tz ->
-        return (Mikhailsky.Data.mumav tz)
+        sample Michelson_base.mav >>= fun mv ->
+        return (Mikhailsky.Data.mumav mv)
     | Key_t ->
         sample Crypto_samplers.pk >>= fun pk -> return (Mikhailsky.Data.key pk)
     | Option_t ty ->

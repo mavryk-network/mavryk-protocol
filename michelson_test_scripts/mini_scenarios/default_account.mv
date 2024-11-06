@@ -1,5 +1,5 @@
 /*
-Send 100 tz to the implicit account given as parameter.
+Send 100 mv to the implicit account given as parameter.
 */
 
 parameter key_hash;

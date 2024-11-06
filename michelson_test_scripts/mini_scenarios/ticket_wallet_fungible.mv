@@ -1,9 +1,9 @@
 ## A simple wallet for fungible tokens implemented using tickets of
 ## type [ticket unit].
 
-## For actually minting or burning the tokens, see ticket_builder_fungible.tz
+## For actually minting or burning the tokens, see ticket_builder_fungible.mv
 
-## For non-fungible tokens, see ticket_wallet_non_fungible.tz
+## For non-fungible tokens, see ticket_wallet_non_fungible.mv
 
 parameter (or (ticket %receive unit) (pair %send (contract %destination (ticket unit)) (nat %amount) (address %ticketer)));
 storage (pair (address %manager) (big_map %tickets address (ticket unit)));

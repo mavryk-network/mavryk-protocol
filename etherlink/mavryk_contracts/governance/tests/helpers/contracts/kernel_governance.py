@@ -18,7 +18,7 @@ class KernelGovernance(GovernanceBase):
         metadata = metadata if metadata != None else dict()
         metadata = Metadata.make_default(**metadata)
         storage = self.make_storage(metadata, custom_config=custom_config)
-        filename = join(get_build_dir(), 'kernel_governance.tz')
+        filename = join(get_build_dir(), 'kernel_governance.mv')
 
         return originate_from_file(filename, client, storage)
     

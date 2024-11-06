@@ -147,7 +147,7 @@ the legacy multisig contract.
 The generic multisig contract
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The :src:`generic multisig contract<michelson_test_scripts/mini_scenarios/generic_multisig.tz>` is
+The :src:`generic multisig contract<michelson_test_scripts/mini_scenarios/generic_multisig.mv>` is
 the multisig contract that is currently recommended. It has the
 following features:
 
@@ -165,7 +165,7 @@ The legacy multisig contract
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``mavkit-client`` also supports
-:src:`a legacy version<michelson_test_scripts/mini_scenarios/legacy_multisig.tz>` of the multisig contract which has the following
+:src:`a legacy version<michelson_test_scripts/mini_scenarios/legacy_multisig.mv>` of the multisig contract which has the following
 limitations:
 
 - it cannot receive tokens from unauthenticated sources, sending

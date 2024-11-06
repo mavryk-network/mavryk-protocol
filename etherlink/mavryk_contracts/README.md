@@ -7,11 +7,11 @@ an EVM rollup, but also to withdraw it.
 
 - Compile the contract:
 ```
-$ ligo compile contract evm_bridge.mligo -o evm_bridge.tz
+$ ligo compile contract evm_bridge.mligo -o evm_bridge.mv
 ```
 - Originate the smart-contract:
 ```
-$ ./mavkit-client originate contract evm-bridge transferring 0 from <src> running etherlink/mavryk_contracts/evm_bridge.tz --init '(Pair (Pair "<admin>" "<ctez-contract>")  None)'
+$ ./mavkit-client originate contract evm-bridge transferring 0 from <src> running etherlink/mavryk_contracts/evm_bridge.mv --init '(Pair (Pair "<admin>" "<ctez-contract>")  None)'
 ```
 - Set the EVM rollup target:
 ```

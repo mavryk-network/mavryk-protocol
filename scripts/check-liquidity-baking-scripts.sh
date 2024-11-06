@@ -70,8 +70,8 @@ retrieve() {
 retrieve dexter.liquidity_baking.mligo cpmm.mligo
 retrieve lqt_fa12.mligo lqt.mligo
 
-"$LIGO" compile-contract cpmm.mligo main > cpmm.tz
-"$LIGO" compile-contract lqt.mligo main > lqt.tz
+"$LIGO" compile-contract cpmm.mligo main > cpmm.mv
+"$LIGO" compile-contract lqt.mligo main > lqt.mv
 
 # ------------------------------------------------------------------------------
 echo "* Step 3: Compute the binary representations of the two Michelson scripts"
@@ -79,7 +79,7 @@ echo "* Step 3: Compute the binary representations of the two Michelson scripts"
 
 serialize() {
   CONTRACT="$1"
-  $MAVRYK_CLIENT convert script "$CONTRACT.tz" from michelson to binary --legacy > "$CONTRACT.bin"
+  $MAVRYK_CLIENT convert script "$CONTRACT.mv" from michelson to binary --legacy > "$CONTRACT.bin"
 }
 
 serialize cpmm

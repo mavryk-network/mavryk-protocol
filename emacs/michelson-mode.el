@@ -921,7 +921,7 @@ Enables or disables stack and error display."
                                 process-environment)))))
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.tz\\'" . michelson-mode))
+(add-to-list 'auto-mode-alist '("\\.mv\\'" . michelson-mode))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.mav\\'" . michelson-mode))

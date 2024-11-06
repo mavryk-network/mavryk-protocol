@@ -1,9 +1,9 @@
 ## A simple non-fungible token contract implemented using tickets of
 ## type [ticket nat] with amounts of 1.
 
-## To store and transfer the tokens see ticket_wallet_non_fungible.tz
+## To store and transfer the tokens see ticket_wallet_non_fungible.mv
 
-## For fungible tokens, see ticket_builder_fungible.tz
+## For fungible tokens, see ticket_builder_fungible.mv
 
 parameter (or (ticket %burn nat) (contract %mint_destination (ticket nat)));
 storage (pair (address %manager) (nat %counter));

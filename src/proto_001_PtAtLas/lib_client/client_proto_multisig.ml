@@ -356,7 +356,7 @@ let () =
     (fun (lam, exp) -> Ill_typed_lambda (lam, exp))
 
 (* The multisig contract script written by Arthur Breitman
-     https://github.com/murbard/smart-contracts/blob/abdb582d8f1fe7ba7eb15975867d8862cb70acfe/multisig/michelson/generic.tz *)
+     https://github.com/murbard/smart-contracts/blob/abdb582d8f1fe7ba7eb15975867d8862cb70acfe/multisig/michelson/generic.mv *)
 let multisig_script_string =
   {|
 parameter (or (unit %default)

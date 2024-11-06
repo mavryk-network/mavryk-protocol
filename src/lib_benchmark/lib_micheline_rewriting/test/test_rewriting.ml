@@ -102,7 +102,7 @@ let () =
         Micheline.strip_locations result
   in
   (* The multisig contract script written by Arthur Breitman
-       https://github.com/murbard/smart-contracts/blob/master/multisig/michelson/multisig.tz *)
+       https://github.com/murbard/smart-contracts/blob/master/multisig/michelson/multisig.mv *)
   (* 004 version *)
   let multisig_script_string =
     "parameter (pair\n\

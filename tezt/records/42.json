@@ -2135,7 +2135,7 @@
   },
   {
     "file": "tezt/tests/contract_macros.ml",
-    "title": "Atlas: test guestbook.tz",
+    "title": "Atlas: test guestbook.mv",
     "tags": [
       "admin_client",
       "client",
@@ -2150,7 +2150,7 @@
   },
   {
     "file": "tezt/tests/contract_macros.ml",
-    "title": "Alpha: test guestbook.tz",
+    "title": "Alpha: test guestbook.mv",
     "tags": [
       "admin_client",
       "alpha",

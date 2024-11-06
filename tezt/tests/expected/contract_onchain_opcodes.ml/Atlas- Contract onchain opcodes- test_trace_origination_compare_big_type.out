@@ -1,5 +1,5 @@
 
-./mavkit-client --mode mockup --wait none originate contract compare_big_type transferring 0 from bootstrap1 running michelson_test_scripts/opcodes/compare_big_type.tz --burn-cap 10 --force
+./mavkit-client --mode mockup --wait none originate contract compare_big_type transferring 0 from bootstrap1 running michelson_test_scripts/opcodes/compare_big_type.mv --burn-cap 10 --force
 Node is bootstrapped.
 Estimated gas: 1495.073 units (will add 100 for safety)
 Estimated storage: 385 bytes added (will add 20 for safety)

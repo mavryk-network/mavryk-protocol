@@ -137,7 +137,7 @@ let test_typecheck_stack_overflow () =
   let* ctxt = test_context () in
   let storage = "Unit" in
   let parameter = "Unit" in
-  let script = read_file (path // "contracts/big_interpreter_stack.tz") in
+  let script = read_file (path // "contracts/big_interpreter_stack.mv") in
   let*! result =
     Contract_helpers.run_script ctxt script ~storage ~parameter ()
   in
@@ -853,7 +853,7 @@ let test_contract_not_packable () =
 let test_forbidden_op_in_view op () =
   let open Lwt_result_syntax in
   let prefix = path // "contracts/forbidden_op_in_view_" in
-  let script = read_file (prefix ^ op ^ ".tz") in
+  let script = read_file (prefix ^ op ^ ".mv") in
   let contract_expr = Expr.from_string script in
   let* ctxt = test_context () in
   let*! result =
@@ -1003,15 +1003,15 @@ let tests =
     Tztest.tztest
       "lambda_rec instruction"
       `Quick
-      (test_contract_success (path // "contracts/rec_fact.tz"));
+      (test_contract_success (path // "contracts/rec_fact.mv"));
     Tztest.tztest
       "lambda_rec instruction with apply"
       `Quick
-      (test_contract_success (path // "contracts/rec_fact_apply.tz"));
+      (test_contract_success (path // "contracts/rec_fact_apply.mv"));
     Tztest.tztest
       "lambda_rec with type error"
       `Quick
-      (test_contract_failure (path // "contracts/fail_rec.tz"));
+      (test_contract_failure (path // "contracts/fail_rec.mv"));
   ]
 
 let () =

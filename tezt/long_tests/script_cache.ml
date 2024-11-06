@@ -151,7 +151,7 @@ let originate_contract prefix contract =
 (** [originate_str_id_contract client str] bakes a block to originate the
    [str_id] contract with storage [str], and returns its address. *)
 let originate_str_id_contract =
-  let filename = "file:./tezt/tests/contracts/proto_alpha/large_str_id.tz" in
+  let filename = "file:./tezt/tests/contracts/proto_alpha/large_str_id.mv" in
   let originate = originate_contract "str" filename in
   fun client str ->
     originate client (Printf.sprintf "Pair \"%s\" \"%s\"" str str)
@@ -168,7 +168,7 @@ let originate_str_id_contracts client n =
 (** [originate_very_small_contract client] bakes a block to originate the
    [very_small] contract with storage [unit], and returns its address. *)
 let originate_very_small_contract =
-  let filename = "file:./tezt/tests/contracts/proto_alpha/very_small.tz" in
+  let filename = "file:./tezt/tests/contracts/proto_alpha/very_small.mv" in
   let originate = originate_contract "very_small" filename in
   fun client -> originate client "Unit"
 
@@ -220,7 +220,7 @@ let make_calls f contracts =
   "[" ^ String.concat "," (List.map f contracts) ^ "]"
 
 (** [str_id_calls contracts] is a list of calls to [contracts] that
-   all are instances of [str_id.tz]. *)
+   all are instances of [str_id.mv]. *)
 let str_id_calls =
   make_calls (fun contract ->
       Printf.sprintf
@@ -229,7 +229,7 @@ let str_id_calls =
         contract)
 
 (** [large_types_calls contracts] is a list of calls to [contracts] that
-   all are instances of [large_types.tz]. *)
+   all are instances of [large_types.mv]. *)
 let large_types_calls =
   make_calls (fun contract ->
       Printf.sprintf
@@ -238,7 +238,7 @@ let large_types_calls =
         contract)
 
 (** [very_small_calls contracts] is a list of calls to [contracts] that
-   all are instances of [very_small.tz]. *)
+   all are instances of [very_small.mv]. *)
 let very_small_calls =
   make_calls (fun contract ->
       Printf.sprintf
@@ -316,7 +316,7 @@ let check_contract_cache_lowers_gas_consumption ~protocol =
    --------------------------------------
 
    The next test fills the cache with many instances of the contract
-   [str_id.tz] in a sequence of blocks.
+   [str_id.mv] in a sequence of blocks.
 
    Then, we can observe that:
    - the cache does not grow beyond its limit ;

@@ -160,7 +160,7 @@ let test_rollup_node_advances_pvm_state protocols ~test_name ~boot_sector
             ~alias:"rollup_deposit"
             ~amount:Tez.zero
             ~src:Constant.bootstrap1.alias
-            ~prg:"file:./tezt/tests/contracts/proto_alpha/sc_rollup_forward.tz"
+            ~prg:"file:./tezt/tests/contracts/proto_alpha/sc_rollup_forward.mv"
             ~init:"Unit"
             ~burn_cap:Tez.(of_int 1)
             client

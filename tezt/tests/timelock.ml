@@ -253,7 +253,7 @@ let burn_cap = Tez.of_int 2
 let amount = Tez.zero
 
 let test_contract_correct_guess ~protocol () =
-  let* client, receiver = originate_contract protocol "timelock_flip.tz" in
+  let* client, receiver = originate_contract protocol "timelock_flip.mv" in
   (* bootstrap2 starts a coin toss game by submitting a chest *)
   let str = head_hex in
   let* chest_file, chest, _, _ = create_timelock client path time str in
@@ -278,7 +278,7 @@ let test_contract_correct_guess ~protocol () =
   unit
 
 let test_contract_incorrect_guess ~protocol () =
-  let* client, receiver = originate_contract protocol "timelock_flip.tz" in
+  let* client, receiver = originate_contract protocol "timelock_flip.mv" in
   (* bootstrap2 starts a coin toss game by submitting a chest *)
   let str = head_hex in
   let* chest_file, chest, _, _ = create_timelock client path time str in
@@ -305,7 +305,7 @@ let test_contract_incorrect_guess ~protocol () =
 let test_contract_guess_too_late ~protocol () =
   let open Mavryk_crypto.Timelock in
   let* client, receiver =
-    originate_contract ~mockup:false protocol "timelock_flip.tz"
+    originate_contract ~mockup:false protocol "timelock_flip.mv"
   in
   (* bootstrap2 starts a coin toss game by submitting a chest *)
   let str = head_hex in
@@ -338,7 +338,7 @@ let test_contract_guess_too_late ~protocol () =
   unit
 
 let test_contract_error_opening ~protocol () =
-  let* client, receiver = originate_contract protocol "timelock_flip.tz" in
+  let* client, receiver = originate_contract protocol "timelock_flip.mv" in
   (* bootstrap2 starts a coin toss game by submitting a chest *)
   let str = head_hex in
   let* chest_file, chest, _, _ = create_timelock client path time str in

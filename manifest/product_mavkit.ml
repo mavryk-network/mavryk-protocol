@@ -5259,7 +5259,7 @@ end = struct
                   test_helpers |> if_some |> open_;
                   mavkit_micheline |> open_;
                 ]
-              ~dep_globs:["contracts/*.tz"; "expected/test_logging.ml/*.out"]
+              ~dep_globs:["contracts/*.mv"; "expected/test_logging.ml/*.out"]
           in
           ()
       in

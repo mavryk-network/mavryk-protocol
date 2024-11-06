@@ -1805,7 +1805,7 @@ let fund_accounts_from_source : Protocol_client_context.full Mavryk_clic.command
         (* Fees are: reveal + max_nb_transfers * manager_fees
                    = reveal + max_nb_transfers * (storage_fees + tx fees)
                    = 0.001tz + max_nb_transfers * (0.06425tz + 0.001tz)
-                   =~ max_nb_transfers * 0.1 tz *)
+                   =~ max_nb_transfers * 0.1 mv *)
         let fees_approx = Tez.of_mumav_exn 100_000L in
         let amount =
           WithExceptions.Result.get_ok
@@ -1817,7 +1817,7 @@ let fund_accounts_from_source : Protocol_client_context.full Mavryk_clic.command
       let*! () =
         log Notice (fun () ->
             cctxt#message
-              "Sending %a tz to starter accounts@."
+              "Sending %a mv to starter accounts@."
               Tez.pp
               starter_initial_amount)
       in
@@ -1843,7 +1843,7 @@ let fund_accounts_from_source : Protocol_client_context.full Mavryk_clic.command
           let*! () =
             log Notice (fun () ->
                 cctxt#message
-                  "Transfering %a tz from %a (out of %a)@."
+                  "Transfering %a mv from %a (out of %a)@."
                   Tez.pp
                   req_balance
                   Signature.Public_key_hash.pp

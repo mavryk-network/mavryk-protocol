@@ -421,7 +421,7 @@ let test_multiple_entrypoints_counter client ~protocol =
   let* () = check_contract_storage ~__LOC__ client contract ~expected:"None" in
   unit
 
-(* Test that the [noop.tz] contract can be originated, typechecks and can
+(* Test that the [noop.mv] contract can be originated, typechecks and can
    receive a transaction. *)
 let test_contract_noop client ~protocol =
   let burn_cap = Tez.one in
@@ -449,7 +449,7 @@ let test_contract_noop client ~protocol =
   in
   unit
 
-(* Test that [hardlimit.tz] initialized with [3] fails after the
+(* Test that [hardlimit.mv] initialized with [3] fails after the
    third transfer *)
 let test_contract_hardlimit client ~protocol =
   let burn_cap = Tez.one in

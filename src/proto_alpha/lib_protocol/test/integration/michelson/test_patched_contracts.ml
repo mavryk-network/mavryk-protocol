@@ -61,9 +61,9 @@ let script_hash_testable =
 
     Additionally for each patch 3 files need to be placed in
     [patched_contracts] subdirectory:
-    * script_hash.original.tz – containing the original version of the
+    * script_hash.original.mv – containing the original version of the
       script;
-    * script_hash.patched.tz - containing the patched version;
+    * script_hash.patched.mv - containing the patched version;
     * script_hash.diff - containing the diff between the two.
 
     These files are there so that reviewers of the migration can easily
@@ -80,7 +80,7 @@ module Legacy_patch_test (Patches : LEGACY_SCRIPT_PATCHES) :
 
   let path = project_root // Filename.dirname __FILE__
 
-  let contract_path ?(ext = "patched.tz") hash =
+  let contract_path ?(ext = "patched.mv") hash =
     Filename.concat "patched_contracts"
     @@ Format.asprintf "%a.%s" Script_expr_hash.pp hash ext
 
@@ -88,11 +88,11 @@ module Legacy_patch_test (Patches : LEGACY_SCRIPT_PATCHES) :
     let filename = path // contract_path ?ext hash in
     Lwt_io.(with_file ~mode:Input filename read)
 
-  (* Test that the hashes of the scripts in ./patched_contract/<hash>.original.tz
+  (* Test that the hashes of the scripts in ./patched_contract/<hash>.original.mv
      match hashes of the contracts being updated by the migration. *)
   let test_original_contract legacy_script_hash () =
     let open Lwt_result_syntax in
-    let*! code = read_file ~ext:"original.tz" legacy_script_hash in
+    let*! code = read_file ~ext:"original.mv" legacy_script_hash in
     let michelson = Michelson_v1_parser.parse_toplevel ~check:true code in
     let*? prog = Micheline_parser.no_parsing_error michelson in
     let bytes =
@@ -108,7 +108,7 @@ module Legacy_patch_test (Patches : LEGACY_SCRIPT_PATCHES) :
     return_unit
 
   (* Test that the binary-encoded versions of the patched contracts used during the
-     migration correspond to the content of the `./patched_contracts/<hash>.tz`
+     migration correspond to the content of the `./patched_contracts/<hash>.mv`
      files *)
   let test_patched_contract patch () =
     let open Lwt_result_syntax in
@@ -141,9 +141,9 @@ module Legacy_patch_test (Patches : LEGACY_SCRIPT_PATCHES) :
   let verify_diff legacy_script_hash () =
     let open Lwt_result_syntax in
     let*! expected_diff = read_file ~ext:"diff" legacy_script_hash in
-    let original_code = contract_path ~ext:"original.tz" legacy_script_hash in
+    let original_code = contract_path ~ext:"original.mv" legacy_script_hash in
     (* The other test asserts that this is indeed the patched code. *)
-    let current_code = contract_path ~ext:"patched.tz" legacy_script_hash in
+    let current_code = contract_path ~ext:"patched.mv" legacy_script_hash in
     let diff_cmd =
       ( "",
         [|

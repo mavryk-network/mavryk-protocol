@@ -30,7 +30,7 @@ open Lwt.Infix
 type micheline =
   [ `Json of Ezjsonm.value (* EzJsonm value *)
   | `Michelson of string (* Michelson string *)
-  | `File of string (* file with ext .tz or .json for Ezjsonm *) ]
+  | `File of string (* file with ext .mv or .json for Ezjsonm *) ]
 
 type manager_op_param = {entrypoint : string; value : micheline}
 
@@ -69,7 +69,7 @@ let micheline_to_json convert client = function
   | `Michelson data -> convert data client
   | `File file -> (
       match Filename.extension file with
-      | ".tz" | ".mav" | ".mic" -> convert file client
+      | ".mv" | ".mav" | ".mic" -> convert file client
       | ".json" -> JSON.parse_file file |> JSON.unannotate |> Lwt.return
       | s -> Test.fail "Unknown file extension %S in %s" s file)
 

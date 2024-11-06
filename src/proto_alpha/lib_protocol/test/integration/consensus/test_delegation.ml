@@ -1067,7 +1067,7 @@ let test_failed_self_delegation_emptied_implicit_contract amount () =
   Assert.proto_error_with_info ~loc:__LOC__ err "Empty implicit contract"
 
 (** Implicit contract is credited with a non-zero quantity [amount]
-    tz, then it is delegated. The operation of debit of [amount] tz
+    mv, then it is delegated. The operation of debit of [amount] mv
     should fail as the contract is already delegated. *)
 let test_emptying_delegated_implicit_contract_fails amount () =
   let open Lwt_result_syntax in
@@ -1107,7 +1107,7 @@ let test_emptying_delegated_implicit_contract_fails amount () =
    - Empty contract + verification of balance + verification of not being erased / self-delegation
    - Create delegator implicit contract w first implicit contract as delegate + verification of delegation. *)
 
-(** Initialized account is credited of [amount] tz, then
+(** Initialized account is credited of [amount] mv, then
     self-delegated. *)
 let test_valid_delegate_registration_init_delegation_credit amount () =
   let open Lwt_result_syntax in
@@ -1154,7 +1154,7 @@ let test_valid_delegate_registration_init_delegation_credit amount () =
   Assert.equal_pkh ~loc:__LOC__ delegator_delegate delegate_pkh
 
 (** Create an implicit contract, credits with [amount]
-    tz. Self-delegates. Create another implicit contract with
+    mv. Self-delegates. Create another implicit contract with
     bootstrap as delegate. Re-delegate it to the first implicit
     contract. *)
 let test_valid_delegate_registration_switch_delegation_credit amount () =
@@ -1260,7 +1260,7 @@ let test_valid_delegate_registration_init_delegation_credit_debit amount () =
   let* delegator_delegate = Context.Contract.delegate (B b) delegator in
   Assert.equal_pkh ~loc:__LOC__ delegator_delegate delegate_pkh
 
-(** A created implicit contract is credited with [amount] tz, then is
+(** A created implicit contract is credited with [amount] mv, then is
     self-delegated. It is emptied (fund back into bootstrap), and
     should remain existing (as registered as delegate). Another created
     implicit contract is delegated to bootstrap, then should be able to

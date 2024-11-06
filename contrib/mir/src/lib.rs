@@ -1414,7 +1414,7 @@ mod multisig_tests {
         result.map(|(ops, val)| (ops.collect(), val))
     }
 
-    // From: https://github.com/murbard/smart-contracts/blob/eb2b7d81aedcfeaea219da8b66cdd86652bf42f7/multisig/michelson/multisig.tz
+    // From: https://github.com/murbard/smart-contracts/blob/eb2b7d81aedcfeaea219da8b66cdd86652bf42f7/multisig/michelson/multisig.mv
     const MULTISIG_SRC: &str = "
         parameter (pair
                     (pair :payload

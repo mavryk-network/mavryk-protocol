@@ -93,7 +93,7 @@ let mainnet_user_activated_upgrades =
   [
     (28082l, "PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt");
     (204761l, "PsddFKi32cMJ2qPjf43Qv5GDWLDPZb3T3bF6fLKiF5HtvHNU7aP");
-    (5898241l, "Pt8h9rz3r9F3Yx3wzJqF42sxsyVoo6kL4FBoJSWRzKmDvjXjHwV");
+    (5898241l, "Ps8tUpcuzKw4cTeFT2wJXNCLa9pxkBUWZFDAvb9CXmnAuRE4bzF");
   ]
 
 (* END_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
@@ -157,7 +157,7 @@ let blockchain_network_basenet =
     ~chain_name:"MAVRYK_ITHACANET_2022-01-25T15:00:00Z"
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
     ~user_activated_upgrades:
-      [(6729729l, "Pt8h9rz3r9F3Yx3wzJqF42sxsyVoo6kL4FBoJSWRzKmDvjXjHwV")]
+      [(6729729l, "Ps8tUpcuzKw4cTeFT2wJXNCLa9pxkBUWZFDAvb9CXmnAuRE4bzF")]
     ~default_bootstrap_peers:
       [
         "basenet.teztnets.com";

@@ -5,7 +5,7 @@ from pygments.token import Whitespace, Literal, Punctuation, Keyword, Comment
 class MichelsonLexer(RegexLexer):
     name = 'Michelson'
     aliases = ['michelson']
-    filenames = ['*.tz']
+    filenames = ['*.mv']
 
     tokens = {
         'root': [

@@ -178,7 +178,7 @@ originate_contracts() {
     originate_admin "${SEQUENCER_GOVERNANCE_ALIAS}_contract" "${sequencer_governance_address}"
   fi
   if [[ -n ${DELAYED_BRIDGE_ALIAS} ]]; then
-    originate_contract delayed_transaction_bridge.tz "${DELAYED_BRIDGE_ALIAS}" Unit
+    originate_contract delayed_transaction_bridge.mv "${DELAYED_BRIDGE_ALIAS}" Unit
   fi
 }
 
@@ -219,18 +219,18 @@ originate_contract() {
 }
 
 originate_exchanger() {
-  originate_contract exchanger.tz "${EXCHANGER_ALIAS}" Unit
+  originate_contract exchanger.mv "${EXCHANGER_ALIAS}" Unit
 }
 
 originate_bridge() {
   exchanger_address=$(run_in_docker mavkit-client --endpoint "${ENDPOINT}" show known contract "${EXCHANGER_ALIAS}")
-  originate_contract evm_bridge.tz "${BRIDGE_ALIAS}" "Pair \"${exchanger_address}\" None"
+  originate_contract evm_bridge.mv "${BRIDGE_ALIAS}" "Pair \"${exchanger_address}\" None"
 }
 
 originate_admin() {
   admin_alias=$1
   admin_address=$2
-  originate_contract admin.tz "${admin_alias}" "\"${admin_address}\""
+  originate_contract admin.mv "${admin_alias}" "\"${admin_address}\""
 }
 
 deposit() {

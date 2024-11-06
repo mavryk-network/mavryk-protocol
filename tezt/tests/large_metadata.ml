@@ -139,7 +139,7 @@ let setup_node ~limit protocol =
      when failing. This contract always fails with a byte sequence
      full of zeros. If the parameter n is less than 2 then the length
      of the error message is 2 bytes, otherwise it is 2^n bytes. See
-     [michelson_test_scripts/mini_scenarios/large_error.tz]. *)
+     [michelson_test_scripts/mini_scenarios/large_error.mv]. *)
   let* _alias, contract_id =
     Client.originate_contract_at
       ~amount:Tez.zero

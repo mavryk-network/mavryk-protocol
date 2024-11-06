@@ -75,7 +75,7 @@ let call_the_contract b ~baker ~src contract param_left param_right =
 
 let path = project_root // Filename.dirname __FILE__
 
-(** Originates the contract at contracts/temp_big_maps.tz and calls it with
+(** Originates the contract at contracts/temp_big_maps.mv and calls it with
     the pair [(param_left, param_right)].
     An action (originating, storing, passing, passing twice) is done on a big
     map (either fresh, passed, or stored).
@@ -86,7 +86,7 @@ let test_temp_big_maps_contract param_left param_right () =
   let* b, baker, src, _src2 = Contract_helpers.init () in
   let* contract, b =
     Contract_helpers.originate_contract
-      (path // "contracts/temp_big_maps.tz")
+      (path // "contracts/temp_big_maps.mv")
       "{}"
       src
       b
