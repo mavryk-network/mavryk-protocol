@@ -5,7 +5,7 @@ docker:prepare-etherlink-release:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
   stage: prepare_release
   tags:
-  - saas-linux-small-amd64
+  - do
   dependencies: []
   before_script:
   - ./scripts/ci/docker_initialize.sh
@@ -24,7 +24,7 @@ gitlab:etherlink-release:
   image: registry.gitlab.com/tezos/docker-images/ci-release:v1.4.0
   stage: publish_package_gitlab
   tags:
-  - saas-linux-small-amd64
+  - do
   needs:
   - docker:prepare-etherlink-release
   dependencies: []

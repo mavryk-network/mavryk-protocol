@@ -13,7 +13,7 @@ saas-linux-small-arm64 | gcp_dev_arm64)
   PLATFORM="linux/arm64"
   ARCHITECTURE="arm64"
   ;;
-saas-linux-small-amd64 | gcp_dev)
+do | gcp_dev)
   PLATFORM="linux/amd64"
   ARCHITECTURE="amd64"
   ;;

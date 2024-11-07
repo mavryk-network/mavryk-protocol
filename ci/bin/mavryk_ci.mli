@@ -196,7 +196,7 @@ val enc_git_strategy : git_strategy -> string
     - Adds [tags:] based on [arch] and [tags]:
 
       - If only [arch] is set to [Amd64] (resp. [Arm64]) then the tag
-        ["saas-linux-small-amd64"] (resp ["saas-linux-small-arm64"]) is set.
+        ["do"] (resp ["saas-linux-small-arm64"]) is set.
       - If only [tags] is set, then it is passed as is to the job's [tags:]
         field.
       - Setting both [arch] and [tags] throws an error.

@@ -5,7 +5,7 @@ oc.script:test_mavkit_release_versions:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-small-amd64
+  - do
   rules:
   - changes:
     - src/**/*

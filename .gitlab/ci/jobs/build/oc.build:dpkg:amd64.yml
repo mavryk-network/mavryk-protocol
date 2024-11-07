@@ -5,7 +5,7 @@ oc.build:dpkg:amd64:
   image: $DISTRIBUTION
   stage: build
   tags:
-  - saas-linux-small-amd64
+  - do
   needs: []
   dependencies: []
   before_script:

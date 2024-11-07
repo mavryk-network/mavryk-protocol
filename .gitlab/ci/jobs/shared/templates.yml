@@ -7,11 +7,11 @@
   # template requiring artifacts from preceeding jobs should declare
   # their dependencies locally.
   dependencies: []
-  tags: ["saas-linux-small-amd64"]
+  tags: ["do"]
 
 # Default runner tags for jobs in the build stage
 .tags_template__build:
-  tags: ["saas-linux-small-amd64"]
+  tags: ["do"]
 
 # Default runner tags for arm64 jobs in the build stage
 .tags_template__build_arm64:
