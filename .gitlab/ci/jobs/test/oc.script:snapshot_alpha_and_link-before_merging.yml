@@ -5,7 +5,7 @@ oc.script:snapshot_alpha_and_link:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - do
+  - gcp-amd64
   rules:
   - changes:
     - src/proto_alpha/**/*

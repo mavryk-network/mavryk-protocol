@@ -5,7 +5,7 @@ oc.build_kernels:
   image: ${rust_toolchain_image_name}:${rust_toolchain_image_tag}
   stage: build
   tags:
-  - do
+  - gcp-amd64
   rules:
   - when: on_success
   needs:

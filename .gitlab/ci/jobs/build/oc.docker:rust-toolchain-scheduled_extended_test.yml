@@ -5,7 +5,7 @@ oc.docker:rust-toolchain:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
-  - do
+  - gcp-amd64
   rules:
   - when: always
   dependencies: []

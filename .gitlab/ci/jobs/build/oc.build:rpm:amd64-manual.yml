@@ -5,7 +5,7 @@ oc.build:rpm:amd64:
   image: $DISTRIBUTION
   stage: manual
   tags:
-  - do
+  - gcp-amd64
   rules:
   - when: manual
     allow_failure: true

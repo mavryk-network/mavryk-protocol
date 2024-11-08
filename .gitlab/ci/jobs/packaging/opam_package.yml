@@ -5,7 +5,7 @@ opam:mavkit-accuser-PtAtLas:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -69,7 +69,7 @@ opam:mavkit-accuser-PtBoreas:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -133,7 +133,7 @@ opam:mavkit-alcotezt:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -197,7 +197,7 @@ opam:mavkit-baker-PtAtLas:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -261,7 +261,7 @@ opam:mavkit-baker-PtBoreas:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -325,7 +325,7 @@ opam:mavkit-client:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -389,7 +389,7 @@ opam:mavkit-codec:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -453,7 +453,7 @@ opam:mavkit-crawler:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -517,7 +517,7 @@ opam:mavkit-dac-client:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -581,7 +581,7 @@ opam:mavkit-dac-node:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -645,7 +645,7 @@ opam:mavkit-dal-node:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -709,7 +709,7 @@ opam:mavkit-distributed-internal:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -773,7 +773,7 @@ opam:mavkit-distributed-lwt-internal:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -837,7 +837,7 @@ opam:mavkit-injector:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -901,7 +901,7 @@ opam:mavkit-internal-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -965,7 +965,7 @@ opam:mavkit-l2-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1029,7 +1029,7 @@ opam:mavkit-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1093,7 +1093,7 @@ opam:mavkit-node:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1157,7 +1157,7 @@ opam:mavkit-node-config:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1221,7 +1221,7 @@ opam:mavkit-proto-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1285,7 +1285,7 @@ opam:mavkit-protocol-000-Ps9mPmXa-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1349,7 +1349,7 @@ opam:mavkit-protocol-001-PtAtLas-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1413,7 +1413,7 @@ opam:mavkit-protocol-002-PtBoreas-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1477,7 +1477,7 @@ opam:mavkit-protocol-alpha-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1541,7 +1541,7 @@ opam:mavkit-protocol-compiler:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1605,7 +1605,7 @@ opam:mavkit-proxy-server:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1669,7 +1669,7 @@ opam:mavkit-rpc-process:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1733,7 +1733,7 @@ opam:mavkit-shell-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1797,7 +1797,7 @@ opam:mavkit-signer:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1861,7 +1861,7 @@ opam:mavkit-smart-rollup-node:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1925,7 +1925,7 @@ opam:mavkit-smart-rollup-node-PtAtLas:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -1989,7 +1989,7 @@ opam:mavkit-smart-rollup-node-PtBoreas:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -2053,7 +2053,7 @@ opam:mavkit-smart-rollup-node-alpha:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -2117,7 +2117,7 @@ opam:mavkit-smart-rollup-node-lib:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -2181,7 +2181,7 @@ opam:mavkit-smart-rollup-wasm-debugger:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -2245,7 +2245,7 @@ opam:mavkit-smart-rollup-wasm-debugger-lib:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -2309,7 +2309,7 @@ opam:mavkit-smart-rollup-wasm-debugger-plugin:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -2373,7 +2373,7 @@ opam:mavkit-version:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -2437,7 +2437,7 @@ opam:mavryk-benchmark:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -2501,7 +2501,7 @@ opam:mavryk-bls12-381:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -2565,7 +2565,7 @@ opam:mavryk-client-demo-counter:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -2629,7 +2629,7 @@ opam:mavryk-client-genesis:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -2693,7 +2693,7 @@ opam:mavryk-dac-client-lib:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -2757,7 +2757,7 @@ opam:mavryk-dac-lib:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -2821,7 +2821,7 @@ opam:mavryk-dac-node-lib:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -2885,7 +2885,7 @@ opam:mavryk-dal-node-lib:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -2949,7 +2949,7 @@ opam:mavryk-dal-node-services:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -3013,7 +3013,7 @@ opam:mavryk-openapi:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -3077,7 +3077,7 @@ opam:mavryk-protocol-000-Ps9mPmXa:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -3141,7 +3141,7 @@ opam:mavryk-protocol-001-PtAtLas:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -3205,7 +3205,7 @@ opam:mavryk-protocol-002-PtBoreas:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -3269,7 +3269,7 @@ opam:mavryk-protocol-alpha:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -3333,7 +3333,7 @@ opam:mavryk-protocol-demo-counter:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -3397,7 +3397,7 @@ opam:mavryk-protocol-demo-noops:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -3461,7 +3461,7 @@ opam:mavryk-protocol-genesis:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -3525,7 +3525,7 @@ opam:mavryk-proxy-server-config:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -3589,7 +3589,7 @@ opam:tezt-mavryk:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - do
+  - gcp-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed

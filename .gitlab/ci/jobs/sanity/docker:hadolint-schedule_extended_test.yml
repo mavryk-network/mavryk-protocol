@@ -5,7 +5,7 @@ docker:hadolint-schedule_extended_test:
   image: hadolint/hadolint:2.9.3-debian
   stage: sanity
   tags:
-  - do
+  - gcp-amd64
   rules:
   - when: always
   dependencies: []
