@@ -1,6 +1,6 @@
 # Mavryk Mavkit implementation
 
-## Introduction 
+## Introduction
 
 Mavryk is a blockchain that offers both  _consensus_ and _meta-consensus_, by which we mean that Mavryk comes to consensus both about the state of its ledger, and  _also_ about how the
 protocol and the nodes should adapt and upgrade.
