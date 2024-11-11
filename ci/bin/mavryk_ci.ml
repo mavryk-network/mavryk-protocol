@@ -318,13 +318,13 @@ let job ?arch ?after_script ?allow_failure ?artifacts ?before_script ?cache
       | Some arch, None ->
           [
             (match arch with
-            | Amd64 -> "do"
-            | Arm64 -> "saas-linux-small-arm64");
+            | Amd64 -> "ubuntu-amd64"
+            | Arm64 -> "ubuntu-arm64");
           ]
       | None, Some tags -> tags
       | None, None ->
           (* By default, we assume Amd64 runners as given by the [do] tag. *)
-          ["do"]
+          ["ubuntu-amd64"]
       | Some _, Some _ ->
           failwith
             "[job] cannot specify both [arch] and [tags] at the same time in \

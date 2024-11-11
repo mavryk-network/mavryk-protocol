@@ -5,7 +5,7 @@ oc.build:rpm:amd64:
   image: $DISTRIBUTION
   stage: build
   tags:
-  - gcp-amd64
+  - ubuntu-amd64
   needs: []
   dependencies: []
   before_script:

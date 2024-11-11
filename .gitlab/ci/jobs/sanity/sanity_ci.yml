@@ -5,7 +5,7 @@ sanity_ci:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: sanity
   tags:
-  - gcp-amd64
+  - ubuntu-amd64
   dependencies: []
   before_script:
   - ./scripts/ci/take_ownership.sh
