@@ -317,9 +317,7 @@ let job ?arch ?after_script ?allow_failure ?artifacts ?before_script ?cache
       (match (arch, tags) with
       | Some arch, None ->
           [
-            (match arch with
-            | Amd64 -> "ubuntu-amd64"
-            | Arm64 -> "ubuntu-arm64");
+            (match arch with Amd64 -> "ubuntu-amd64" | Arm64 -> "ubuntu-arm64");
           ]
       | None, Some tags -> tags
       | None, None ->
