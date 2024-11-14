@@ -71,9 +71,9 @@ let pretty_string
     ]
 
 let parse_basename : string -> (string * version_range * string) option =
-  let re3 = rex "(.*)_([0-9]{3,})_([0-9]{3,})\\.(tz.*)" in
-  let re2 = rex "(.*)_([0-9]{3,})\\.(tz.*)" in
-  let re1 = rex "(.*).(tz.*)" in
+  let re3 = rex "(.*)_([0-9]{3,})_([0-9]{3,})\\.(mv.*)" in
+  let re2 = rex "(.*)_([0-9]{3,})\\.(mv.*)" in
+  let re1 = rex "(.*).(mv.*)" in
   fun s ->
     match s =~**** re3 with
     | Some (name, range_start, range_end, extension) ->
