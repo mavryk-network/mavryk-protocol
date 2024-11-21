@@ -63,6 +63,7 @@ documentation:build_all:
     - documentation:manuals
     - documentation:docgen
   script:
+    - sleep 3600
     - make -C docs -j sphinx
   artifacts:
     expose_as: 'Documentation - excluding old protocols'
