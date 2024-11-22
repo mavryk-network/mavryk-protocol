@@ -18,8 +18,6 @@ documentation:odoc:
   extends:
     - .doc_job_template
   script:
-    - whoami
-    - pwd
     - make -C docs odoc-lite
   artifacts:
     paths:
