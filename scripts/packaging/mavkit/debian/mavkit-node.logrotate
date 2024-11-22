@@ -1,4 +1,4 @@
-/var/log/tezos/node.log{
+/var/log/mavryk/node.log{
     daily
     # we use copytruncate to avoid stopping node.
     copytruncate

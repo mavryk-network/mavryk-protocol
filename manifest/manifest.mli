@@ -1000,7 +1000,7 @@ val tezt :
     [npm_deps]: npm dependencies used when targeting JavaScript.
 
     [released_on_opam]: whether the library is available on the upstream opam-repository
-    (default true). In case the lib is not available on opam, tezos packages depending
+    (default true). In case the lib is not available on opam, mavryk packages depending
     on it won't be installable on opam.
 
     Version constraints are only added to released [.opam] files

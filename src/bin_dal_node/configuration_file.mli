@@ -51,7 +51,7 @@ type t = {
       (** The expected PoW difficulty level for the peers' identity. *)
   network_name : string;
       (** A string that identifies the network's name. E.g. dal-sandbox. *)
-  endpoint : Uri.t;  (** The endpoint of a Tezos L1 node. *)
+  endpoint : Uri.t;  (** The endpoint of a Mavryk L1 node. *)
   metrics_addr : P2p_point.Id.t;
       (** The TCP address of the node's server used to export metrics. *)
   profiles : Types.profiles;

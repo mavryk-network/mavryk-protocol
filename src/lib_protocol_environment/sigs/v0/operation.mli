@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos operations. *)
+(** Mavryk operations. *)
 
 type shell_header = {
   branch : Block_hash.t;

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos Protocol Implementation - Error Monad *)
+(** Mavryk Protocol Implementation - Error Monad *)
 
 (** {2 Error classification} *)
 

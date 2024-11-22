@@ -67,6 +67,6 @@ module type MAVRYK_CONTEXT_UNIX = sig
   end
 end
 
-(** Tezos - Versioned, block indexed (key x value) store *)
+(** Mavryk - Versioned, block indexed (key x value) store *)
 module Make (Encoding : module type of Mavryk_context_encoding.Context) :
   MAVRYK_CONTEXT_UNIX

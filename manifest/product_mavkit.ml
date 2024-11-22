@@ -7073,7 +7073,7 @@ let _simulation_scenario =
     ~release_status:Unreleased
     ~with_macos_security_framework:true
     ~synopsis:
-      "A script creating a simulation scenario from a tezos node directory."
+      "A script creating a simulation scenario from a mavryk node directory."
     ~opam:""
     ~deps:
       [

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos Shell Module - Mempool, a.k.a. the operations safe to be broadcast. *)
+(** Mavryk Shell Module - Mempool, a.k.a. the operations safe to be broadcast. *)
 
 type t = {
   known_valid : Mavryk_crypto.Hashed.Operation_hash.Set.t;

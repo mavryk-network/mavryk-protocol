@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos Shell - Prevalidation of pending operations (a.k.a Mempool) *)
+(** Mavryk Shell - Prevalidation of pending operations (a.k.a Mempool) *)
 
 (** The prevalidator is the worker in charge of the [mempool], that
     is, the operations that are not yet included in a block. It keeps

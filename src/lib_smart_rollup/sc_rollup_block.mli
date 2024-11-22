@@ -29,10 +29,10 @@
     with respect to a layer 1 block, but without the inbox content of
     messages. *)
 type header = {
-  block_hash : Block_hash.t;  (** Tezos block hash. *)
+  block_hash : Block_hash.t;  (** Mavryk block hash. *)
   level : int32;
-      (** Level of the block, corresponds to the level of the tezos block. *)
-  predecessor : Block_hash.t;  (** Predecessor hash of the Tezos block. *)
+      (** Level of the block, corresponds to the level of the mavryk block. *)
+  predecessor : Block_hash.t;  (** Predecessor hash of the Mavryk block. *)
   commitment_hash : Commitment.Hash.t option;
       (** Hash of this block's commitment if any was computed for it. *)
   previous_commitment_hash : Commitment.Hash.t;

@@ -26,7 +26,7 @@
 let () = Additional_registrations.force_linking ()
 
 (* FIXME: https://gitlab.com/tezos/tezos/-/issues/4025
-   Remove backwards compatible Tezos symlinks. *)
+   Remove backwards compatible Mavryk symlinks. *)
 let warn_if_argv0_name_not_mavkit () =
   let executable_name = Filename.basename Sys.argv.(0) in
   let prefix = "mavryk-" in

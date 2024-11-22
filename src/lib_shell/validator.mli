@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos Shell - Main entry point of the validation scheduler. *)
+(** Mavryk Shell - Main entry point of the validation scheduler. *)
 
 type t
 

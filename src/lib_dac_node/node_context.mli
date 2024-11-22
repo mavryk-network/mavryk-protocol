@@ -107,7 +107,7 @@ type t
 
 (** [init config cctxt] creates a [t] with a status set to
     [Starting] using the given dac node configuration [config] and
-    tezos node client context [cctxt]. *)
+    mavryk node client context [cctxt]. *)
 val init : Configuration.t -> Client_context.full -> t tzresult Lwt.t
 
 (** Raised by [set_ready] when the status is already [Ready _] *)

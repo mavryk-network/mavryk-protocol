@@ -73,7 +73,7 @@ val infrastructure : string
 (** ["layer1"]: tag for tests owned by the Layer 1 product unit. *)
 val layer1 : string
 
-(** ["mavryk2"]: tag for tests owned by the Tezos 2 product unit. *)
+(** ["mavryk2"]: tag for tests owned by the Mavryk 2 product unit. *)
 val mavryk2 : string
 
 (** ["etherlink"]: tag for tests owned by the Etherlink product unit. *)

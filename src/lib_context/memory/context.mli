@@ -42,6 +42,6 @@ module type MAVRYK_CONTEXT_MEMORY = sig
   val encoding : t Data_encoding.t
 end
 
-(** Implementation of Tezos context fully in memory. *)
+(** Implementation of Mavryk context fully in memory. *)
 module Make (Encoding : module type of Mavryk_context_encoding.Context) :
   MAVRYK_CONTEXT_MEMORY

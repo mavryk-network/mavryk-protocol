@@ -23,6 +23,6 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos - Secp256k1 cryptography *)
+(** Mavryk - Secp256k1 cryptography *)
 
 include S.SIGNATURE with type watermark := bytes

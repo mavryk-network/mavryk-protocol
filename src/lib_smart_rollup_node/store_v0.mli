@@ -36,7 +36,7 @@ open Indexed_store
 
 module Irmin_store : sig
   include module type of Irmin_store.Make (struct
-    let name = "Tezos smart rollup node"
+    let name = "Mavryk smart rollup node"
   end)
 
   include Store_sigs.Store with type 'a t := 'a t

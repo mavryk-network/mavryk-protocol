@@ -581,7 +581,7 @@ let encoding default_display : t Data_encoding.t =
              (dft
                 "reconnection_delay"
                 ~description:
-                  "The reconnection (to the tezos node) delay in seconds"
+                  "The reconnection (to the mavryk node) delay in seconds"
                 float
                 default_reconnection_delay)
              (dft

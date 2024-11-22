@@ -25,7 +25,7 @@
 
 module Time = Mavryk_base.Time.System
 
-(** Run Tezos client with commands related to `demo_protocol`. *)
+(** Run Mavryk client with commands related to `demo_protocol`. *)
 
 (** Run [mavkit-client activate protocol] with `demo_protocol`.
 

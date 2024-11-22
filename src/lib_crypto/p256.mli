@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos - P256 cryptography *)
+(** Mavryk - P256 cryptography *)
 
 include S.SIGNATURE with type watermark = Bytes.t
 

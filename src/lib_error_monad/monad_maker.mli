@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** [S] is the Tezos-specific extension to the generic monad
+(** [S] is the Mavryk-specific extension to the generic monad
     provided by Lwtreslib. It sets some defaults (e.g., it defaults traced
     failures), it brings some qualified identifiers into the main unqualified
     part (e.g., [return_unit]), it provides some tracing helpers and some

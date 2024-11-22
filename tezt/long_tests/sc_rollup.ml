@@ -53,7 +53,7 @@ let hex_encode (input : string) : string =
    See also [wasm_incomplete_kernel_boot_sector].
 
    Note that this uses [Mavryk_scoru_wasm.Gather_floppies.Complete_kernel], so
-   the kernel must fit into a single Tezos operation.
+   the kernel must fit into a single Mavryk operation.
 *)
 let read_kernel name : string =
   let open Tezt.Base in
