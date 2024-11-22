@@ -67,7 +67,6 @@ tezt:static-binaries:
   variables:
     TESTS: "/ci_disabled cli"
   before_script:
-    - sleep 3600
     - mv mavkit-binaries/x86_64/mavkit-* .
 
 # Note: if you reactivate this test and if you keep it manual, put it in the "manual" stage.

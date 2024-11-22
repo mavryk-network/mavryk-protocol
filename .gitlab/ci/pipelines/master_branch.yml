@@ -43,7 +43,7 @@ oc.build:static-x86_64-linux-binaries:
     EXECUTABLE_FILES: script-inputs/released-executables script-inputs/experimental-executables
   artifacts:
     paths:
-    - mavkit-binaries/$ARCH/*
+    - mavkit-binaries/${ARCH}/*
 
 oc.build:static-arm64-linux-binaries:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
@@ -63,7 +63,7 @@ oc.build:static-arm64-linux-binaries:
     EXECUTABLE_FILES: script-inputs/released-executables script-inputs/experimental-executables
   artifacts:
     paths:
-    - mavkit-binaries/$ARCH/*
+    - mavkit-binaries/${ARCH}/*
 
 oc.build_arm64-released:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
@@ -236,7 +236,7 @@ oc.unified_coverage:
     expire_in: 15 days
     paths:
     - _coverage_report/
-    - $BISECT_FILE
+    - ${BISECT_FILE}
     reports:
       coverage_report:
         coverage_format: cobertura

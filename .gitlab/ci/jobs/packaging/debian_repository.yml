@@ -59,7 +59,7 @@ oc.build-debian-based-packages:
     - $TAGS
   artifacts:
     paths:
-      - packages/$DISTRIBUTION/$RELEASE
+    - packages/${DISTRIBUTION}/${RELEASE}
   script:
     - .gitlab/ci/jobs/packaging/build-debian-packages.sh
 

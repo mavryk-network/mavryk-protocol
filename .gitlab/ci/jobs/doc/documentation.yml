@@ -21,7 +21,6 @@ documentation:odoc:
     - whoami
     - pwd
     - make -C docs odoc-lite
-    - sleep 3600
   artifacts:
     paths:
       - docs/_build/api/odoc/

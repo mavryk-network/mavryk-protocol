@@ -183,7 +183,7 @@
   artifacts:
     name: "coverage-files-$CI_JOB_ID"
     paths:
-      - $BISECT_FILE
+      - ${BISECT_FILE}
     expire_in: 1 day
     when: on_success
 
