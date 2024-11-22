@@ -15,9 +15,6 @@ docker:prepare-etherlink-release:
   - docker:${DOCKER_VERSION}-dind
   variables:
     DOCKER_VERSION: 24.0.6
-    DOCKER_TLS_CERTDIR: ""
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_DRIVER: overlay2
   artifacts:
     expire_in: 1 hour
     paths:

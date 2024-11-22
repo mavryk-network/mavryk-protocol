@@ -461,9 +461,6 @@ let job_docker_authenticated ?(skip_docker_initialization = false)
     ?ci_docker_hub ?artifacts ?(variables = []) ?rules ?dependencies ?arch
     ?when_ ?allow_failure ~__POS__ ~stage ~name script : mavryk_job =
   let docker_version = "24.0.6" in
-  let docker_tls_certdir = "" in
-  let docker_host = "tcp://docker:2375" in
-  let docker_driver = "overlay2" in
   job
     ?rules
     ?dependencies
@@ -476,9 +473,6 @@ let job_docker_authenticated ?(skip_docker_initialization = false)
     ~variables:
       ([
          ("DOCKER_VERSION", docker_version);
-         ("DOCKER_TLS_CERTDIR", docker_tls_certdir);
-         ("DOCKER_HOST", docker_host);
-         ("DOCKER_DRIVER", docker_driver);
        ]
       @ opt_var "CI_DOCKER_HUB" Bool.to_string ci_docker_hub
       @ variables)
