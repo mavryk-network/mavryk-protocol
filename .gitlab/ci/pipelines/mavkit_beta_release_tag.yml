@@ -18,7 +18,7 @@ oc.build:static-x86_64-linux-binaries:
   artifacts:
     expire_in: 90 days
     paths:
-    - mavkit-binaries/${ARCH}/*
+    - mavkit-binaries/$ARCH/*
 
 oc.build:static-arm64-linux-binaries:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
@@ -37,7 +37,7 @@ oc.build:static-arm64-linux-binaries:
   artifacts:
     expire_in: 90 days
     paths:
-    - mavkit-binaries/${ARCH}/*
+    - mavkit-binaries/$ARCH/*
 
 oc.docker:amd64:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0

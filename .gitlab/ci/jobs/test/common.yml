@@ -33,7 +33,7 @@
       - tezt.log
       - tezt-*.log
       - tezt-results-${CI_NODE_INDEX:-1}${TEZT_VARIANT}.json
-      - ${JUNIT}
+      - $JUNIT
     # Record artifacts are fetched from the scheduled pipeline.
     # If this pipeline is broken on a Friday and only gets fixed on Monday,
     # the next pipeline runs on Tuesday, so artifacts are unavailable
@@ -117,5 +117,5 @@
       - tezt.log
       - tezt-*.log
       - tezt-results-${CI_NODE_INDEX:-1}${TEZT_VARIANT}.json
-      - ${JUNIT}
-      - ${BISECT_FILE}
+      - $JUNIT
+      - $BISECT_FILE

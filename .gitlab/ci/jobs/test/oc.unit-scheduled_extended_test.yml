@@ -28,7 +28,7 @@ oc.unit:non-proto-x86_64:
     expire_in: 1 day
     paths:
     - test_results
-    - ${BISECT_FILE}
+    - $BISECT_FILE
     reports:
       junit: test_results/*.xml
     when: always
@@ -61,7 +61,7 @@ oc.unit:other-x86_64:
     expire_in: 1 day
     paths:
     - test_results
-    - ${BISECT_FILE}
+    - $BISECT_FILE
     reports:
       junit: test_results/*.xml
     when: always
@@ -94,7 +94,7 @@ oc.unit:proto-x86_64:
     expire_in: 1 day
     paths:
     - test_results
-    - ${BISECT_FILE}
+    - $BISECT_FILE
     reports:
       junit: test_results/*.xml
     when: always
