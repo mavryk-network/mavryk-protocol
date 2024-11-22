@@ -24,7 +24,6 @@ oc.build:static-x86_64-linux-binaries:
   - eval $(opam env)
   script:
   - ./scripts/ci/build_static_binaries.sh
-  - sleep 3600
   variables:
     ARCH: x86_64
     EXECUTABLE_FILES: script-inputs/released-executables script-inputs/experimental-executables
