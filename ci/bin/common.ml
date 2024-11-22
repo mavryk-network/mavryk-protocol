@@ -471,9 +471,7 @@ let job_docker_authenticated ?(skip_docker_initialization = false)
     ~__POS__
     ~image:Images.docker
     ~variables:
-      ([
-         ("DOCKER_VERSION", docker_version);
-       ]
+      ([("DOCKER_VERSION", docker_version)]
       @ opt_var "CI_DOCKER_HUB" Bool.to_string ci_docker_hub
       @ variables)
     ~before_script:
