@@ -58,4 +58,4 @@ For more information on the client commands, see :doc:`cli-commands<cli-commands
 Example
 -------
 
-The coin flip contract :src:`<src/proto_001_PtAtLas/lib_protocol/contracts/timelock_flip.mv>` gives an example of using time-lock. Beware this contract is for educational purpose only and is not secure.
+The coin flip contract :src:`<src/proto_001_PtAtLas/lib_protocol/contracts/timelock_flip.tz>` gives an example of using time-lock. Beware this contract is for educational purpose only and is not secure.
