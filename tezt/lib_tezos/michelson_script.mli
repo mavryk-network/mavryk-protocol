@@ -34,11 +34,11 @@ val in_range : version_range -> Protocol.t -> bool
   - [dirname]
     This is the relative path under [prefix] that leads you to the actual script.
   - [basename]
-    This is the name of the file in which the script is stored. E.g: [foobar_001.tz].
+    This is the name of the file in which the script is stored. E.g: [foobar_001.mv].
   - [name]
-    This is the logical name of the script. E.g: if basename = foobar_001.tz then name = foobar.
+    This is the logical name of the script. E.g: if basename = foobar_001.mv then name = foobar.
   - [version_range]
-    If the basename contains a version suffix [foobar_MMM(_NNN).tz], then this value is
+    If the basename contains a version suffix [foobar_MMM(_NNN).mv], then this value is
     [{range_start = MMM, (range_end = NNN)}].
     If there is no version suffix, then this value is [{range_start = 000, range_end = None}].
   - [depth]
@@ -62,9 +62,9 @@ val default_prefix : string
 
     Usage: [find name protocol]
 
-    This returns [PREFIX/NAME_MMM_NNN.tz] for the highest [MMM] and [NNN]
+    This returns [PREFIX/NAME_MMM_NNN.mv] for the highest [MMM] and [NNN]
     such that [MMM <= Protocol.number protocol <= NNN] and such that this file
-    exists. If no such file exists but [PREFIX/NAME_MMM.tz] or [PREFIX/NAME.tz]
+    exists. If no such file exists but [PREFIX/NAME_MMM.mv] or [PREFIX/NAME.mv]
     does, this returns the matching file instead. Else, this fails.
 
     The intent is that:
@@ -76,15 +76,15 @@ val default_prefix : string
       which it is valid for.
 
     [name] is a list of path items where all but the last one are subdirectories
-    and the last one is the base filename without [_NNN.tz].
+    and the last one is the base filename without [_NNN.mv].
 
     For instance, assume the following files exist:
-    - [michelson_scripts/foo/bar/baz.tz]
-    - [michelson_scripts/foo/bar/baz_015.tz]
+    - [michelson_scripts/foo/bar/baz.mv]
+    - [michelson_scripts/foo/bar/baz_015.mv]
     Then [path ["foo"; "bar"; "baz"] Lima] returns:
-    [michelson_scripts/foo/bar/baz_015.tz]
+    [michelson_scripts/foo/bar/baz_015.mv]
     while [path ["foo"; "bar"; "baz"] Kathmandu] returns:
-    [michelson_scripts/foo/bar/baz.tz]. *)
+    [michelson_scripts/foo/bar/baz.mv]. *)
 val find : ?prefix:string -> ?maxdepth:int -> string list -> Protocol.t -> t
 
 (** [find_all ?prefix ?maxdepth protocol] returns all Michelson scripts for a given
@@ -92,21 +92,21 @@ val find : ?prefix:string -> ?maxdepth:int -> string list -> Protocol.t -> t
     is useful when you don't want to recurse into subdirectories.
     
     For instance, assume the following files exist:
-    - [prefix/a.tz]
-    - [prefix/a_015.tz]
-    - [prefix/a_016.tz]
-    - [prefix/b/c.tz]
-    - [prefix/b/c_015.tz]
-    - [prefix/b/c_016.tz]
-    - [prefix/d/e/f.tz]
-    - [prefix/d/e/f_016.tz]
+    - [prefix/a.mv]
+    - [prefix/a_015.mv]
+    - [prefix/a_016.mv]
+    - [prefix/b/c.mv]
+    - [prefix/b/c_015.mv]
+    - [prefix/b/c_016.mv]
+    - [prefix/d/e/f.mv]
+    - [prefix/d/e/f_016.mv]
 
     And assume [p] is a [Protocol.t] such that [Protocol.number p = 015].
     
     [find_all p] returns:
-    - [prefix/a_015.tz]
-    - [prefix/b/c_015.tz]
-    - [prefix/d/e/f.tz]
+    - [prefix/a_015.mv]
+    - [prefix/b/c_015.mv]
+    - [prefix/d/e/f.mv]
     *)
 val find_all : ?prefix:string -> ?maxdepth:int -> Protocol.t -> t list
 
@@ -144,9 +144,9 @@ val path : ?no_prefix:bool -> t -> string
     itself without any version information or extensions.
 
     For instance, assume the following files exist:
-    - prefix/foo_123.tz
-    - prefix/bar.tz
-    - prefix/baz/quux.tz
+    - prefix/foo_123.mv
+    - prefix/bar.mv
+    - prefix/baz/quux.mv
 
     If each of those files is represented by a value [v] of type [t], then
     calling [name v] on each [v] would result in the following:

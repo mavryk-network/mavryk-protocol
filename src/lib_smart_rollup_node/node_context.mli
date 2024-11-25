@@ -73,7 +73,7 @@ type current_protocol = {
       (** Protocol supported by this rollup node (represented as a protocol
           level). *)
   constants : Rollup_constants.protocol_constants;
-      (** Protocol constants retrieved from the Tezos node. *)
+      (** Protocol constants retrieved from the Mavryk node. *)
 }
 
 type last_whitelist_update = {message_index : int; outbox_level : Int32.t}
@@ -277,8 +277,8 @@ val hash_of_level : _ t -> int32 -> Block_hash.t tzresult Lwt.t
     [level] is not known. *)
 val hash_of_level_opt : _ t -> int32 -> Block_hash.t option tzresult Lwt.t
 
-(** [level_of_hash node_ctxt hash] returns the level for Tezos block hash [hash]
-    if it is known by the Tezos Layer 1 node. *)
+(** [level_of_hash node_ctxt hash] returns the level for Mavryk block hash [hash]
+    if it is known by the Mavryk Layer 1 node. *)
 val level_of_hash : _ t -> Block_hash.t -> int32 tzresult Lwt.t
 
 (** Returns the block header for a given hash using the L1 node. *)

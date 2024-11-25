@@ -235,7 +235,7 @@ let test_simple_entrypoints_parametrize client ~contract =
       ~expected_storage:(sf {|(Some "%s%%C")|} contract)
   in
   (* tests passing adr%B to CONTRACT unit:
-     as entrypoint %B of simple_entrypoints.tz has type string,
+     as entrypoint %B of simple_entrypoints.mv has type string,
      CONTRACT will return None.*)
   let* () =
     test_simple_entrypoints
@@ -246,7 +246,7 @@ let test_simple_entrypoints_parametrize client ~contract =
       ~expected_storage:"None"
   in
   (* tests passing adr%D to CONTRACT unit:
-     as entrypoint %D does not exist in simple_entrypoints.tz,
+     as entrypoint %D does not exist in simple_entrypoints.mv,
      CONTRACT will return None.*)
   let* () =
     test_simple_entrypoints

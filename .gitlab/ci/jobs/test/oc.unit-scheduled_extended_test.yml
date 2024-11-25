@@ -5,7 +5,7 @@ oc.unit:non-proto-x86_64:
   image: ${build_deps_image_name}:runtime-build-test-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   rules:
   - when: on_success
   needs:
@@ -38,7 +38,7 @@ oc.unit:other-x86_64:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   rules:
   - when: on_success
   needs:
@@ -71,7 +71,7 @@ oc.unit:proto-x86_64:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   rules:
   - when: on_success
   needs:
@@ -104,7 +104,7 @@ oc.unit:non-proto-arm64:
   image: ${build_deps_image_name}:runtime-build-test-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-small-arm64
+  - ubuntu-arm64
   rules:
   - when: on_success
   needs:
@@ -135,7 +135,7 @@ oc.unit:webassembly-x86_64:
   image: ${build_deps_image_name}:runtime-build-test-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   rules:
   - when: on_success
   needs:
@@ -153,7 +153,7 @@ oc.unit:js_components:
   image: ${build_deps_image_name}:runtime-build-test-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   rules:
   - when: on_success
   needs:
@@ -175,7 +175,7 @@ oc.unit:protocol_compiles:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   rules:
   - when: on_success
   needs:

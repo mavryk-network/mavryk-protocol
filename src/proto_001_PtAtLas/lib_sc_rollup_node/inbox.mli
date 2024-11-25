@@ -27,7 +27,7 @@
 
    The incoming messages for a rollup are published on the layer 1. To
    maintain the state of its inbox, a rollup node retrieves these
-   messages each time the tezos blockchain is updated.
+   messages each time the mavryk blockchain is updated.
 
    The inbox state is persistent.
 

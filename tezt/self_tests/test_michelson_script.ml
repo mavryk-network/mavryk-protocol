@@ -25,12 +25,12 @@
 
 let make_prefix_dir () = Temp.dir "michelson_self_test_scripts"
 
-let script0 name = sf "%s.tz" name
+let script0 name = sf "%s.mv" name
 
-let script1 name start = sf "%s_%03d.tz" name (Protocol.number start)
+let script1 name start = sf "%s_%03d.mv" name (Protocol.number start)
 
 let script2 name start end_ =
-  sf "%s_%03d_%03d.tz" name (Protocol.number start) (Protocol.number end_)
+  sf "%s_%03d_%03d.mv" name (Protocol.number start) (Protocol.number end_)
 
 let with_previous_protocol p f =
   match Protocol.previous_protocol p with
@@ -250,9 +250,9 @@ let test_version_range1 () =
      prev_prev_proto ~ 014
 
      Create the following scripts:
-     - foo/bar.tz
-     - foo/bar_014_015.tz
-     - foo/bar_014_016.tz
+     - foo/bar.mv
+     - foo/bar_014_015.mv
+     - foo/bar_014_016.mv
 
      And test that [find_all prev_proto] returns an error.
   *)
@@ -292,9 +292,9 @@ let test_version_range2 () =
      prev_prev_proto ~ 014
 
      Create the following scripts:
-     - foo/bar.tz
-     - foo/bar_014_016.tz
-     - foo/bar_015.tz
+     - foo/bar.mv
+     - foo/bar_014_016.mv
+     - foo/bar_015.mv
 
      And test that [find_all prev_proto] returns an error.
   *)
@@ -332,8 +332,8 @@ let test_version_range3 () =
      prev_prev_proto ~ 014
 
      Create the following scripts:
-     - foo/bar.tz
-     - foo/bar_014_016.tz
+     - foo/bar.mv
+     - foo/bar_014_016.mv
 
      And test that [find_all prev_proto] returns an ok.
   *)
@@ -372,8 +372,8 @@ let test_version_range4 () =
      prev_prev_proto ~ 014
 
      Create the following scripts:
-     - foo/bar_014_015.tz
-     - foo/bar_015_016.tz
+     - foo/bar_014_015.mv
+     - foo/bar_015_016.mv
 
      And test that [find_all prev_proto] returns an error.
   *)
@@ -411,8 +411,8 @@ let test_version_range5 () =
      prev_prev_proto ~ 014
 
      Create the following scripts:
-     - foo/bar.tz
-     - foo/bar_015_015.tz
+     - foo/bar.mv
+     - foo/bar_015_015.mv
 
      And test that [find_all prev_proto] returns an error.
   *)
@@ -447,8 +447,8 @@ let test_version_range6 () =
      prev_prev_proto ~ 014
 
      Create the following scripts:
-     - foo/bar_014_014.tz
-     - foo/bar_016.tz
+     - foo/bar_014_014.mv
+     - foo/bar_016.mv
 
      And test that [find_all prev_proto] returns an error.
   *)
@@ -486,8 +486,8 @@ let test_version_range7 () =
      prev_prev_proto ~ 014
 
      Create the following scripts:
-     - foo/bar_014_014.tz
-     - foo/bar.tz
+     - foo/bar_014_014.mv
+     - foo/bar.mv
 
      And test that [find_all prev_proto] returns an error.
   *)

@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos - Manipulation and creation of hashes *)
+(** Mavryk - Manipulation and creation of hashes *)
 
 (** {2 Predefined Hashes } *)
 

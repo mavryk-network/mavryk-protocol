@@ -28,7 +28,7 @@
    Component: Vesting contract
    Invocation: dune exec tezt/vesting_contract_test/main.exe
    Subject: This file runs a test suite for the vesting contract. It
-            contains the current version of the contract in contract.tz
+            contains the current version of the contract in contract.mv
             file and executes a few testing scenarios against it. These
             tests are conceptually based on much older test suite
             originally written in Bash:
@@ -60,7 +60,7 @@ let () =
         ~__FILE__
         ~title
         ~tags:["vesting"; title]
-        (Vesting_test.execute ~contract:"contract.tz" ~user_count test))
+        (Vesting_test.execute ~contract:"contract.mv" ~user_count test))
     tests ;
   (* [Test.run] must be the last function to be called. *)
   Test.run ()

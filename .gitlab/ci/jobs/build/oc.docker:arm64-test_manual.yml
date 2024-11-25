@@ -5,7 +5,7 @@ oc.docker:arm64:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
   stage: manual
   tags:
-  - saas-linux-small-arm64
+  - ubuntu-arm64
   needs: []
   dependencies: []
   allow_failure: true

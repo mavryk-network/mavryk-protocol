@@ -40,7 +40,7 @@ type config = {
   (* Distribute tokens *)
   batch_size : int;
   batch_per_block : int;
-  amount : Int64.t; (*micro tz*)
+  amount : Int64.t; (*micro mv*)
 }
 
 let test_stresstest_fund_accounts =

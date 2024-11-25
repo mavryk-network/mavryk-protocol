@@ -2,7 +2,7 @@ version: "3"
 services:
   mavkit-node:
     container_name: mavkit-node-mumbai
-    image: tezos/tezos:latest
+    image: mavrykdynamics/mavryk:latest
     hostname: mavkit-node
     command: mavkit-node
     ports:
@@ -12,35 +12,35 @@ services:
       NODE_HOST: mavkit-node
       PROTOCOL: PtMumbai
     volumes:
-      - node_data:/var/run/tezos/node
-      - client_data:/var/run/tezos/client
+      - node_data:/var/run/mavryk/node
+      - client_data:/var/run/mavryk/client
     restart: on-failure
 
   mavkit-baker:
     container_name: mavkit-baker-mumbai
-    image: tezos/tezos:latest
+    image: mavrykdynamics/mavryk:latest
     hostname: mavkit-baker
     command: mavkit-baker --liquidity-baking-toggle-vote $LIQUIDITY_BAKING_VOTE
     environment:
       NODE_HOST: mavkit-node
       PROTOCOL: PtMumbai
     volumes:
-      - client_data:/var/run/tezos/client
-      - node_data:/var/run/tezos/node
+      - client_data:/var/run/mavryk/client
+      - node_data:/var/run/mavryk/node
     restart: on-failure
 
 
   mavkit-accuser:
     container_name: mavkit-accuser-mumbai
-    image: tezos/tezos:latest
+    image: mavrykdynamics/mavryk:latest
     hostname: mavkit-accuser
     command: mavkit-accuser
     environment:
       NODE_HOST: mavkit-node
       PROTOCOL: PtMumbai
     volumes:
-      - client_data:/var/run/tezos/client
-      - node_data:/var/run/tezos/node
+      - client_data:/var/run/mavryk/client
+      - node_data:/var/run/mavryk/node
     restart: on-failure
 
 volumes:

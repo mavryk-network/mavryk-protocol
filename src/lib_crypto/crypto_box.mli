@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos - X25519/XSalsa20-Poly1305 cryptography *)
+(** Mavryk - X25519/XSalsa20-Poly1305 cryptography *)
 
 type nonce
 

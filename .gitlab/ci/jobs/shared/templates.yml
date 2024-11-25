@@ -7,15 +7,15 @@
   # template requiring artifacts from preceeding jobs should declare
   # their dependencies locally.
   dependencies: []
-  tags: ["saas-linux-small-amd64"]
+  tags: ["ubuntu-amd64"]
 
 # Default runner tags for jobs in the build stage
 .tags_template__build:
-  tags: ["saas-linux-small-amd64"]
+  tags: ["ubuntu-amd64"]
 
 # Default runner tags for arm64 jobs in the build stage
 .tags_template__build_arm64:
-  tags: ["saas-linux-small-arm64"]
+  tags: ["ubuntu-arm64"]
 
 # Block the propagation of the GCP tag for standard jobs
 .tags_template__no_gcp:
@@ -23,7 +23,7 @@
 
 # Block the propagation of the GCP tag for arm64 jobs
 .tags_template__no_gcp_arm64:
-  tags: ["arm64"]
+  tags: []
 
 # Run on after job 'trigger'. Run immediately if there is no 'trigger' job (i.e. non-before_merging pipelines).
 .needs__trigger:

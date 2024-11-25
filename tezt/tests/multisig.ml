@@ -200,7 +200,7 @@ let test_multisig ~sig_algs ~supports protocols =
       let color = Log.Color.(bold ++ FG.cyan) in
       (* Test that:
          - the script originated by the "deploy multisig" command,
-         - the generic_multisig.tz script found in the mini_scenarios
+         - the generic_multisig.mv script found in the mini_scenarios
          directory, and
          - the script printed by the "show multisig script"
          are the same. *)

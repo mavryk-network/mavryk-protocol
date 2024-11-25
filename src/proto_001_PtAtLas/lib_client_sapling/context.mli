@@ -116,7 +116,7 @@ val shield :
 
 (** [unshield ~src_name ~src ~dst ~backdst stez cstate storage] returns
     a transaction unshielding [stez] shielded tokens from a sapling wallet
-    [src] to a transparent tezos address [dst], sending the change back to
+    [src] to a transparent mavryk address [dst], sending the change back to
     [backdst] and using a Sapling storage [cstate] and a anti-replay string.
     The transaction is refused if there is an insufficient amount of shielded
     mav in the wallet [src], the error is raised with [src_name].

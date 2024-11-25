@@ -726,7 +726,7 @@ let jobs pipeline_type =
           "git init _opam-repo-for-release";
           "./scripts/opam-prepare-repo.sh dev ./ ./_opam-repo-for-release";
           "git -C _opam-repo-for-release add packages";
-          "git -C _opam-repo-for-release commit -m \"tezos packages\"";
+          "git -C _opam-repo-for-release commit -m \"mavryk packages\"";
         ]
       |> job_external_split
     in

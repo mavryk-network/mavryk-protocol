@@ -1348,7 +1348,7 @@ module Make (Parameters : PARAMETERS) = struct
         next_protocol_of_block (cctxt :> Client_context.full) (head_hash, header)
       in
       update_protocol ~next_protocol ;
-      (* Notify all workers of a new Tezos head *)
+      (* Notify all workers of a new Mavryk head *)
       notify_new_mavryk_head head
     in
     (* Ignore errors *)

@@ -896,13 +896,13 @@ module For_RPC = struct
             in
             let*? sum_unfinalizable =
               List.fold_left_e
-                (fun acc (_cycle, tz) -> Tez_repr.(acc +? tz))
+                (fun acc (_cycle, mv) -> Tez_repr.(acc +? mv))
                 Tez_repr.zero
                 unfinalizable_requests
             in
             let*? sum_finalizable =
               List.fold_left_e
-                (fun acc (_, _cycle, tz) -> Tez_repr.(acc +? tz))
+                (fun acc (_, _cycle, mv) -> Tez_repr.(acc +? mv))
                 Tez_repr.zero
                 finalizable
             in

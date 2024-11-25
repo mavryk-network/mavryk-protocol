@@ -2845,9 +2845,9 @@ module Start_mavkit_dal_node = struct
             ( Mavryk_crypto.Signature.Public_key_hash.of_b58check_opt attester,
               client_opt )
           with
-          | Some _, _ -> return attester (* a valid tz address is given *)
+          | Some _, _ -> return attester (* a valid mv address is given *)
           | None, Some client ->
-              (* not a valid tz address. Probably an alias. *)
+              (* not a valid mv address. Probably an alias. *)
               let* account = Client.show_address ~alias:attester client in
               return account.Account.public_key_hash
           | None, None ->

@@ -5,7 +5,7 @@ oc.script:b58_prefix:
   image: ${build_deps_image_name}:runtime-build-test-dependencies--${build_deps_image_version}
   stage: test
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   rules:
   - when: always
   dependencies: []

@@ -55,7 +55,7 @@ let generate_init_state () =
 
 (* The script hash of
 
-   https://gitlab.com/dexter2tz/dexter2tz/-/blob/d98643881fe14996803997f1283e84ebd2067e35/dexter.liquidity_baking.mligo.tz
+   https://gitlab.com/dexter2tz/dexter2tz/-/blob/d98643881fe14996803997f1283e84ebd2067e35/dexter.liquidity_baking.mligo.mv
 *)
 let expected_cpmm_hash =
   Script_expr_hash.of_b58check_exn
@@ -63,7 +63,7 @@ let expected_cpmm_hash =
 
 (* The script hash of
 
-   https://gitlab.com/dexter2tz/dexter2tz/-/blob/d98643881fe14996803997f1283e84ebd2067e35/lqt_fa12.mligo.tz
+   https://gitlab.com/dexter2tz/dexter2tz/-/blob/d98643881fe14996803997f1283e84ebd2067e35/lqt_fa12.mligo.mv
 *)
 let expected_lqt_hash =
   Script_expr_hash.of_b58check_exn

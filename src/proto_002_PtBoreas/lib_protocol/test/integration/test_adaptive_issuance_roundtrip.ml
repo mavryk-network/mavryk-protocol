@@ -2475,7 +2475,7 @@ module Autostaking = struct
 
   let test_overdelegation =
     (* This test assumes that all delegate accounts created in [begin_test]
-       begin with 4M tz, with 5% staked *)
+       begin with 4M mv, with 5% staked *)
     let constants = init_constants ~autostaking_enable:true () in
     begin_test
       ~activate_ai:false

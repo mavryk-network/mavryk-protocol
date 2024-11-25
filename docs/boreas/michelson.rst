@@ -38,7 +38,7 @@ The Mavryk ledger currently has two types of accounts that can hold
 tokens (and be the destinations of transactions).
 
 - Implicit account: non-programmable account whose address is
-  the public key hash, prefixed by ``tz`` and one digit.
+  the public key hash, prefixed by ``mv`` and one digit.
 - Smart contract: programmable account associated to some Michelson code,
   whose address is a unique hash, prefixed by ``KT1``.
   A transaction to such
@@ -1949,7 +1949,7 @@ the reference implementation by passing `a conformance test suite
 Similarly to Michelson scripts, the concrete syntax of TZT unit tests
 is :doc:`../shell/micheline`.
 
-TZT unit test files usually have the extension ``.tzt``. A unit test
+TZT unit test files usually have the extension ``.mvt``. A unit test
 file describes a single unit test. It consists of a Micheline sequence
 of primitive applications (see :doc:`../shell/micheline`), in no particular order. This is
 :ref:`similar to Michelson scripts <syntax_of_scripts_boreas>` but

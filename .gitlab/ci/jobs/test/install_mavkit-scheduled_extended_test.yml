@@ -5,7 +5,7 @@ oc.install_bin_rc_fedora_39:
   image: fedora:39
   stage: test
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   rules:
   - when: always
   dependencies: []
@@ -16,7 +16,7 @@ oc.install_bin_rc_ubuntu_focal:
   image: public.ecr.aws/lts/ubuntu:20.04_stable
   stage: test
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   rules:
   - when: always
   dependencies: []
@@ -28,7 +28,7 @@ oc.install_bin_rc_ubuntu_jammy:
   image: public.ecr.aws/lts/ubuntu:22.04_stable
   stage: test
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   rules:
   - when: always
   dependencies: []
@@ -40,7 +40,7 @@ oc.install_opam_focal:
   image: ocaml/opam:ubuntu-20.04
   stage: test
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   rules:
   - when: always
   dependencies: []
@@ -54,7 +54,7 @@ oc.compile_release_sources_bullseye:
   image: ocaml/opam:debian-11
   stage: test
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   rules:
   - when: always
   dependencies: []
@@ -65,7 +65,7 @@ oc.compile_sources_bullseye:
   image: ocaml/opam:debian-11
   stage: test
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   rules:
   - when: always
   dependencies: []
@@ -77,7 +77,7 @@ oc.compile_sources_mantic:
   image: ocaml/opam:ubuntu-23.10
   stage: test
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   rules:
   - when: always
   dependencies: []

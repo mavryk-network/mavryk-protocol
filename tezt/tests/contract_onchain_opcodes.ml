@@ -286,7 +286,7 @@ let test_slice protocol client =
   let* contract =
     originate
       client
-      (* [slices.tz] needs a non-zero balance to transfer in the success case to
+      (* [slices.mv] needs a non-zero balance to transfer in the success case to
          the contract denoted by its storage. *)
       ~amount:Tez.one
       ~storage:{|"sppk7dBPqMPjDjXgKbb5f7V3PuKUrA4Zuwc3c3H7XqQerqPUWbK7Hna"|}

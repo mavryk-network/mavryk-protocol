@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos Protocol Implementation - Error Monad *)
+(** Mavryk Protocol Implementation - Error Monad *)
 
 (** {1 Categories of error}
 
@@ -61,14 +61,14 @@ include
     Functions from this module should only be used within the environment. *)
 include Sig.WITH_WRAPPED with type error := error
 
-(** [TzTrace]: trace module specific to the Tezos Error monad. The [trace] type
+(** [TzTrace]: trace module specific to the Mavryk Error monad. The [trace] type
     of this module is meant to become abstract in the medium-term (see
     https://gitlab.com/tezos/tezos/-/issues/1577). *)
 module TzTrace : Sig.TRACE with type 'error trace = 'error list
 
 type 'error trace = 'error TzTrace.trace
 
-(** [TzMonad]: the Tezos-specific monad part of the [Error_monad]. It includes
+(** [TzMonad]: the Mavryk-specific monad part of the [Error_monad]. It includes
 
     - syntax modules
     - consistent defaults,

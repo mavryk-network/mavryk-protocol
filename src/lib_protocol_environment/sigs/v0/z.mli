@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos Protocol Environment - Arbitrary precision arithmetic. *)
+(** Mavryk Protocol Environment - Arbitrary precision arithmetic. *)
 
 type t
 

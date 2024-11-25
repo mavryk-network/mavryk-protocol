@@ -71,7 +71,7 @@ type aggregate_key = {
 }
 
 (** [sign_bytes ~watermark ~signer message] signs the bytes [message] with
-    [signer]'s secret key. Returns the corresponding Tezos signature. This
+    [signer]'s secret key. Returns the corresponding Mavryk signature. This
     function can be used to sign transactions, blocks, etc. depending on
     the given [watermark].
 

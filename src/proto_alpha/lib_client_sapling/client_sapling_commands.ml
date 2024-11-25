@@ -169,7 +169,7 @@ let shield_cmd =
          ~desc:"Amount taken from transparent wallet of source."
     @@ Mavryk_clic.prefix "from"
     @@ Client_keys.Public_key_hash.source_param
-         ~name:"src-tz"
+         ~name:"src-mv"
          ~desc:"Transparent source account."
     @@ Mavryk_clic.prefix "to"
     @@ Mavryk_clic.string
@@ -266,7 +266,7 @@ let unshield_cmd =
          ~desc:"Sapling account of source."
     @@ Mavryk_clic.prefix "to"
     @@ Client_keys.Public_key_hash.source_param
-         ~name:"dst-tz"
+         ~name:"dst-mv"
          ~desc:"Transparent destination account."
     @@ Mavryk_clic.prefix "using"
     @@ Originated_contract_alias.destination_param
@@ -446,7 +446,7 @@ let submit_shielded_cmd =
          ~desc:"Filename of the forged transaction."
     @@ Mavryk_clic.prefix "from"
     @@ Client_keys.Public_key_hash.source_param
-         ~name:"alias-tz"
+         ~name:"alias-mv"
          ~desc:"Transparent account paying the fees."
     @@ Mavryk_clic.prefix "using"
     @@ Originated_contract_alias.destination_param

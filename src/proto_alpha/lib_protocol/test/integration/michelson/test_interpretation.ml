@@ -420,24 +420,24 @@ let tests =
     Tztest.tztest
       "lambda_rec instruction"
       `Quick
-      (test_contract_success (path // "contracts/rec_fact.tz") "0" "5" "120");
+      (test_contract_success (path // "contracts/rec_fact.mv") "0" "5" "120");
     Tztest.tztest
       "lambda_rec instruction with apply"
       `Quick
       (test_contract_success
-         (path // "contracts/rec_fact_apply.tz")
+         (path // "contracts/rec_fact_apply.mv")
          "0"
          "5"
          "120");
     Tztest.tztest
       "lambda_rec instruction with an infinite recursion"
       `Quick
-      (test_contract_fail (path // "contracts/omega.tz") "Unit" "Unit");
+      (test_contract_fail (path // "contracts/omega.mv") "Unit" "Unit");
     Tztest.tztest
       "lambda_rec instruction storage"
       `Quick
       (test_store_and_reload
-         (path // "contracts/rec_fact_store.tz")
+         (path // "contracts/rec_fact_store.mv")
          ~init_storage:"Left 0"
          ~entrypoint_str_1:"gen"
          ~param_1:"Unit"
@@ -456,7 +456,7 @@ let tests =
       "lambda_rec instruction storage apply store"
       `Quick
       (test_store_and_reload
-         (path // "contracts/rec_fact_apply_store.tz")
+         (path // "contracts/rec_fact_apply_store.mv")
          ~init_storage:"Left 0"
          ~entrypoint_str_1:"gen"
          ~param_1:"Unit"

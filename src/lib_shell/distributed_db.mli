@@ -25,7 +25,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos Shell - High-level API for the Gossip network and local storage.
+(** Mavryk Shell - High-level API for the Gossip network and local storage.
 
     It provides functions to query *static* resources such as blocks headers,
     operations, and functions to access dynamic resources such as heads and

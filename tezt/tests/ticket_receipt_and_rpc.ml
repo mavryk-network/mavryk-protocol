@@ -81,11 +81,11 @@ let cli_check_ticket_balance client ~hooks ~contract ~ticketer ~content_type
    - Contract sends a ticket to another contract.
 
    To do this, we originate three contracts where:
-   - KT_A (originated from tickets_create_and_send.tz) creates one red ticket, two green tickets, and two blue tickets, then:
+   - KT_A (originated from tickets_create_and_send.mv) creates one red ticket, two green tickets, and two blue tickets, then:
      - Stores the red and green tickets.
      - Sends both blue tickets to KT_B.
-   - KT_B (originated from tickets_store_fst_and_rely_snd.tz) stores one blue ticket and sends the other to KT_C.
-   - KT_C (originated from tickets_receive_and_store.tz) stores the blue ticket.
+   - KT_B (originated from tickets_store_fst_and_rely_snd.mv) stores one blue ticket and sends the other to KT_C.
+   - KT_C (originated from tickets_receive_and_store.mv) stores the blue ticket.
 
                                   (one blue)-> KT_C
                                    |           (store 1 blue)

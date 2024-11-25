@@ -12,12 +12,12 @@
 open Mavryk_protocol_alpha.Protocol
 
 (** Originate a contract that will mint and transfer tickets to the tx kernel.
-    Uses the contract [mini_scenarios/smart_rollup_mint_and_deposit_ticket.tz]. *)
+    Uses the contract [mini_scenarios/smart_rollup_mint_and_deposit_ticket.mv]. *)
 val prepare_mint_and_deposit_contract :
   ?hooks:Tezt.Process.hooks -> Client.t -> Protocol.t -> Contract_hash.t Lwt.t
 
 (** Originate ticket receiver contract that will receive withdrawals.
-    Uses the contract [mini_scenarios/smart_rollup_receive_tickets.tz]. *)
+    Uses the contract [mini_scenarios/smart_rollup_receive_tickets.mv]. *)
 val prepare_receive_withdrawn_tickets_contract :
   ?hooks:Tezt.Process.hooks -> Client.t -> Protocol.t -> Contract_hash.t Lwt.t
 

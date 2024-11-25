@@ -36,7 +36,7 @@ $ ./git-gas-diff.sh 4a6c91ee 1a28a48ed2c9fa654ed7d601302d551332b52e77
 
 * Could not parse line 6 `-      Origination:`.
 * Could not parse line 7 `+      Internal Origination:`.
-* Could not parse line 13 `+expru9ZhqLGykU3yRksBDWe4uDwxavSM19B8WfKukQA3fkgok4hGTE	[CONTRACT_PATH]/mini_scenarios/add_clear_tickets.tz`.
+* Could not parse line 13 `+expru9ZhqLGykU3yRksBDWe4uDwxavSM19B8WfKukQA3fkgok4hGTE	[CONTRACT_PATH]/mini_scenarios/add_clear_tickets.mv`.
 * Could not parse line 38 `-      Transaction:`.
 * Could not parse line 39 `+      Internal Transaction:`.
 * Could not parse line 668 `-      Delegation:`.

@@ -60,11 +60,11 @@ let originate_contract file storage src b =
 
 let path = project_root // Filename.dirname __FILE__
 
-(** Run emit.tz and assert that both the order of events and data content are correct *)
+(** Run emit.mv and assert that both the order of events and data content are correct *)
 let contract_test () =
   let open Lwt_result_syntax in
   let* b, src = Context.init1 ~consensus_threshold:0 () in
-  let* dst, b = originate_contract (path // "contracts/emit.tz") "Unit" src b in
+  let* dst, b = originate_contract (path // "contracts/emit.mv") "Unit" src b in
   let fee = Tez_helpers.of_int 10 in
   let parameters = Script.unit_parameter in
   let* operation =

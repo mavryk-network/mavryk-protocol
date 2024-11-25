@@ -84,7 +84,7 @@ let check_balances_after_transfer giver amount receiver =
     (Tez.to_string receiver_balance_after)
 
 (* Test.
-   Transfer some tz and check balance changes are as expected.
+   Transfer some mv and check balance changes are as expected.
 *)
 let test_transfer =
   Protocol.register_test

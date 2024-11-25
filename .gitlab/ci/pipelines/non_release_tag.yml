@@ -5,7 +5,7 @@ oc.build:static-x86_64-linux-binaries:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: build
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   dependencies: []
   before_script:
   - ./scripts/ci/take_ownership.sh
@@ -24,7 +24,7 @@ oc.build:static-arm64-linux-binaries:
   image: ${build_deps_image_name}:runtime-build-dependencies--${build_deps_image_version}
   stage: build
   tags:
-  - saas-linux-small-arm64
+  - ubuntu-arm64
   dependencies: []
   before_script:
   - ./scripts/ci/take_ownership.sh
@@ -43,7 +43,7 @@ oc.docker:amd64:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   dependencies: []
   before_script:
   - ./scripts/ci/docker_initialize.sh
@@ -63,7 +63,7 @@ oc.docker:arm64:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
   stage: build
   tags:
-  - saas-linux-small-arm64
+  - ubuntu-arm64
   dependencies: []
   before_script:
   - ./scripts/ci/docker_initialize.sh
@@ -83,7 +83,7 @@ oc.build:dpkg:amd64:
   image: $DISTRIBUTION
   stage: build
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   needs: []
   dependencies: []
   before_script:
@@ -130,7 +130,7 @@ oc.build:rpm:amd64:
   image: $DISTRIBUTION
   stage: build
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   needs: []
   dependencies: []
   before_script:
@@ -172,7 +172,7 @@ docker:merge_manifests:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
   stage: prepare_release
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   needs:
   - oc.docker:amd64
   - oc.docker:arm64
@@ -191,7 +191,7 @@ gitlab:publish:
   image: registry.gitlab.com/tezos/docker-images/ci-release:v1.4.0
   stage: publish_package_gitlab
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   needs:
   - oc.build:static-x86_64-linux-binaries
   - oc.build:static-arm64-linux-binaries

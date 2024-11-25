@@ -50,7 +50,7 @@ module Signer_implementation : Client_keys.SIGNER = struct
 
   let description =
     "In order to communicate with a Ledger Nano, recompile with \
-     ledgerwallet-tezos library installed"
+     ledgerwallet-mavryk library installed"
 
   let neuterize _sk = Lwt_result_syntax.tzfail NoLedgerSupport
 

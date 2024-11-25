@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos Protocol Environment - Protocol updater. *)
+(** Mavryk Protocol Environment - Protocol updater. *)
 
 (** Validation result: the record returned by the protocol
     on the successful validation of a block. *)
@@ -62,7 +62,7 @@ type rpc_context = {
   context : Context.t;
 }
 
-(** This is the signature of a Tezos protocol implementation. It has
+(** This is the signature of a Mavryk protocol implementation. It has
     access to the standard library and the Environment module. *)
 module type PROTOCOL = sig
   (** The maximum size of a block header in bytes. *)

@@ -170,7 +170,7 @@ let global_block_watcher :
 let global_current_mavryk_level :
     ([`GET], unit, unit, unit, unit, int32 option) Service.service =
   Mavryk_rpc.Service.get_service
-    ~description:"Current tezos level of the rollup node"
+    ~description:"Current mavryk level of the rollup node"
     ~query:Mavryk_rpc.Query.empty
     ~output:Data_encoding.(option int32)
     (open_root / "global" / "mavryk_level")

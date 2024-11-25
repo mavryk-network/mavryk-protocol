@@ -5,7 +5,7 @@ opam:prepare:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
-  - saas-linux-small-amd64
+  - ubuntu-amd64
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule" && $TZ_SCHEDULE_KIND == "EXTENDED_TESTS"
     when: delayed
@@ -37,7 +37,7 @@ opam:prepare:
   - git init _opam-repo-for-release
   - ./scripts/opam-prepare-repo.sh dev ./ ./_opam-repo-for-release
   - git -C _opam-repo-for-release add packages
-  - git -C _opam-repo-for-release commit -m "tezos packages"
+  - git -C _opam-repo-for-release commit -m "mavryk packages"
   artifacts:
     paths:
     - _opam-repo-for-release/

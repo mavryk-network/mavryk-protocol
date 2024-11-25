@@ -12,7 +12,7 @@ class InternalTestProxy(ContractHelper):
     @classmethod
     def originate(self, client: PyMavrykClient) -> OperationGroup:
         storage = None
-        filename = join(get_build_dir(), 'test/internal_test_proxy.tz')
+        filename = join(get_build_dir(), 'test/internal_test_proxy.mv')
 
         return originate_from_file(filename, client, storage)
     

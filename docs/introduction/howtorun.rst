@@ -60,7 +60,7 @@ details).
 
 
 Notice that only implicit accounts can be delegates, so your delegate
-must be a *tz* address.
+must be a *mv* address.
 
 Funds in implicit accounts which are not registered as delegates
 do not participate in baking.

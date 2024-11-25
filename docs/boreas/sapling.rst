@@ -271,7 +271,7 @@ Shielded tez
 ^^^^^^^^^^^^
 
 An example contract implementing a shielded pool of tokens with a 1 to 1 conversion rate to mumav is available in the tests of the protocol at
-:src:`src/proto_002_PtBoreas/lib_protocol/test/integration/michelson/contracts/sapling_contract.tz`.
+:src:`src/proto_002_PtBoreas/lib_protocol/test/integration/michelson/contracts/sapling_contract.mv`.
 
 Simple Voting Contract
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -391,7 +391,7 @@ unshielding and shielded transactions.
 In the case of shielded transactions there are two commands, one to
 forge a transaction and save it to file and one to submit it to the
 smart contract.
-The idea is that a user should not use their own transparent tz{1,2,3}
+The idea is that a user should not use their own transparent mv{1,2,3}
 address to submit a shielded address but rather have a third party
 inject it.
 
@@ -490,7 +490,7 @@ unshielding.
    # bake a block to include it.
    # { } represents an empty Sapling state.
    mavkit-client originate contract shielded-tez transferring 0 from bootstrap1 \
-   running src/proto_002_PtBoreas/lib_protocol/test/integration/michelson/contracts/sapling_contract.tz \
+   running src/proto_002_PtBoreas/lib_protocol/test/integration/michelson/contracts/sapling_contract.mv \
    --init '{ }' --burn-cap 3 &
    mavkit-client bake for bootstrap1
 

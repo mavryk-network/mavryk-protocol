@@ -23,14 +23,14 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos-specific extension for the [Regression] module. *)
+(** Mavryk-specific extension for the [Regression] module. *)
 
 (** [replace_variables log] returns [log] with all occurrences of variables
     such as contract addresses, hashes etc. that may change between different
     runs replaced by constants. *)
 val replace_variables : string -> string
 
-(** Custom Tezos-specific regression hooks that replaces Tezos-specific values
+(** Custom Mavryk-specific regression hooks that replaces Mavryk-specific values
     with constants.
 
     [scrubbed_global_options] list of global options to scrub. Default: remove
@@ -46,11 +46,11 @@ val hooks_custom :
   unit ->
   Process.hooks
 
-(** Hooks that replaces Tezos-specific values with constants.
+(** Hooks that replaces Mavryk-specific values with constants.
 
     This is {!hooks_custom} with the default arguments. *)
 val hooks : Process.hooks
 
-(** PRC_hooks that replaces Tezos-specific values with constants and calls
+(** PRC_hooks that replaces Mavryk-specific values with constants and calls
     Regression.capture on request and response. *)
 val rpc_hooks : RPC_core.rpc_hooks

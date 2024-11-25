@@ -1,4 +1,4 @@
-# Like compare_big_type.tz but with an extra line
+# Like compare_big_type.mv but with an extra line
 # DUP ; DUP ; COMPARE ; DROP ;
 # so that we can measure how much it costs
 parameter unit;

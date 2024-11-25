@@ -4323,7 +4323,7 @@ let list_tests_to_run_after_changes ~(tezt_exe : target)
     (* Search for a tag [tag] with path [tag_path] such that [tag_path] is equal to [path]
        or to a parent directory of [path]. For instance, if tag ["michelson"]
        corresponds to path ["michelson_test_scripts"] and if ["path"] is
-       ["michelson_test_scripts/opcodes/xor.tz"], tag ["michelson"] must be added. *)
+       ["michelson_test_scripts/opcodes/xor.mv"], tag ["michelson"] must be added. *)
     let rec find_tag path =
       ( Fun.flip List.iter runtime_dependencies @@ fun (tag, tag_path) ->
         (* We are comparing paths that are canonical:

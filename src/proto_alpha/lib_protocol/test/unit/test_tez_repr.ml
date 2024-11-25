@@ -102,10 +102,10 @@ module Test_tez_repr = struct
 
   let test_of_mumav_non_negative () =
     match Tez_repr.of_mumav 1000000L with
-    | Some tz ->
+    | Some mv ->
         Assert.equal_int64
           ~loc:__LOC__
-          (Tez_repr.to_mumav tz)
+          (Tez_repr.to_mumav mv)
           Tez_repr.(to_mumav one)
     | None -> failwith "should have successfully converted 1000000L to mav"
 
@@ -117,10 +117,10 @@ module Test_tez_repr = struct
 
   let test_of_mumav_exn () =
     try
-      let tz = Tez_repr.of_mumav_exn 1000000L in
+      let mv = Tez_repr.of_mumav_exn 1000000L in
       Assert.equal_int64
         ~loc:__LOC__
-        (Tez_repr.to_mumav tz)
+        (Tez_repr.to_mumav mv)
         Tez_repr.(to_mumav one)
     with e ->
       let msg = Printexc.to_string e and stack = Printexc.get_backtrace () in

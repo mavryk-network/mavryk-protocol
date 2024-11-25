@@ -1954,7 +1954,7 @@ the reference implementation by passing `a conformance test suite
 Similarly to Michelson scripts, the concrete syntax of TZT unit tests
 is :doc:`../shell/micheline`.
 
-TZT unit test files usually have the extension ``.tzt``. A unit test
+TZT unit test files usually have the extension ``.mvt``. A unit test
 file describes a single unit test. It consists of a Micheline sequence
 of primitive applications (see :doc:`../shell/micheline`), in no particular order. This is
 :ref:`similar to Michelson scripts <syntax_of_scripts_atlas>` but

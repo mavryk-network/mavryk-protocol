@@ -28,7 +28,7 @@
     {{:https://gitlab.com/nomadic-labs/data-encoding} data-encoding}
     libraries.
 
-    It is tailored to build stores for the Layer 2 nodes of Tezos (Tx-rollups
+    It is tailored to build stores for the Layer 2 nodes of Mavryk (Tx-rollups
     and Smart rollups).
 
     The stores built with this library support concurrent accesses thanks to the

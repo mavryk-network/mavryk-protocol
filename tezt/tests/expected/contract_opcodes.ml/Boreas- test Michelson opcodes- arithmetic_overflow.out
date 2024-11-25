@@ -1,5 +1,5 @@
 
-./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/shifts.tz on storage None and input '(Left (Pair 1 257))' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/shifts.mv on storage None and input '(Left (Pair 1 257))' --trace-stack
 Runtime error in contract KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi:
   01: parameter (or (pair nat nat) (pair nat nat));
   02: storage (option nat);
@@ -35,7 +35,7 @@ trace
 Fatal error:
   error running script
 
-./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/shifts.tz on storage None and input '(Left (Pair 123 257))' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/shifts.mv on storage None and input '(Left (Pair 123 257))' --trace-stack
 Runtime error in contract KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi:
   01: parameter (or (pair nat nat) (pair nat nat));
   02: storage (option nat);
@@ -71,7 +71,7 @@ trace
 Fatal error:
   error running script
 
-./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/shifts.tz on storage None and input '(Right (Pair 1 257))' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/shifts.mv on storage None and input '(Right (Pair 1 257))' --trace-stack
 Runtime error in contract KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi:
   01: parameter (or (pair nat nat) (pair nat nat));
   02: storage (option nat);
@@ -107,7 +107,7 @@ trace
 Fatal error:
   error running script
 
-./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/shifts.tz on storage None and input '(Right (Pair 123 257))' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/shifts.mv on storage None and input '(Right (Pair 123 257))' --trace-stack
 Runtime error in contract KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi:
   01: parameter (or (pair nat nat) (pair nat nat));
   02: storage (option nat);
@@ -143,7 +143,7 @@ trace
 Fatal error:
   error running script
 
-./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/mul_overflow.tz on storage Unit and input 'Left Unit' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/mul_overflow.mv on storage Unit and input 'Left Unit' --trace-stack
 Runtime error in contract KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi:
   01: parameter (or unit unit) ;
   02: storage unit ;
@@ -183,7 +183,7 @@ trace
 Fatal error:
   error running script
 
-./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/mul_overflow.tz on storage Unit and input 'Right Unit' --trace-stack
+./mavkit-client --mode mockup run script michelson_test_scripts/opcodes/mul_overflow.mv on storage Unit and input 'Right Unit' --trace-stack
 Runtime error in contract KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi:
   01: parameter (or unit unit) ;
   02: storage unit ;

@@ -51,7 +51,7 @@ type manager_operation_content
     - an EzJsonm value directly
     - a Michelson value in a string
     - a Michelson value in a file (mainly for Michelson scripts). In this
-      case, files should have extension `.tz`, `.mav` or `.mic`
+      case, files should have extension `.mv`, `.mav` or `.mic`
     - a file storing directly the JSON representation. This is for instance
       useful to test contracts that fail at type-checking. Instead of
       Michelson, the user can generate the JSON and store it a file with
@@ -60,7 +60,7 @@ type manager_operation_content
 type micheline =
   [ `Json of JSON.u  (** JSON value *)
   | `Michelson of string  (** Michelson string *)
-  | `File of string  (** file with ext .tz or .json for JSON *) ]
+  | `File of string  (** file with ext .mv or .json for JSON *) ]
 
 (** {2 Smart constructors} *)
 

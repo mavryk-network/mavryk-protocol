@@ -6207,7 +6207,7 @@ mod typecheck_tests {
             );
         assert_matches!(
             typecheck_instruction(
-                &parse("PUSH address \"tz\"").unwrap(),
+                &parse("PUSH address \"mv\"").unwrap(),
                 &mut Ctx::default(),
                 &mut tc_stk![],
             ),
