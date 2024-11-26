@@ -440,7 +440,7 @@ For convenience, Michelson developers can use some compact type notations for ty
 These are just shorthands that are expanded into existing types during the so-called "type normalization".
 
 Currently, the only such notation concerns N-ary pairs (also called tuples), which are expanded into "right combs", that is, nested binary pairs with right associativity.
-See `type pair <https://tezos.gitlab.io/michelson-reference/#type-pair>`__ for details.
+See `type pair <https://mavryk-network.gitlab.io/michelson-reference/#type-pair>`__ for details.
 
 The node RPC ``/helpers/script/normalize_type`` is available to normalize a given Michelson type (see :doc:`../api/openapi`, within the protocol-dependent RPCs).
 This RPC is intended for tool developers wanting to support the type shorthands in their tools without reimplementing their normalization.
@@ -463,17 +463,17 @@ Types and instructions
 ----------------------
 
 The complete sets of Michelson types and instructions are detailed in the
-`interactive Michelson reference page <https://tezos.gitlab.io/michelson-reference/>`__.
+`interactive Michelson reference page <https://mavryk-network.gitlab.io/michelson-reference/>`__.
 
-- Specifically, it contains synthesis tables for `types <https://tezos.gitlab.io/michelson-reference/#types>`__
-  and for `instructions <https://tezos.gitlab.io/michelson-reference/#instructions>`_.
-- Instructions are also organized by `categories <https://tezos.gitlab.io/michelson-reference/#instructions-by-category>`__.
+- Specifically, it contains synthesis tables for `types <https://mavryk-network.gitlab.io/michelson-reference/#types>`__
+  and for `instructions <https://mavryk-network.gitlab.io/michelson-reference/#instructions>`_.
+- Instructions are also organized by `categories <https://mavryk-network.gitlab.io/michelson-reference/#instructions-by-category>`__.
 - Each instruction is precisely defined using typing and semantic inference rules.
 
 Macros
 ------
 
-In addition to the instructions listed in the `interactive Michelson reference manual <https://tezos.gitlab.io/michelson-reference/>`__,
+In addition to the instructions listed in the `interactive Michelson reference manual <https://mavryk-network.gitlab.io/michelson-reference/>`__,
 several extensions have been added to the language's concrete syntax. If you are
 interacting with the node via RPC, bypassing the client, which expands away
 these macros, you will need to desugar them yourself.
@@ -2024,7 +2024,7 @@ instruction on the empty stack successfully returns the empty stack:
    output {}
 
 Here is a slightly more involved test which demonstrates the effect of the `SWAP
-<https://tezos.gitlab.io/michelson-reference/#instr-SWAP>`__ instruction:
+<https://mavryk-network.gitlab.io/michelson-reference/#instr-SWAP>`__ instruction:
 
 ::
 
@@ -2073,47 +2073,47 @@ particular order.
 
  - ``amount`` (optional, defaults to 0): the amount, expressed in
    mumav, that should be pushed by the `AMOUNT
-   <https://tezos.gitlab.io/michelson-reference/#instr-AMOUNT>`__
+   <https://mavryk-network.gitlab.io/michelson-reference/#instr-AMOUNT>`__
    instruction
 
  - ``balance`` (optional, defaults to 0): the balance, expressed in
    mumav, that should be pushed by the `BALANCE
-   <https://tezos.gitlab.io/michelson-reference/#instr-BALANCE>`__
+   <https://mavryk-network.gitlab.io/michelson-reference/#instr-BALANCE>`__
    instruction
 
  - ``now`` (optional, defaults to ``"1970-01-01T00:00:00Z"``): the
    timestamp that should be pushed by the `NOW
-   <https://tezos.gitlab.io/michelson-reference/#instr-NOW>`__
+   <https://mavryk-network.gitlab.io/michelson-reference/#instr-NOW>`__
    instruction
 
  - ``sender`` (optional, defaults to
    ``"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"``): the sender address
    that should be pushed by the `SENDER
-   <https://tezos.gitlab.io/michelson-reference/#instr-SENDER>`__
+   <https://mavryk-network.gitlab.io/michelson-reference/#instr-SENDER>`__
    instruction
 
  - ``source`` (optional, defaults to
    ``"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"``): the source address
    that should be pushed by the `SOURCE
-   <https://tezos.gitlab.io/michelson-reference/#instr-SOURCE>`__
+   <https://mavryk-network.gitlab.io/michelson-reference/#instr-SOURCE>`__
    instruction
 
  - ``chain_id`` (optional, defaults to ``"NetXdQprcVkpaWU"``): the
    chain identifier that should be pushed by the `CHAIN_ID
-   <https://tezos.gitlab.io/michelson-reference/#instr-CHAIN_ID>`__
+   <https://mavryk-network.gitlab.io/michelson-reference/#instr-CHAIN_ID>`__
    instruction
 
  - ``self`` (optional, defaults to
    ``"KT1BEqzn5Wx8uJrZNvuS9DVHmLvG9td3fDLi"``): the address that
    should be pushed by the `SELF
-   <https://tezos.gitlab.io/michelson-reference/#instr-SELF>`__ and
+   <https://mavryk-network.gitlab.io/michelson-reference/#instr-SELF>`__ and
    `SELF_ADDRESS
-   <https://tezos.gitlab.io/michelson-reference/#instr-SELF_ADDRESS>`__
+   <https://mavryk-network.gitlab.io/michelson-reference/#instr-SELF_ADDRESS>`__
    instructions
 
  - ``parameter`` (optional, defaults to ``unit``): the type of the
    parameter of the contract pushed by the `SELF
-   <https://tezos.gitlab.io/michelson-reference/#instr-SELF>`__
+   <https://mavryk-network.gitlab.io/michelson-reference/#instr-SELF>`__
    instruction
 
  - ``other_contracts`` (optional, defaults to ``{}``): mapping between
@@ -2127,7 +2127,7 @@ particular order.
    <syntax_of_extra_big_maps_alpha>`)
 
 The following test example asserts that the default value for the `NOW
-<https://tezos.gitlab.io/michelson-reference/#instr-NOW>`__
+<https://mavryk-network.gitlab.io/michelson-reference/#instr-NOW>`__
 instruction is the unix epoch:
 
 ::
@@ -2138,7 +2138,7 @@ instruction is the unix epoch:
 
 The following example shows how to use the ``now`` toplevel primitive
 to make the `NOW
-<https://tezos.gitlab.io/michelson-reference/#instr-NOW>`__
+<https://mavryk-network.gitlab.io/michelson-reference/#instr-NOW>`__
 instruction return a chosen timestamp:
 
 ::
@@ -2310,7 +2310,7 @@ raise:
 
 The following example shows how to test a runtime failure; it asserts
 that the `FAILWITH
-<https://tezos.gitlab.io/michelson-reference/#instr-FAILWITH>`__
+<https://mavryk-network.gitlab.io/michelson-reference/#instr-FAILWITH>`__
 instruction produces a runtime error containing the top of the stack.
 
 ::
@@ -2321,7 +2321,7 @@ instruction produces a runtime error containing the top of the stack.
 
 The following example shows how to test type checking failure; it
 asserts that the `DUP
-<https://tezos.gitlab.io/michelson-reference/#instr-DUP>`__
+<https://mavryk-network.gitlab.io/michelson-reference/#instr-DUP>`__
 instruction cannot be used on an empty stack.
 
 ::
@@ -2332,7 +2332,7 @@ instruction cannot be used on an empty stack.
 
 The following example shows another kind of static failure: a string
 cannot be passed as argument to the `DUP
-<https://tezos.gitlab.io/michelson-reference/#instr-DUP>`__
+<https://mavryk-network.gitlab.io/michelson-reference/#instr-DUP>`__
 instruction.
 
 ::
@@ -2347,14 +2347,14 @@ Syntax of concrete operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The `operation type
-<https://tezos.gitlab.io/michelson-reference/#type-operation>`__ has
+<https://mavryk-network.gitlab.io/michelson-reference/#type-operation>`__ has
 no concrete syntax in Michelson. In order to specify the result of the
 operation forging instructions `TRANSFER_TOKENS
-<https://tezos.gitlab.io/michelson-reference/#instr-TRANSFER_TOKENS>`__,
+<https://mavryk-network.gitlab.io/michelson-reference/#instr-TRANSFER_TOKENS>`__,
 `CREATE_CONTRACT
-<https://tezos.gitlab.io/michelson-reference/#instr-CREATE_CONTRACT>`__,
+<https://mavryk-network.gitlab.io/michelson-reference/#instr-CREATE_CONTRACT>`__,
 and `SET_DELEGATE
-<https://tezos.gitlab.io/michelson-reference/#instr-SET_DELEGATE>`__ ,
+<https://mavryk-network.gitlab.io/michelson-reference/#instr-SET_DELEGATE>`__ ,
 the following data constructors are added:
 
  - ``Transfer_tokens``,
@@ -2391,7 +2391,7 @@ Syntax of other contracts specifications
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The behaviour of the `CONTRACT
-<https://tezos.gitlab.io/michelson-reference/#instr-CONTRACT>`__
+<https://mavryk-network.gitlab.io/michelson-reference/#instr-CONTRACT>`__
 instruction depends on whether or not its input is the address of an
 originated contract accepting the expected type as parameter. To test
 it, the ``other_contract`` toplevel primitive can be used to specify
@@ -2410,7 +2410,7 @@ Syntax of extra big maps specifications
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The behaviour of the instructions operating on type `big_map
-<https://tezos.gitlab.io/michelson-reference/#type-big_map>`__ depend
+<https://mavryk-network.gitlab.io/michelson-reference/#type-big_map>`__ depend
 on the contents of big maps stored in the context. To test them, the
 ``big_maps`` toplevel primitive can be used to specify the types and
 contents of the big maps which are assumed to be present.
@@ -2427,9 +2427,9 @@ specified is irrelevant but each ``{ Elt <k1> <v1>; Elt <k2> <v2>;
 order of keys.
 
 The following example tests the `GET
-<https://tezos.gitlab.io/michelson-reference/#instr-GET>`__
+<https://mavryk-network.gitlab.io/michelson-reference/#instr-GET>`__
 instruction in the `big_map
-<https://tezos.gitlab.io/michelson-reference/#type-big_map>`__ case:
+<https://mavryk-network.gitlab.io/michelson-reference/#type-big_map>`__ case:
 
 ::
 

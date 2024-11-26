@@ -12,7 +12,7 @@ use crate::ast::Type;
 use crate::gas::{tc_cost, Gas};
 
 /// Type properties, as described in
-/// <https://tezos.gitlab.io/michelson-reference/#types>
+/// <https://mavryk-network.gitlab.io/michelson-reference/#types>
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 #[allow(missing_docs)]
 pub enum TypeProperty {

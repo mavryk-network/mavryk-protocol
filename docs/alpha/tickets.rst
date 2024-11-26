@@ -20,9 +20,9 @@ As such, a ticket has the following four attributes:
 
 #. ``amount`` is the amount of the ticket. It is a strictly positive whole number.
 
-Furthermore, a `ticket <https://tezos.gitlab.io/michelson-reference/#type-ticket>`__ cannot be duplicated
-with the `DUP <https://tezos.gitlab.io/michelson-reference/#instr-DUP>`__
-or the `DUP n <https://tezos.gitlab.io/michelson-reference/#instr-DUPN>`__ instructions.
+Furthermore, a `ticket <https://mavryk-network.gitlab.io/michelson-reference/#type-ticket>`__ cannot be duplicated
+with the `DUP <https://mavryk-network.gitlab.io/michelson-reference/#instr-DUP>`__
+or the `DUP n <https://mavryk-network.gitlab.io/michelson-reference/#instr-DUPN>`__ instructions.
 
 
 Operations on tickets
@@ -32,7 +32,7 @@ Creating
 ~~~~~~~~
 
 Tickets can be constructed by smart contracts. To construct tickets, smart contracts use the ``TICKET``
-`instruction <https://tezos.gitlab.io/michelson-reference/#instr-TICKET>`__ with some ticket amount,
+`instruction <https://mavryk-network.gitlab.io/michelson-reference/#instr-TICKET>`__ with some ticket amount,
 ticket content type, and value as inputs.
 Smart contracts then may store them in contract storage or transfer them along to either
 other contracts, rollups, or implicit accounts.
@@ -48,7 +48,7 @@ A ticket can be split into two tickets with the same ``contents`` and ``ticketer
 as long as the sum of the ``amount`` of the two tickets is equal to that of the original.
 This operation allows tickets to be spent across several transactions
 by breaking tickets into smaller tickets.
-Smart contracts may split tickets by invoking the `SPLIT_TICKET <https://tezos.gitlab.io/michelson-reference/#instr-SLIT_TICKET>`__ instruction.
+Smart contracts may split tickets by invoking the `SPLIT_TICKET <https://mavryk-network.gitlab.io/michelson-reference/#instr-SLIT_TICKET>`__ instruction.
 The ticket splitting is done automatically when an implicit account transfers part of a ticket.
 
 Joining
@@ -58,7 +58,7 @@ Tickets issued by the same ``ticketer`` contract with the same ``contents`` data
 same ``contents_ty`` type are considered of the same kind.
 Therefore, two such tickets can be **joined** into one ticket and the output ``amount``
 will be the sum of those of the two input tickets.
-Smart contracts can join tickets via the `JOIN_TICKETS <https://tezos.gitlab.io/michelson-reference/#instr-JOIN_TICKETS>`__ instruction.
+Smart contracts can join tickets via the `JOIN_TICKETS <https://mavryk-network.gitlab.io/michelson-reference/#instr-JOIN_TICKETS>`__ instruction.
 Tickets of the same kind are automatically joined when they belong to the same implicit account.
 
 Transferring
@@ -67,7 +67,7 @@ Transferring
 Once a ticket has been constructed by a smart contract, it may be transferred to other contracts as follows:
 
 - *Smart contract to implicit account*: Smart contracts can transfer a ticket to implicit accounts
-  via `TRANSFER_TOKENS <https://tezos.gitlab.io/michelson-reference/#instr-TRANSFER_TOKENS>`__.
+  via `TRANSFER_TOKENS <https://mavryk-network.gitlab.io/michelson-reference/#instr-TRANSFER_TOKENS>`__.
   To do so, the contract needs to cast the address of the target implicit account to type ``contract (ticket cty)`` where ``cty`` is the type of the content of the ticket to be sent. This can be done using ``CONTRACT (ticket cty)``.
   The rest is the same as making a contract call.
   The following Michelson snippet is an example sending a ticket of amount ``10`` with a ``string`` content
