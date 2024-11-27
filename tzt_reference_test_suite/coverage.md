@@ -1170,7 +1170,7 @@ Does not check different types of key.
 
 ### `CONTRACT`
 
-Note: invariants are taken from the table in <https://tezos.gitlab.io/michelson-reference/#instr-CONTRACT> section, copied below for posterity.
+Note: invariants are taken from the table in <https://mavryk-network.gitlab.io/michelson-reference/#instr-CONTRACT> section, copied below for posterity.
 
 - [contract_00.mvt](contract_00.mvt) -- valid_contract_type "addr" t holds
 - [contract_01.mvt](contract_01.mvt) -- no_contract "addr" holds
