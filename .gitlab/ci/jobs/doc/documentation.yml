@@ -28,10 +28,7 @@ documentation:manuals:
   extends:
     - .doc_job_template
   script:
-    - whoami
-    - pwd
     - ./.gitlab/ci/jobs/doc/documentation:manuals.sh
-    - sleep 3600
   artifacts:
     paths:
       - docs/*/mavkit-*.html
@@ -44,10 +41,7 @@ documentation:docgen:
   extends:
     - .doc_job_template
   script:
-    - whoami
-    - pwd
     - make -C docs -j docexes-gen
-    - sleep 3600
   artifacts:
     paths:
       - docs/alpha/rpc.rst
@@ -69,9 +63,6 @@ documentation:build_all:
     - documentation:manuals
     - documentation:docgen
   script:
-    - whoami
-    - pwd
-    - sleep 3600
     - make -C docs -j sphinx
   artifacts:
     expose_as: 'Documentation - excluding old protocols'
