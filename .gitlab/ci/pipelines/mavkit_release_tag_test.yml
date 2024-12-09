@@ -125,6 +125,7 @@ oc.build:dpkg:amd64:
       - debian:bookworm
       - ubuntu:focal
       - ubuntu:jammy
+      - ubuntu:noble
 
 oc.build:rpm:amd64:
   image: $DISTRIBUTION
