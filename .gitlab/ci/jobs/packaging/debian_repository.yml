@@ -41,7 +41,7 @@ oc.docker-build-ubuntu-dependencies:
     DISTRIBUTION: ubuntu
   parallel:
     matrix:
-      - RELEASE: [focal, jammy]
+      - RELEASE: [focal, jammy, noble]
         TAGS: [ubuntu-amd64, ubuntu-arm64]
 
 oc.build-debian-based-packages:
@@ -84,5 +84,5 @@ oc.build-ubuntu:
     DISTRIBUTION: ubuntu
   parallel:
     matrix:
-      - RELEASE: [jammy, focal]
+      - RELEASE: [noble, jammy, focal]
         TAGS: [ubuntu-amd64, ubuntu-arm64]

@@ -16,6 +16,8 @@
 UBUNTU_FOCAL=public.ecr.aws/lts/ubuntu:20.04_stable
 # Ubuntu Ubuntu 22.04 LTS (Jammy Jellyfish):
 UBUNTU_JAMMY=public.ecr.aws/lts/ubuntu:22.04_stable
+# Ubuntu Ubuntu 24.04 LTS (Noble Numbat):
+UBUNTU_NOBLE=public.ecr.aws/lts/ubuntu:24.04_stable
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && echo "$(pwd -P)/")"
 DOCS_DIR="$(dirname "$SCRIPT_DIR")"
@@ -27,8 +29,10 @@ usage:
 where <test-name> can be:
 * install-bin-focal
 * install-bin-jammy
+* install-bin-noble
 * install-bin-rc-focal
 * install-bin-rc-jammy
+* install-bin-rc-noble
 * install-bin-rc-fedora39
 * install-opam-scratch
 * install-opam-focal
@@ -37,6 +41,7 @@ where <test-name> can be:
 * compile-sources-mantic
 * install-python-focal
 * install-python-jammy
+* install-python-noble
 * install-python-bullseye
 !EOF
 }
@@ -56,6 +61,9 @@ for test_case in "$@"; do
   "install-bin-jammy")
     docker run --rm -i -v "$DOCS_DIR/introduction":/Scripts "$UBUNTU_JAMMY" /Scripts/install-bin-ubuntu.sh
     ;;
+  "install-bin-noble")
+    docker run --rm -i -v "$DOCS_DIR/introduction":/Scripts "$UBUNTU_NOBLE" /Scripts/install-bin-ubuntu.sh
+    ;;
   # "install-bin-fedora37")
   #   docker run --rm -i -v "$DOCS_DIR/introduction":/Scripts fedora:37 /Scripts/install-bin-fedora.sh
   #   ;;
@@ -67,6 +75,9 @@ for test_case in "$@"; do
     ;;
   "install-bin-rc-jammy")
     docker run --rm -i -v "$DOCS_DIR/introduction":/Scripts "$UBUNTU_JAMMY" /Scripts/install-bin-ubuntu.sh rc
+    ;;
+  "install-bin-rc-noble")
+    docker run --rm -i -v "$DOCS_DIR/introduction":/Scripts "$UBUNTU_NOBLE" /Scripts/install-bin-ubuntu.sh rc
     ;;
   # "install-bin-rc-fedora37")
   #   docker run --rm -i -v "$DOCS_DIR/introduction":/Scripts fedora:37 /Scripts/install-bin-fedora.sh rc
@@ -97,6 +108,9 @@ for test_case in "$@"; do
     ;;
   "install-python-jammy")
     docker run --rm -i -v "$DOCS_DIR/developer":/Scripts "$UBUNTU_JAMMY" /Scripts/install-python-debian-ubuntu.sh
+    ;;
+  "install-python-noble")
+    docker run --rm -i -v "$DOCS_DIR/developer":/Scripts "$UBUNTU_NOBLE" /Scripts/install-python-debian-ubuntu.sh
     ;;
   "install-python-bullseye")
     docker run --rm -i -v "$DOCS_DIR/developer":/Scripts debian:11 /Scripts/install-python-debian-ubuntu.sh

@@ -41,3 +41,5 @@
   image: public.ecr.aws/lts/ubuntu:20.04_stable
 .image_template__ubuntu_jammy:
   image: public.ecr.aws/lts/ubuntu:22.04_stable
+.image_template__ubuntu_noble:
+  image: public.ecr.aws/lts/ubuntu:24.04_stable

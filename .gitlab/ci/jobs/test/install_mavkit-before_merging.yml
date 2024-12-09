@@ -57,6 +57,25 @@ oc.install_bin_rc_ubuntu_jammy:
   script:
   - ./docs/introduction/install-bin-ubuntu.sh rc
 
+oc.install_bin_rc_ubuntu_noble:
+  image: public.ecr.aws/lts/ubuntu:24.04_stable
+  stage: test
+  tags:
+  - ubuntu-amd64
+  rules:
+  - changes:
+    - docs/introduction/install*.sh
+    - docs/introduction/compile*.sh
+    when: on_success
+  - when: manual
+    allow_failure: true
+  needs:
+  - trigger
+  dependencies: []
+  allow_failure: true
+  script:
+  - ./docs/introduction/install-bin-ubuntu.sh rc
+
 oc.install_opam_focal:
   image: ocaml/opam:ubuntu-20.04
   stage: test
