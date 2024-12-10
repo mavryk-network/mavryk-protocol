@@ -14,6 +14,7 @@ set -eu
 debian_bookworm_packages="$(find packages/debian/bookworm/ -maxdepth 1 -name mavkit-\*.deb 2> /dev/null || printf '')"
 ubuntu_focal_packages="$(find packages/ubuntu/focal/ -maxdepth 1 -name mavkit-\*.deb 2> /dev/null || printf '')"
 ubuntu_jammy_packages="$(find packages/ubuntu/jammy/ -maxdepth 1 -name mavkit-\*.deb 2> /dev/null || printf '')"
+ubuntu_noble_packages="$(find packages/ubuntu/noble/ -maxdepth 1 -name mavkit-\*.deb 2> /dev/null || printf '')"
 fedora_packages="$(find packages/fedora/39/ -maxdepth 1 -name mavkit-\*.rpm 2> /dev/null || printf '')"
 rockylinux_packages="$(find packages/rockylinux/9.3/ -maxdepth 1 -name mavkit-\*.rpm 2> /dev/null || printf '')"
 
@@ -25,6 +26,7 @@ gitlab_mavkit_debian_bookworm_package_url="${CI_API_V4_URL}/projects/${CI_PROJEC
 
 gitlab_mavkit_ubuntu_focal_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_ubuntu_focal_package_name}/${gitlab_package_version}"
 gitlab_mavkit_ubuntu_jammy_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_ubuntu_jammy_package_name}/${gitlab_package_version}"
+gitlab_mavkit_ubuntu_noble_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_ubuntu_noble_package_name}/${gitlab_package_version}"
 
 gitlab_mavkit_fedora_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_fedora_package_name}/${gitlab_package_version}"
 gitlab_mavkit_rockylinux_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_rockylinux_package_name}/${gitlab_package_version}"
@@ -98,6 +100,12 @@ echo "Upload Ubuntu jammy packages"
 for package in ${ubuntu_jammy_packages}; do
   package_name="$(basename "${package}")"
   gitlab_upload "./${package}" "${package_name}" "${gitlab_mavkit_ubuntu_jammy_package_url}"
+done
+
+echo "Upload Ubuntu noble packages"
+for package in ${ubuntu_noble_packages}; do
+  package_name="$(basename "${package}")"
+  gitlab_upload "./${package}" "${package_name}" "${gitlab_mavkit_ubuntu_noble_package_url}"
 done
 
 echo "Upload Fedora packages"

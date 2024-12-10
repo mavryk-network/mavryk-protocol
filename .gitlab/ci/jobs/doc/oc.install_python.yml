@@ -26,6 +26,10 @@ oc.install_python_jammy:
   image: public.ecr.aws/lts/ubuntu:22.04_stable
   extends: .oc.install_python_debian_ubuntu_template
 
+oc.install_python_noble:
+  image: public.ecr.aws/lts/ubuntu:24.04_stable
+  extends: .oc.install_python_debian_ubuntu_template
+
 oc.install_python_bullseye:
   image: debian:bullseye
   extends: .oc.install_python_debian_ubuntu_template
