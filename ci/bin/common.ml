@@ -695,7 +695,8 @@ let job_build_bin_package ?dependencies ?rules ~__POS__ ~name
   let parallel =
     let distributions =
       match target with
-      | Dpkg -> ["debian:bookworm"; "ubuntu:focal"; "ubuntu:jammy"; "ubuntu:noble"]
+      | Dpkg ->
+          ["debian:bookworm"; "ubuntu:focal"; "ubuntu:jammy"; "ubuntu:noble"]
       | Rpm -> ["fedora:39"; "rockylinux:9.3"]
     in
     Matrix [[("DISTRIBUTION", distributions)]]

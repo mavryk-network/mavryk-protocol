@@ -351,7 +351,11 @@ let jobs_unit_tests ~job_build_x86_64_release ~job_build_x86_64_exp_dev_extra
     oc_unit_protocol_compiles;
   ]
 
-type install_mavkit_distribution = Ubuntu_focal | Ubuntu_jammy | Ubuntu_noble | Fedora_39
+type install_mavkit_distribution =
+  | Ubuntu_focal
+  | Ubuntu_jammy
+  | Ubuntu_noble
+  | Fedora_39
 
 let image_of_distribution = function
   | Ubuntu_focal -> Images.ubuntu_focal
@@ -1082,7 +1086,7 @@ let jobs pipeline_type =
              ~__POS__
              ~name:"oc.install_bin_ubuntu_jammy"
              ~allow_failure:Yes
-             Ubuntu_jammy; 
+             Ubuntu_jammy;
            job_install_bin
              ~__POS__
              ~name:"oc.install_bin_ubuntu_noble"
