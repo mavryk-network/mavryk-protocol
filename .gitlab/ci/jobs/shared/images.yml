@@ -15,6 +15,10 @@
   image: fedora:37
 .image_template__fedora_39:
   image: fedora:39
+.image_template__fedora_40:
+  image: fedora:40
+.image_template__fedora_41:
+  image: fedora:41
 .image_template__generic:
   image: $DISTRIBUTION
 .image_template__hadolint:
