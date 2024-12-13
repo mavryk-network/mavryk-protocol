@@ -17,8 +17,17 @@ if [ "$DISTRO" = "rocky" ]; then
 fi
 
 dnf update -y
+
+if [ "$DISTRIBUTION" = "fedora:39" ]; then
+  dnf install -y \
+    zlib-devel
+else
+  dnf install -y \
+    zlib-ng-compat zlib-ng-compat-devel
+fi
+
 dnf install -y \
-  libev-devel gmp-devel hidapi-devel libffi-devel zlib-devel \
+  libev-devel gmp-devel hidapi-devel libffi-devel \
   libpq-devel m4 perl git pkg-config rpmdevtools python3-devel \
   python3-setuptools wget rsync which cargo autoconf mock \
   systemd systemd-rpm-macros cmake python3-wheel \
