@@ -26,7 +26,8 @@ export alpine_version='3.18'
 
 ## full_opam_repository is a commit hash of the public OPAM repository, i.e.
 ## https://github.com/ocaml/opam-repository
-export full_opam_repository_tag=518f55a1ee5da870035b9593f98db03f43ce7f5f
+## Updated to 1c62dbefdab36851f868daa1b8c75af4f8703e8f for Fedora 40+ packaging
+export full_opam_repository_tag=1c62dbefdab36851f868daa1b8c75af4f8703e8f
 
 ## opam_repository is an additional, mavryk-specific opam repository.
 ## This value MUST be reflected in the `build_deps_image_version` variable
