@@ -356,12 +356,16 @@ type install_mavkit_distribution =
   | Ubuntu_jammy
   | Ubuntu_noble
   | Fedora_39
+  | Fedora_40
+  | Fedora_41
 
 let image_of_distribution = function
   | Ubuntu_focal -> Images.ubuntu_focal
   | Ubuntu_jammy -> Images.ubuntu_jammy
   | Ubuntu_noble -> Images.ubuntu_noble
   | Fedora_39 -> Images.fedora_39
+  | Fedora_40 -> Images.fedora_40
+  | Fedora_41 -> Images.fedora_41
 
 (* Encodes the conditional [before_merging] pipeline and its unconditional variant
    [schedule_extended_test]. *)
@@ -1024,7 +1028,7 @@ let jobs pipeline_type =
         let distribution_string =
           match distribution with
           | Ubuntu_focal | Ubuntu_jammy | Ubuntu_noble -> "ubuntu"
-          | Fedora_39 -> "fedora"
+          | Fedora_39 | Fedora_40 | Fedora_41 -> "fedora"
         in
         let script =
           sf "./docs/introduction/install-bin-%s.sh" distribution_string
@@ -1073,6 +1077,16 @@ let jobs pipeline_type =
           ~name:"oc.install_bin_rc_fedora_39"
           ~rc:true
           Fedora_39;
+        job_install_bin
+          ~__POS__
+          ~name:"oc.install_bin_rc_fedora_40"
+          ~rc:true
+          Fedora_40;
+        job_install_bin
+          ~__POS__
+          ~name:"oc.install_bin_rc_fedora_41"
+          ~rc:true
+          Fedora_41;
         (* The Ubuntu jobs currently fail because the last rc packages can't be installed anymore.
            See https://gitlab.com/tezos/tezos/-/issues/6902.
            TODO: https://gitlab.com/tezos/tezos/-/issues/6915

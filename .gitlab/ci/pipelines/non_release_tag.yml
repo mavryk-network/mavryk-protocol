@@ -167,6 +167,8 @@ oc.build:rpm:amd64:
     matrix:
     - DISTRIBUTION:
       - fedora:39
+      - fedora:40
+      - fedora:41
       - rockylinux:9.3
 
 docker:merge_manifests:

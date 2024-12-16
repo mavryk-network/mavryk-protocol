@@ -165,6 +165,10 @@ module Images = struct
 
   let fedora_39 = Image.register ~name:"fedora_39" ~image_path:"fedora:39"
 
+  let fedora_40 = Image.register ~name:"fedora_40" ~image_path:"fedora:40"
+
+  let fedora_41 = Image.register ~name:"fedora_41" ~image_path:"fedora:41"
+
   let opam_ubuntu_focal =
     Image.register
       ~name:"opam_ubuntu_focal"
@@ -697,7 +701,7 @@ let job_build_bin_package ?dependencies ?rules ~__POS__ ~name
       match target with
       | Dpkg ->
           ["debian:bookworm"; "ubuntu:focal"; "ubuntu:jammy"; "ubuntu:noble"]
-      | Rpm -> ["fedora:39"; "rockylinux:9.3"]
+      | Rpm -> ["fedora:39"; "fedora:40"; "fedora:41"; "rockylinux:9.3"]
     in
     Matrix [[("DISTRIBUTION", distributions)]]
   in
