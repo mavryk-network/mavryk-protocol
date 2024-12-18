@@ -58,7 +58,9 @@ gitlab_mavkit_debian_bookworm_package_name="mavkit-debian-bookworm-${gitlab_rele
 gitlab_mavkit_ubuntu_focal_package_name="mavkit-ubuntu-focal-${gitlab_release_no_v}"
 gitlab_mavkit_ubuntu_jammy_package_name="mavkit-ubuntu-jammy-${gitlab_release_no_v}"
 gitlab_mavkit_ubuntu_noble_package_name="mavkit-ubuntu-noble-${gitlab_release_no_v}"
-gitlab_mavkit_fedora_package_name="mavkit-fedora-${gitlab_release_no_v}"
+gitlab_mavkit_fedora_39_package_name="mavkit-fedora-39-${gitlab_release_no_v}"
+gitlab_mavkit_fedora_40_package_name="mavkit-fedora-40-${gitlab_release_no_v}"
+gitlab_mavkit_fedora_41_package_name="mavkit-fedora-41-${gitlab_release_no_v}"
 gitlab_mavkit_rockylinux_package_name="mavkit-rockylinux-${gitlab_release_no_v}"
 gitlab_mavkit_source_package_name="mavkit-source-${gitlab_release_no_v}"
 
