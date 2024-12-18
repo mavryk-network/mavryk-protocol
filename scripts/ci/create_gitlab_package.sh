@@ -30,7 +30,9 @@ gitlab_mavkit_ubuntu_focal_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_I
 gitlab_mavkit_ubuntu_jammy_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_ubuntu_jammy_package_name}/${gitlab_package_version}"
 gitlab_mavkit_ubuntu_noble_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_ubuntu_noble_package_name}/${gitlab_package_version}"
 
-gitlab_mavkit_fedora_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_fedora_package_name}/${gitlab_package_version}"
+gitlab_mavkit_fedora_39_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_fedora_39_package_name}/${gitlab_package_version}"
+gitlab_mavkit_fedora_40_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_fedora_40_package_name}/${gitlab_package_version}"
+gitlab_mavkit_fedora_41_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_fedora_41_package_name}/${gitlab_package_version}"
 gitlab_mavkit_rockylinux_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_rockylinux_package_name}/${gitlab_package_version}"
 gitlab_mavkit_source_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_source_package_name}/${gitlab_package_version}"
 
@@ -113,19 +115,19 @@ done
 echo "Upload Fedora 39 packages"
 for package in ${fedora_39_packages}; do
   package_name="$(basename "${package}")"
-  gitlab_upload "./${package}" "${package_name}" "${gitlab_mavkit_fedora_package_url}"
+  gitlab_upload "./${package}" "${package_name}" "${gitlab_mavkit_fedora_39_package_url}"
 done
 
 echo "Upload Fedora 40 packages"
 for package in ${fedora_40_packages}; do
   package_name="$(basename "${package}")"
-  gitlab_upload "./${package}" "${package_name}" "${gitlab_mavkit_fedora_package_url}"
+  gitlab_upload "./${package}" "${package_name}" "${gitlab_mavkit_fedora_40_package_url}"
 done
 
 echo "Upload Fedora 41 packages"
 for package in ${fedora_41_packages}; do
   package_name="$(basename "${package}")"
-  gitlab_upload "./${package}" "${package_name}" "${gitlab_mavkit_fedora_package_url}"
+  gitlab_upload "./${package}" "${package_name}" "${gitlab_mavkit_fedora_41_package_url}"
 done
 
 echo "Upload Rocky Linux packages"

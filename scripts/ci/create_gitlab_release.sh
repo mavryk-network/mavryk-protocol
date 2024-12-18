@@ -35,7 +35,9 @@ gitlab_debian_bookworm_packages_url=$(package_web_path "${gitlab_mavkit_debian_b
 gitlab_ubuntu_focal_packages_url=$(package_web_path "${gitlab_mavkit_ubuntu_focal_package_name}")
 gitlab_ubuntu_jammy_packages_url=$(package_web_path "${gitlab_mavkit_ubuntu_jammy_package_name}")
 gitlab_ubuntu_noble_packages_url=$(package_web_path "${gitlab_mavkit_ubuntu_noble_package_name}")
-gitlab_fedora_packages_url=$(package_web_path "${gitlab_mavkit_fedora_package_name}")
+gitlab_fedora_39_packages_url=$(package_web_path "${gitlab_mavkit_fedora_39_package_name}")
+gitlab_fedora_40_packages_url=$(package_web_path "${gitlab_mavkit_fedora_40_package_name}")
+gitlab_fedora_41_packages_url=$(package_web_path "${gitlab_mavkit_fedora_41_package_name}")
 gitlab_rockylinux_packages_url=$(package_web_path "${gitlab_mavkit_rockylinux_package_name}")
 
 if [ "${CI_PROJECT_NAMESPACE}" = "mavryk-network" ]; then
@@ -80,5 +82,7 @@ release-cli create \
   --assets-link="{\"name\":\"Ubuntu Focal packages\",\"url\":\"${gitlab_ubuntu_focal_packages_url}\",\"link_type\":\"package\"}" \
   --assets-link="{\"name\":\"Ubuntu Jammy packages\",\"url\":\"${gitlab_ubuntu_jammy_packages_url}\",\"link_type\":\"package\"}" \
   --assets-link="{\"name\":\"Ubuntu Noble packages\",\"url\":\"${gitlab_ubuntu_noble_packages_url}\",\"link_type\":\"package\"}" \
-  --assets-link="{\"name\":\"Fedora packages\",\"url\":\"${gitlab_fedora_packages_url}\",\"link_type\":\"package\"}" \
+  --assets-link="{\"name\":\"Fedora 39 packages\",\"url\":\"${gitlab_fedora_39_packages_url}\",\"link_type\":\"package\"}" \
+  --assets-link="{\"name\":\"Fedora 40 packages\",\"url\":\"${gitlab_fedora_40_packages_url}\",\"link_type\":\"package\"}" \
+  --assets-link="{\"name\":\"Fedora 41 packages\",\"url\":\"${gitlab_fedora_41_packages_url}\",\"link_type\":\"package\"}" \
   --assets-link="{\"name\":\"Rocky Linux packages\",\"url\":\"${gitlab_rockylinux_packages_url}\",\"link_type\":\"package\"}"
