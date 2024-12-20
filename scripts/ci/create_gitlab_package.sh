@@ -14,7 +14,10 @@ set -eu
 debian_bookworm_packages="$(find packages/debian/bookworm/ -maxdepth 1 -name mavkit-\*.deb 2> /dev/null || printf '')"
 ubuntu_focal_packages="$(find packages/ubuntu/focal/ -maxdepth 1 -name mavkit-\*.deb 2> /dev/null || printf '')"
 ubuntu_jammy_packages="$(find packages/ubuntu/jammy/ -maxdepth 1 -name mavkit-\*.deb 2> /dev/null || printf '')"
-fedora_packages="$(find packages/fedora/39/ -maxdepth 1 -name mavkit-\*.rpm 2> /dev/null || printf '')"
+ubuntu_noble_packages="$(find packages/ubuntu/noble/ -maxdepth 1 -name mavkit-\*.deb 2> /dev/null || printf '')"
+fedora_39_packages="$(find packages/fedora/39/ -maxdepth 1 -name mavkit-\*.rpm 2> /dev/null || printf '')"
+fedora_40_packages="$(find packages/fedora/40/ -maxdepth 1 -name mavkit-\*.rpm 2> /dev/null || printf '')"
+fedora_41_packages="$(find packages/fedora/41/ -maxdepth 1 -name mavkit-\*.rpm 2> /dev/null || printf '')"
 rockylinux_packages="$(find packages/rockylinux/9.3/ -maxdepth 1 -name mavkit-\*.rpm 2> /dev/null || printf '')"
 
 # https://docs.gitlab.com/ee/user/packages/generic_packages/index.html#download-package-file
@@ -25,8 +28,11 @@ gitlab_mavkit_debian_bookworm_package_url="${CI_API_V4_URL}/projects/${CI_PROJEC
 
 gitlab_mavkit_ubuntu_focal_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_ubuntu_focal_package_name}/${gitlab_package_version}"
 gitlab_mavkit_ubuntu_jammy_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_ubuntu_jammy_package_name}/${gitlab_package_version}"
+gitlab_mavkit_ubuntu_noble_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_ubuntu_noble_package_name}/${gitlab_package_version}"
 
-gitlab_mavkit_fedora_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_fedora_package_name}/${gitlab_package_version}"
+gitlab_mavkit_fedora_39_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_fedora_39_package_name}/${gitlab_package_version}"
+gitlab_mavkit_fedora_40_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_fedora_40_package_name}/${gitlab_package_version}"
+gitlab_mavkit_fedora_41_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_fedora_41_package_name}/${gitlab_package_version}"
 gitlab_mavkit_rockylinux_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_rockylinux_package_name}/${gitlab_package_version}"
 gitlab_mavkit_source_package_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${gitlab_mavkit_source_package_name}/${gitlab_package_version}"
 
@@ -100,10 +106,28 @@ for package in ${ubuntu_jammy_packages}; do
   gitlab_upload "./${package}" "${package_name}" "${gitlab_mavkit_ubuntu_jammy_package_url}"
 done
 
-echo "Upload Fedora packages"
-for package in ${fedora_packages}; do
+echo "Upload Ubuntu noble packages"
+for package in ${ubuntu_noble_packages}; do
   package_name="$(basename "${package}")"
-  gitlab_upload "./${package}" "${package_name}" "${gitlab_mavkit_fedora_package_url}"
+  gitlab_upload "./${package}" "${package_name}" "${gitlab_mavkit_ubuntu_noble_package_url}"
+done
+
+echo "Upload Fedora 39 packages"
+for package in ${fedora_39_packages}; do
+  package_name="$(basename "${package}")"
+  gitlab_upload "./${package}" "${package_name}" "${gitlab_mavkit_fedora_39_package_url}"
+done
+
+echo "Upload Fedora 40 packages"
+for package in ${fedora_40_packages}; do
+  package_name="$(basename "${package}")"
+  gitlab_upload "./${package}" "${package_name}" "${gitlab_mavkit_fedora_40_package_url}"
+done
+
+echo "Upload Fedora 41 packages"
+for package in ${fedora_41_packages}; do
+  package_name="$(basename "${package}")"
+  gitlab_upload "./${package}" "${package_name}" "${gitlab_mavkit_fedora_41_package_url}"
 done
 
 echo "Upload Rocky Linux packages"

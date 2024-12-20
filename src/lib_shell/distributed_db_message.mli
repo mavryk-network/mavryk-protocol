@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos Shell - Network message for the gossip P2P protocol. *)
+(** Mavryk Shell - Network message for the gossip P2P protocol. *)
 
 (** We must make sure that we are able to associate a response to the
     corresponding request. Thus, we are able to discrimate between

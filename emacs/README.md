@@ -45,15 +45,15 @@ Here are examples of the client configuration:
 (setq michelson-alphanet nil)
 ```
 
-Note that the Michelson mode will be chosen automatically by Emacs for files with a .tz or .mav extension.
+Note that the Michelson mode will be chosen automatically by Emacs for files with a .mv or .mav extension.
 
-We can now open our favourite contract `michelson_test_scripts/attic/id.tz` in Emacs and,
+We can now open our favourite contract `michelson_test_scripts/attic/id.mv` in Emacs and,
 when moving the cursor on a Michelson instruction, in the bottom of the windows Emacs should display
 the state of the stack before (left) and after (right) the application of the instruction.
 The Emacs mode automatically type-checks your program and reports errors; once you are happy with the result you can ask the client to run it locally:
 
 ```elisp
-mavkit-client run script ./michelson_test_scripts/attic/id.tz \
+mavkit-client run script ./michelson_test_scripts/attic/id.mv \
              on storage '"hello"' and input '"world"'
 ```
 

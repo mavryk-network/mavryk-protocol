@@ -659,7 +659,7 @@ module Interpreter_tests = struct
     let memo_size = 8 in
     let* dst, b1, anti_replay =
       originate_contract_hash
-        (path // "contracts/sapling_contract.tz")
+        (path // "contracts/sapling_contract.mv")
         "{ }"
         src0
         genesis
@@ -846,7 +846,7 @@ module Interpreter_tests = struct
     in
     let* _, _, _ =
       originate_contract_hash
-        (path // "contracts/sapling_contract.tz")
+        (path // "contracts/sapling_contract.mv")
         "{ }"
         src
         block
@@ -855,7 +855,7 @@ module Interpreter_tests = struct
     (* Originating the next contract should fail *)
     let*! result =
       originate_contract_hash
-        (path // "contracts/sapling_push_sapling_state.tz")
+        (path // "contracts/sapling_push_sapling_state.mv")
         "{ }"
         src
         block
@@ -879,11 +879,11 @@ module Interpreter_tests = struct
     let* block, baker, src, _ = init () (* Originating the contracts *) in
     let memo_size = 8 in
     (* let* _shielded_pool_contract_address, block, _anti_replay_shielded_pool =
-       originate_contract "contracts/sapling_contract.tz" "{ }" src block baker in
+       originate_contract "contracts/sapling_contract.mv" "{ }" src block baker in
     *)
     let* existing_state_contract_address, block, anti_replay_2 =
       originate_contract_hash
-        (path // "contracts/sapling_use_existing_state.tz")
+        (path // "contracts/sapling_use_existing_state.mv")
         "{ }"
         src
         block
@@ -941,7 +941,7 @@ module Interpreter_tests = struct
     let memo_size = 8 in
     let* dst, block_start, anti_replay =
       originate_contract_hash
-        (path // "contracts/sapling_contract.tz")
+        (path // "contracts/sapling_contract.mv")
         "{ }"
         src
         b
@@ -1097,7 +1097,7 @@ module Interpreter_tests = struct
     let* b, baker, src, _ = init () in
     let* dst, b, anti_replay =
       originate_contract_hash
-        (path // "contracts/sapling_contract_drop.tz")
+        (path // "contracts/sapling_contract_drop.mv")
         "Unit"
         src
         b
@@ -1134,7 +1134,7 @@ module Interpreter_tests = struct
     let memo_size = 8 in
     let* dst, b, anti_replay =
       originate_contract_hash
-        (path // "contracts/sapling_contract_double.tz")
+        (path // "contracts/sapling_contract_double.mv")
         "(Pair { } { })"
         src
         b
@@ -1231,7 +1231,7 @@ module Interpreter_tests = struct
     let* b, baker, src, _ = init () in
     let* dst, b, anti_replay =
       originate_contract_hash
-        (path // "contracts/sapling_contract_state_as_arg.tz")
+        (path // "contracts/sapling_contract_state_as_arg.mv")
         "None"
         src
         b
@@ -1239,7 +1239,7 @@ module Interpreter_tests = struct
     in
     let* dst_2, b, anti_replay_2 =
       originate_contract_hash
-        (path // "contracts/sapling_contract_send.tz")
+        (path // "contracts/sapling_contract_send.mv")
         "Unit"
         src
         b

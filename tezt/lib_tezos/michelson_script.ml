@@ -71,9 +71,9 @@ let pretty_string
     ]
 
 let parse_basename : string -> (string * version_range * string) option =
-  let re3 = rex "(.*)_([0-9]{3,})_([0-9]{3,})\\.(tz.*)" in
-  let re2 = rex "(.*)_([0-9]{3,})\\.(tz.*)" in
-  let re1 = rex "(.*).(tz.*)" in
+  let re3 = rex "(.*)_([0-9]{3,})_([0-9]{3,})\\.(mv.*)" in
+  let re2 = rex "(.*)_([0-9]{3,})\\.(mv.*)" in
+  let re1 = rex "(.*).(mv.*)" in
   fun s ->
     match s =~**** re3 with
     | Some (name, range_start, range_end, extension) ->
@@ -153,8 +153,8 @@ let name t = t.dirname @ [t.name]
 let name_s t = name t |> String.concat "/"
 
 (** A private helper type for use in [choose_versioned]. Describes a script
-    being either unversioned (such as foo.tz), or versioned (such as
-    foo_NNN.tz or foo_NNN_MMM.tz) *)
+    being either unversioned (such as foo.mv), or versioned (such as
+    foo_NNN.mv or foo_NNN_MMM.mv) *)
 type kind = Versioned | Unversioned
 
 exception Test_fail of string * string
@@ -165,25 +165,25 @@ exception Test_fail of string * string
 
     If [t1] and [t2] have a different [kind], then the Versioned one is always
     chosen. Consider:
-    - foo.tz
-    - foo_015.tz
+    - foo.mv
+    - foo_015.mv
 
     Assuming the protocol we care about is 015, and we look at each version range
     in isolation, then we have:
-    - foo.tz (0 to infinity)
-    - foo_015.tz (015 to infinity)
+    - foo.mv (0 to infinity)
+    - foo_015.mv (015 to infinity)
 
-    So we can say foo_015.tz supercedes foo.tz and the version_ranges should
+    So we can say foo_015.mv supercedes foo.mv and the version_ranges should
     actually be:
-    - foo.tz (0 to 014)
-    - foo_015.tz (015 to infinity)
+    - foo.mv (0 to 014)
+    - foo_015.mv (015 to infinity)
 
     Next, if both [t1] and [t2] are versioned, then we do a few checks:
     - If the [range_start]s are the same, then we cannot disambiguate them.
 
       For example:
-      - foo_014.tz (014 to infinity)
-      - foo_014_015.tz (014 to 015)
+      - foo_014.mv (014 to infinity)
+      - foo_014_015.mv (014 to 015)
 
       If we are looking for protocol 015, then we cannot decide between the two,
       so we return an error.
@@ -191,20 +191,20 @@ exception Test_fail of string * string
       range_start.
 
       For example, assume the following:
-      - foo_014.tz (014 to infinity)
-      - foo_015.tz (015 to infinity)
+      - foo_014.mv (014 to infinity)
+      - foo_015.mv (015 to infinity)
 
       If we are searching for protocol 015, both files are individually in
       range. If the end range of the smaller one is infinity, then we say that
       the larger range_start supercedes the smaller one, and we get:
-      - foo_014.tz (014 to 014)
-      - foo_015.tz (015 to infinity)
+      - foo_014.mv (014 to 014)
+      - foo_015.mv (015 to infinity)
     - If the smaller range_start has a range_end which is > the larger scripts'
       range_start, then we cannot disambiguate.
 
       For example, assume the following:
-      - foo_014_015.tz
-      - foo_015.tz
+      - foo_014_015.mv
+      - foo_015.mv
 
       If we are looking for protocol 015, then we cannot say which one of the
       scripts is the correct one, so we return an error. *)
@@ -216,7 +216,7 @@ let choose_versioned_exn t1 t2 ~protocol =
     | Unversioned, Versioned -> Ok t2
     | Unversioned, Unversioned ->
         (* This case should never happen. It would indicate that we found two
-           unversioned scripts with the same name, such as foo.tz and foo.tz. *)
+           unversioned scripts with the same name, such as foo.mv and foo.mv. *)
         Error Unversioned
     | Versioned, Versioned -> (
         let s1 = t1.version_range.range_start in
@@ -294,9 +294,9 @@ let find_res (prefix, maxdepth, name, protocol) =
         ( __LOC__,
           sf
             "could not find Michelson script %S for protocol %03d in %s: found \
-             no file named %s_NNN.tz such that 000 <= NNN <= %03d; found no \
-             file named %s_NNN_MMM.tz such that 000 <= %03d <= MMM; found no \
-             unversioned file named %s.tz"
+             no file named %s_NNN.mv such that 000 <= NNN <= %03d; found no \
+             file named %s_NNN_MMM.mv such that 000 <= %03d <= MMM; found no \
+             unversioned file named %s.mv"
             (dirname_s // name)
             version
             prefix

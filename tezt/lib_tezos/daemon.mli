@@ -48,7 +48,7 @@ module Level : sig
   val to_string : level -> string
 end
 
-(** Functor for the common parts of all Tezos daemons: node, baker,
+(** Functor for the common parts of all Mavryk daemons: node, baker,
     endorser and accuser. Handles event handling in particular. *)
 module Make : functor (X : PARAMETERS) -> sig
   (** Exception raised by [wait_for] functions if the daemon terminates before the event.

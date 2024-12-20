@@ -204,7 +204,7 @@ let check_script_failwith {value; _} = check_script_failwith value
 let test_guestbook =
   Protocol.register_test
     ~__FILE__
-    ~title:"test guestbook.tz"
+    ~title:"test guestbook.mv"
     ~tags:["michelson"; "macros"]
     ~uses_node:false
   @@ fun protocol ->

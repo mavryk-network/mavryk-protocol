@@ -35,8 +35,8 @@ The five periods are as follows:
   proposal quorum, the proposal with most support is
   selected and we move to an **exploration period**. Note that support is
   measured in the cumulated staking power (expressed in mumav) that delegates supporting the
-  proposal have. E.g., a proposal supported by a single delegate with 600,000 tz of staking power
-  has more support than a proposal supported by two delegates with 100,000 tz
+  proposal have. E.g., a proposal supported by a single delegate with 600,000 mv of staking power
+  has more support than a proposal supported by two delegates with 100,000 mv
   each of staking power.
 
   If there are no proposals, or a tie between two or more proposals,

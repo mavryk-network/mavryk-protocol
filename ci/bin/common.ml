@@ -156,9 +156,18 @@ module Images = struct
       ~name:"ubuntu_jammy"
       ~image_path:"public.ecr.aws/lts/ubuntu:22.04_stable"
 
+  let ubuntu_noble =
+    Image.register
+      ~name:"ubuntu_noble"
+      ~image_path:"public.ecr.aws/lts/ubuntu:24.04_stable"
+
   let fedora_37 = Image.register ~name:"fedora_37" ~image_path:"fedora:37"
 
   let fedora_39 = Image.register ~name:"fedora_39" ~image_path:"fedora:39"
+
+  let fedora_40 = Image.register ~name:"fedora_40" ~image_path:"fedora:40"
+
+  let fedora_41 = Image.register ~name:"fedora_41" ~image_path:"fedora:41"
 
   let opam_ubuntu_focal =
     Image.register
@@ -690,8 +699,9 @@ let job_build_bin_package ?dependencies ?rules ~__POS__ ~name
   let parallel =
     let distributions =
       match target with
-      | Dpkg -> ["debian:bookworm"; "ubuntu:focal"; "ubuntu:jammy"]
-      | Rpm -> ["fedora:39"; "rockylinux:9.3"]
+      | Dpkg ->
+          ["debian:bookworm"; "ubuntu:focal"; "ubuntu:jammy"; "ubuntu:noble"]
+      | Rpm -> ["fedora:39"; "fedora:40"; "fedora:41"; "rockylinux:9.3"]
     in
     Matrix [[("DISTRIBUTION", distributions)]]
   in

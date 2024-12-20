@@ -1,4 +1,4 @@
-# This tests UPDATE on combs. Contrary to comb-set.tz, both the values
+# This tests UPDATE on combs. Contrary to comb-set.mv, both the values
 # and their types are updated.
 parameter (pair nat nat nat unit);
 storage (option (pair int nat string bytes));

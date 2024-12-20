@@ -15,6 +15,10 @@
   image: fedora:37
 .image_template__fedora_39:
   image: fedora:39
+.image_template__fedora_40:
+  image: fedora:40
+.image_template__fedora_41:
+  image: fedora:41
 .image_template__generic:
   image: $DISTRIBUTION
 .image_template__hadolint:
@@ -41,3 +45,5 @@
   image: public.ecr.aws/lts/ubuntu:20.04_stable
 .image_template__ubuntu_jammy:
   image: public.ecr.aws/lts/ubuntu:22.04_stable
+.image_template__ubuntu_noble:
+  image: public.ecr.aws/lts/ubuntu:24.04_stable

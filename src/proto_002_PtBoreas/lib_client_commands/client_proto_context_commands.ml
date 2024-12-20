@@ -1120,7 +1120,7 @@ let commands_network network () =
                     with
                     | Some c -> Lwt_result_syntax.return c
                     | None -> cctxt#error "Hexadecimal parsing failure"))
-               ~desc:"Activation code obtained from the Tezos foundation."
+               ~desc:"Activation code obtained from Mavryk Dynamics."
           @@ stop)
           (fun dry_run (name, _pkh) code cctxt ->
             let open Lwt_result_syntax in

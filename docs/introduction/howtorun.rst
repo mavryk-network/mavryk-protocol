@@ -55,12 +55,12 @@ origination using the ``--delegate`` option:
 
 Once the contract is originated, the only way to stop or modify its
 delegation is by using the ``SET_DELEGATE`` Michelson instruction (see
-`the Michelson documentation <https://tezos.gitlab.io/michelson-reference/#instr-SET_DELEGATE>`__ for more
+`the Michelson documentation <https://mavryk-network.gitlab.io/michelson-reference/#instr-SET_DELEGATE>`__ for more
 details).
 
 
 Notice that only implicit accounts can be delegates, so your delegate
-must be a *tz* address.
+must be a *mv* address.
 
 Funds in implicit accounts which are not registered as delegates
 do not participate in baking.

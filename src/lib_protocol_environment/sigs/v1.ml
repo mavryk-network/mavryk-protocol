@@ -6008,7 +6008,7 @@ end
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos - Ed25519 cryptography *)
+(** Mavryk - Ed25519 cryptography *)
 
 include S.SIGNATURE with type watermark := bytes
 end
@@ -6042,7 +6042,7 @@ end
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos - Secp256k1 cryptography *)
+(** Mavryk - Secp256k1 cryptography *)
 
 include S.SIGNATURE with type watermark := bytes
 end
@@ -6076,7 +6076,7 @@ end
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos - P256 cryptography *)
+(** Mavryk - P256 cryptography *)
 
 include S.SIGNATURE with type watermark := bytes
 end
@@ -6681,7 +6681,7 @@ end
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos operations. *)
+(** Mavryk operations. *)
 
 type shell_header = {
   branch : Block_hash.t;
@@ -6792,7 +6792,7 @@ end
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos Protocol Environment - Protocol updater. *)
+(** Mavryk Protocol Environment - Protocol updater. *)
 
 (** Validation result: the record returned by the protocol
     on the successful validation of a block. *)
@@ -6830,7 +6830,7 @@ type rpc_context = {
   context : Context.t;
 }
 
-(** This is the signature of a Tezos protocol implementation. It has
+(** This is the signature of a Mavryk protocol implementation. It has
     access to the standard library and the Environment module. *)
 module type PROTOCOL = sig
   (** The maximum size of a block header in bytes. *)

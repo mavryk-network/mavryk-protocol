@@ -32,7 +32,7 @@
 
 open Tezt_mavryk
 
-let sapling_contract_path ?(script = "sapling_contract.tz") protocol =
+let sapling_contract_path ?(script = "sapling_contract.mv") protocol =
   sf
     "./src/%s/lib_protocol/test/integration/michelson/contracts/%s"
     (Protocol.directory protocol)
@@ -795,7 +795,7 @@ let test_sapling_state_corruption =
   let* client = Client.init_mockup ~protocol () in
   Log.info "Push sapling state with id is forbidden" ;
   let prg =
-    sapling_contract_path ~script:"sapling_push_sapling_state.tz" protocol
+    sapling_contract_path ~script:"sapling_push_sapling_state.mv" protocol
   in
   let src = "bootstrap1" in
   let msg = rex "big_map or sapling_state type not expected here" in
@@ -866,7 +866,7 @@ module Memo_size = struct
           memo_size
           memo_size
       in
-      let contract_path = Temp.file "c.tz" in
+      let contract_path = Temp.file "c.mv" in
       Base.write_file contract_path ~contents ;
       contract_path
     in

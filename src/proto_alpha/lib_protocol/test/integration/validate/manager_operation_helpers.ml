@@ -227,12 +227,12 @@ let pp_ctxt_req pp
     pp
     "@[<v 4>Ctxt_req:@,\
      hard_gas_limit_per_block:%a@,\
-     fund_src: %a tz@,\
-     fund_dest: %a tz@,\
-     fund_del: %a tz@,\
-     reveal_accounts: %b tz@,\
-     fund_sc: %a tz@,\
-     fund_zk: %a tz@,\
+     fund_src: %a mv@,\
+     fund_dest: %a mv@,\
+     fund_del: %a mv@,\
+     reveal_accounts: %b mv@,\
+     fund_sc: %a mv@,\
+     fund_zk: %a mv@,\
      dal_flag: %a@,\
      scoru_arith_flag: %a@,\
      zkru_flag: %a@,\

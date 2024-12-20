@@ -142,7 +142,7 @@ let tez t = mumav Int64.(mul (of_int t) 1_000_000L)
      - Proof move is 1.47 times more expensive but depends on the size of the proof.
      - Timeout move is 1.34 times more expensive.
 
-   We set a fee limit of 1 tz for cementation (instead of 719 mumav) which
+   We set a fee limit of 1 mv for cementation (instead of 719 mumav) which
    should be plenty enough even if the gas price or gas consumption
    increases. We adjust the other limits in proportion.
 *)
@@ -581,7 +581,7 @@ let encoding default_display : t Data_encoding.t =
              (dft
                 "reconnection_delay"
                 ~description:
-                  "The reconnection (to the tezos node) delay in seconds"
+                  "The reconnection (to the mavryk node) delay in seconds"
                 float
                 default_reconnection_delay)
              (dft

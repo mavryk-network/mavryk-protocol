@@ -197,7 +197,7 @@ let with_logger f =
 let read_code filename =
   let filename =
     project_root // Filename.dirname __FILE__ // "contracts"
-    // (filename ^ ".tz")
+    // (filename ^ ".mv")
   in
   Contract_helpers.read_file filename
 

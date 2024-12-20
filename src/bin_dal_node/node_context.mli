@@ -54,7 +54,7 @@ type t
 (** [init config store gs_worker transport_layer cctx] creates a [t] with a
     status set to [Starting] using the given dal node configuration [config],
     node store [store], gossipsub worker instance [gs_worker], transport layer
-    instance [transport_layer], and tezos node client context [cctx]. *)
+    instance [transport_layer], and mavryk node client context [cctx]. *)
 val init :
   Configuration_file.t ->
   Store.node_store ->

@@ -109,8 +109,7 @@
     - "oc.build_kernels"
     - "oc.tezt:fetch-records"
   tags:
-    # - gcp_tezt
-    - saas-linux-2xlarge-amd64
+    - ubuntu-amd64
   # Add [BISECT_FILE] to the set of artifacts defined in [.tezt_template]
   artifacts:
     paths:

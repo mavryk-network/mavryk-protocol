@@ -5,7 +5,43 @@ oc.install_bin_rc_fedora_39:
   image: fedora:39
   stage: test
   tags:
-  - saas-linux-2xlarge-amd64
+  - ubuntu-amd64
+  rules:
+  - changes:
+    - docs/introduction/install*.sh
+    - docs/introduction/compile*.sh
+    when: on_success
+  - when: manual
+    allow_failure: true
+  needs:
+  - trigger
+  dependencies: []
+  script:
+  - ./docs/introduction/install-bin-fedora.sh rc
+
+oc.install_bin_rc_fedora_40:
+  image: fedora:40
+  stage: test
+  tags:
+  - ubuntu-amd64
+  rules:
+  - changes:
+    - docs/introduction/install*.sh
+    - docs/introduction/compile*.sh
+    when: on_success
+  - when: manual
+    allow_failure: true
+  needs:
+  - trigger
+  dependencies: []
+  script:
+  - ./docs/introduction/install-bin-fedora.sh rc
+
+oc.install_bin_rc_fedora_41:
+  image: fedora:41
+  stage: test
+  tags:
+  - ubuntu-amd64
   rules:
   - changes:
     - docs/introduction/install*.sh
@@ -23,7 +59,7 @@ oc.install_bin_rc_ubuntu_focal:
   image: public.ecr.aws/lts/ubuntu:20.04_stable
   stage: test
   tags:
-  - saas-linux-2xlarge-amd64
+  - ubuntu-amd64
   rules:
   - changes:
     - docs/introduction/install*.sh
@@ -42,7 +78,26 @@ oc.install_bin_rc_ubuntu_jammy:
   image: public.ecr.aws/lts/ubuntu:22.04_stable
   stage: test
   tags:
-  - saas-linux-2xlarge-amd64
+  - ubuntu-amd64
+  rules:
+  - changes:
+    - docs/introduction/install*.sh
+    - docs/introduction/compile*.sh
+    when: on_success
+  - when: manual
+    allow_failure: true
+  needs:
+  - trigger
+  dependencies: []
+  allow_failure: true
+  script:
+  - ./docs/introduction/install-bin-ubuntu.sh rc
+
+oc.install_bin_rc_ubuntu_noble:
+  image: public.ecr.aws/lts/ubuntu:24.04_stable
+  stage: test
+  tags:
+  - ubuntu-amd64
   rules:
   - changes:
     - docs/introduction/install*.sh
@@ -61,7 +116,7 @@ oc.install_opam_focal:
   image: ocaml/opam:ubuntu-20.04
   stage: test
   tags:
-  - saas-linux-2xlarge-amd64
+  - ubuntu-amd64
   rules:
   - when: manual
     allow_failure: true
@@ -78,7 +133,7 @@ oc.compile_release_sources_bullseye:
   image: ocaml/opam:debian-11
   stage: test
   tags:
-  - saas-linux-2xlarge-amd64
+  - ubuntu-amd64
   rules:
   - changes:
     - docs/introduction/install*.sh
@@ -96,7 +151,7 @@ oc.compile_sources_bullseye:
   image: ocaml/opam:debian-11
   stage: test
   tags:
-  - saas-linux-2xlarge-amd64
+  - ubuntu-amd64
   rules:
   - changes:
     - docs/introduction/install*.sh
@@ -115,7 +170,7 @@ oc.compile_sources_mantic:
   image: ocaml/opam:ubuntu-23.10
   stage: test
   tags:
-  - saas-linux-2xlarge-amd64
+  - ubuntu-amd64
   rules:
   - changes:
     - docs/introduction/install*.sh

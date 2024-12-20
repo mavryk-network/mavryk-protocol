@@ -2,7 +2,7 @@
 # of the contract executing the lambda (not the contract defining it).
 # To do so, two contracts called the sender and the receiver are used.
 # The sender (this contract) sends the lambda { DROP; SELF_ADDRESS }
-# to the receiver (see self_address_receiver.tz) who checks that the
+# to the receiver (see self_address_receiver.mv) who checks that the
 # returned value is the same as its SELF_ADDRESS.
 parameter (contract (lambda unit address));
 storage unit;

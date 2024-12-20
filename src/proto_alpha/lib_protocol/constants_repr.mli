@@ -51,7 +51,7 @@ val max_operation_data_length : int
     number by finding the largest possible contract in terms of
     number of nodes. The number of nodes is constrained by the
     current "max_operation_data_length" (32768) to be ~10,000 (
-    see "large_flat_contract.tz" in the tezt suite for the largest
+    see "large_flat_contract.mv" in the tezt suite for the largest
     contract with constants that can be originated). As a first
     approximation, we set the node size limit to 5 times this amount. *)
 val max_micheline_node_count : int

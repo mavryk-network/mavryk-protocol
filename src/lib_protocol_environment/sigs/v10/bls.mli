@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos - BLS12-381 cryptography *)
+(** Mavryk - BLS12-381 cryptography *)
 
 include S.AGGREGATE_SIGNATURE with type watermark := bytes
 

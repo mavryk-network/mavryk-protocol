@@ -14,7 +14,7 @@ class RollupMock(ContractHelper):
         """Deploys Rollup Mock"""
 
         storage = bytes.fromhex('00')
-        filename = join(get_build_dir(), 'test/rollup_mock.tz')
+        filename = join(get_build_dir(), 'test/rollup_mock.mv')
 
         return originate_from_file(filename, client, storage)
     

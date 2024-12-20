@@ -478,12 +478,12 @@ In Mavryk there are two kinds of accounts: *implicit accounts* and *smart contra
 Let's originate our first contract and call it *id*::
 
     mavkit-client originate contract id transferring 1 from alice \
-                 running ./michelson_test_scripts/attic/id.tz \
+                 running ./michelson_test_scripts/attic/id.mv \
                  --init '"hello"' --burn-cap 0.4
 
 The initial balance is 1 mav, generously provided by implicit account
-*alice*. The contract stores a Michelson program ``id.tz``
-(found in file :src:`michelson_test_scripts/attic/id.tz`), with
+*alice*. The contract stores a Michelson program ``id.mv``
+(found in file :src:`michelson_test_scripts/attic/id.mv`), with
 Michelson value ``"hello"`` as initial storage (the extra quotes are
 needed to avoid shell expansion). The parameter ``--burn-cap``
 specifies the maximal fee the user is willing to pay for this
@@ -497,7 +497,7 @@ be seen as an object with a single method taking one parameter (``parameter``), 
 The method updates the state (the storage), and submits operations as a side
 effect.
 
-For the sake of this example, here is the ``id.tz`` contract:
+For the sake of this example, here is the ``id.mv`` contract:
 
 .. code-block:: michelson
 

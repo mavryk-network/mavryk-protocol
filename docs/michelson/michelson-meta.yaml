@@ -50,7 +50,7 @@ instructions:
     examples:
       - name: Various additions
         description: This example demonstrates the addition of different types of numbers and domain specific types.
-        path: opcodes/add.tz
+        path: opcodes/add.mv
         input: 'Unit'
         initial_storage: 'Unit'
         final_storage: 'Unit'
@@ -66,7 +66,7 @@ instructions:
     examples:
       - name: Address
         description: This example takes a contract by parameter, and then stores its address.
-        path: opcodes/address.tz
+        path: opcodes/address.mv
         input: '"mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn"'
         initial_storage: 'None'
         final_storage: '(Some "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn")'
@@ -89,7 +89,7 @@ instructions:
     examples:
       - name: Sum list
         description: This contract reverses the list of strings passed by parameter and stores it.
-        path: opcodes/loop_left.tz
+        path: opcodes/loop_left.mv
         input: '{ "a" ; "b" ; "c" }'
         initial_storage: '{}'
         final_storage: '{ "c" ; "b" ; "a" }'
@@ -107,7 +107,7 @@ instructions:
           This contract takes a pair as parameter. It selects the right
           part of the parameter and stores it.
 
-        path: opcodes/cdr.tz
+        path: opcodes/cdr.mv
         input: '(Pair 15 9)'
         initial_storage: '0'
         final_storage: '9'
@@ -125,7 +125,7 @@ instructions:
           This contract takes a pair as parameter. It selects the left
           part of the parameter and stores it.
 
-        path: opcodes/car.tz
+        path: opcodes/car.mv
         input: '(Pair 15 9)'
         initial_storage: '0'
         final_storage: '15'
@@ -153,7 +153,7 @@ instructions:
         description: |
           This contract pushes and then stores the chain identifier.
 
-        path: opcodes/chain_id_store.tz
+        path: opcodes/chain_id_store.mv
         input: 'Unit'
         initial_storage: 'None'
         final_storage: '(Some "NetXynUjJNZm7wi")'
@@ -238,7 +238,7 @@ instructions:
           This examples takes a pair of integers ``(a, b)`` as parameter,
           and stores ``(a, a + b)``
 
-        path: opcodes/dip.tz
+        path: opcodes/dip.mv
         input: '(Pair 15 9)'
         initial_storage: '(Pair 0 0)'
         final_storage: '(Pair 15 24)'
@@ -257,7 +257,7 @@ instructions:
       - description: |
           This example builds a stack of size 5 by calling ``UNPAIR`` 4 times, then inserts the value ``6`` at the bottom of the stack using ``DIP 5``, discards all the stack elements but the last one using several ``DROP`` and finally stores the bottom element.
 
-        path: opcodes/dipn.tz
+        path: opcodes/dipn.mv
         input: '(Pair (Pair (Pair (Pair 1 2) 3) 4) 5)'
         initial_storage: '0'
         final_storage: '6'
@@ -413,7 +413,7 @@ instructions:
           It then verifies that the right part unpacks to a valid
           Michelson value.
 
-        path: opcodes/packunpack.tz
+        path: opcodes/packunpack.mv
         input: '(Pair (Pair (Pair "toto" {3;7;9;1}) {1;2;3}) 0x05070707070100000004746f746f020000000800030007000900010200000006000100020003)'
         initial_storage: 'Unit'
         final_storage: 'Unit'
@@ -437,7 +437,7 @@ instructions:
           type, packs and unpacks each member and asserts that the
           resulting value is unchanged.
 
-        path: opcodes/packunpack_rev.tz
+        path: opcodes/packunpack_rev.mv
         input: '(Pair -1  (Pair 1 (Pair "foobar" (Pair 0x00AABBCC (Pair 1000 (Pair False (Pair "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx" (Pair "2019-09-09T08:35:33Z" "mv1Tp1Sw463uxZDoRnyL5sv7xwVFUnxZ6zNx"))))))))'
         initial_storage: 'Unit'
         final_storage: 'Unit'
@@ -454,7 +454,7 @@ instructions:
     examples:
     - name: Hash and store
       description: This example computes the BLAKE2B hash of the string passed as parameter and puts it in storage.
-      path: opcodes/hash_string.tz
+      path: opcodes/hash_string.mv
       input: '"foobar"'
       initial_storage: 0x
       final_storage: '0xc5b7e76c15ce98128a840b54c38f462125766d2ed3a6bff0e76f7f3eb415df04'
@@ -502,7 +502,7 @@ instructions:
           Note that this is true for any natural number, since
           Michelson numbers are arbitrary-precision.
 
-        path: opcodes/abs.tz
+        path: opcodes/abs.mv
         input: '12039123919239192312931'
         initial_storage: 'Unit'
         final_storage: 'Unit'
@@ -518,7 +518,7 @@ instructions:
     examples:
       - name: Store ``AMOUNT``
         description: This contract stores the amount of its last received transaction.
-        path: opcodes/transfer_amount.tz
+        path: opcodes/transfer_amount.mv
         input: 'Unit'
         initial_storage: '0'
         final_storage: '50000'
@@ -543,14 +543,14 @@ instructions:
     examples:
     - name: Boolean AND
       description: This contracts takes a pair of booleans, and computes and stores their conjunction.
-      path: opcodes/and_logical_1.tz
+      path: opcodes/and_logical_1.mv
       initial_storage: 'False'
       input: '(Pair True False)'
       final_storage: 'False'
 
     - name: Bitwise AND on natural numbers
       description: This contract demonstrates bitwise AND on numerical values.
-      path: opcodes/and_binary.tz
+      path: opcodes/and_binary.mv
       initial_storage: 'Unit'
       input: 'Unit'
       final_storage: 'Unit'
@@ -558,7 +558,7 @@ instructions:
 
     - name: Bitwise AND on bytes
       description: This contract demonstrates bitwise AND on bytes.
-      path: opcodes/and_bytes.tz
+      path: opcodes/and_bytes.mv
       initial_storage: 'Unit'
       input: 'Unit'
       final_storage: 'Unit'
@@ -575,7 +575,7 @@ instructions:
     examples:
       - name: Store ``BALANCE``
         description: This contract stores its balance after its latest received transaction.
-        path: opcodes/balance.tz
+        path: opcodes/balance.mv
         input: 'Unit'
         initial_storage: '0'
         final_storage: '4000000000000'
@@ -599,7 +599,7 @@ instructions:
           stored ``signature`` is a valid signature of the BLAKE2B
           hash of the stored string by that ``key``.
 
-      path: opcodes/check_signature.tz
+      path: opcodes/check_signature.mv
       input: '"edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav"'
       initial_storage: '(Pair "edsigu3QszDjUpeqYqbvhyRxMpVFamEnvm9FYnt7YiiNt9nmjYfh8ZTbsybZ5WnBkhA7zfHsRVyuTnRsGLR6fNHt1Up1FxgyRtF" "hello")'
       final_storage: "(Pair \"edsigu3QszDjUpeqYqbvhyRxMpVFamEnvm9FYnt7YiiNt9nmjYfh8ZTbsybZ5WnBkhA7zfHsRVyuTnRsGLR6fNHt1Up1FxgyRtF\"\n        \"hello\")"
@@ -644,7 +644,7 @@ instructions:
       description: |
           This contract demonstrate several types of comparisons over different values.
 
-      path: opcodes/compare.tz
+      path: opcodes/compare.mv
       input: 'Unit'
       initial_storage: 'Unit'
       final_storage: 'Unit'
@@ -664,25 +664,25 @@ instructions:
     examples:
       - name: Concatenation of two strings
         description: This example takes a list of strings as parameter. It prepends ``"Hello "`` to each of them and stores the result.
-        path: opcodes/concat_hello.tz
+        path: opcodes/concat_hello.mv
         input: '{ "John" ; "Jane" }'
         initial_storage: "{}"
         final_storage: '{ "Hello John" ; "Hello Jane" }'
       - name: Concatenation of list of strings
         description: This example takes a list of strings as parameter and concatenates them, and prepends value in storage and stores the resulting string.
-        path: opcodes/list_concat.tz
+        path: opcodes/list_concat.mv
         input: '{ " " ; "World" ; "!" }'
         initial_storage: '"Hello"'
         final_storage: '"Hello World!"'
       - name: Concatenation of two byte sequences
         description: This example takes a list of byte sequences as parameter. It prepends ``0xff`` to each of them and stores the result.
-        path: opcodes/concat_hello_bytes.tz
+        path: opcodes/concat_hello_bytes.mv
         input: '{ 0xab ; 0xcd }'
         initial_storage: "{}"
         final_storage: '{ 0xffab ; 0xffcd }'
       - name: Concatenation of list of byte sequences
         description: This example takes a list of byte sequences as parameter and concatenates them, and prepends the value in storage and stores the resulting byte sequence.
-        path: opcodes/list_concat_bytes.tz
+        path: opcodes/list_concat_bytes.mv
         input: '{ 0xbe ; 0xef }'
         initial_storage: '0xdead'
         final_storage: '0xdeadbeef'
@@ -732,7 +732,7 @@ instructions:
       description: |
           This contract receives an ``address`` by parameter, and converts it to a ``contract unit``.
 
-      path: opcodes/contract.tz
+      path: opcodes/contract.mv
       input: '"mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn"'
       initial_storage: 'Unit'
       final_storage: 'Unit'
@@ -755,7 +755,7 @@ instructions:
         to using ``CONTRACT`` with no entrypoint annotation. It
         also emits transactions to these entrypoints.
 
-      path: mini_scenarios/multiple_entrypoints_counter.tz
+      path: mini_scenarios/multiple_entrypoints_counter.mv
       hide_final_storage: True
       input: 'Unit'
       initial_storage: 'None'
@@ -775,7 +775,7 @@ instructions:
     examples:
     - name: Prepend to storage
       description: This contracts keeps a list of integers in storage and takes an integer as parameter. It prepends the parameter to the stored list.
-      path: opcodes/cons.tz
+      path: opcodes/cons.mv
       input: '5'
       initial_storage: "{ 99 }"
       final_storage: "{ 5 ; 99 }"
@@ -810,7 +810,7 @@ instructions:
     examples:
     - name: Originate a dummy contract
       description: This contract originates a dummy contract.
-      path: opcodes/create_contract.tz
+      path: opcodes/create_contract.mv
       input: 'Unit'
       initial_storage: 'None'
       final_storage:  '(Some "KT1Mjjcb6tmSsLm7Cb3DSQszePjfchPM4Uxm")'
@@ -830,7 +830,7 @@ instructions:
         - originate B
         - call A with ``(Some B)``
         - call B with ``"abcdefg"``
-      path: mini_scenarios/create_contract.tz
+      path: mini_scenarios/create_contract.mv
       ranges: "16-"
       input: 'None'
       initial_storage: 'Unit'
@@ -1206,7 +1206,7 @@ instructions:
 
     - name: LSL on bytes
       description: This contract demonstrates LSL on bytes.
-      path: opcodes/lsl_bytes.tz
+      path: opcodes/lsl_bytes.mv
       initial_storage: 'Unit'
       input: 'Unit'
       final_storage: 'Unit'
@@ -1235,7 +1235,7 @@ instructions:
 
     - name: LSR on bytes
       description: This contract demonstrates LSR on bytes.
-      path: opcodes/lsr_bytes.tz
+      path: opcodes/lsr_bytes.mv
       initial_storage: 'Unit'
       input: 'Unit'
       final_storage: 'Unit'
@@ -1426,7 +1426,7 @@ instructions:
           ``have_fun`` entrypoint, passing a ``big_map`` as
           parameter. The ``have_fun`` entrypoint unthankfully drops
           the received big_map.
-        path: opcodes/big_map_to_self.tz
+        path: opcodes/big_map_to_self.mv
         input: 'Unit'
         initial_storage: '{}'
         final_storage: '0'
@@ -1434,7 +1434,7 @@ instructions:
 
       - name: Self with default entrypoint
         description: This example demonstrates using ``SELF`` with and without entrypoint annotations, as well as the ``default`` entrypoint.
-        path: opcodes/self_with_default_entrypoint.tz
+        path: opcodes/self_with_default_entrypoint.mv
         input: '0'
         initial_storage: 'Unit'
         final_storage: 'Unit'
@@ -1443,7 +1443,7 @@ instructions:
 
       - name: Self with entrypoint
         description: This example demonstrates using ``SELF`` with and without entrypoint annotations. In this example, the ``CAST`` noop is used to assert the type of the contract pushed by ``SELF``.
-        path: opcodes/self_with_entrypoint.tz
+        path: opcodes/self_with_entrypoint.mv
         input: 'Left (Left 0)'
         initial_storage: 'Unit'
         final_storage: 'Unit'

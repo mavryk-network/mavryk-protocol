@@ -23,9 +23,9 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Spawn Tezos accuser and control them. *)
+(** Spawn Mavryk accuser and control them. *)
 
-(** Tezos accuser states. *)
+(** Mavryk accuser states. *)
 type t
 
 (** Raw events. *)

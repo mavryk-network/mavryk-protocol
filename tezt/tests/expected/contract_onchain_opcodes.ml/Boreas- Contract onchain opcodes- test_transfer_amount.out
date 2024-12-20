@@ -1,5 +1,5 @@
 
-./mavkit-client --mode mockup --wait none originate contract transfer_amount transferring 0 from bootstrap1 running michelson_test_scripts/opcodes/transfer_amount.tz --init 0 --burn-cap 10 --force
+./mavkit-client --mode mockup --wait none originate contract transfer_amount transferring 0 from bootstrap1 running michelson_test_scripts/opcodes/transfer_amount.mv --init 0 --burn-cap 10 --force
 Node is bootstrapped.
 Estimated gas: 579.161 units (will add 100 for safety)
 Estimated storage: 297 bytes added (will add 20 for safety)

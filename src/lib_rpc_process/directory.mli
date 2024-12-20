@@ -5,7 +5,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** [build_rpc_directory node_version config] builds the Tezos RPC directory for
+(** [build_rpc_directory node_version config] builds the Mavryk RPC directory for
     the rpc process. RPCs handled here are not forwarded to the node.
 *)
 val build_rpc_directory :

@@ -1,0 +1,13 @@
+{ "data-dir": "tmp", "rpc": { "listen-addrs": [ "localhost:8733" ] },
+  "p2p":
+    { "bootstrap-peers": [ "[::]:10732", "192.168.1.3:9733" ],
+      "listen-addr": "1.2.3.4", "private-mode": true,
+      "limits":
+        { "connection-timeout": 10, "min-connections": 12,
+          "expected-connections": 25, "max-connections": 37,
+          "max_known_points": [ 200, 150 ],
+          "max_known_peer_ids": [ 200, 150 ] } },
+  "log": { "output": "mavkit-node.log" },
+  "shell":
+    { "chain_validator": { "synchronisation_threshold": 6 },
+      "history_mode": "full" }, "network": "sandbox" }

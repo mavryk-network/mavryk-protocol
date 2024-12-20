@@ -26,13 +26,13 @@ export alpine_version='3.18'
 
 ## full_opam_repository is a commit hash of the public OPAM repository, i.e.
 ## https://github.com/ocaml/opam-repository
-export full_opam_repository_tag=518f55a1ee5da870035b9593f98db03f43ce7f5f
+export full_opam_repository_tag=0f4d0ee5b69b496a4e26f305891c31400f0b4b5f
 
 ## opam_repository is an additional, mavryk-specific opam repository.
 ## This value MUST be reflected in the `build_deps_image_version` variable
 ## of `.gitlab-ci.yml`, which is ensured by running `make -C ci` from the root.
 export opam_repository_url=https://gitlab.com/mavryk-network/opam-repository
-export opam_repository_tag="${OPAM_REPOSITORY_TAG:-c5e1ea85725e04e2e357f90e686904973dda507d}"
+export opam_repository_tag="${OPAM_REPOSITORY_TAG:-0f4d0ee5b69b496a4e26f305891c31400f0b4b5f}"
 export opam_repository_git="$opam_repository_url.git"
 export opam_repository="$opam_repository_git"\#"$opam_repository_tag"
 

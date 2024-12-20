@@ -14,7 +14,7 @@ include = ["src/", "installer.wasm", "README.md"]
 license = "MIT"
 repository = "https://gitlab.com/mavryk-network/mavryk-protocol.git"
 description = "Installer client for Mavryk Smart Rollups."
-keywords = ["tezos", "smart", "rollup", "installer"]
+keywords = ["mavryk", "smart", "rollup", "installer"]
 categories = ["development-tools", "command-line-utilities"]
 
 [[bin]]

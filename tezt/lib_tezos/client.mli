@@ -2349,7 +2349,7 @@ val sapling_list_keys : t -> string list Lwt.t
 (** Same as [sapling_list_keys], but do not wait for the process to exit. *)
 val spawn_sapling_list_keys : t -> Process.t
 
-(** Run [mavkit-client sapling shield <qty> from <src-tz> to <dst-sap> using <sapling contract>].
+(** Run [mavkit-client sapling shield <qty> from <src-mv> to <dst-sap> using <sapling contract>].
 
     Returns [(balance_diff, fees)] where [balance_diff] is [sapling_contract]'s diff in balance and
     [fees] is the amount of fees paid. *)
@@ -2376,7 +2376,7 @@ val spawn_sapling_shield :
   t ->
   Process.t
 
-(** Run [mavkit-client sapling unshield <qty> from <src-sap> to <dst-tz> using <sapling_contract>].
+(** Run [mavkit-client sapling unshield <qty> from <src-sap> to <dst-mv> using <sapling_contract>].
 
     Returns [(balance_diff, fees)] where [balance_diff] is [sapling_contract]'s diff in balance and
     [fees] is the amount of fees payed.
@@ -2428,7 +2428,7 @@ val spawn_sapling_forge_transaction :
   t ->
   Process.t
 
-(** Run [mavkit-client sapling submit <file> from <alias-tz> using <sapling contract>]. *)
+(** Run [mavkit-client sapling submit <file> from <alias-mv> using <sapling contract>]. *)
 val sapling_submit :
   ?wait:string ->
   ?burn_cap:Tez.t ->

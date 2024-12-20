@@ -1,4 +1,4 @@
-# This tests UPDATE on combs. See also comb-set-2.tz for tests of
+# This tests UPDATE on combs. See also comb-set-2.mv for tests of
 # UPDATE that also change the type of fields.
 parameter unit;
 storage (pair nat nat nat unit);

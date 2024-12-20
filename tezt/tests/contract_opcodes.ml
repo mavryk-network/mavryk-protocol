@@ -635,7 +635,7 @@ let test_protocol_independent =
         "Unit",
         {|(Some "KT1Mjjcb6tmSsLm7Cb3DSQszePjfchPM4Uxm")|} );
       (* Test multiplication - success case (no overflow) *)
-      (* Failure case is tested in mul_overflow.tz *)
+      (* Failure case is tested in mul_overflow.mv *)
       ("mul", "Unit", "Unit", "Unit");
       (* Test NEG *)
       ("neg", "0", "(Left 2)", "-2");

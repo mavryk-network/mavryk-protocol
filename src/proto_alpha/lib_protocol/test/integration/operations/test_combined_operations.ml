@@ -146,7 +146,7 @@ let test_multiple_origination_and_delegation () =
         | _ -> assert false)
       tickets
   in
-  (* Previous balance - (Credit (n * 10tz) + Origination cost (n tz)) *)
+  (* Previous balance - (Credit (n * 10tz) + Origination cost (n mv)) *)
   let*? origination_burn =
     Tez_helpers.(cost_per_byte *? Int64.of_int origination_size)
   in

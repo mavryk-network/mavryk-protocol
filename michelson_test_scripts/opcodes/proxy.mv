@@ -1,5 +1,5 @@
 /* This proxy contract transfers the received amount to the contract given as parameter.
-   It is used to test the SOURCE and SENDER opcodes; see source.tz and sender.tz. */
+   It is used to test the SOURCE and SENDER opcodes; see source.mv and sender.mv. */
 parameter (contract unit) ;
 storage unit ;
 code{

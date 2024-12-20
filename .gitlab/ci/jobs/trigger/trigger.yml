@@ -5,7 +5,7 @@ trigger:
   image: alpine:3.18
   stage: trigger
   tags:
-  - saas-linux-2xlarge-amd64
+  - ubuntu-amd64
   rules:
   - if: $CI_MERGE_REQUEST_ASSIGNEES !~ /MavrykCowbot/
     when: manual

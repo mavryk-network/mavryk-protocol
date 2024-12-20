@@ -42,7 +42,7 @@
  (alias runtest)
  (package mavryk-protocol-002-PtBoreas-tests)
  (deps
-  (glob_files contracts/*.tz)
+  (glob_files contracts/*.mv)
   (glob_files expected/test_logging.ml/*.out))
  (enabled_if (<> false %{env:RUNTEZTALIAS=true}))
  (action (run %{dep:./main.exe})))

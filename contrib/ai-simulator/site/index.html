@@ -400,7 +400,7 @@
       function print_tez(x) {
         // if x is a number, we format it as a tez amount
         if (typeof x === 'number') {
-          return (new Intl.NumberFormat().format(Math.round(x / 1_000_000))+" tz");
+          return (new Intl.NumberFormat().format(Math.round(x / 1_000_000))+" mv");
         }
         return x;
       }

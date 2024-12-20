@@ -183,7 +183,7 @@ type t = {
   consensus_threshold : int;
   (* in slots *)
   limit_of_delegation_over_baking : int;
-  (* upper bound on the (delegated tz / own frozen tz) ratio *)
+  (* upper bound on the (delegated mv / own frozen mv) ratio *)
   percentage_of_frozen_deposits_slashed_per_double_baking : Percentage.t;
   percentage_of_frozen_deposits_slashed_per_double_attestation : Percentage.t;
   testnet_dictator : Signature.Public_key_hash.t option;

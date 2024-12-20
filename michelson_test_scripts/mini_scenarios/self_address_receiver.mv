@@ -1,4 +1,4 @@
-# See self_address_sender.tz
+# See self_address_sender.mv
 parameter (lambda unit address);
 storage unit;
 code {

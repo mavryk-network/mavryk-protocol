@@ -61,11 +61,11 @@ Run a mockup client without persistent state
 ============================================
 
 Without persistent state, the mockup mode is already able to
-typecheck scripts. Let's typecheck for example the script :src:`michelson_test_scripts/mini_scenarios/hardlimit.tz`:
+typecheck scripts. Let's typecheck for example the script :src:`michelson_test_scripts/mini_scenarios/hardlimit.mv`:
 
 .. code-block:: shell-session
 
-    $ mavkit-client --mode mockup typecheck script michelson_test_scripts/mini_scenarios/hardlimit.tz
+    $ mavkit-client --mode mockup typecheck script michelson_test_scripts/mini_scenarios/hardlimit.mv
 
 The script can also be executed:
 
@@ -82,7 +82,7 @@ For example:
 
 .. code-block:: shell-session
 
-  $ mavkit-client --mode mockup run script michelson_test_scripts/attic/id.tz on storage '"hello"' and input '"world"'
+  $ mavkit-client --mode mockup run script michelson_test_scripts/attic/id.mv on storage '"hello"' and input '"world"'
   # Ignore warnings about the missing/wrong base directory, they do not apply to "run script"
   storage
     "world"

@@ -29,7 +29,7 @@ fi
 # Defaults
 user=tezos
 group=tezos
-nodedir=/var/tezos/node
+nodedir=/var/mavryk/node
 clientdir=~tezos/.mavryk-client
 logdir=/var/log/tezos
 rotateonstart=yes

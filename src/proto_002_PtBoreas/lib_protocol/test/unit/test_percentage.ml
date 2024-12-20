@@ -89,12 +89,12 @@ let test_mul_percentage () =
       (of_mumav_exn 50L)
       (mul_percentage ~rounding:`Up (of_mumav_exn 99L) Percentage.p50)
   in
-  let tz = 123456L in
+  let mv = 123456L in
   let* () =
     assert_equal_mav
       ~loc:__LOC__
-      (of_mumav_exn tz)
-      (mul_percentage ~rounding (of_mumav_exn tz) (pct_of_int 200))
+      (of_mumav_exn mv)
+      (mul_percentage ~rounding (of_mumav_exn mv) (pct_of_int 200))
   in
   (* no overflow *)
   let* () =

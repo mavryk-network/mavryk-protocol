@@ -1,9 +1,9 @@
 ## A simple fungible token contract implemented using tickets of type
 ## [ticket unit].
 
-## To store and transfer the tokens see ticket_wallet_fungible.tz
+## To store and transfer the tokens see ticket_wallet_fungible.mv
 
-## For non-fungible tokens, see ticket_builder_non_fungible.tz
+## For non-fungible tokens, see ticket_builder_non_fungible.mv
 
 parameter (or (ticket %burn unit) (pair %mint (contract %destination (ticket unit)) (nat %amount)));
 storage address;

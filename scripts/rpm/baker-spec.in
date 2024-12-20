@@ -10,6 +10,8 @@ Packager:	@MAINT@
 Requires:	@DPKG@-node,@DPKG@-client
 Source0:	@FAKESRC@
 
+%global debug_package %{nil}
+
 %prep
 %setup -q
 

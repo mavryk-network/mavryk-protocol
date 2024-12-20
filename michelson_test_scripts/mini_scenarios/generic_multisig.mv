@@ -1,4 +1,4 @@
-# Source: https://github.com/murbard/smart-contracts/blob/master/multisig/michelson/generic.tz
+# Source: https://github.com/murbard/smart-contracts/blob/master/multisig/michelson/generic.mv
 parameter (or (unit %default)
               (pair %main
                  (pair :payload

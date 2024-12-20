@@ -167,7 +167,7 @@ let constants_of_parametric
     }
 
 (* TODO: https://gitlab.com/tezos/tezos/-/issues/2901
-   The constants are retrieved from the latest tezos block. These constants can
+   The constants are retrieved from the latest mavryk block. These constants can
    be different from the ones used at the creation at the rollup because of a
    protocol amendment that modifies some of them. This need to be fixed when the
    rollup nodes will be able to handle the migration of protocol.
@@ -205,7 +205,7 @@ let get_boot_sector block_hash (node_ctxt : _ Node_context.t) =
   let exception Found_boot_sector of string in
   let* block = fetch_mavryk_block node_ctxt.l1_ctxt block_hash in
   let missing_boot_sector () =
-    failwith "Boot sector not found in Tezos block %a" Block_hash.pp block_hash
+    failwith "Boot sector not found in Mavryk block %a" Block_hash.pp block_hash
   in
   Lwt.catch
     (fun () ->

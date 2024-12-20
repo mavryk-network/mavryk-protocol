@@ -24,7 +24,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos P2p layer - Dynamic overlay network of authenticated peers.
+(** Mavryk P2p layer - Dynamic overlay network of authenticated peers.
 
     The P2P layer implements several mechanisms, notably:
     - It maintains pools of known points (P2P servers), peers (authenticated

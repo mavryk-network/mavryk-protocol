@@ -5,7 +5,7 @@ docker:hadolint-before_merging:
   image: hadolint/hadolint:2.9.3-debian
   stage: sanity
   tags:
-  - saas-linux-2xlarge-amd64
+  - ubuntu-amd64
   rules:
   - changes:
     - build.Dockerfile

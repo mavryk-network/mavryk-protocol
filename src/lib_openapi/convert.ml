@@ -23,7 +23,7 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(* Entrypoint for a program that converts a Tezos API description (JSON)
+(* Entrypoint for a program that converts a Mavryk API description (JSON)
    into an OpenAPI 3 specification (JSON as well). *)
 
 let fail x = Printf.ksprintf failwith x

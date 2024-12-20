@@ -340,7 +340,7 @@ end
 
 let path_to file = Filename.(dirname __FILE__ ^ dir_sep ^ file)
 
-let empty_contract = path_to "empty.tz"
+let empty_contract = path_to "empty.mv"
 
 let sigs_michelson sigs =
   let open Test_michelson in

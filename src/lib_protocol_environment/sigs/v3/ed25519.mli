@@ -23,6 +23,6 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-(** Tezos - Ed25519 cryptography *)
+(** Mavryk - Ed25519 cryptography *)
 
 include S.SIGNATURE with type watermark := bytes

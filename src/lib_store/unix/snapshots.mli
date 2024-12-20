@@ -46,7 +46,7 @@
       are exported as a directory containing cycles as files, as well
       as some indexing data. The floating blocks are stored as a
       single file ;
-    - The set of necessary Tezos protocols, as a directory containing
+    - The set of necessary Mavryk protocols, as a directory containing
       the protocols as single files.
 
     There are two kinds of snapshot formats that can be exported:

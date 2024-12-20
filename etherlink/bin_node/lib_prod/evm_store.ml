@@ -209,7 +209,7 @@ module Q = struct
           CONSTRAINT CK_T1_Locked CHECK (lock='l')
         );|};
           (* The CONSTRAINT allows no more than 1 row in this
-             table, making sure we only have 1 tezos level at
+             table, making sure we only have 1 mavryk level at
              most *)
         ]
     end

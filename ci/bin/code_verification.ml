@@ -351,12 +351,21 @@ let jobs_unit_tests ~job_build_x86_64_release ~job_build_x86_64_exp_dev_extra
     oc_unit_protocol_compiles;
   ]
 
-type install_mavkit_distribution = Ubuntu_focal | Ubuntu_jammy | Fedora_39
+type install_mavkit_distribution =
+  | Ubuntu_focal
+  | Ubuntu_jammy
+  | Ubuntu_noble
+  | Fedora_39
+  | Fedora_40
+  | Fedora_41
 
 let image_of_distribution = function
   | Ubuntu_focal -> Images.ubuntu_focal
   | Ubuntu_jammy -> Images.ubuntu_jammy
+  | Ubuntu_noble -> Images.ubuntu_noble
   | Fedora_39 -> Images.fedora_39
+  | Fedora_40 -> Images.fedora_40
+  | Fedora_41 -> Images.fedora_41
 
 (* Encodes the conditional [before_merging] pipeline and its unconditional variant
    [schedule_extended_test]. *)
@@ -726,7 +735,7 @@ let jobs pipeline_type =
           "git init _opam-repo-for-release";
           "./scripts/opam-prepare-repo.sh dev ./ ./_opam-repo-for-release";
           "git -C _opam-repo-for-release add packages";
-          "git -C _opam-repo-for-release commit -m \"tezos packages\"";
+          "git -C _opam-repo-for-release commit -m \"mavryk packages\"";
         ]
       |> job_external_split
     in
@@ -1018,8 +1027,8 @@ let jobs pipeline_type =
           distribution =
         let distribution_string =
           match distribution with
-          | Ubuntu_focal | Ubuntu_jammy -> "ubuntu"
-          | Fedora_39 -> "fedora"
+          | Ubuntu_focal | Ubuntu_jammy | Ubuntu_noble -> "ubuntu"
+          | Fedora_39 | Fedora_40 | Fedora_41 -> "fedora"
         in
         let script =
           sf "./docs/introduction/install-bin-%s.sh" distribution_string
@@ -1068,6 +1077,16 @@ let jobs pipeline_type =
           ~name:"oc.install_bin_rc_fedora_39"
           ~rc:true
           Fedora_39;
+        job_install_bin
+          ~__POS__
+          ~name:"oc.install_bin_rc_fedora_40"
+          ~rc:true
+          Fedora_40;
+        job_install_bin
+          ~__POS__
+          ~name:"oc.install_bin_rc_fedora_41"
+          ~rc:true
+          Fedora_41;
         (* The Ubuntu jobs currently fail because the last rc packages can't be installed anymore.
            See https://gitlab.com/tezos/tezos/-/issues/6902.
            TODO: https://gitlab.com/tezos/tezos/-/issues/6915
@@ -1081,7 +1100,12 @@ let jobs pipeline_type =
              ~__POS__
              ~name:"oc.install_bin_ubuntu_jammy"
              ~allow_failure:Yes
-             Ubuntu_jammy; *)
+             Ubuntu_jammy;
+           job_install_bin
+             ~__POS__
+             ~name:"oc.install_bin_ubuntu_noble"
+             ~allow_failure:Yes
+             Ubuntu_noble; *)
         job_install_bin
           ~__POS__
           ~name:"oc.install_bin_rc_ubuntu_focal"
@@ -1094,6 +1118,12 @@ let jobs pipeline_type =
           ~allow_failure:Yes
           ~rc:true
           Ubuntu_jammy;
+        job_install_bin
+          ~__POS__
+          ~name:"oc.install_bin_rc_ubuntu_noble"
+          ~allow_failure:Yes
+          ~rc:true
+          Ubuntu_noble;
         (* Test installing through opam *)
         job_install_opam_focal;
         (* Test compiling the [latest-release] branch on Bullseye *)

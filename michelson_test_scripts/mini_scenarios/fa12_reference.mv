@@ -4,7 +4,7 @@
 
 # Its purpose is to serve as a reference contract for TZIP-7, which
 # defines Financial Assets 1.2. The original file can be found at
-# https://gitlab.com/tzip/tzip/-/blob/4b3c67aad5abbf04ec36caea4a1809e7b6e55bb8/proposals/tzip-7/ManagedLedger.tz
+# https://gitlab.com/tzip/tzip/-/blob/4b3c67aad5abbf04ec36caea4a1809e7b6e55bb8/proposals/tzip-7/ManagedLedger.mv
 
 # This contract was generated from
 # https://gitlab.com/morley-framework/morley/tree/ce28076a79b93d48aa7745271e6a1395b8b9e50d/lorentz-contracts/src/Lorentz/Contracts/ManagedLedger.hs

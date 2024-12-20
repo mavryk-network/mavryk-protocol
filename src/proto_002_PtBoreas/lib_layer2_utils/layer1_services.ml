@@ -116,7 +116,7 @@ let process_manager_operations operations accu f =
     | Empty | Too_large | Receipt No_operation_metadata ->
         (* This should case should not happen between [operations] is supposed
            to be retrieved with `force_metadata:true` and assuming that the
-           tezos node is running in archive mode. *)
+           mavryk node is running in archive mode. *)
         assert false
     | Receipt (Operation_metadata {contents = results; _}) -> (
         match Apply_results.kind_equal_list contents results with

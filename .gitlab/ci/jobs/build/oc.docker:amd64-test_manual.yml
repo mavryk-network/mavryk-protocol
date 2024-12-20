@@ -5,7 +5,7 @@ oc.docker:amd64:
   image: registry.gitlab.com/tezos/docker-images/ci-docker:v1.10.0
   stage: manual
   tags:
-  - saas-linux-2xlarge-amd64
+  - ubuntu-amd64
   needs: []
   dependencies: []
   allow_failure: true

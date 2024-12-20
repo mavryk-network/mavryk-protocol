@@ -5,7 +5,7 @@ oc.build:rpm:amd64:
   image: $DISTRIBUTION
   stage: build
   tags:
-  - saas-linux-2xlarge-amd64
+  - ubuntu-amd64
   needs: []
   dependencies: []
   before_script:
@@ -41,4 +41,6 @@ oc.build:rpm:amd64:
     matrix:
     - DISTRIBUTION:
       - fedora:39
+      - fedora:40
+      - fedora:41
       - rockylinux:9.3

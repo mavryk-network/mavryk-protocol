@@ -277,14 +277,14 @@ module Block = struct
 
   let hash =
     Mavryk_rpc.Service.get_service
-      ~description:"Tezos block hash of block known to the smart rollup node"
+      ~description:"Mavryk block hash of block known to the smart rollup node"
       ~query:Mavryk_rpc.Query.empty
       ~output:Block_hash.encoding
       (path / "hash")
 
   let level =
     Mavryk_rpc.Service.get_service
-      ~description:"Level of Tezos block known to the smart rollup node"
+      ~description:"Level of Mavryk block known to the smart rollup node"
       ~query:Mavryk_rpc.Query.empty
       ~output:Data_encoding.int32
       (path / "level")

@@ -103,7 +103,7 @@ let add_some_contracts k src block baker =
       (fun (rev_contracts, block) _ ->
         let* addr, block =
           originate_contract_hash
-            (path // "contracts/int-store.tz")
+            (path // "contracts/int-store.mv")
             "31"
             src
             block
@@ -160,7 +160,7 @@ let test_size_of_int_store_contract () =
   let* block, baker, src, _ = init () in
   let* addr, block =
     originate_contract_hash
-      (path // "contracts/int-store.tz")
+      (path // "contracts/int-store.mv")
       "31"
       src
       block
@@ -185,7 +185,7 @@ let test_find_correctly_looks_up () =
   let* block, baker, src, _ = init () in
   let* addr, block =
     originate_contract_hash
-      (path // "contracts/sapling_contract.tz")
+      (path // "contracts/sapling_contract.mv")
       "{ }"
       src
       block
@@ -233,7 +233,7 @@ let test_update_modifies_cached_contract () =
   let* block, baker, src, _ = init () in
   let* addr, block =
     originate_contract_hash
-      (path // "contracts/int-store.tz")
+      (path // "contracts/int-store.mv")
       "36"
       src
       block
@@ -259,7 +259,7 @@ let test_update_modifies_cached_contract () =
                 (Script_int.to_string storage')
                 (Script_int.to_string storage)))
     | _ ->
-        (* by definition of int-store.tz. *)
+        (* by definition of int-store.mv. *)
         assert false
   in
   return_unit
