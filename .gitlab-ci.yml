@@ -64,7 +64,7 @@ default:
   interruptible: true
 
 variables:
-  build_deps_image_version: c5e1ea85725e04e2e357f90e686904973dda507d
+  build_deps_image_version: f4ead8084d5f494f51d1e38e1c74972c46586cff
   build_deps_image_name: registry.gitlab.com/mavryk-network/opam-repository
   rust_toolchain_image_name: registry.gitlab.com/mavryk-network/mavryk-protocol/rust-toolchain
   client_libs_dependencies_image_name: registry.gitlab.com/mavryk-network/mavryk-protocol/client-libs-dependencies
