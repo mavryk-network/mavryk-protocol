@@ -71,6 +71,7 @@ echo "Build ${image_name}"
 ./images/create_rust_toolchain_image.sh \
   "${image_base}" \
   "${image_tag}" \
+  --network="host" \
   --build-arg=BUILDKIT_INLINE_CACHE=1 \
   --cache-from="${image_base}:${docker_image_ref_tag}" \
   --cache-from="${image_base}:${CI_DEFAULT_BRANCH}" \
