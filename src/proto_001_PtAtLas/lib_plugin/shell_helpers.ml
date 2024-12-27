@@ -11,7 +11,9 @@ let constants_key = [Constants_repr.version; "constants"]
 
 let get_constants ctxt =
   let open Lwt_syntax in
-  let* bytes_opt = Mavryk_protocol_environment.Context.find ctxt constants_key in
+  let* bytes_opt =
+    Mavryk_protocol_environment.Context.find ctxt constants_key
+  in
   match bytes_opt with
   | Some bytes ->
       return
