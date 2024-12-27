@@ -193,7 +193,7 @@ module type SHELL_HELPERS = sig
   (** [get_blocks_per_cycle ctxt] returns the blocks_per_cycle
       protocol constant. *)
   val get_blocks_per_cycle :
-    Tezos_protocol_environment.Context.t -> int32 option Lwt.t
+    Mavryk_protocol_environment.Context.t -> int32 option Lwt.t
 end
 
 (** Register a validation plugin for a specific protocol

@@ -155,12 +155,12 @@ module S = struct
       Mavryk_rpc.Path.(path / "heads" /: Chain_services.chain_arg)
 
   let received_blocks =
-    Tezos_rpc.Service.get_service
+    Mavryk_rpc.Service.get_service
       ~description:
         "Monitor all newly received blocks that are not yet known by the store."
-      ~query:Tezos_rpc.Query.empty
+      ~query:Mavryk_rpc.Query.empty
       ~output:(obj1 (req "hash" Block_hash.encoding))
-      Tezos_rpc.Path.(path / "received_blocks" /: Chain_services.chain_arg)
+      Mavryk_rpc.Path.(path / "received_blocks" /: Chain_services.chain_arg)
 
   let protocols =
     Mavryk_rpc.Service.get_service

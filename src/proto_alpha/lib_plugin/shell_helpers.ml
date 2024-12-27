@@ -11,7 +11,7 @@ let constants_key = [Constants_repr.version; "constants"]
 
 let get_constants ctxt =
   let open Lwt_syntax in
-  let* bytes_opt = Tezos_protocol_environment.Context.find ctxt constants_key in
+  let* bytes_opt = Mavryk_protocol_environment.Context.find ctxt constants_key in
   match bytes_opt with
   | Some bytes ->
       return
@@ -20,7 +20,7 @@ let get_constants ctxt =
            bytes
   | None -> return_none
 
-let get_blocks_per_cycle (ctxt : Tezos_protocol_environment.Context.t) =
+let get_blocks_per_cycle (ctxt : Mavryk_protocol_environment.Context.t) =
   let open Lwt_option_syntax in
   let* {blocks_per_cycle; _} = get_constants ctxt in
   Lwt.return_some blocks_per_cycle

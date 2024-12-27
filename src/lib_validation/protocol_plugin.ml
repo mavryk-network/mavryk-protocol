@@ -150,7 +150,7 @@ module type SHELL_HELPERS = sig
   val hash : Protocol_hash.t
 
   val get_blocks_per_cycle :
-    Tezos_protocol_environment.Context.t -> int32 option Lwt.t
+    Mavryk_protocol_environment.Context.t -> int32 option Lwt.t
 end
 
 let rpc_table : (module RPC) Protocol_hash.Table.t =

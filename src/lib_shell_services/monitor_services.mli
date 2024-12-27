@@ -143,7 +143,7 @@ module S : sig
       unit,
       unit,
       Block_hash.t )
-    Tezos_rpc.Service.t
+    Mavryk_rpc.Service.t
 
   val heads :
     ( [`GET],
