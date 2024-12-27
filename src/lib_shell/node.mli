@@ -56,6 +56,9 @@ type config = {
 val create :
   ?sandboxed:bool ->
   ?sandbox_parameters:Data_encoding.json ->
+  ?disable_context_pruning:bool ->
+  ?history_mode:History_mode.t ->
+  ?maintenance_delay:Storage_maintenance.delay ->
   singleprocess:bool ->
   version:string ->
   commit_info:Mavkit_node_version.commit_info ->
@@ -64,7 +67,6 @@ val create :
   Shell_limits.block_validator_limits ->
   Shell_limits.prevalidator_limits ->
   Shell_limits.chain_validator_limits ->
-  History_mode.t option ->
   (t, tztrace) result Lwt.t
 
 val shutdown : t -> unit Lwt.t

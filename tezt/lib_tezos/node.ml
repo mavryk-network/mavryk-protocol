@@ -59,6 +59,8 @@ type argument =
   | RPC_additional_addr of string
   | RPC_additional_addr_external of string
   | Max_active_rpc_connections of int
+  | Disable_context_pruning
+  | Storage_maintenance_delay of string
 
 let make_argument = function
   | Network x -> ["--network"; x]
@@ -92,6 +94,8 @@ let make_argument = function
   | RPC_additional_addr_external addr -> ["--external-rpc-addr"; addr]
   | Max_active_rpc_connections n ->
       ["--max-active-rpc-connections"; string_of_int n]
+  | Disable_context_pruning -> ["--disable-context-pruning"]
+  | Storage_maintenance_delay x -> ["--storage-maintenance-delay"; x]
 
 let make_arguments arguments = List.flatten (List.map make_argument arguments)
 
@@ -114,7 +118,9 @@ let is_redundant = function
   | Media_type _, Media_type _
   | Metadata_size_limit _, Metadata_size_limit _
   | Version, Version
-  | Max_active_rpc_connections _, Max_active_rpc_connections _ ->
+  | Max_active_rpc_connections _, Max_active_rpc_connections _
+  | Disable_context_pruning, Disable_context_pruning
+  | Storage_maintenance_delay _, Storage_maintenance_delay _ ->
       true
   | Metrics_addr addr1, Metrics_addr addr2 -> addr1 = addr2
   | Peer peer1, Peer peer2 -> peer1 = peer2
@@ -139,7 +145,9 @@ let is_redundant = function
   | RPC_additional_addr _, _
   | RPC_additional_addr_external _, _
   | Version, _
-  | Max_active_rpc_connections _, _ ->
+  | Max_active_rpc_connections _, _
+  | Disable_context_pruning, _
+  | Storage_maintenance_delay _, _ ->
       false
 
 (* Some arguments should not be written in the config file by [Node.init]

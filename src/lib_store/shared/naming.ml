@@ -70,7 +70,7 @@ let chain_config_file dir =
     chain_config_encoding
     chain_config_equal
 
-let lock_file dir = mk_file dir "lock"
+let lockfile dir = mk_file dir "lock"
 
 let gc_lockfile dir = mk_file dir "gc_lock"
 
@@ -151,27 +151,26 @@ let caboose_file dir =
     block_descriptor_encoding
     Store_types.block_descriptor_equal
 
-type block_store_status = Idle | Merging
-
-let block_store_status_encoding =
-  let open Data_encoding in
-  conv
-    (function Idle -> false | Merging -> true)
-    (function false -> Idle | true -> Merging)
-    bool
-
-let status_equal s1 s2 =
-  match (s1, s2) with
-  | Idle, Idle -> true
-  | Merging, Merging -> true
-  | Idle, Merging | Merging, Idle -> false
-
 let block_store_status_file dir =
   make_encoded_file
     dir
     ~filename:"status"
-    block_store_status_encoding
-    status_equal
+    Block_store_status.encoding
+    Block_store_status.equal
+
+let legacy_block_store_status_file dir =
+  make_encoded_file
+    dir
+    ~filename:"status"
+    Block_store_status.Legacy.encoding
+    Block_store_status.Legacy.equal
+
+let scheduled_maintenance dir =
+  make_encoded_file
+    dir
+    ~filename:"scheduled_maintenance"
+    Data_encoding.(option int32)
+    (Option.equal Int32.equal)
 
 let cemented_blocks_dir dir = mk_dir dir "cemented"
 

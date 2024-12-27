@@ -100,7 +100,26 @@ val copy_dir : ?perm:int -> string -> string -> unit Lwt.t
 
 val read_file : string -> string Lwt.t
 
-val copy_file : src:string -> dst:string -> unit Lwt.t
+(** [copy_file ?buffer_size ~src ~dst ()] copies the file from [src]
+    to [dst]. The permissions of the [dst] file are inherited from
+    `Lwt_io.with_file`. The [buffer_size] parameter, which defaults to
+    4096, can be adjusted to improve performance. *)
+val copy_file :
+  ?buffer_size:int -> src:string -> dst:string -> unit -> unit Lwt.t
+
+(** [copy_file_raw ?buffer_size ?dst_perm ~src ~dst ()] is very
+    similar to [copy_file] but it uses an alternate implementation
+    using raw file descriptors, enabling better performances. It
+    copies the file from [src] to [dst]. The permissions of the [dst]
+    file is 0o666 by default. The [buffer_size] parameter, which
+    defaults to 4096*1024, can be adjusted to improve performance. *)
+val copy_file_raw :
+  ?buffer_size:int ->
+  ?dst_perm:int ->
+  src:string ->
+  dst:string ->
+  unit ->
+  unit Lwt.t
 
 val create_file :
   ?close_on_exec:bool -> ?perm:int -> string -> string -> unit Lwt.t
