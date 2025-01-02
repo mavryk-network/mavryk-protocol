@@ -81,7 +81,8 @@ let with_node f =
         Mavryk_shell_services.Shell_limits.default_block_validator_limits
         Mavryk_shell_services.Shell_limits.default_prevalidator_limits
         Mavryk_shell_services.Shell_limits.default_chain_validator_limits
-        None
+        ?history_mode:None
+        ?maintenance_delay:None
     in
     f node
   in

@@ -1824,7 +1824,8 @@ let store_dirs = ref []
 let context_dirs = ref []
 
 let init ?patch_context ?commit_genesis ?history_mode ?(readonly = false)
-    ?block_cache_limit ~store_dir ~context_dir ~allow_testchains genesis =
+    ?block_cache_limit ?disable_context_pruning:_ ?maintenance_delay:_
+    ~store_dir ~context_dir ~allow_testchains genesis =
   let open Lwt_result_syntax in
   if List.mem ~equal:String.equal context_dir !context_dirs then
     Format.kasprintf
@@ -2088,4 +2089,6 @@ module Unsafe = struct
   let block_of_repr = Fun.id
 end
 
-let v_3_0_upgrade ~store_dir:_ _genesis = Lwt_result_syntax.return_unit
+let v_3_1_upgrade ~store_dir:_ _genesis = Lwt_result_syntax.return_unit
+
+let v_3_2_upgrade ~store_dir:_ _genesis = Lwt_result_syntax.return_unit

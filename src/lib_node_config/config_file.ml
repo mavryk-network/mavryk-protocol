@@ -871,7 +871,8 @@ let update ?(disable_config_validation = false) ?data_dir ?min_connections
     ?(disable_mempool = default_p2p.disable_mempool)
     ?(enable_testchain = default_p2p.enable_testchain) ?(cors_origins = [])
     ?(cors_headers = []) ?rpc_tls ?log_output ?log_coloring
-    ?synchronisation_threshold ?history_mode ?network ?latency cfg =
+    ?synchronisation_threshold ?history_mode ?network ?latency
+    ?disable_context_pruning ?storage_maintenance_delay cfg =
   let open Lwt_result_syntax in
   let disable_config_validation =
     cfg.disable_config_validation || disable_config_validation
@@ -993,6 +994,14 @@ let update ?(disable_config_validation = false) ?data_dir ?min_connections
            in
            {synchronisation});
         history_mode = Option.either history_mode cfg.shell.history_mode;
+        disable_context_pruning =
+          Option.either
+            disable_context_pruning
+            cfg.shell.disable_context_pruning;
+        storage_maintenance_delay =
+          Option.either
+            storage_maintenance_delay
+            cfg.shell.storage_maintenance_delay;
       }
   in
   (* If --network is specified it overrides the "network" entry of the

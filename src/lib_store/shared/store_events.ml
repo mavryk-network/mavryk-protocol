@@ -30,12 +30,15 @@ let section = ["node"; "store"]
 
 (* Info *)
 let init_store =
-  declare_1
+  declare_2
     ~section
     ~level:Info
     ~name:"init_store"
-    ~msg:"initializing the store (readonly:{ro})"
+    ~msg:
+      "initializing the store (readonly: {ro}, disable context pruning: \
+       {disable_context_pruning})"
     ("ro", Data_encoding.bool)
+    ("disable_context_pruning", Data_encoding.bool)
 
 let end_init_store =
   declare_0
@@ -201,6 +204,22 @@ let start_retreiving_cycles =
     ~msg:"retrieving cycles from floating store"
     ()
 
+let load_block_store_status =
+  declare_0
+    ~section
+    ~level:Info
+    ~name:"load_block_store_status"
+    ~msg:"loading using legacy block_store_status encoding"
+    ()
+
+let fixed_block_store_status =
+  declare_0
+    ~section
+    ~level:Info
+    ~name:"fixed_block_store_status"
+    ~msg:"loading of block store status was successful"
+    ()
+
 let store_is_consistent =
   declare_0
     ~section
@@ -256,6 +275,24 @@ let end_merging_stores =
     ~msg:"store was successfully merged in {time}"
     ~pp1:Time.System.Span.pp_hum
     ("time", Time.System.Span.encoding)
+
+let delay_store_merging =
+  declare_2
+    ~section
+    ~level:Info
+    ~name:"start_delayed_maintenance"
+    ~msg:"delaying storage ({mode}) maintenance (target {level})"
+    ~pp1:Storage_maintenance.pp_delay
+    ("mode", Storage_maintenance.delay_encoding)
+    ("level", Data_encoding.int32)
+
+let delayed_store_merging_countdown =
+  declare_1
+    ~section
+    ~level:Debug
+    ~name:"delayed_store_merging_countdown"
+    ~msg:"merging storage after {count} blocks scheduled delay"
+    ("count", Data_encoding.int32)
 
 let start_context_gc =
   declare_1
@@ -536,3 +573,20 @@ let upgrade_store_started =
     ~name:"upgrade_store_started"
     ~msg:"upgrading the store"
     ()
+
+let upgrade_cemented_file_skip =
+  declare_1
+    ~section
+    ~level:Info
+    ~name:"upgrade_cemented_file_skip"
+    ~msg:"File {path} does not have 32-bit offsets, skipping upgrade"
+    ~pp1:Format.pp_print_string
+    ("path", Data_encoding.string)
+
+let import_legacy_snapshot_version =
+  declare_1
+    ~section
+    ~level:Notice
+    ~name:"import_legacy_snapshot_version"
+    ~msg:"Importing a legacy snapshot version: {legacy_version}."
+    ("legacy_version", Data_encoding.int31)

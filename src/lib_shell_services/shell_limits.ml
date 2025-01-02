@@ -245,12 +245,18 @@ let chain_validator_limits_encoding =
              });
        ])
 
+let default_disable_context_pruning = false
+
+let default_storage_maintenance_delay = Storage_maintenance.Auto
+
 type limits = {
   block_validator_limits : block_validator_limits;
   prevalidator_limits : prevalidator_limits;
   peer_validator_limits : peer_validator_limits;
   chain_validator_limits : chain_validator_limits;
   history_mode : History_mode.t option;
+  disable_context_pruning : bool option;
+  storage_maintenance_delay : Storage_maintenance.delay option;
 }
 
 let default_limits =
@@ -260,6 +266,8 @@ let default_limits =
     peer_validator_limits = default_peer_validator_limits;
     chain_validator_limits = default_chain_validator_limits;
     history_mode = None;
+    disable_context_pruning = Some false;
+    storage_maintenance_delay = Some Auto;
   }
 
 let limits_encoding =
@@ -271,25 +279,33 @@ let limits_encoding =
            prevalidator_limits;
            chain_validator_limits;
            history_mode;
+           disable_context_pruning;
+           storage_maintenance_delay;
          } ->
       ( peer_validator_limits,
         block_validator_limits,
         prevalidator_limits,
         chain_validator_limits,
-        history_mode ))
+        history_mode,
+        disable_context_pruning,
+        storage_maintenance_delay ))
     (fun ( peer_validator_limits,
            block_validator_limits,
            prevalidator_limits,
            chain_validator_limits,
-           history_mode ) ->
+           history_mode,
+           disable_context_pruning,
+           storage_maintenance_delay ) ->
       {
         peer_validator_limits;
         block_validator_limits;
         prevalidator_limits;
         chain_validator_limits;
         history_mode;
+        disable_context_pruning;
+        storage_maintenance_delay;
       })
-    (obj5
+    (obj7
        (dft
           "peer_validator"
           peer_validator_limits_encoding
@@ -306,4 +322,6 @@ let limits_encoding =
           "chain_validator"
           chain_validator_limits_encoding
           default_chain_validator_limits)
-       (opt "history_mode" History_mode.encoding))
+       (opt "history_mode" History_mode.encoding)
+       (opt "disable_context_pruning" bool)
+       (opt "storage_maintenance_delay" Storage_maintenance.delay_encoding))

@@ -70,6 +70,8 @@ type t = {
   metrics_addr : string list;
   operation_metadata_size_limit :
     Shell_limits.operation_metadata_size_limit option;
+  disable_context_pruning : bool option;
+  storage_maintenance_delay : Storage_maintenance.delay option;
 }
 
 type error +=
@@ -190,7 +192,8 @@ let wrap data_dir config_file network connections max_download_speed
     external_rpc_listen_addrs rpc_tls cors_origins cors_headers log_output
     log_coloring history_mode synchronisation_threshold latency
     disable_config_validation allow_all_rpc media_type
-    max_active_rpc_connections metrics_addr operation_metadata_size_limit =
+    max_active_rpc_connections metrics_addr operation_metadata_size_limit
+    disable_context_pruning storage_maintenance_delay =
   let actual_data_dir =
     Option.value ~default:Config_file.default_data_dir data_dir
   in
@@ -201,6 +204,9 @@ let wrap data_dir config_file network connections max_download_speed
   in
   let rpc_tls =
     Option.map (fun (cert, key) -> {Config_file.cert; key}) rpc_tls
+  in
+  let disable_context_pruning =
+    if disable_context_pruning then Some true else None
   in
   {
     disable_config_validation;
@@ -239,6 +245,8 @@ let wrap data_dir config_file network connections max_download_speed
     max_active_rpc_connections;
     metrics_addr;
     operation_metadata_size_limit;
+    disable_context_pruning;
+    storage_maintenance_delay;
   }
 
 let process_command run =
@@ -747,6 +755,33 @@ module Term = struct
           Config_file.default_max_active_rpc_connections
       & info ~docs ~doc ~docv:"NUM" ["max-active-rpc-connections"])
 
+  let disable_context_pruning =
+    let doc = "Disables the storage maintenance of the context" in
+    Arg.(value & flag & info ~docs ~doc ["disable-context-pruning"])
+
+  let storage_maintenance_delay =
+    let open Storage_maintenance in
+    let doc = "Configures the storage maintenance delays" in
+    let delay_converter =
+      let parse_storage_maintenance_delay_arg str =
+        match str with
+        | "disabled" -> `Ok Disabled
+        | "auto" -> `Ok Auto
+        | _ -> (
+            match Int32.of_string_opt str with
+            | Some delay -> `Ok (Custom delay)
+            | None ->
+                `Error
+                  "delayed-storage-maintenance only supports \"disabled\" or \
+                   \"<int>\" mode")
+      in
+      (parse_storage_maintenance_delay_arg, pp_delay)
+    in
+    Arg.(
+      value
+      & opt (some delay_converter) None
+      & info ~docs ~doc ["storage-maintenance-delay"])
+
   (* Args. *)
 
   let args =
@@ -761,6 +796,7 @@ module Term = struct
     $ log_output $ log_coloring $ history_mode $ synchronisation_threshold
     $ latency $ disable_config_validation $ allow_all_rpc $ media_type
     $ max_active_rpc_connections $ metrics_addr $ operation_metadata_size_limit
+    $ disable_context_pruning $ storage_maintenance_delay
 end
 
 let read_config_file args =
@@ -908,6 +944,8 @@ let patch_config ?(may_override_network = false) ?(emit = Event.emit)
     max_active_rpc_connections;
     metrics_addr;
     operation_metadata_size_limit;
+    disable_context_pruning;
+    storage_maintenance_delay;
   } =
     args
   in
@@ -1065,6 +1103,8 @@ let patch_config ?(may_override_network = false) ?(emit = Event.emit)
     ?synchronisation_threshold
     ?history_mode
     ?latency
+    ?disable_context_pruning
+    ?storage_maintenance_delay
     cfg
 
 let read_and_patch_config_file ?may_override_network ?emit

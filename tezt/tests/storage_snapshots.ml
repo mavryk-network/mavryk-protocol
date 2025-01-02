@@ -30,7 +30,12 @@
    Subject: Tests both the snapshot mechanism and the store's behaviour
 *)
 
-let node_arguments = Node.[Synchronisation_threshold 0]
+let team = Tag.layer1
+
+let node_arguments =
+  (* Disable the storage maintenance delay to have a deterministic
+     behavior. *)
+  Node.[Synchronisation_threshold 0; Storage_maintenance_delay "disabled"]
 
 let pp_snapshot_export_format fmt v =
   Format.fprintf fmt "%s" (match v with Node.Tar -> "tar" | Raw -> "raw")
@@ -539,7 +544,7 @@ let test_info_command =
   (* This is expected to be updated as soon as a new snapshot version
      is released (referring to the Snapshot.Version.current_version
      from `lib_store/unix/snapshots`)*)
-  let expected_version = 7 in
+  let expected_version = 8 in
   Log.info "Checks the human formatted output" ;
   (* Get the info line, which is the second line. *)
   let* () =
