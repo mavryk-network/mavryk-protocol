@@ -1721,7 +1721,7 @@ module Protocol_treasury = struct
         let encoding = Contract_repr.originated_encoding
       end)
   
-  let address = Contract_hash.of_b58check_exn "KT1Auv1UzmqeXXDmF8fdceFKE45HgFbZVLBc"
+  let address = Contract_hash.of_b58check_exn "KT1UdjNQFesU6hW7PXKYs2EAQ51H2vwQgp73"
   let burn_address = Signature.Public_key_hash.of_b58check_exn "mv2burnburnburnburnburnburnbur7hzNeg"
 end
 
