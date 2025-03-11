@@ -20,7 +20,7 @@ def get_keys(mnemonic, email, password):
     seed = bitcoin.mnemonic_to_seed(mnemonic, salt)
     pk, sk = pysodium.crypto_sign_seed_keypair(seed[0:32])
     pkh = blake2b(pk,20).digest()
-    pkhb58 = bitcoin.bin_to_b58check(pkh, magicbyte=434591)
+    pkhb58 = bitcoin.bin_to_b58check(pkh, magicbyte=375492)
     return (sk, pk, pkh, pkhb58)
 
 def random_email():
@@ -65,7 +65,7 @@ def genesis_commitments(wallets, blind):
         # The redemption code is used to blind the pkh
         blinded_pkh = blake2b(pkh, 20, key=secret).digest()
         commitment = {
-            'blinded_pkh': bitcoin.bin_to_b58check(blinded_pkh, magicbyte=16921055),
+            'blinded_pkh': bitcoin.bin_to_b58check(blinded_pkh, magicbyte=16861956),
             'amount': amount
         }
         commitments.append(commitment)
@@ -76,7 +76,7 @@ def make_dummy_wallets(n, blind):
     # Not a realistic shape, but for an alphanet faucet it's better to
     # have less variance.
     amounts = np.random.pareto(10.0, n)
-    amounts = amounts / sum(amounts) * 700e6
+    amounts = amounts / sum(amounts) * 499e6
     wallets = {}
     secrets = {}
     for i in range(0, n):
@@ -97,7 +97,7 @@ if __name__ == '__main__':
         exit(1)
     blind = sys.argv[2]
     if len(sys.argv) == 4 and sys.argv[3] == "dummy":
-        wallets, secrets = make_dummy_wallets(30000, blind)
+        wallets, secrets = make_dummy_wallets(1, blind)
         with open('secret_seeds.json', 'w') as f:
             json.dump([ { "pkh" : pkh,
                           "mnemonic" : mnemonic,
