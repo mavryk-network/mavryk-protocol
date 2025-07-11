@@ -926,7 +926,7 @@ let generic_commands group =
                         pp_open_hovbox ppf 0 ;
                         pp_print_text
                           ppf
-                          "To use keys at BIP32 path m/44'/1729'/0'/0' \
+                          "To use keys at BIP32 path m/44'/1969'/0'/0' \
                            (default Mavryk key path), use one of:" ;
                         pp_close_box ppf () ;
                         pp_print_cut ppf () ;
