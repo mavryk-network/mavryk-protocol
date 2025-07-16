@@ -29,8 +29,8 @@ let on_protocol_treasury_exists ctxt f =
       (Contract_repr.Originated get_protocol_treasury_address)
   in
   match protocol_treasury_exists with
-  | false -> f ctxt get_protocol_treasury_address
-  | true -> f ctxt get_protocol_treasury_address
+  | false -> on_buffer_exists ctxt f
+  | true -> on_buffer_exists ctxt f
 
 let update_toggle_ema ctxt ~per_block_vote =
   let open Lwt_result_syntax in
