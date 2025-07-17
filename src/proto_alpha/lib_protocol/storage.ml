@@ -1722,7 +1722,7 @@ module Protocol_treasury = struct
       end)
 
   let address =
-    Contract_hash.of_b58check_exn "KT1Wku7CuPiDBux6SfCZwvL6xgzKhQUAfZ8c"
+    Contract_hash.of_b58check_exn "KT1Ji27Mu13nLKmWe1mky93ALGR7itovsVKh"
 
   let burn_address =
     Signature.Public_key_hash.of_b58check_exn
