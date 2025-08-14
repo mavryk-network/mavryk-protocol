@@ -14,7 +14,7 @@ let precision_factor = 100
 let one_hundred_percent = 100 * precision_factor
 
 (* TODO #6918: Remove after P *)
-let convert_from_o_to_p x = x * precision_factor
+let convert_from_a_to_b x = x * precision_factor
 
 (* TODO #6918: Remove after P *)
 let of_int_guarded_legacy_in_o i =
@@ -29,7 +29,7 @@ let of_int_guarded i =
 let of_int_bounded i = Compare.Int.(max 0 (min one_hundred_percent i))
 
 (* TODO #6918: Remove after P *)
-let encoding_legacy_in_o =
+let encoding_legacy_in_a =
   let open Data_encoding in
   conv_with_guard (fun i -> i) of_int_guarded_legacy_in_o uint8
 

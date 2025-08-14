@@ -145,17 +145,20 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
             ~delegate
             baking_reward
         in
+        let accumulated_updates = 
+          balance_updates_protocol_treasury @ balance_updates_delegate @ balance_updates_baking_rewards
+        in
         match Tez_repr.(quarter_fees *? 2L) with
-          | Error _ -> return (ctxt, [])
+          | Error _ -> return (ctxt, accumulated_updates)
           | Ok two_quarters ->
               match Tez_repr.(block_fees -? two_quarters) with
-              | Error _ -> return (ctxt, [])
+              | Error _ -> return (ctxt, accumulated_updates)
               | Ok remainder_for_burning ->
                   let burn_destination = Contract_repr.Implicit (Storage.Protocol_treasury.burn_address) in
                   let* ctxt, balance_updates_burn =
                     Token.transfer ctxt `Block_fees (`Contract burn_destination) remainder_for_burning
                   in
-                  return (ctxt, balance_updates_protocol_treasury @ balance_updates_delegate @ balance_updates_baking_rewards @ balance_updates_burn)
+                  return (ctxt, accumulated_updates @ balance_updates_burn)
     )
   in
   let pay_block_producer ctxt delegate bonus =

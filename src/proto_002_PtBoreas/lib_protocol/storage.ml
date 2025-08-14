@@ -197,7 +197,7 @@ module Slashed_deposits_history__Atlas = struct
     list
       (obj2
          (req "cycle" Cycle_repr.encoding)
-         (req "slashed_percentage" Percentage.encoding_legacy_in_o))
+         (req "slashed_percentage" Percentage.encoding_legacy_in_a))
 end
 
 module Unstake_request = struct
