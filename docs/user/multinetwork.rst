@@ -117,7 +117,6 @@ Here is an example configuration file for Mainnet::
         "protocol": "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
       },
       "chain_name": "MAVRYK_MAINNET",
-      "old_chain_name": "MAVRYK_BETANET_2018-06-30T16:07:32Z",
       "incompatible_chain_name": "INCOMPATIBLE",
       "sandboxed_chain_name": "SANDBOXED_MAVRYK_MAINNET",
       "user_activated_upgrades": [

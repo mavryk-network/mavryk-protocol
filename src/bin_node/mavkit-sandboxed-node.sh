@@ -34,7 +34,7 @@ start_sandboxed_node() {
     cat > "$sandbox_file" << EOF
 {
     "genesis_pubkey":
-      "edpkuSLWfVU1Vq7Jg9FucPyKmma6otcMHac9zG4oU1KMHSTBpJuGQ2"
+      "edpkv4NbnxPuHtCwszff3vB7vtwYXmPUsaaM1DBcxuJhvTfGUFsej4"
 }
 EOF
   fi

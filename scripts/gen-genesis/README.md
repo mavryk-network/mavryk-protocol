@@ -19,5 +19,5 @@ gen_genesis.exe <network_name> <genesis_protocol_hash> [bootstrap_peer..]
 
 Example:
 ```
-gen_genesis.exe dalphanet Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P "paris.bootzero.tzalpha.net:19732"
+gen_genesis.exe atlasnet Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P "atlasnet.rpc.mavryk.network:9732"
 ```

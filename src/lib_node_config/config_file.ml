@@ -91,9 +91,9 @@ let make_blockchain_network ~alias ~chain_name ?old_chain_name
 (* BEGIN_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
 let mainnet_user_activated_upgrades =
   [
-    (28082l, "PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt");
+    (* (28082l, "PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt");
     (204761l, "PsddFKi32cMJ2qPjf43Qv5GDWLDPZb3T3bF6fLKiF5HtvHNU7aP");
-    (5898241l, "PtBzwViMCC1gfm98y5TDKqz2e3vjBXPAUoWu7jfEcN6yj2ZhCyT");
+    (5898241l, "PtBzwViMCC1gfm98y5TDKqz2e3vjBXPAUoWu7jfEcN6yj2ZhCyT"); *)
   ]
 
 (* END_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
@@ -107,38 +107,37 @@ let blockchain_network_mainnet =
   make_blockchain_network
     ~alias:"mainnet"
     {
-      time = Time.Protocol.of_notation_exn "2018-06-30T16:07:32Z";
+      time = Time.Protocol.of_notation_exn "2025-08-14T11:18:23Z";
       block =
         Block_hash.of_b58check_exn
-          "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2";
+          "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F";
       protocol =
         Protocol_hash.of_b58check_exn
           "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
     }
     ~chain_name:"MAVRYK_MAINNET"
-    ~old_chain_name:"MAVRYK_BETANET_2018-06-30T16:07:32Z"
     ~incompatible_chain_name:"INCOMPATIBLE"
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK_MAINNET"
     ~user_activated_upgrades:mainnet_user_activated_upgrades
     ~user_activated_protocol_overrides:[]
     ~default_bootstrap_peers:
-      ["boot.tzinit.org"; "boot.tzboot.net"; "boot.tzbeta.net"]
+      ["mainnet.boot.mavryk.network"]
     ~dal_config:
       {
         activated = true;
         use_mock_srs_for_testing = false;
         bootstrap_peers =
-          ["dalboot.mainnet.tzinit.org"; "dalboot.mainnet.tzboot.net"];
+          ["mainnet.dalboot.mavryk.network"];
       }
 
 let blockchain_network_basenet =
   make_blockchain_network
     ~alias:"basenet"
     {
-      time = Time.Protocol.of_notation_exn "2022-01-25T15:00:00Z";
+      time = Time.Protocol.of_notation_exn "2025-08-14T11:46:32Z";
       block =
         Block_hash.of_b58check_exn
-          "BLockGenesisGenesisGenesisGenesisGenesis1db77eJNeJ9";
+          "BLockGenesisGenesisGenesisGenesisGenesis8a5a3c7Wpaw";
       protocol =
         Protocol_hash.of_b58check_exn
           "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
@@ -150,52 +149,45 @@ let blockchain_network_basenet =
           `O
             [
               ( "genesis_pubkey",
-                `String "edpkuYLienS3Xdt5c1vfRX1ibMxQuvfM67ByhJ9nmRYYKGAAoTq1UC"
+                `String "edpkuAzuZTVS6YsT78GApB2mRfQ54ExzPjUbommup4VEBq5VdHSf8F"
               );
             ];
       }
-    ~chain_name:"MAVRYK_ITHACANET_2022-01-25T15:00:00Z"
+    ~chain_name:"MAVRYK_BASENET_2025-08-14T11:46:32Z"
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
-    ~user_activated_upgrades:
-      [(6729729l, "PtBzwViMCC1gfm98y5TDKqz2e3vjBXPAUoWu7jfEcN6yj2ZhCyT")]
+    ~user_activated_upgrades:[]
     ~default_bootstrap_peers:
-      [
-        "basenet.teztnets.com";
-        "basenet.tzinit.org";
-        "basenet.tzboot.net";
-        "basenet.boot.ecadinfra.com";
-        "basenet.stakenow.de:9733";
-      ]
+      ["basenet.boot.mavryk.network:9732"]
     ~dal_config:
       {
         activated = true;
         use_mock_srs_for_testing = false;
         bootstrap_peers =
-          ["dalboot.basenet.tzinit.org"; "dalboot.basenet.tzboot.net"];
+          ["basenet.dalboot.mavryk.network"];
       }
 
 let blockchain_network_sandbox =
   make_blockchain_network
     ~alias:"sandbox"
     {
-      time = Time.Protocol.of_notation_exn "2018-06-30T16:07:32Z";
+      time = Time.Protocol.of_notation_exn "2025-08-14T11:18:23Z";
       block =
         Block_hash.of_b58check_exn
-          "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2";
+          "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F";
       protocol =
         Protocol_hash.of_b58check_exn
-          "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im";
+          "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
     }
     ~genesis_parameters:
       (* Genesis public key corresponds to the following private key:
-         unencrypted:edsk31vznjHSSpGExDMHYASz45VZqXN4DPxvsa4hAyY8dHM28cZzp6 *)
+         unencrypted:edsk4YZKqjTvHuAHmYZfMCHwWcL4zMt9X87tbzwYLb1LBba7hK1tom *)
       {
         context_key = "sandbox_parameter";
         values =
           `O
             [
               ( "genesis_pubkey",
-                `String "edpkuSLWfVU1Vq7Jg9FucPyKmma6otcMHac9zG4oU1KMHSTBpJuGQ2"
+                `String "edpkv4NbnxPuHtCwszff3vB7vtwYXmPUsaaM1DBcxuJhvTfGUFsej4"
               );
             ];
       }

@@ -119,7 +119,7 @@ let check_network ~timeout ctxt =
       let has_prefix prefix =
         String.has_prefix ~prefix (network_version.chain_name :> string)
       in
-      if List.exists has_prefix ["MAVRYK_BETANET"; "MAVRYK_MAINNET"] then (
+      if List.exists has_prefix ["MAVRYK_MAINNET"] then (
         mainnet_disclaimer () ;
         Lwt.return_some `Mainnet)
       else (
