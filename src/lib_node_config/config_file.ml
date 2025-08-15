@@ -90,11 +90,9 @@ let make_blockchain_network ~alias ~chain_name ?old_chain_name
    when it needs to set the user activated upgrade levels for Mainnet. *)
 (* BEGIN_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
 let mainnet_user_activated_upgrades =
-  [
-    (* (28082l, "PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt");
-    (204761l, "PsddFKi32cMJ2qPjf43Qv5GDWLDPZb3T3bF6fLKiF5HtvHNU7aP");
-    (5898241l, "Psvo5ai2ecNdkgoter1dQci4xt77p4yP4YZ8M5UuFCVPEW8VwBC"); *)
-  ]
+  [ (* (28082l, "PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt");
+       (204761l, "PsddFKi32cMJ2qPjf43Qv5GDWLDPZb3T3bF6fLKiF5HtvHNU7aP");
+       (5898241l, "Psvo5ai2ecNdkgoter1dQci4xt77p4yP4YZ8M5UuFCVPEW8VwBC"); *) ]
 
 (* END_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
 (* it patches the following lines when it needs to set the user activated
@@ -120,14 +118,12 @@ let blockchain_network_mainnet =
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK_MAINNET"
     ~user_activated_upgrades:mainnet_user_activated_upgrades
     ~user_activated_protocol_overrides:[]
-    ~default_bootstrap_peers:
-      ["mainnet.boot.mavryk.network"]
+    ~default_bootstrap_peers:["mainnet.boot.mavryk.network"]
     ~dal_config:
       {
         activated = true;
         use_mock_srs_for_testing = false;
-        bootstrap_peers =
-          ["mainnet.dalboot.mavryk.network"];
+        bootstrap_peers = ["mainnet.dalboot.mavryk.network"];
       }
 
 let blockchain_network_basenet =
@@ -156,14 +152,12 @@ let blockchain_network_basenet =
     ~chain_name:"MAVRYK_BASENET_2025-08-14T11:46:32Z"
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK"
     ~user_activated_upgrades:[]
-    ~default_bootstrap_peers:
-      ["basenet.boot.mavryk.network:9732"]
+    ~default_bootstrap_peers:["basenet.boot.mavryk.network:9732"]
     ~dal_config:
       {
         activated = true;
         use_mock_srs_for_testing = false;
-        bootstrap_peers =
-          ["basenet.dalboot.mavryk.network"];
+        bootstrap_peers = ["basenet.dalboot.mavryk.network"];
       }
 
 let blockchain_network_sandbox =

@@ -124,14 +124,12 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
   let*! protocol_treasury_contract_exists =
     Contract_storage.exists ctxt protocol_treasury_contract
   in
-  let*! buffer_contract_exists =
-    Contract_storage.exists ctxt buffer_contract
-  in
+  let*! buffer_contract_exists = Contract_storage.exists ctxt buffer_contract in
   let protocol_treasury_contract =
     match protocol_treasury_contract_exists with
-    | false -> 
-        (match buffer_contract_exists with
-        | false -> 
+    | false -> (
+        match buffer_contract_exists with
+        | false ->
             (* If neither contract exists, use the burn address as a fallback *)
             Contract_repr.Implicit Storage.Protocol_treasury.burn_address
         | true -> buffer_contract)
@@ -142,25 +140,40 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
     let* ctxt, block_fees = Token.balance ctxt `Block_fees in
     match Tez_repr.(block_fees /? 4L) with
     | Error _ -> return (ctxt, [])
-    | Ok quarter_fees -> 
+    | Ok quarter_fees -> (
         match Tez_repr.(quarter_fees *? 2L) with
         | Error _ -> return (ctxt, [])
-        | Ok two_quarters ->
+        | Ok two_quarters -> (
             match Tez_repr.(block_fees -? two_quarters) with
             | Error _ -> return (ctxt, [])
             | Ok remainder_for_burning ->
-                let burn_destination = Contract_repr.Implicit (Storage.Protocol_treasury.burn_address) in
+                let burn_destination =
+                  Contract_repr.Implicit Storage.Protocol_treasury.burn_address
+                in
                 let* ctxt, balance_updates_protocol_treasury =
-                  Token.transfer ctxt `Block_fees (`Contract protocol_treasury_contract) quarter_fees
+                  Token.transfer
+                    ctxt
+                    `Block_fees
+                    (`Contract protocol_treasury_contract)
+                    quarter_fees
                 in
                 let* ctxt, balance_updates_delegate =
-                  Token.transfer ctxt `Block_fees (`Contract contract) quarter_fees
+                  Token.transfer
+                    ctxt
+                    `Block_fees
+                    (`Contract contract)
+                    quarter_fees
                 in
                 let* ctxt, balance_updates_burn =
-                  Token.transfer ctxt `Block_fees (`Contract burn_destination) remainder_for_burning
+                  Token.transfer
+                    ctxt
+                    `Block_fees
+                    (`Contract burn_destination)
+                    remainder_for_burning
                 in
-                let all_fees_updates = 
-                  balance_updates_protocol_treasury @ balance_updates_delegate @ balance_updates_burn
+                let all_fees_updates =
+                  balance_updates_protocol_treasury @ balance_updates_delegate
+                  @ balance_updates_burn
                 in
                 let* ctxt, balance_updates_baking_rewards =
                   Shared_stake.pay_rewards
@@ -170,6 +183,7 @@ let record_baking_activity_and_pay_rewards_and_fees ctxt ~payload_producer
                     baking_reward
                 in
                 return (ctxt, all_fees_updates @ balance_updates_baking_rewards)
+            ))
   in
   let pay_block_producer ctxt delegate bonus =
     Shared_stake.pay_rewards ctxt ~source:`Baking_bonuses ~delegate bonus
