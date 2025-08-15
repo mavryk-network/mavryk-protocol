@@ -93,7 +93,7 @@ let mainnet_user_activated_upgrades =
   [
     (* (28082l, "PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt");
     (204761l, "PsddFKi32cMJ2qPjf43Qv5GDWLDPZb3T3bF6fLKiF5HtvHNU7aP");
-    (5898241l, "PtFXr3A14ViujYp6tRhbRMhfGEEVZny1MA5XpY67DAnESon1u7y"); *)
+    (5898241l, "Psvo5ai2ecNdkgoter1dQci4xt77p4yP4YZ8M5UuFCVPEW8VwBC"); *)
   ]
 
 (* END_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
