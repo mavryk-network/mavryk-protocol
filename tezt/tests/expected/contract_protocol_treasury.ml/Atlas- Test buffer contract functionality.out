@@ -1,0 +1,2276 @@
+
+./mavkit-client --mode mockup rpc get /chains/main/blocks/head/context/protocol_treasury/buffer_address
+"KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH"
+
+./mavkit-client --mode mockup get contract storage for KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+Pair "mv1S7tc6ktkym4X5TVaoE9MXTDPNKu3u7rHG"
+     "mv1T61BkX9NfyT7ncefeoPhgxVyrttgb2z8b"
+     "mv1HoMk44QjjAauiLbWkDfAbSPFzcP7rc182"
+     128
+     {}
+     {}
+     0
+
+./mavkit-client --mode mockup --wait none transfer 100 from bootstrap1 to KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH --burn-cap 10 --entrypoint default --arg Unit
+Node is bootstrapped.
+Estimated gas: 1539.279 units (will add 100 for safety)
+Estimated storage: no bytes added
+Operation successfully injected in the node.
+Operation hash is 'ooc65jB2oWBFmXcoppDcGbciVUnu8JspwVGqnHynShzVZtieGVM'
+NOT waiting for the operation to be included.
+Use command
+  mavkit-client wait for ooc65jB2oWBFmXcoppDcGbciVUnu8JspwVGqnHynShzVZtieGVM to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisCCCCCeZiLHU
+and/or an external block explorer to make sure that it has been included.
+This sequence of operations was run:
+  Manager signed operations:
+    From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+    Fee to the validator: ṁ0.000103
+    Fee to the protocol treasury: ṁ0.000103
+    Fee to the burn address: ṁ0.000209
+    Expected counter: 1
+    Gas limit: 1640
+    Storage limit: 0 bytes
+    Balance updates:
+      mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ṁ0.000415
+      total block fees ....................... +ṁ0.000415
+    Transaction:
+      Amount: ṁ100
+      From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+      To: KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+      This transaction was successfully applied
+      Updated storage:
+        { 0x0000c6a7a24689c09b282704db2a530b2df0626af4f2 ;
+          0x0000d1446bad7cdb0599630c9bdf14a3c8b8ddec56d4 ;
+          0x00006b6560955d452b127c3de5eedf592c1e880d4c12 ;
+          128 ;
+          {} ;
+          {} ;
+          0 }
+      Storage size: 1293 bytes
+      Consumed gas: 377.098
+      Balance updates:
+        mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ṁ100
+        KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH ... +ṁ100
+
+
+./mavkit-client --mode mockup call KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH from bootstrap1 --entrypoint proposeTransfer --arg '"mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn"' --burn-cap 10
+Node is bootstrapped.
+This simulation failed:
+  Manager signed operations:
+    From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+    Fee to the validator: ṁ0
+    Fee to the protocol treasury: ṁ0
+    Fee to the burn address: ṁ0
+    Expected counter: 2
+    Gas limit: 1040000
+    Storage limit: 60000 bytes
+    Transaction:
+      Amount: ṁ0
+      From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+      To: KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+      Entrypoint: proposeTransfer
+      Parameter: "mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn"
+      This operation FAILED.
+
+Runtime error in contract KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH:
+  001: { parameter
+  002:     (or (or (unit %default) (nat %executeProposal))
+  003:         (or (address %proposeTransfer) (nat %voteProposal))) ;
+  004:   storage
+  005:     (pair address
+  006:           address
+  007:           address
+  008:           nat
+  009:           (map nat (pair address nat))
+  010:           (map nat (set address))
+  011:           nat) ;
+  012:   code { LAMBDA
+  013:            (pair address
+  014:                  address
+  015:                  address
+  016:                  address
+  017:                  nat
+  018:                  (map nat (pair address nat))
+  019:                  (map nat (set address))
+  020:                  nat)
+  021:            bool
+  022:            { UNPAIR ;
+  023:              DUP 2 ;
+  024:              GET 5 ;
+  025:              DUP 2 ;
+  026:              COMPARE ;
+  027:              EQ ;
+  028:              DUP 3 ;
+  029:              GET 3 ;
+  030:              DUP 3 ;
+  031:              COMPARE ;
+  032:              EQ ;
+  033:              DIG 3 ;
+  034:              CAR ;
+  035:              DIG 3 ;
+  036:              COMPARE ;
+  037:              EQ ;
+  038:              OR ;
+  039:              OR } ;
+  040:          SWAP ;
+  041:          UNPAIR ;
+  042:          IF_LEFT
+  043:            { IF_LEFT
+  044:                { DIG 2 ; DROP 2 ; NIL operation ; PAIR }
+  045:                { DUP 2 ;
+  046:                  SENDER ;
+  047:                  PAIR ;
+  048:                  DIG 3 ;
+  049:                  SWAP ;
+  050:                  EXEC ;
+  051:                  NOT ;
+  052:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  053:                  DUP 2 ;
+  054:                  GET 9 ;
+  055:                  DUP 2 ;
+  056:                  GET ;
+  057:                  IF_NONE
+  058:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  059:                    { UNPAIR ;
+  060:                      LEVEL ;
+  061:                      DUP 5 ;
+  062:                      GET 7 ;
+  063:                      DIG 3 ;
+  064:                      ADD ;
+  065:                      SWAP ;
+  066:                      COMPARE ;
+  067:                      LT ;
+  068:                      IF { PUSH string "TimelockNotExpired" ; FAILWITH } {} ;
+  069:                      PUSH nat 2 ;
+  070:                      DUP 4 ;
+  071:                      GET 11 ;
+  072:                      DUP 4 ;
+  073:                      GET ;
+  074:                      IF_NONE { EMPTY_SET address } {} ;
+  075:                      SIZE ;
+  076:                      COMPARE ;
+  077:                      LT ;
+  078:                      IF { PUSH string "InsufficientVotes" ; FAILWITH } {} ;
+  079:                      BALANCE ;
+  080:                      SWAP ;
+  081:                      CONTRACT unit ;
+  082:                      IF_NONE { PUSH string "ContractsDoesNotExist" ; FAILWITH } {} ;
+  083:                      SWAP ;
+  084:                      UNIT ;
+  085:                      TRANSFER_TOKENS ;
+  086:                      DUP 3 ;
+  087:                      DUP 4 ;
+  088:                      GET 9 ;
+  089:                      DUP 4 ;
+  090:                      NONE (pair address nat) ;
+  091:                      SWAP ;
+  092:                      UPDATE ;
+  093:                      UPDATE 9 ;
+  094:                      DIG 3 ;
+  095:                      GET 11 ;
+  096:                      DIG 3 ;
+  097:                      NONE (set address) ;
+  098:                      SWAP ;
+  099:                      UPDATE ;
+  100:                      UPDATE 11 ;
+  101:                      NIL operation ;
+  102:                      DIG 2 ;
+  103:                      CONS ;
+  104:                      PAIR } } }
+  105:            { IF_LEFT
+  106:                { DUP 2 ;
+  107:                  SENDER ;
+  108:                  PAIR ;
+  109:                  DIG 3 ;
+  110:                  SWAP ;
+  111:                  EXEC ;
+  112:                  NOT ;
+  113:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  114:                  LEVEL ;
+  115:                  SWAP ;
+  116:                  PAIR ;
+  117:                  DUP 2 ;
+  118:                  GET 12 ;
+  119:                  PUSH nat 1 ;
+  120:                  DUP 2 ;
+  121:                  ADD ;
+  122:                  DUP 4 ;
+  123:                  DIG 4 ;
+  124:                  GET 9 ;
+  125:                  DIG 4 ;
+  126:                  DIG 4 ;
+  127:                  SWAP ;
+  128:                  SOME ;
+  129:                  SWAP ;
+  130:                  UPDATE ;
+  131:                  UPDATE 9 ;
+  132:                  SWAP ;
+  133:                  UPDATE 12 ;
+  134:                  NIL operation ;
+  135:                  PAIR }
+  136:                { DUP 2 ;
+  137:                  SENDER ;
+  138:                  PAIR ;
+  139:                  DIG 3 ;
+  140:                  SWAP ;
+  141:                  EXEC ;
+  142:                  NOT ;
+  143:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  144:                  DUP 2 ;
+  145:                  GET 9 ;
+  146:                  DUP 2 ;
+  147:                  GET ;
+  148:                  IF_NONE
+  149:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  150:                    { DROP ;
+  151:                      SENDER ;
+  152:                      DUP 3 ;
+  153:                      GET 11 ;
+  154:                      DUP 3 ;
+  155:                      GET ;
+  156:                      IF_NONE { EMPTY_SET address } {} ;
+  157:                      DUP ;
+  158:                      DUP 3 ;
+  159:                      MEM ;
+  160:                      IF { PUSH string "AlreadyVoted" ; FAILWITH } {} ;
+  161:                      DUP 4 ;
+  162:                      DIG 4 ;
+  163:                      GET 11 ;
+  164:                      DIG 2 ;
+  165:                      DIG 3 ;
+  166:                      PUSH bool True ;
+  167:                      SWAP ;
+  168:                      UPDATE ;
+  169:                      DIG 3 ;
+  170:                      SWAP ;
+  171:                      SOME ;
+  172:                      SWAP ;
+  173:                      UPDATE ;
+  174:                      UPDATE 11 ;
+  175:                      NIL operation ;
+  176:                      PAIR } } } } }
+At line 113 characters 49 to 57,
+script reached FAILWITH instruction
+with "OnlySigner"
+Fatal error:
+  transfer simulation failed
+
+./mavkit-client --mode mockup call KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH from bootstrap2 --entrypoint voteProposal --arg 0 --burn-cap 10
+Node is bootstrapped.
+This simulation failed:
+  Manager signed operations:
+    From: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7
+    Fee to the validator: ṁ0
+    Fee to the protocol treasury: ṁ0
+    Fee to the burn address: ṁ0
+    Expected counter: 1
+    Gas limit: 1040000
+    Storage limit: 60000 bytes
+    Transaction:
+      Amount: ṁ0
+      From: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7
+      To: KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+      Entrypoint: voteProposal
+      Parameter: 0
+      This operation FAILED.
+
+Runtime error in contract KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH:
+  001: { parameter
+  002:     (or (or (unit %default) (nat %executeProposal))
+  003:         (or (address %proposeTransfer) (nat %voteProposal))) ;
+  004:   storage
+  005:     (pair address
+  006:           address
+  007:           address
+  008:           nat
+  009:           (map nat (pair address nat))
+  010:           (map nat (set address))
+  011:           nat) ;
+  012:   code { LAMBDA
+  013:            (pair address
+  014:                  address
+  015:                  address
+  016:                  address
+  017:                  nat
+  018:                  (map nat (pair address nat))
+  019:                  (map nat (set address))
+  020:                  nat)
+  021:            bool
+  022:            { UNPAIR ;
+  023:              DUP 2 ;
+  024:              GET 5 ;
+  025:              DUP 2 ;
+  026:              COMPARE ;
+  027:              EQ ;
+  028:              DUP 3 ;
+  029:              GET 3 ;
+  030:              DUP 3 ;
+  031:              COMPARE ;
+  032:              EQ ;
+  033:              DIG 3 ;
+  034:              CAR ;
+  035:              DIG 3 ;
+  036:              COMPARE ;
+  037:              EQ ;
+  038:              OR ;
+  039:              OR } ;
+  040:          SWAP ;
+  041:          UNPAIR ;
+  042:          IF_LEFT
+  043:            { IF_LEFT
+  044:                { DIG 2 ; DROP 2 ; NIL operation ; PAIR }
+  045:                { DUP 2 ;
+  046:                  SENDER ;
+  047:                  PAIR ;
+  048:                  DIG 3 ;
+  049:                  SWAP ;
+  050:                  EXEC ;
+  051:                  NOT ;
+  052:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  053:                  DUP 2 ;
+  054:                  GET 9 ;
+  055:                  DUP 2 ;
+  056:                  GET ;
+  057:                  IF_NONE
+  058:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  059:                    { UNPAIR ;
+  060:                      LEVEL ;
+  061:                      DUP 5 ;
+  062:                      GET 7 ;
+  063:                      DIG 3 ;
+  064:                      ADD ;
+  065:                      SWAP ;
+  066:                      COMPARE ;
+  067:                      LT ;
+  068:                      IF { PUSH string "TimelockNotExpired" ; FAILWITH } {} ;
+  069:                      PUSH nat 2 ;
+  070:                      DUP 4 ;
+  071:                      GET 11 ;
+  072:                      DUP 4 ;
+  073:                      GET ;
+  074:                      IF_NONE { EMPTY_SET address } {} ;
+  075:                      SIZE ;
+  076:                      COMPARE ;
+  077:                      LT ;
+  078:                      IF { PUSH string "InsufficientVotes" ; FAILWITH } {} ;
+  079:                      BALANCE ;
+  080:                      SWAP ;
+  081:                      CONTRACT unit ;
+  082:                      IF_NONE { PUSH string "ContractsDoesNotExist" ; FAILWITH } {} ;
+  083:                      SWAP ;
+  084:                      UNIT ;
+  085:                      TRANSFER_TOKENS ;
+  086:                      DUP 3 ;
+  087:                      DUP 4 ;
+  088:                      GET 9 ;
+  089:                      DUP 4 ;
+  090:                      NONE (pair address nat) ;
+  091:                      SWAP ;
+  092:                      UPDATE ;
+  093:                      UPDATE 9 ;
+  094:                      DIG 3 ;
+  095:                      GET 11 ;
+  096:                      DIG 3 ;
+  097:                      NONE (set address) ;
+  098:                      SWAP ;
+  099:                      UPDATE ;
+  100:                      UPDATE 11 ;
+  101:                      NIL operation ;
+  102:                      DIG 2 ;
+  103:                      CONS ;
+  104:                      PAIR } } }
+  105:            { IF_LEFT
+  106:                { DUP 2 ;
+  107:                  SENDER ;
+  108:                  PAIR ;
+  109:                  DIG 3 ;
+  110:                  SWAP ;
+  111:                  EXEC ;
+  112:                  NOT ;
+  113:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  114:                  LEVEL ;
+  115:                  SWAP ;
+  116:                  PAIR ;
+  117:                  DUP 2 ;
+  118:                  GET 12 ;
+  119:                  PUSH nat 1 ;
+  120:                  DUP 2 ;
+  121:                  ADD ;
+  122:                  DUP 4 ;
+  123:                  DIG 4 ;
+  124:                  GET 9 ;
+  125:                  DIG 4 ;
+  126:                  DIG 4 ;
+  127:                  SWAP ;
+  128:                  SOME ;
+  129:                  SWAP ;
+  130:                  UPDATE ;
+  131:                  UPDATE 9 ;
+  132:                  SWAP ;
+  133:                  UPDATE 12 ;
+  134:                  NIL operation ;
+  135:                  PAIR }
+  136:                { DUP 2 ;
+  137:                  SENDER ;
+  138:                  PAIR ;
+  139:                  DIG 3 ;
+  140:                  SWAP ;
+  141:                  EXEC ;
+  142:                  NOT ;
+  143:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  144:                  DUP 2 ;
+  145:                  GET 9 ;
+  146:                  DUP 2 ;
+  147:                  GET ;
+  148:                  IF_NONE
+  149:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  150:                    { DROP ;
+  151:                      SENDER ;
+  152:                      DUP 3 ;
+  153:                      GET 11 ;
+  154:                      DUP 3 ;
+  155:                      GET ;
+  156:                      IF_NONE { EMPTY_SET address } {} ;
+  157:                      DUP ;
+  158:                      DUP 3 ;
+  159:                      MEM ;
+  160:                      IF { PUSH string "AlreadyVoted" ; FAILWITH } {} ;
+  161:                      DUP 4 ;
+  162:                      DIG 4 ;
+  163:                      GET 11 ;
+  164:                      DIG 2 ;
+  165:                      DIG 3 ;
+  166:                      PUSH bool True ;
+  167:                      SWAP ;
+  168:                      UPDATE ;
+  169:                      DIG 3 ;
+  170:                      SWAP ;
+  171:                      SOME ;
+  172:                      SWAP ;
+  173:                      UPDATE ;
+  174:                      UPDATE 11 ;
+  175:                      NIL operation ;
+  176:                      PAIR } } } } }
+At line 143 characters 49 to 57,
+script reached FAILWITH instruction
+with "OnlySigner"
+Fatal error:
+  transfer simulation failed
+
+./mavkit-client --mode mockup call KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH from bootstrap1 --entrypoint executeProposal --arg 0 --burn-cap 10
+Node is bootstrapped.
+This simulation failed:
+  Manager signed operations:
+    From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+    Fee to the validator: ṁ0
+    Fee to the protocol treasury: ṁ0
+    Fee to the burn address: ṁ0
+    Expected counter: 2
+    Gas limit: 1040000
+    Storage limit: 60000 bytes
+    Transaction:
+      Amount: ṁ0
+      From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+      To: KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+      Entrypoint: executeProposal
+      Parameter: 0
+      This operation FAILED.
+
+Runtime error in contract KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH:
+  001: { parameter
+  002:     (or (or (unit %default) (nat %executeProposal))
+  003:         (or (address %proposeTransfer) (nat %voteProposal))) ;
+  004:   storage
+  005:     (pair address
+  006:           address
+  007:           address
+  008:           nat
+  009:           (map nat (pair address nat))
+  010:           (map nat (set address))
+  011:           nat) ;
+  012:   code { LAMBDA
+  013:            (pair address
+  014:                  address
+  015:                  address
+  016:                  address
+  017:                  nat
+  018:                  (map nat (pair address nat))
+  019:                  (map nat (set address))
+  020:                  nat)
+  021:            bool
+  022:            { UNPAIR ;
+  023:              DUP 2 ;
+  024:              GET 5 ;
+  025:              DUP 2 ;
+  026:              COMPARE ;
+  027:              EQ ;
+  028:              DUP 3 ;
+  029:              GET 3 ;
+  030:              DUP 3 ;
+  031:              COMPARE ;
+  032:              EQ ;
+  033:              DIG 3 ;
+  034:              CAR ;
+  035:              DIG 3 ;
+  036:              COMPARE ;
+  037:              EQ ;
+  038:              OR ;
+  039:              OR } ;
+  040:          SWAP ;
+  041:          UNPAIR ;
+  042:          IF_LEFT
+  043:            { IF_LEFT
+  044:                { DIG 2 ; DROP 2 ; NIL operation ; PAIR }
+  045:                { DUP 2 ;
+  046:                  SENDER ;
+  047:                  PAIR ;
+  048:                  DIG 3 ;
+  049:                  SWAP ;
+  050:                  EXEC ;
+  051:                  NOT ;
+  052:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  053:                  DUP 2 ;
+  054:                  GET 9 ;
+  055:                  DUP 2 ;
+  056:                  GET ;
+  057:                  IF_NONE
+  058:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  059:                    { UNPAIR ;
+  060:                      LEVEL ;
+  061:                      DUP 5 ;
+  062:                      GET 7 ;
+  063:                      DIG 3 ;
+  064:                      ADD ;
+  065:                      SWAP ;
+  066:                      COMPARE ;
+  067:                      LT ;
+  068:                      IF { PUSH string "TimelockNotExpired" ; FAILWITH } {} ;
+  069:                      PUSH nat 2 ;
+  070:                      DUP 4 ;
+  071:                      GET 11 ;
+  072:                      DUP 4 ;
+  073:                      GET ;
+  074:                      IF_NONE { EMPTY_SET address } {} ;
+  075:                      SIZE ;
+  076:                      COMPARE ;
+  077:                      LT ;
+  078:                      IF { PUSH string "InsufficientVotes" ; FAILWITH } {} ;
+  079:                      BALANCE ;
+  080:                      SWAP ;
+  081:                      CONTRACT unit ;
+  082:                      IF_NONE { PUSH string "ContractsDoesNotExist" ; FAILWITH } {} ;
+  083:                      SWAP ;
+  084:                      UNIT ;
+  085:                      TRANSFER_TOKENS ;
+  086:                      DUP 3 ;
+  087:                      DUP 4 ;
+  088:                      GET 9 ;
+  089:                      DUP 4 ;
+  090:                      NONE (pair address nat) ;
+  091:                      SWAP ;
+  092:                      UPDATE ;
+  093:                      UPDATE 9 ;
+  094:                      DIG 3 ;
+  095:                      GET 11 ;
+  096:                      DIG 3 ;
+  097:                      NONE (set address) ;
+  098:                      SWAP ;
+  099:                      UPDATE ;
+  100:                      UPDATE 11 ;
+  101:                      NIL operation ;
+  102:                      DIG 2 ;
+  103:                      CONS ;
+  104:                      PAIR } } }
+  105:            { IF_LEFT
+  106:                { DUP 2 ;
+  107:                  SENDER ;
+  108:                  PAIR ;
+  109:                  DIG 3 ;
+  110:                  SWAP ;
+  111:                  EXEC ;
+  112:                  NOT ;
+  113:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  114:                  LEVEL ;
+  115:                  SWAP ;
+  116:                  PAIR ;
+  117:                  DUP 2 ;
+  118:                  GET 12 ;
+  119:                  PUSH nat 1 ;
+  120:                  DUP 2 ;
+  121:                  ADD ;
+  122:                  DUP 4 ;
+  123:                  DIG 4 ;
+  124:                  GET 9 ;
+  125:                  DIG 4 ;
+  126:                  DIG 4 ;
+  127:                  SWAP ;
+  128:                  SOME ;
+  129:                  SWAP ;
+  130:                  UPDATE ;
+  131:                  UPDATE 9 ;
+  132:                  SWAP ;
+  133:                  UPDATE 12 ;
+  134:                  NIL operation ;
+  135:                  PAIR }
+  136:                { DUP 2 ;
+  137:                  SENDER ;
+  138:                  PAIR ;
+  139:                  DIG 3 ;
+  140:                  SWAP ;
+  141:                  EXEC ;
+  142:                  NOT ;
+  143:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  144:                  DUP 2 ;
+  145:                  GET 9 ;
+  146:                  DUP 2 ;
+  147:                  GET ;
+  148:                  IF_NONE
+  149:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  150:                    { DROP ;
+  151:                      SENDER ;
+  152:                      DUP 3 ;
+  153:                      GET 11 ;
+  154:                      DUP 3 ;
+  155:                      GET ;
+  156:                      IF_NONE { EMPTY_SET address } {} ;
+  157:                      DUP ;
+  158:                      DUP 3 ;
+  159:                      MEM ;
+  160:                      IF { PUSH string "AlreadyVoted" ; FAILWITH } {} ;
+  161:                      DUP 4 ;
+  162:                      DIG 4 ;
+  163:                      GET 11 ;
+  164:                      DIG 2 ;
+  165:                      DIG 3 ;
+  166:                      PUSH bool True ;
+  167:                      SWAP ;
+  168:                      UPDATE ;
+  169:                      DIG 3 ;
+  170:                      SWAP ;
+  171:                      SOME ;
+  172:                      SWAP ;
+  173:                      UPDATE ;
+  174:                      UPDATE 11 ;
+  175:                      NIL operation ;
+  176:                      PAIR } } } } }
+At line 52 characters 49 to 57,
+script reached FAILWITH instruction
+with "OnlySigner"
+Fatal error:
+  transfer simulation failed
+
+./mavkit-client --mode mockup call KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH from bootstrap1 --entrypoint executeProposal --arg 1 --burn-cap 10
+Node is bootstrapped.
+This simulation failed:
+  Manager signed operations:
+    From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+    Fee to the validator: ṁ0
+    Fee to the protocol treasury: ṁ0
+    Fee to the burn address: ṁ0
+    Expected counter: 2
+    Gas limit: 1040000
+    Storage limit: 60000 bytes
+    Transaction:
+      Amount: ṁ0
+      From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+      To: KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+      Entrypoint: executeProposal
+      Parameter: 1
+      This operation FAILED.
+
+Runtime error in contract KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH:
+  001: { parameter
+  002:     (or (or (unit %default) (nat %executeProposal))
+  003:         (or (address %proposeTransfer) (nat %voteProposal))) ;
+  004:   storage
+  005:     (pair address
+  006:           address
+  007:           address
+  008:           nat
+  009:           (map nat (pair address nat))
+  010:           (map nat (set address))
+  011:           nat) ;
+  012:   code { LAMBDA
+  013:            (pair address
+  014:                  address
+  015:                  address
+  016:                  address
+  017:                  nat
+  018:                  (map nat (pair address nat))
+  019:                  (map nat (set address))
+  020:                  nat)
+  021:            bool
+  022:            { UNPAIR ;
+  023:              DUP 2 ;
+  024:              GET 5 ;
+  025:              DUP 2 ;
+  026:              COMPARE ;
+  027:              EQ ;
+  028:              DUP 3 ;
+  029:              GET 3 ;
+  030:              DUP 3 ;
+  031:              COMPARE ;
+  032:              EQ ;
+  033:              DIG 3 ;
+  034:              CAR ;
+  035:              DIG 3 ;
+  036:              COMPARE ;
+  037:              EQ ;
+  038:              OR ;
+  039:              OR } ;
+  040:          SWAP ;
+  041:          UNPAIR ;
+  042:          IF_LEFT
+  043:            { IF_LEFT
+  044:                { DIG 2 ; DROP 2 ; NIL operation ; PAIR }
+  045:                { DUP 2 ;
+  046:                  SENDER ;
+  047:                  PAIR ;
+  048:                  DIG 3 ;
+  049:                  SWAP ;
+  050:                  EXEC ;
+  051:                  NOT ;
+  052:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  053:                  DUP 2 ;
+  054:                  GET 9 ;
+  055:                  DUP 2 ;
+  056:                  GET ;
+  057:                  IF_NONE
+  058:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  059:                    { UNPAIR ;
+  060:                      LEVEL ;
+  061:                      DUP 5 ;
+  062:                      GET 7 ;
+  063:                      DIG 3 ;
+  064:                      ADD ;
+  065:                      SWAP ;
+  066:                      COMPARE ;
+  067:                      LT ;
+  068:                      IF { PUSH string "TimelockNotExpired" ; FAILWITH } {} ;
+  069:                      PUSH nat 2 ;
+  070:                      DUP 4 ;
+  071:                      GET 11 ;
+  072:                      DUP 4 ;
+  073:                      GET ;
+  074:                      IF_NONE { EMPTY_SET address } {} ;
+  075:                      SIZE ;
+  076:                      COMPARE ;
+  077:                      LT ;
+  078:                      IF { PUSH string "InsufficientVotes" ; FAILWITH } {} ;
+  079:                      BALANCE ;
+  080:                      SWAP ;
+  081:                      CONTRACT unit ;
+  082:                      IF_NONE { PUSH string "ContractsDoesNotExist" ; FAILWITH } {} ;
+  083:                      SWAP ;
+  084:                      UNIT ;
+  085:                      TRANSFER_TOKENS ;
+  086:                      DUP 3 ;
+  087:                      DUP 4 ;
+  088:                      GET 9 ;
+  089:                      DUP 4 ;
+  090:                      NONE (pair address nat) ;
+  091:                      SWAP ;
+  092:                      UPDATE ;
+  093:                      UPDATE 9 ;
+  094:                      DIG 3 ;
+  095:                      GET 11 ;
+  096:                      DIG 3 ;
+  097:                      NONE (set address) ;
+  098:                      SWAP ;
+  099:                      UPDATE ;
+  100:                      UPDATE 11 ;
+  101:                      NIL operation ;
+  102:                      DIG 2 ;
+  103:                      CONS ;
+  104:                      PAIR } } }
+  105:            { IF_LEFT
+  106:                { DUP 2 ;
+  107:                  SENDER ;
+  108:                  PAIR ;
+  109:                  DIG 3 ;
+  110:                  SWAP ;
+  111:                  EXEC ;
+  112:                  NOT ;
+  113:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  114:                  LEVEL ;
+  115:                  SWAP ;
+  116:                  PAIR ;
+  117:                  DUP 2 ;
+  118:                  GET 12 ;
+  119:                  PUSH nat 1 ;
+  120:                  DUP 2 ;
+  121:                  ADD ;
+  122:                  DUP 4 ;
+  123:                  DIG 4 ;
+  124:                  GET 9 ;
+  125:                  DIG 4 ;
+  126:                  DIG 4 ;
+  127:                  SWAP ;
+  128:                  SOME ;
+  129:                  SWAP ;
+  130:                  UPDATE ;
+  131:                  UPDATE 9 ;
+  132:                  SWAP ;
+  133:                  UPDATE 12 ;
+  134:                  NIL operation ;
+  135:                  PAIR }
+  136:                { DUP 2 ;
+  137:                  SENDER ;
+  138:                  PAIR ;
+  139:                  DIG 3 ;
+  140:                  SWAP ;
+  141:                  EXEC ;
+  142:                  NOT ;
+  143:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  144:                  DUP 2 ;
+  145:                  GET 9 ;
+  146:                  DUP 2 ;
+  147:                  GET ;
+  148:                  IF_NONE
+  149:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  150:                    { DROP ;
+  151:                      SENDER ;
+  152:                      DUP 3 ;
+  153:                      GET 11 ;
+  154:                      DUP 3 ;
+  155:                      GET ;
+  156:                      IF_NONE { EMPTY_SET address } {} ;
+  157:                      DUP ;
+  158:                      DUP 3 ;
+  159:                      MEM ;
+  160:                      IF { PUSH string "AlreadyVoted" ; FAILWITH } {} ;
+  161:                      DUP 4 ;
+  162:                      DIG 4 ;
+  163:                      GET 11 ;
+  164:                      DIG 2 ;
+  165:                      DIG 3 ;
+  166:                      PUSH bool True ;
+  167:                      SWAP ;
+  168:                      UPDATE ;
+  169:                      DIG 3 ;
+  170:                      SWAP ;
+  171:                      SOME ;
+  172:                      SWAP ;
+  173:                      UPDATE ;
+  174:                      UPDATE 11 ;
+  175:                      NIL operation ;
+  176:                      PAIR } } } } }
+At line 52 characters 49 to 57,
+script reached FAILWITH instruction
+with "OnlySigner"
+Fatal error:
+  transfer simulation failed
+
+./mavkit-client --mode mockup call KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH from bootstrap4 --entrypoint proposeTransfer --arg '"mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx"' --burn-cap 10
+Node is bootstrapped.
+This simulation failed:
+  Manager signed operations:
+    From: mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn
+    Fee to the validator: ṁ0
+    Fee to the protocol treasury: ṁ0
+    Fee to the burn address: ṁ0
+    Expected counter: 1
+    Gas limit: 1040000
+    Storage limit: 60000 bytes
+    Transaction:
+      Amount: ṁ0
+      From: mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn
+      To: KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+      Entrypoint: proposeTransfer
+      Parameter: "mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx"
+      This operation FAILED.
+
+Runtime error in contract KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH:
+  001: { parameter
+  002:     (or (or (unit %default) (nat %executeProposal))
+  003:         (or (address %proposeTransfer) (nat %voteProposal))) ;
+  004:   storage
+  005:     (pair address
+  006:           address
+  007:           address
+  008:           nat
+  009:           (map nat (pair address nat))
+  010:           (map nat (set address))
+  011:           nat) ;
+  012:   code { LAMBDA
+  013:            (pair address
+  014:                  address
+  015:                  address
+  016:                  address
+  017:                  nat
+  018:                  (map nat (pair address nat))
+  019:                  (map nat (set address))
+  020:                  nat)
+  021:            bool
+  022:            { UNPAIR ;
+  023:              DUP 2 ;
+  024:              GET 5 ;
+  025:              DUP 2 ;
+  026:              COMPARE ;
+  027:              EQ ;
+  028:              DUP 3 ;
+  029:              GET 3 ;
+  030:              DUP 3 ;
+  031:              COMPARE ;
+  032:              EQ ;
+  033:              DIG 3 ;
+  034:              CAR ;
+  035:              DIG 3 ;
+  036:              COMPARE ;
+  037:              EQ ;
+  038:              OR ;
+  039:              OR } ;
+  040:          SWAP ;
+  041:          UNPAIR ;
+  042:          IF_LEFT
+  043:            { IF_LEFT
+  044:                { DIG 2 ; DROP 2 ; NIL operation ; PAIR }
+  045:                { DUP 2 ;
+  046:                  SENDER ;
+  047:                  PAIR ;
+  048:                  DIG 3 ;
+  049:                  SWAP ;
+  050:                  EXEC ;
+  051:                  NOT ;
+  052:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  053:                  DUP 2 ;
+  054:                  GET 9 ;
+  055:                  DUP 2 ;
+  056:                  GET ;
+  057:                  IF_NONE
+  058:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  059:                    { UNPAIR ;
+  060:                      LEVEL ;
+  061:                      DUP 5 ;
+  062:                      GET 7 ;
+  063:                      DIG 3 ;
+  064:                      ADD ;
+  065:                      SWAP ;
+  066:                      COMPARE ;
+  067:                      LT ;
+  068:                      IF { PUSH string "TimelockNotExpired" ; FAILWITH } {} ;
+  069:                      PUSH nat 2 ;
+  070:                      DUP 4 ;
+  071:                      GET 11 ;
+  072:                      DUP 4 ;
+  073:                      GET ;
+  074:                      IF_NONE { EMPTY_SET address } {} ;
+  075:                      SIZE ;
+  076:                      COMPARE ;
+  077:                      LT ;
+  078:                      IF { PUSH string "InsufficientVotes" ; FAILWITH } {} ;
+  079:                      BALANCE ;
+  080:                      SWAP ;
+  081:                      CONTRACT unit ;
+  082:                      IF_NONE { PUSH string "ContractsDoesNotExist" ; FAILWITH } {} ;
+  083:                      SWAP ;
+  084:                      UNIT ;
+  085:                      TRANSFER_TOKENS ;
+  086:                      DUP 3 ;
+  087:                      DUP 4 ;
+  088:                      GET 9 ;
+  089:                      DUP 4 ;
+  090:                      NONE (pair address nat) ;
+  091:                      SWAP ;
+  092:                      UPDATE ;
+  093:                      UPDATE 9 ;
+  094:                      DIG 3 ;
+  095:                      GET 11 ;
+  096:                      DIG 3 ;
+  097:                      NONE (set address) ;
+  098:                      SWAP ;
+  099:                      UPDATE ;
+  100:                      UPDATE 11 ;
+  101:                      NIL operation ;
+  102:                      DIG 2 ;
+  103:                      CONS ;
+  104:                      PAIR } } }
+  105:            { IF_LEFT
+  106:                { DUP 2 ;
+  107:                  SENDER ;
+  108:                  PAIR ;
+  109:                  DIG 3 ;
+  110:                  SWAP ;
+  111:                  EXEC ;
+  112:                  NOT ;
+  113:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  114:                  LEVEL ;
+  115:                  SWAP ;
+  116:                  PAIR ;
+  117:                  DUP 2 ;
+  118:                  GET 12 ;
+  119:                  PUSH nat 1 ;
+  120:                  DUP 2 ;
+  121:                  ADD ;
+  122:                  DUP 4 ;
+  123:                  DIG 4 ;
+  124:                  GET 9 ;
+  125:                  DIG 4 ;
+  126:                  DIG 4 ;
+  127:                  SWAP ;
+  128:                  SOME ;
+  129:                  SWAP ;
+  130:                  UPDATE ;
+  131:                  UPDATE 9 ;
+  132:                  SWAP ;
+  133:                  UPDATE 12 ;
+  134:                  NIL operation ;
+  135:                  PAIR }
+  136:                { DUP 2 ;
+  137:                  SENDER ;
+  138:                  PAIR ;
+  139:                  DIG 3 ;
+  140:                  SWAP ;
+  141:                  EXEC ;
+  142:                  NOT ;
+  143:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  144:                  DUP 2 ;
+  145:                  GET 9 ;
+  146:                  DUP 2 ;
+  147:                  GET ;
+  148:                  IF_NONE
+  149:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  150:                    { DROP ;
+  151:                      SENDER ;
+  152:                      DUP 3 ;
+  153:                      GET 11 ;
+  154:                      DUP 3 ;
+  155:                      GET ;
+  156:                      IF_NONE { EMPTY_SET address } {} ;
+  157:                      DUP ;
+  158:                      DUP 3 ;
+  159:                      MEM ;
+  160:                      IF { PUSH string "AlreadyVoted" ; FAILWITH } {} ;
+  161:                      DUP 4 ;
+  162:                      DIG 4 ;
+  163:                      GET 11 ;
+  164:                      DIG 2 ;
+  165:                      DIG 3 ;
+  166:                      PUSH bool True ;
+  167:                      SWAP ;
+  168:                      UPDATE ;
+  169:                      DIG 3 ;
+  170:                      SWAP ;
+  171:                      SOME ;
+  172:                      SWAP ;
+  173:                      UPDATE ;
+  174:                      UPDATE 11 ;
+  175:                      NIL operation ;
+  176:                      PAIR } } } } }
+At line 113 characters 49 to 57,
+script reached FAILWITH instruction
+with "OnlySigner"
+Fatal error:
+  transfer simulation failed
+
+./mavkit-client --mode mockup call KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH from bootstrap4 --entrypoint voteProposal --arg 0 --burn-cap 10
+Node is bootstrapped.
+This simulation failed:
+  Manager signed operations:
+    From: mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn
+    Fee to the validator: ṁ0
+    Fee to the protocol treasury: ṁ0
+    Fee to the burn address: ṁ0
+    Expected counter: 1
+    Gas limit: 1040000
+    Storage limit: 60000 bytes
+    Transaction:
+      Amount: ṁ0
+      From: mv1PVMnW8iyYxCoqLfPAha8EAPRxjTx7wqbn
+      To: KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+      Entrypoint: voteProposal
+      Parameter: 0
+      This operation FAILED.
+
+Runtime error in contract KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH:
+  001: { parameter
+  002:     (or (or (unit %default) (nat %executeProposal))
+  003:         (or (address %proposeTransfer) (nat %voteProposal))) ;
+  004:   storage
+  005:     (pair address
+  006:           address
+  007:           address
+  008:           nat
+  009:           (map nat (pair address nat))
+  010:           (map nat (set address))
+  011:           nat) ;
+  012:   code { LAMBDA
+  013:            (pair address
+  014:                  address
+  015:                  address
+  016:                  address
+  017:                  nat
+  018:                  (map nat (pair address nat))
+  019:                  (map nat (set address))
+  020:                  nat)
+  021:            bool
+  022:            { UNPAIR ;
+  023:              DUP 2 ;
+  024:              GET 5 ;
+  025:              DUP 2 ;
+  026:              COMPARE ;
+  027:              EQ ;
+  028:              DUP 3 ;
+  029:              GET 3 ;
+  030:              DUP 3 ;
+  031:              COMPARE ;
+  032:              EQ ;
+  033:              DIG 3 ;
+  034:              CAR ;
+  035:              DIG 3 ;
+  036:              COMPARE ;
+  037:              EQ ;
+  038:              OR ;
+  039:              OR } ;
+  040:          SWAP ;
+  041:          UNPAIR ;
+  042:          IF_LEFT
+  043:            { IF_LEFT
+  044:                { DIG 2 ; DROP 2 ; NIL operation ; PAIR }
+  045:                { DUP 2 ;
+  046:                  SENDER ;
+  047:                  PAIR ;
+  048:                  DIG 3 ;
+  049:                  SWAP ;
+  050:                  EXEC ;
+  051:                  NOT ;
+  052:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  053:                  DUP 2 ;
+  054:                  GET 9 ;
+  055:                  DUP 2 ;
+  056:                  GET ;
+  057:                  IF_NONE
+  058:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  059:                    { UNPAIR ;
+  060:                      LEVEL ;
+  061:                      DUP 5 ;
+  062:                      GET 7 ;
+  063:                      DIG 3 ;
+  064:                      ADD ;
+  065:                      SWAP ;
+  066:                      COMPARE ;
+  067:                      LT ;
+  068:                      IF { PUSH string "TimelockNotExpired" ; FAILWITH } {} ;
+  069:                      PUSH nat 2 ;
+  070:                      DUP 4 ;
+  071:                      GET 11 ;
+  072:                      DUP 4 ;
+  073:                      GET ;
+  074:                      IF_NONE { EMPTY_SET address } {} ;
+  075:                      SIZE ;
+  076:                      COMPARE ;
+  077:                      LT ;
+  078:                      IF { PUSH string "InsufficientVotes" ; FAILWITH } {} ;
+  079:                      BALANCE ;
+  080:                      SWAP ;
+  081:                      CONTRACT unit ;
+  082:                      IF_NONE { PUSH string "ContractsDoesNotExist" ; FAILWITH } {} ;
+  083:                      SWAP ;
+  084:                      UNIT ;
+  085:                      TRANSFER_TOKENS ;
+  086:                      DUP 3 ;
+  087:                      DUP 4 ;
+  088:                      GET 9 ;
+  089:                      DUP 4 ;
+  090:                      NONE (pair address nat) ;
+  091:                      SWAP ;
+  092:                      UPDATE ;
+  093:                      UPDATE 9 ;
+  094:                      DIG 3 ;
+  095:                      GET 11 ;
+  096:                      DIG 3 ;
+  097:                      NONE (set address) ;
+  098:                      SWAP ;
+  099:                      UPDATE ;
+  100:                      UPDATE 11 ;
+  101:                      NIL operation ;
+  102:                      DIG 2 ;
+  103:                      CONS ;
+  104:                      PAIR } } }
+  105:            { IF_LEFT
+  106:                { DUP 2 ;
+  107:                  SENDER ;
+  108:                  PAIR ;
+  109:                  DIG 3 ;
+  110:                  SWAP ;
+  111:                  EXEC ;
+  112:                  NOT ;
+  113:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  114:                  LEVEL ;
+  115:                  SWAP ;
+  116:                  PAIR ;
+  117:                  DUP 2 ;
+  118:                  GET 12 ;
+  119:                  PUSH nat 1 ;
+  120:                  DUP 2 ;
+  121:                  ADD ;
+  122:                  DUP 4 ;
+  123:                  DIG 4 ;
+  124:                  GET 9 ;
+  125:                  DIG 4 ;
+  126:                  DIG 4 ;
+  127:                  SWAP ;
+  128:                  SOME ;
+  129:                  SWAP ;
+  130:                  UPDATE ;
+  131:                  UPDATE 9 ;
+  132:                  SWAP ;
+  133:                  UPDATE 12 ;
+  134:                  NIL operation ;
+  135:                  PAIR }
+  136:                { DUP 2 ;
+  137:                  SENDER ;
+  138:                  PAIR ;
+  139:                  DIG 3 ;
+  140:                  SWAP ;
+  141:                  EXEC ;
+  142:                  NOT ;
+  143:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  144:                  DUP 2 ;
+  145:                  GET 9 ;
+  146:                  DUP 2 ;
+  147:                  GET ;
+  148:                  IF_NONE
+  149:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  150:                    { DROP ;
+  151:                      SENDER ;
+  152:                      DUP 3 ;
+  153:                      GET 11 ;
+  154:                      DUP 3 ;
+  155:                      GET ;
+  156:                      IF_NONE { EMPTY_SET address } {} ;
+  157:                      DUP ;
+  158:                      DUP 3 ;
+  159:                      MEM ;
+  160:                      IF { PUSH string "AlreadyVoted" ; FAILWITH } {} ;
+  161:                      DUP 4 ;
+  162:                      DIG 4 ;
+  163:                      GET 11 ;
+  164:                      DIG 2 ;
+  165:                      DIG 3 ;
+  166:                      PUSH bool True ;
+  167:                      SWAP ;
+  168:                      UPDATE ;
+  169:                      DIG 3 ;
+  170:                      SWAP ;
+  171:                      SOME ;
+  172:                      SWAP ;
+  173:                      UPDATE ;
+  174:                      UPDATE 11 ;
+  175:                      NIL operation ;
+  176:                      PAIR } } } } }
+At line 143 characters 49 to 57,
+script reached FAILWITH instruction
+with "OnlySigner"
+Fatal error:
+  transfer simulation failed
+
+./mavkit-client --mode mockup call KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH from bootstrap2 --entrypoint voteProposal --arg 0 --burn-cap 10
+Node is bootstrapped.
+This simulation failed:
+  Manager signed operations:
+    From: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7
+    Fee to the validator: ṁ0
+    Fee to the protocol treasury: ṁ0
+    Fee to the burn address: ṁ0
+    Expected counter: 1
+    Gas limit: 1040000
+    Storage limit: 60000 bytes
+    Transaction:
+      Amount: ṁ0
+      From: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7
+      To: KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+      Entrypoint: voteProposal
+      Parameter: 0
+      This operation FAILED.
+
+Runtime error in contract KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH:
+  001: { parameter
+  002:     (or (or (unit %default) (nat %executeProposal))
+  003:         (or (address %proposeTransfer) (nat %voteProposal))) ;
+  004:   storage
+  005:     (pair address
+  006:           address
+  007:           address
+  008:           nat
+  009:           (map nat (pair address nat))
+  010:           (map nat (set address))
+  011:           nat) ;
+  012:   code { LAMBDA
+  013:            (pair address
+  014:                  address
+  015:                  address
+  016:                  address
+  017:                  nat
+  018:                  (map nat (pair address nat))
+  019:                  (map nat (set address))
+  020:                  nat)
+  021:            bool
+  022:            { UNPAIR ;
+  023:              DUP 2 ;
+  024:              GET 5 ;
+  025:              DUP 2 ;
+  026:              COMPARE ;
+  027:              EQ ;
+  028:              DUP 3 ;
+  029:              GET 3 ;
+  030:              DUP 3 ;
+  031:              COMPARE ;
+  032:              EQ ;
+  033:              DIG 3 ;
+  034:              CAR ;
+  035:              DIG 3 ;
+  036:              COMPARE ;
+  037:              EQ ;
+  038:              OR ;
+  039:              OR } ;
+  040:          SWAP ;
+  041:          UNPAIR ;
+  042:          IF_LEFT
+  043:            { IF_LEFT
+  044:                { DIG 2 ; DROP 2 ; NIL operation ; PAIR }
+  045:                { DUP 2 ;
+  046:                  SENDER ;
+  047:                  PAIR ;
+  048:                  DIG 3 ;
+  049:                  SWAP ;
+  050:                  EXEC ;
+  051:                  NOT ;
+  052:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  053:                  DUP 2 ;
+  054:                  GET 9 ;
+  055:                  DUP 2 ;
+  056:                  GET ;
+  057:                  IF_NONE
+  058:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  059:                    { UNPAIR ;
+  060:                      LEVEL ;
+  061:                      DUP 5 ;
+  062:                      GET 7 ;
+  063:                      DIG 3 ;
+  064:                      ADD ;
+  065:                      SWAP ;
+  066:                      COMPARE ;
+  067:                      LT ;
+  068:                      IF { PUSH string "TimelockNotExpired" ; FAILWITH } {} ;
+  069:                      PUSH nat 2 ;
+  070:                      DUP 4 ;
+  071:                      GET 11 ;
+  072:                      DUP 4 ;
+  073:                      GET ;
+  074:                      IF_NONE { EMPTY_SET address } {} ;
+  075:                      SIZE ;
+  076:                      COMPARE ;
+  077:                      LT ;
+  078:                      IF { PUSH string "InsufficientVotes" ; FAILWITH } {} ;
+  079:                      BALANCE ;
+  080:                      SWAP ;
+  081:                      CONTRACT unit ;
+  082:                      IF_NONE { PUSH string "ContractsDoesNotExist" ; FAILWITH } {} ;
+  083:                      SWAP ;
+  084:                      UNIT ;
+  085:                      TRANSFER_TOKENS ;
+  086:                      DUP 3 ;
+  087:                      DUP 4 ;
+  088:                      GET 9 ;
+  089:                      DUP 4 ;
+  090:                      NONE (pair address nat) ;
+  091:                      SWAP ;
+  092:                      UPDATE ;
+  093:                      UPDATE 9 ;
+  094:                      DIG 3 ;
+  095:                      GET 11 ;
+  096:                      DIG 3 ;
+  097:                      NONE (set address) ;
+  098:                      SWAP ;
+  099:                      UPDATE ;
+  100:                      UPDATE 11 ;
+  101:                      NIL operation ;
+  102:                      DIG 2 ;
+  103:                      CONS ;
+  104:                      PAIR } } }
+  105:            { IF_LEFT
+  106:                { DUP 2 ;
+  107:                  SENDER ;
+  108:                  PAIR ;
+  109:                  DIG 3 ;
+  110:                  SWAP ;
+  111:                  EXEC ;
+  112:                  NOT ;
+  113:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  114:                  LEVEL ;
+  115:                  SWAP ;
+  116:                  PAIR ;
+  117:                  DUP 2 ;
+  118:                  GET 12 ;
+  119:                  PUSH nat 1 ;
+  120:                  DUP 2 ;
+  121:                  ADD ;
+  122:                  DUP 4 ;
+  123:                  DIG 4 ;
+  124:                  GET 9 ;
+  125:                  DIG 4 ;
+  126:                  DIG 4 ;
+  127:                  SWAP ;
+  128:                  SOME ;
+  129:                  SWAP ;
+  130:                  UPDATE ;
+  131:                  UPDATE 9 ;
+  132:                  SWAP ;
+  133:                  UPDATE 12 ;
+  134:                  NIL operation ;
+  135:                  PAIR }
+  136:                { DUP 2 ;
+  137:                  SENDER ;
+  138:                  PAIR ;
+  139:                  DIG 3 ;
+  140:                  SWAP ;
+  141:                  EXEC ;
+  142:                  NOT ;
+  143:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  144:                  DUP 2 ;
+  145:                  GET 9 ;
+  146:                  DUP 2 ;
+  147:                  GET ;
+  148:                  IF_NONE
+  149:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  150:                    { DROP ;
+  151:                      SENDER ;
+  152:                      DUP 3 ;
+  153:                      GET 11 ;
+  154:                      DUP 3 ;
+  155:                      GET ;
+  156:                      IF_NONE { EMPTY_SET address } {} ;
+  157:                      DUP ;
+  158:                      DUP 3 ;
+  159:                      MEM ;
+  160:                      IF { PUSH string "AlreadyVoted" ; FAILWITH } {} ;
+  161:                      DUP 4 ;
+  162:                      DIG 4 ;
+  163:                      GET 11 ;
+  164:                      DIG 2 ;
+  165:                      DIG 3 ;
+  166:                      PUSH bool True ;
+  167:                      SWAP ;
+  168:                      UPDATE ;
+  169:                      DIG 3 ;
+  170:                      SWAP ;
+  171:                      SOME ;
+  172:                      SWAP ;
+  173:                      UPDATE ;
+  174:                      UPDATE 11 ;
+  175:                      NIL operation ;
+  176:                      PAIR } } } } }
+At line 143 characters 49 to 57,
+script reached FAILWITH instruction
+with "OnlySigner"
+Fatal error:
+  transfer simulation failed
+
+./mavkit-client --mode mockup call KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH from bootstrap1 --entrypoint voteProposal --arg 999 --burn-cap 10
+Node is bootstrapped.
+This simulation failed:
+  Manager signed operations:
+    From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+    Fee to the validator: ṁ0
+    Fee to the protocol treasury: ṁ0
+    Fee to the burn address: ṁ0
+    Expected counter: 2
+    Gas limit: 1040000
+    Storage limit: 60000 bytes
+    Transaction:
+      Amount: ṁ0
+      From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+      To: KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+      Entrypoint: voteProposal
+      Parameter: 999
+      This operation FAILED.
+
+Runtime error in contract KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH:
+  001: { parameter
+  002:     (or (or (unit %default) (nat %executeProposal))
+  003:         (or (address %proposeTransfer) (nat %voteProposal))) ;
+  004:   storage
+  005:     (pair address
+  006:           address
+  007:           address
+  008:           nat
+  009:           (map nat (pair address nat))
+  010:           (map nat (set address))
+  011:           nat) ;
+  012:   code { LAMBDA
+  013:            (pair address
+  014:                  address
+  015:                  address
+  016:                  address
+  017:                  nat
+  018:                  (map nat (pair address nat))
+  019:                  (map nat (set address))
+  020:                  nat)
+  021:            bool
+  022:            { UNPAIR ;
+  023:              DUP 2 ;
+  024:              GET 5 ;
+  025:              DUP 2 ;
+  026:              COMPARE ;
+  027:              EQ ;
+  028:              DUP 3 ;
+  029:              GET 3 ;
+  030:              DUP 3 ;
+  031:              COMPARE ;
+  032:              EQ ;
+  033:              DIG 3 ;
+  034:              CAR ;
+  035:              DIG 3 ;
+  036:              COMPARE ;
+  037:              EQ ;
+  038:              OR ;
+  039:              OR } ;
+  040:          SWAP ;
+  041:          UNPAIR ;
+  042:          IF_LEFT
+  043:            { IF_LEFT
+  044:                { DIG 2 ; DROP 2 ; NIL operation ; PAIR }
+  045:                { DUP 2 ;
+  046:                  SENDER ;
+  047:                  PAIR ;
+  048:                  DIG 3 ;
+  049:                  SWAP ;
+  050:                  EXEC ;
+  051:                  NOT ;
+  052:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  053:                  DUP 2 ;
+  054:                  GET 9 ;
+  055:                  DUP 2 ;
+  056:                  GET ;
+  057:                  IF_NONE
+  058:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  059:                    { UNPAIR ;
+  060:                      LEVEL ;
+  061:                      DUP 5 ;
+  062:                      GET 7 ;
+  063:                      DIG 3 ;
+  064:                      ADD ;
+  065:                      SWAP ;
+  066:                      COMPARE ;
+  067:                      LT ;
+  068:                      IF { PUSH string "TimelockNotExpired" ; FAILWITH } {} ;
+  069:                      PUSH nat 2 ;
+  070:                      DUP 4 ;
+  071:                      GET 11 ;
+  072:                      DUP 4 ;
+  073:                      GET ;
+  074:                      IF_NONE { EMPTY_SET address } {} ;
+  075:                      SIZE ;
+  076:                      COMPARE ;
+  077:                      LT ;
+  078:                      IF { PUSH string "InsufficientVotes" ; FAILWITH } {} ;
+  079:                      BALANCE ;
+  080:                      SWAP ;
+  081:                      CONTRACT unit ;
+  082:                      IF_NONE { PUSH string "ContractsDoesNotExist" ; FAILWITH } {} ;
+  083:                      SWAP ;
+  084:                      UNIT ;
+  085:                      TRANSFER_TOKENS ;
+  086:                      DUP 3 ;
+  087:                      DUP 4 ;
+  088:                      GET 9 ;
+  089:                      DUP 4 ;
+  090:                      NONE (pair address nat) ;
+  091:                      SWAP ;
+  092:                      UPDATE ;
+  093:                      UPDATE 9 ;
+  094:                      DIG 3 ;
+  095:                      GET 11 ;
+  096:                      DIG 3 ;
+  097:                      NONE (set address) ;
+  098:                      SWAP ;
+  099:                      UPDATE ;
+  100:                      UPDATE 11 ;
+  101:                      NIL operation ;
+  102:                      DIG 2 ;
+  103:                      CONS ;
+  104:                      PAIR } } }
+  105:            { IF_LEFT
+  106:                { DUP 2 ;
+  107:                  SENDER ;
+  108:                  PAIR ;
+  109:                  DIG 3 ;
+  110:                  SWAP ;
+  111:                  EXEC ;
+  112:                  NOT ;
+  113:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  114:                  LEVEL ;
+  115:                  SWAP ;
+  116:                  PAIR ;
+  117:                  DUP 2 ;
+  118:                  GET 12 ;
+  119:                  PUSH nat 1 ;
+  120:                  DUP 2 ;
+  121:                  ADD ;
+  122:                  DUP 4 ;
+  123:                  DIG 4 ;
+  124:                  GET 9 ;
+  125:                  DIG 4 ;
+  126:                  DIG 4 ;
+  127:                  SWAP ;
+  128:                  SOME ;
+  129:                  SWAP ;
+  130:                  UPDATE ;
+  131:                  UPDATE 9 ;
+  132:                  SWAP ;
+  133:                  UPDATE 12 ;
+  134:                  NIL operation ;
+  135:                  PAIR }
+  136:                { DUP 2 ;
+  137:                  SENDER ;
+  138:                  PAIR ;
+  139:                  DIG 3 ;
+  140:                  SWAP ;
+  141:                  EXEC ;
+  142:                  NOT ;
+  143:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  144:                  DUP 2 ;
+  145:                  GET 9 ;
+  146:                  DUP 2 ;
+  147:                  GET ;
+  148:                  IF_NONE
+  149:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  150:                    { DROP ;
+  151:                      SENDER ;
+  152:                      DUP 3 ;
+  153:                      GET 11 ;
+  154:                      DUP 3 ;
+  155:                      GET ;
+  156:                      IF_NONE { EMPTY_SET address } {} ;
+  157:                      DUP ;
+  158:                      DUP 3 ;
+  159:                      MEM ;
+  160:                      IF { PUSH string "AlreadyVoted" ; FAILWITH } {} ;
+  161:                      DUP 4 ;
+  162:                      DIG 4 ;
+  163:                      GET 11 ;
+  164:                      DIG 2 ;
+  165:                      DIG 3 ;
+  166:                      PUSH bool True ;
+  167:                      SWAP ;
+  168:                      UPDATE ;
+  169:                      DIG 3 ;
+  170:                      SWAP ;
+  171:                      SOME ;
+  172:                      SWAP ;
+  173:                      UPDATE ;
+  174:                      UPDATE 11 ;
+  175:                      NIL operation ;
+  176:                      PAIR } } } } }
+At line 143 characters 49 to 57,
+script reached FAILWITH instruction
+with "OnlySigner"
+Fatal error:
+  transfer simulation failed
+
+./mavkit-client --mode mockup call KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH from bootstrap1 --entrypoint executeProposal --arg 999 --burn-cap 10
+Node is bootstrapped.
+This simulation failed:
+  Manager signed operations:
+    From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+    Fee to the validator: ṁ0
+    Fee to the protocol treasury: ṁ0
+    Fee to the burn address: ṁ0
+    Expected counter: 2
+    Gas limit: 1040000
+    Storage limit: 60000 bytes
+    Transaction:
+      Amount: ṁ0
+      From: mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe
+      To: KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+      Entrypoint: executeProposal
+      Parameter: 999
+      This operation FAILED.
+
+Runtime error in contract KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH:
+  001: { parameter
+  002:     (or (or (unit %default) (nat %executeProposal))
+  003:         (or (address %proposeTransfer) (nat %voteProposal))) ;
+  004:   storage
+  005:     (pair address
+  006:           address
+  007:           address
+  008:           nat
+  009:           (map nat (pair address nat))
+  010:           (map nat (set address))
+  011:           nat) ;
+  012:   code { LAMBDA
+  013:            (pair address
+  014:                  address
+  015:                  address
+  016:                  address
+  017:                  nat
+  018:                  (map nat (pair address nat))
+  019:                  (map nat (set address))
+  020:                  nat)
+  021:            bool
+  022:            { UNPAIR ;
+  023:              DUP 2 ;
+  024:              GET 5 ;
+  025:              DUP 2 ;
+  026:              COMPARE ;
+  027:              EQ ;
+  028:              DUP 3 ;
+  029:              GET 3 ;
+  030:              DUP 3 ;
+  031:              COMPARE ;
+  032:              EQ ;
+  033:              DIG 3 ;
+  034:              CAR ;
+  035:              DIG 3 ;
+  036:              COMPARE ;
+  037:              EQ ;
+  038:              OR ;
+  039:              OR } ;
+  040:          SWAP ;
+  041:          UNPAIR ;
+  042:          IF_LEFT
+  043:            { IF_LEFT
+  044:                { DIG 2 ; DROP 2 ; NIL operation ; PAIR }
+  045:                { DUP 2 ;
+  046:                  SENDER ;
+  047:                  PAIR ;
+  048:                  DIG 3 ;
+  049:                  SWAP ;
+  050:                  EXEC ;
+  051:                  NOT ;
+  052:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  053:                  DUP 2 ;
+  054:                  GET 9 ;
+  055:                  DUP 2 ;
+  056:                  GET ;
+  057:                  IF_NONE
+  058:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  059:                    { UNPAIR ;
+  060:                      LEVEL ;
+  061:                      DUP 5 ;
+  062:                      GET 7 ;
+  063:                      DIG 3 ;
+  064:                      ADD ;
+  065:                      SWAP ;
+  066:                      COMPARE ;
+  067:                      LT ;
+  068:                      IF { PUSH string "TimelockNotExpired" ; FAILWITH } {} ;
+  069:                      PUSH nat 2 ;
+  070:                      DUP 4 ;
+  071:                      GET 11 ;
+  072:                      DUP 4 ;
+  073:                      GET ;
+  074:                      IF_NONE { EMPTY_SET address } {} ;
+  075:                      SIZE ;
+  076:                      COMPARE ;
+  077:                      LT ;
+  078:                      IF { PUSH string "InsufficientVotes" ; FAILWITH } {} ;
+  079:                      BALANCE ;
+  080:                      SWAP ;
+  081:                      CONTRACT unit ;
+  082:                      IF_NONE { PUSH string "ContractsDoesNotExist" ; FAILWITH } {} ;
+  083:                      SWAP ;
+  084:                      UNIT ;
+  085:                      TRANSFER_TOKENS ;
+  086:                      DUP 3 ;
+  087:                      DUP 4 ;
+  088:                      GET 9 ;
+  089:                      DUP 4 ;
+  090:                      NONE (pair address nat) ;
+  091:                      SWAP ;
+  092:                      UPDATE ;
+  093:                      UPDATE 9 ;
+  094:                      DIG 3 ;
+  095:                      GET 11 ;
+  096:                      DIG 3 ;
+  097:                      NONE (set address) ;
+  098:                      SWAP ;
+  099:                      UPDATE ;
+  100:                      UPDATE 11 ;
+  101:                      NIL operation ;
+  102:                      DIG 2 ;
+  103:                      CONS ;
+  104:                      PAIR } } }
+  105:            { IF_LEFT
+  106:                { DUP 2 ;
+  107:                  SENDER ;
+  108:                  PAIR ;
+  109:                  DIG 3 ;
+  110:                  SWAP ;
+  111:                  EXEC ;
+  112:                  NOT ;
+  113:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  114:                  LEVEL ;
+  115:                  SWAP ;
+  116:                  PAIR ;
+  117:                  DUP 2 ;
+  118:                  GET 12 ;
+  119:                  PUSH nat 1 ;
+  120:                  DUP 2 ;
+  121:                  ADD ;
+  122:                  DUP 4 ;
+  123:                  DIG 4 ;
+  124:                  GET 9 ;
+  125:                  DIG 4 ;
+  126:                  DIG 4 ;
+  127:                  SWAP ;
+  128:                  SOME ;
+  129:                  SWAP ;
+  130:                  UPDATE ;
+  131:                  UPDATE 9 ;
+  132:                  SWAP ;
+  133:                  UPDATE 12 ;
+  134:                  NIL operation ;
+  135:                  PAIR }
+  136:                { DUP 2 ;
+  137:                  SENDER ;
+  138:                  PAIR ;
+  139:                  DIG 3 ;
+  140:                  SWAP ;
+  141:                  EXEC ;
+  142:                  NOT ;
+  143:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  144:                  DUP 2 ;
+  145:                  GET 9 ;
+  146:                  DUP 2 ;
+  147:                  GET ;
+  148:                  IF_NONE
+  149:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  150:                    { DROP ;
+  151:                      SENDER ;
+  152:                      DUP 3 ;
+  153:                      GET 11 ;
+  154:                      DUP 3 ;
+  155:                      GET ;
+  156:                      IF_NONE { EMPTY_SET address } {} ;
+  157:                      DUP ;
+  158:                      DUP 3 ;
+  159:                      MEM ;
+  160:                      IF { PUSH string "AlreadyVoted" ; FAILWITH } {} ;
+  161:                      DUP 4 ;
+  162:                      DIG 4 ;
+  163:                      GET 11 ;
+  164:                      DIG 2 ;
+  165:                      DIG 3 ;
+  166:                      PUSH bool True ;
+  167:                      SWAP ;
+  168:                      UPDATE ;
+  169:                      DIG 3 ;
+  170:                      SWAP ;
+  171:                      SOME ;
+  172:                      SWAP ;
+  173:                      UPDATE ;
+  174:                      UPDATE 11 ;
+  175:                      NIL operation ;
+  176:                      PAIR } } } } }
+At line 52 characters 49 to 57,
+script reached FAILWITH instruction
+with "OnlySigner"
+Fatal error:
+  transfer simulation failed
+
+./mavkit-client --mode mockup call KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH from bootstrap2 --entrypoint proposeTransfer --arg '"mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"' --burn-cap 10
+Node is bootstrapped.
+This simulation failed:
+  Manager signed operations:
+    From: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7
+    Fee to the validator: ṁ0
+    Fee to the protocol treasury: ṁ0
+    Fee to the burn address: ṁ0
+    Expected counter: 1
+    Gas limit: 1040000
+    Storage limit: 60000 bytes
+    Transaction:
+      Amount: ṁ0
+      From: mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7
+      To: KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+      Entrypoint: proposeTransfer
+      Parameter: "mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe"
+      This operation FAILED.
+
+Runtime error in contract KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH:
+  001: { parameter
+  002:     (or (or (unit %default) (nat %executeProposal))
+  003:         (or (address %proposeTransfer) (nat %voteProposal))) ;
+  004:   storage
+  005:     (pair address
+  006:           address
+  007:           address
+  008:           nat
+  009:           (map nat (pair address nat))
+  010:           (map nat (set address))
+  011:           nat) ;
+  012:   code { LAMBDA
+  013:            (pair address
+  014:                  address
+  015:                  address
+  016:                  address
+  017:                  nat
+  018:                  (map nat (pair address nat))
+  019:                  (map nat (set address))
+  020:                  nat)
+  021:            bool
+  022:            { UNPAIR ;
+  023:              DUP 2 ;
+  024:              GET 5 ;
+  025:              DUP 2 ;
+  026:              COMPARE ;
+  027:              EQ ;
+  028:              DUP 3 ;
+  029:              GET 3 ;
+  030:              DUP 3 ;
+  031:              COMPARE ;
+  032:              EQ ;
+  033:              DIG 3 ;
+  034:              CAR ;
+  035:              DIG 3 ;
+  036:              COMPARE ;
+  037:              EQ ;
+  038:              OR ;
+  039:              OR } ;
+  040:          SWAP ;
+  041:          UNPAIR ;
+  042:          IF_LEFT
+  043:            { IF_LEFT
+  044:                { DIG 2 ; DROP 2 ; NIL operation ; PAIR }
+  045:                { DUP 2 ;
+  046:                  SENDER ;
+  047:                  PAIR ;
+  048:                  DIG 3 ;
+  049:                  SWAP ;
+  050:                  EXEC ;
+  051:                  NOT ;
+  052:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  053:                  DUP 2 ;
+  054:                  GET 9 ;
+  055:                  DUP 2 ;
+  056:                  GET ;
+  057:                  IF_NONE
+  058:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  059:                    { UNPAIR ;
+  060:                      LEVEL ;
+  061:                      DUP 5 ;
+  062:                      GET 7 ;
+  063:                      DIG 3 ;
+  064:                      ADD ;
+  065:                      SWAP ;
+  066:                      COMPARE ;
+  067:                      LT ;
+  068:                      IF { PUSH string "TimelockNotExpired" ; FAILWITH } {} ;
+  069:                      PUSH nat 2 ;
+  070:                      DUP 4 ;
+  071:                      GET 11 ;
+  072:                      DUP 4 ;
+  073:                      GET ;
+  074:                      IF_NONE { EMPTY_SET address } {} ;
+  075:                      SIZE ;
+  076:                      COMPARE ;
+  077:                      LT ;
+  078:                      IF { PUSH string "InsufficientVotes" ; FAILWITH } {} ;
+  079:                      BALANCE ;
+  080:                      SWAP ;
+  081:                      CONTRACT unit ;
+  082:                      IF_NONE { PUSH string "ContractsDoesNotExist" ; FAILWITH } {} ;
+  083:                      SWAP ;
+  084:                      UNIT ;
+  085:                      TRANSFER_TOKENS ;
+  086:                      DUP 3 ;
+  087:                      DUP 4 ;
+  088:                      GET 9 ;
+  089:                      DUP 4 ;
+  090:                      NONE (pair address nat) ;
+  091:                      SWAP ;
+  092:                      UPDATE ;
+  093:                      UPDATE 9 ;
+  094:                      DIG 3 ;
+  095:                      GET 11 ;
+  096:                      DIG 3 ;
+  097:                      NONE (set address) ;
+  098:                      SWAP ;
+  099:                      UPDATE ;
+  100:                      UPDATE 11 ;
+  101:                      NIL operation ;
+  102:                      DIG 2 ;
+  103:                      CONS ;
+  104:                      PAIR } } }
+  105:            { IF_LEFT
+  106:                { DUP 2 ;
+  107:                  SENDER ;
+  108:                  PAIR ;
+  109:                  DIG 3 ;
+  110:                  SWAP ;
+  111:                  EXEC ;
+  112:                  NOT ;
+  113:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  114:                  LEVEL ;
+  115:                  SWAP ;
+  116:                  PAIR ;
+  117:                  DUP 2 ;
+  118:                  GET 12 ;
+  119:                  PUSH nat 1 ;
+  120:                  DUP 2 ;
+  121:                  ADD ;
+  122:                  DUP 4 ;
+  123:                  DIG 4 ;
+  124:                  GET 9 ;
+  125:                  DIG 4 ;
+  126:                  DIG 4 ;
+  127:                  SWAP ;
+  128:                  SOME ;
+  129:                  SWAP ;
+  130:                  UPDATE ;
+  131:                  UPDATE 9 ;
+  132:                  SWAP ;
+  133:                  UPDATE 12 ;
+  134:                  NIL operation ;
+  135:                  PAIR }
+  136:                { DUP 2 ;
+  137:                  SENDER ;
+  138:                  PAIR ;
+  139:                  DIG 3 ;
+  140:                  SWAP ;
+  141:                  EXEC ;
+  142:                  NOT ;
+  143:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  144:                  DUP 2 ;
+  145:                  GET 9 ;
+  146:                  DUP 2 ;
+  147:                  GET ;
+  148:                  IF_NONE
+  149:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  150:                    { DROP ;
+  151:                      SENDER ;
+  152:                      DUP 3 ;
+  153:                      GET 11 ;
+  154:                      DUP 3 ;
+  155:                      GET ;
+  156:                      IF_NONE { EMPTY_SET address } {} ;
+  157:                      DUP ;
+  158:                      DUP 3 ;
+  159:                      MEM ;
+  160:                      IF { PUSH string "AlreadyVoted" ; FAILWITH } {} ;
+  161:                      DUP 4 ;
+  162:                      DIG 4 ;
+  163:                      GET 11 ;
+  164:                      DIG 2 ;
+  165:                      DIG 3 ;
+  166:                      PUSH bool True ;
+  167:                      SWAP ;
+  168:                      UPDATE ;
+  169:                      DIG 3 ;
+  170:                      SWAP ;
+  171:                      SOME ;
+  172:                      SWAP ;
+  173:                      UPDATE ;
+  174:                      UPDATE 11 ;
+  175:                      NIL operation ;
+  176:                      PAIR } } } } }
+At line 113 characters 49 to 57,
+script reached FAILWITH instruction
+with "OnlySigner"
+Fatal error:
+  transfer simulation failed
+
+./mavkit-client --mode mockup call KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH from bootstrap3 --entrypoint proposeTransfer --arg '"mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"' --burn-cap 10
+Node is bootstrapped.
+This simulation failed:
+  Manager signed operations:
+    From: mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ
+    Fee to the validator: ṁ0
+    Fee to the protocol treasury: ṁ0
+    Fee to the burn address: ṁ0
+    Expected counter: 1
+    Gas limit: 1040000
+    Storage limit: 60000 bytes
+    Transaction:
+      Amount: ṁ0
+      From: mv1TxMEnmav51G1Hwcib1rBnBeniDMgG8nkJ
+      To: KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH
+      Entrypoint: proposeTransfer
+      Parameter: "mv1V73YiKvinVumxwvYWjCZBoT44wqBNhta7"
+      This operation FAILED.
+
+Runtime error in contract KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH:
+  001: { parameter
+  002:     (or (or (unit %default) (nat %executeProposal))
+  003:         (or (address %proposeTransfer) (nat %voteProposal))) ;
+  004:   storage
+  005:     (pair address
+  006:           address
+  007:           address
+  008:           nat
+  009:           (map nat (pair address nat))
+  010:           (map nat (set address))
+  011:           nat) ;
+  012:   code { LAMBDA
+  013:            (pair address
+  014:                  address
+  015:                  address
+  016:                  address
+  017:                  nat
+  018:                  (map nat (pair address nat))
+  019:                  (map nat (set address))
+  020:                  nat)
+  021:            bool
+  022:            { UNPAIR ;
+  023:              DUP 2 ;
+  024:              GET 5 ;
+  025:              DUP 2 ;
+  026:              COMPARE ;
+  027:              EQ ;
+  028:              DUP 3 ;
+  029:              GET 3 ;
+  030:              DUP 3 ;
+  031:              COMPARE ;
+  032:              EQ ;
+  033:              DIG 3 ;
+  034:              CAR ;
+  035:              DIG 3 ;
+  036:              COMPARE ;
+  037:              EQ ;
+  038:              OR ;
+  039:              OR } ;
+  040:          SWAP ;
+  041:          UNPAIR ;
+  042:          IF_LEFT
+  043:            { IF_LEFT
+  044:                { DIG 2 ; DROP 2 ; NIL operation ; PAIR }
+  045:                { DUP 2 ;
+  046:                  SENDER ;
+  047:                  PAIR ;
+  048:                  DIG 3 ;
+  049:                  SWAP ;
+  050:                  EXEC ;
+  051:                  NOT ;
+  052:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  053:                  DUP 2 ;
+  054:                  GET 9 ;
+  055:                  DUP 2 ;
+  056:                  GET ;
+  057:                  IF_NONE
+  058:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  059:                    { UNPAIR ;
+  060:                      LEVEL ;
+  061:                      DUP 5 ;
+  062:                      GET 7 ;
+  063:                      DIG 3 ;
+  064:                      ADD ;
+  065:                      SWAP ;
+  066:                      COMPARE ;
+  067:                      LT ;
+  068:                      IF { PUSH string "TimelockNotExpired" ; FAILWITH } {} ;
+  069:                      PUSH nat 2 ;
+  070:                      DUP 4 ;
+  071:                      GET 11 ;
+  072:                      DUP 4 ;
+  073:                      GET ;
+  074:                      IF_NONE { EMPTY_SET address } {} ;
+  075:                      SIZE ;
+  076:                      COMPARE ;
+  077:                      LT ;
+  078:                      IF { PUSH string "InsufficientVotes" ; FAILWITH } {} ;
+  079:                      BALANCE ;
+  080:                      SWAP ;
+  081:                      CONTRACT unit ;
+  082:                      IF_NONE { PUSH string "ContractsDoesNotExist" ; FAILWITH } {} ;
+  083:                      SWAP ;
+  084:                      UNIT ;
+  085:                      TRANSFER_TOKENS ;
+  086:                      DUP 3 ;
+  087:                      DUP 4 ;
+  088:                      GET 9 ;
+  089:                      DUP 4 ;
+  090:                      NONE (pair address nat) ;
+  091:                      SWAP ;
+  092:                      UPDATE ;
+  093:                      UPDATE 9 ;
+  094:                      DIG 3 ;
+  095:                      GET 11 ;
+  096:                      DIG 3 ;
+  097:                      NONE (set address) ;
+  098:                      SWAP ;
+  099:                      UPDATE ;
+  100:                      UPDATE 11 ;
+  101:                      NIL operation ;
+  102:                      DIG 2 ;
+  103:                      CONS ;
+  104:                      PAIR } } }
+  105:            { IF_LEFT
+  106:                { DUP 2 ;
+  107:                  SENDER ;
+  108:                  PAIR ;
+  109:                  DIG 3 ;
+  110:                  SWAP ;
+  111:                  EXEC ;
+  112:                  NOT ;
+  113:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  114:                  LEVEL ;
+  115:                  SWAP ;
+  116:                  PAIR ;
+  117:                  DUP 2 ;
+  118:                  GET 12 ;
+  119:                  PUSH nat 1 ;
+  120:                  DUP 2 ;
+  121:                  ADD ;
+  122:                  DUP 4 ;
+  123:                  DIG 4 ;
+  124:                  GET 9 ;
+  125:                  DIG 4 ;
+  126:                  DIG 4 ;
+  127:                  SWAP ;
+  128:                  SOME ;
+  129:                  SWAP ;
+  130:                  UPDATE ;
+  131:                  UPDATE 9 ;
+  132:                  SWAP ;
+  133:                  UPDATE 12 ;
+  134:                  NIL operation ;
+  135:                  PAIR }
+  136:                { DUP 2 ;
+  137:                  SENDER ;
+  138:                  PAIR ;
+  139:                  DIG 3 ;
+  140:                  SWAP ;
+  141:                  EXEC ;
+  142:                  NOT ;
+  143:                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
+  144:                  DUP 2 ;
+  145:                  GET 9 ;
+  146:                  DUP 2 ;
+  147:                  GET ;
+  148:                  IF_NONE
+  149:                    { DROP 2 ; PUSH string "ProposalDoesNotExist" ; FAILWITH }
+  150:                    { DROP ;
+  151:                      SENDER ;
+  152:                      DUP 3 ;
+  153:                      GET 11 ;
+  154:                      DUP 3 ;
+  155:                      GET ;
+  156:                      IF_NONE { EMPTY_SET address } {} ;
+  157:                      DUP ;
+  158:                      DUP 3 ;
+  159:                      MEM ;
+  160:                      IF { PUSH string "AlreadyVoted" ; FAILWITH } {} ;
+  161:                      DUP 4 ;
+  162:                      DIG 4 ;
+  163:                      GET 11 ;
+  164:                      DIG 2 ;
+  165:                      DIG 3 ;
+  166:                      PUSH bool True ;
+  167:                      SWAP ;
+  168:                      UPDATE ;
+  169:                      DIG 3 ;
+  170:                      SWAP ;
+  171:                      SOME ;
+  172:                      SWAP ;
+  173:                      UPDATE ;
+  174:                      UPDATE 11 ;
+  175:                      NIL operation ;
+  176:                      PAIR } } } } }
+At line 113 characters 49 to 57,
+script reached FAILWITH instruction
+with "OnlySigner"
+Fatal error:
+  transfer simulation failed

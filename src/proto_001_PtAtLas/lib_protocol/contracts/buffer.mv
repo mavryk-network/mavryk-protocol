@@ -2,21 +2,47 @@
     (or (or (unit %default) (nat %executeProposal))
         (or (address %proposeTransfer) (nat %voteProposal))) ;
   storage
-    (pair (pair (pair (set %multisig_signers address) (nat %multisig_threshold))
-                (nat %proposal_count)
-                (map %proposals nat (pair address nat)))
+    (pair (address %multisig_signer1)
+          (address %multisig_signer2)
+          (address %multisig_signer3)
+          (nat %timelock_delay)
+          (map %proposals nat (pair address nat))
           (map %proposals_votes nat (set address))
-          (nat %timelock_delay)) ;
-  code { LAMBDA (pair address (set address)) bool { UNPAIR ; MEM } ;
+          (nat %proposal_count)) ;
+  code { LAMBDA
+           (pair address
+                 address
+                 address
+                 address
+                 nat
+                 (map nat (pair address nat))
+                 (map nat (set address))
+                 nat)
+           bool
+           { UNPAIR ;
+             DUP 2 ;
+             GET 5 ;
+             DUP 2 ;
+             COMPARE ;
+             EQ ;
+             DUP 3 ;
+             GET 3 ;
+             DUP 3 ;
+             COMPARE ;
+             EQ ;
+             DIG 3 ;
+             CAR ;
+             DIG 3 ;
+             COMPARE ;
+             EQ ;
+             OR ;
+             OR } ;
          SWAP ;
          UNPAIR ;
          IF_LEFT
            { IF_LEFT
                { DIG 2 ; DROP 2 ; NIL operation ; PAIR }
                { DUP 2 ;
-                 CAR ;
-                 CAR ;
-                 CAR ;
                  SENDER ;
                  PAIR ;
                  DIG 3 ;
@@ -25,9 +51,7 @@
                  NOT ;
                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
                  DUP 2 ;
-                 CAR ;
-                 CDR ;
-                 CDR ;
+                 GET 9 ;
                  DUP 2 ;
                  GET ;
                  IF_NONE
@@ -35,21 +59,16 @@
                    { UNPAIR ;
                      LEVEL ;
                      DUP 5 ;
-                     CDR ;
-                     CDR ;
+                     GET 7 ;
                      DIG 3 ;
                      ADD ;
                      SWAP ;
                      COMPARE ;
                      LT ;
                      IF { PUSH string "TimelockNotExpired" ; FAILWITH } {} ;
-                     DUP 3 ;
-                     CAR ;
-                     CAR ;
-                     CDR ;
+                     PUSH nat 2 ;
                      DUP 4 ;
-                     CDR ;
-                     CAR ;
+                     GET 11 ;
                      DUP 4 ;
                      GET ;
                      IF_NONE { EMPTY_SET address } {} ;
@@ -65,48 +84,26 @@
                      UNIT ;
                      TRANSFER_TOKENS ;
                      DUP 3 ;
-                     CDR ;
                      DUP 4 ;
-                     CAR ;
-                     CDR ;
-                     CDR ;
+                     GET 9 ;
                      DUP 4 ;
                      NONE (pair address nat) ;
                      SWAP ;
                      UPDATE ;
-                     DUP 5 ;
-                     CAR ;
-                     CDR ;
-                     CAR ;
-                     PAIR ;
-                     DUP 5 ;
-                     CAR ;
-                     CAR ;
-                     PAIR ;
-                     PAIR ;
-                     DUP ;
-                     CDR ;
-                     CDR ;
-                     DIG 4 ;
-                     CDR ;
-                     CAR ;
-                     DIG 4 ;
+                     UPDATE 9 ;
+                     DIG 3 ;
+                     GET 11 ;
+                     DIG 3 ;
                      NONE (set address) ;
                      SWAP ;
                      UPDATE ;
-                     PAIR ;
-                     SWAP ;
-                     CAR ;
-                     PAIR ;
+                     UPDATE 11 ;
                      NIL operation ;
                      DIG 2 ;
                      CONS ;
                      PAIR } } }
            { IF_LEFT
                { DUP 2 ;
-                 CAR ;
-                 CAR ;
-                 CAR ;
                  SENDER ;
                  PAIR ;
                  DIG 3 ;
@@ -118,53 +115,25 @@
                  SWAP ;
                  PAIR ;
                  DUP 2 ;
-                 CAR ;
-                 CDR ;
-                 CAR ;
+                 GET 12 ;
                  PUSH nat 1 ;
                  DUP 2 ;
                  ADD ;
                  DUP 4 ;
-                 CDR ;
-                 DUP 5 ;
-                 CAR ;
-                 CDR ;
-                 CDR ;
+                 DIG 4 ;
+                 GET 9 ;
                  DIG 4 ;
                  DIG 4 ;
                  SWAP ;
                  SOME ;
                  SWAP ;
                  UPDATE ;
-                 DUP 4 ;
-                 CAR ;
-                 CDR ;
-                 CAR ;
-                 PAIR ;
-                 DIG 3 ;
-                 CAR ;
-                 CAR ;
-                 PAIR ;
-                 PAIR ;
-                 DUP ;
-                 CDR ;
-                 DUP 2 ;
-                 CAR ;
-                 CDR ;
-                 CDR ;
-                 DIG 3 ;
-                 PAIR ;
-                 DIG 2 ;
-                 CAR ;
-                 CAR ;
-                 PAIR ;
-                 PAIR ;
+                 UPDATE 9 ;
+                 SWAP ;
+                 UPDATE 12 ;
                  NIL operation ;
                  PAIR }
                { DUP 2 ;
-                 CAR ;
-                 CAR ;
-                 CAR ;
                  SENDER ;
                  PAIR ;
                  DIG 3 ;
@@ -173,9 +142,7 @@
                  NOT ;
                  IF { PUSH string "OnlySigner" ; FAILWITH } {} ;
                  DUP 2 ;
-                 CAR ;
-                 CDR ;
-                 CDR ;
+                 GET 9 ;
                  DUP 2 ;
                  GET ;
                  IF_NONE
@@ -183,8 +150,7 @@
                    { DROP ;
                      SENDER ;
                      DUP 3 ;
-                     CDR ;
-                     CAR ;
+                     GET 11 ;
                      DUP 3 ;
                      GET ;
                      IF_NONE { EMPTY_SET address } {} ;
@@ -193,11 +159,8 @@
                      MEM ;
                      IF { PUSH string "AlreadyVoted" ; FAILWITH } {} ;
                      DUP 4 ;
-                     CDR ;
-                     CDR ;
-                     DUP 5 ;
-                     CDR ;
-                     CAR ;
+                     DIG 4 ;
+                     GET 11 ;
                      DIG 2 ;
                      DIG 3 ;
                      PUSH bool True ;
@@ -208,10 +171,7 @@
                      SOME ;
                      SWAP ;
                      UPDATE ;
-                     PAIR ;
-                     SWAP ;
-                     CAR ;
-                     PAIR ;
+                     UPDATE 11 ;
                      NIL operation ;
                      PAIR } } } } }
 

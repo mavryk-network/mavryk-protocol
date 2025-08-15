@@ -92,7 +92,7 @@ let make_blockchain_network ~alias ~chain_name ?old_chain_name
 let mainnet_user_activated_upgrades =
   [ (* (28082l, "PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt");
        (204761l, "PsddFKi32cMJ2qPjf43Qv5GDWLDPZb3T3bF6fLKiF5HtvHNU7aP");
-       (5898241l, "Psvo5ai2ecNdkgoter1dQci4xt77p4yP4YZ8M5UuFCVPEW8VwBC"); *) ]
+       (5898241l, "Pt3xk61AnW6KLDcYoEuCv1cWzGUYm52s9euGtrQ6RSTW1AufDbC"); *) ]
 
 (* END_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
 (* it patches the following lines when it needs to set the user activated

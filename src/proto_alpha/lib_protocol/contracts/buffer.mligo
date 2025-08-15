@@ -1,6 +1,9 @@
-type storage = {
-  multisig_threshold : nat;
-  multisig_signers : address set;
+type storage =
+  [@layout:comb]
+ {
+  multisig_signer1 : address;
+  multisig_signer2 : address;
+  multisig_signer3 : address;
   timelock_delay : nat;
   proposals : (nat, (address * nat)) map;
   proposals_votes : (nat, address set) map;
@@ -15,12 +18,12 @@ type parameter =
 
 type result = operation list * storage
 
-let is_signer (signer : address) (signers : address set) : bool =
-  Set.mem signer signers
+let is_signer (signer : address) (storage : storage) : bool =
+  signer = storage.multisig_signer1 || signer = storage.multisig_signer2 || signer = storage.multisig_signer3
 
 let proposeTransfer (destinationAddr : address) (storage : storage) : result =
   begin
-    if not (is_signer (Mavryk.get_sender ()) storage.multisig_signers)
+    if not (is_signer (Mavryk.get_sender ()) storage)
     then failwith "OnlySigner"
     else ();
     let proposal = (destinationAddr, Mavryk.get_level ()) in
@@ -33,7 +36,7 @@ let proposeTransfer (destinationAddr : address) (storage : storage) : result =
 
 let voteProposal (proposal_id : nat) (storage : storage) : result =
   begin
-    if not (is_signer (Mavryk.get_sender ()) storage.multisig_signers)
+    if not (is_signer (Mavryk.get_sender ()) storage)
     then failwith "OnlySigner"
     else ();
     match Map.find_opt proposal_id storage.proposals with
@@ -54,7 +57,7 @@ let voteProposal (proposal_id : nat) (storage : storage) : result =
 
 let executeProposal (proposal_id : nat) (storage : storage) : result =
   begin
-    if not (is_signer (Mavryk.get_sender ()) storage.multisig_signers)
+    if not (is_signer (Mavryk.get_sender ()) storage)
     then failwith "OnlySigner"
     else ();
     match Map.find_opt proposal_id storage.proposals with
@@ -69,7 +72,7 @@ let executeProposal (proposal_id : nat) (storage : storage) : result =
         | Some votes -> votes
         in
         let vote_count = Set.cardinal proposal_votes in
-        if vote_count < storage.multisig_threshold
+        if vote_count < 2n
         then failwith "InsufficientVotes"
         else ();
         let total_balance = Mavryk.get_balance () in
