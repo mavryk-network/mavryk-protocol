@@ -5168,6 +5168,7 @@ end = struct
         let modules =
           [
             ("test_alpha_context", true);
+            ("test_raw_level_repr", true);
             ("test_bond_id_repr", true);
             ("test_consensus_key", true);
             ("test_contract_repr", true);
@@ -5200,7 +5201,7 @@ end = struct
             ("test_adaptive_issuance", N.(number >= 001));
             ("test_adaptive_issuance_ema", N.(number >= 001));
             ("test_percentage", N.(number >= 002));
-            ("test_full_staking_balance_repr", N.(number >= 003));
+            ("test_full_staking_balance_repr", N.(number >= 002));
             ("test_slashing_percentage", N.(number >= 003));
           ]
           |> conditional_list
