@@ -58,18 +58,16 @@ let check_storage_field ~__LOC__ storage field_name expected_value =
   (* The storage is in Michelson format: Pair signer1 signer2 signer3 timelock_delay proposals proposals_votes proposal_count *)
   let storage_parts = split_storage storage in
   (* Skip "Pair" at the beginning *)
-  let storage_values = 
-    match storage_parts with
-    | "Pair" :: rest -> rest
-    | _ -> storage_parts
+  let storage_values =
+    match storage_parts with "Pair" :: rest -> rest | _ -> storage_parts
   in
   let rec find_field_by_position parts pos =
     match (parts, pos) with
-    | (value :: _, 0) -> Some value
-    | (_ :: rest, pos) -> find_field_by_position rest (pos - 1)
-    | ([], _) -> None
+    | value :: _, 0 -> Some value
+    | _ :: rest, pos -> find_field_by_position rest (pos - 1)
+    | [], _ -> None
   in
-  let field_pos = 
+  let field_pos =
     match field_name with
     | "multisig_signer1" -> 0
     | "multisig_signer2" -> 1
@@ -86,7 +84,12 @@ let check_storage_field ~__LOC__ storage field_name expected_value =
         (actual_value = expected_value)
           string
           ~__LOC__
-          ~error_msg:(sf "Expected %s to be %s, got %s" field_name expected_value actual_value))
+          ~error_msg:
+            (sf
+               "Expected %s to be %s, got %s"
+               field_name
+               expected_value
+               actual_value))
 
 let setup_basic_test ~__LOC__ client =
   let* buf_address =
@@ -105,9 +108,27 @@ let setup_basic_test ~__LOC__ client =
   let* buf_storage = get_buf_storage client ~hooks buf in
   Log.info "Buffer storage: %s" buf_storage ;
   (* Check initial storage fields *)
-  let () = check_storage_field ~__LOC__ buf_storage "multisig_signer1" "mv1S7tc6ktkym4X5TVaoE9MXTDPNKu3u7rHG" in
-  let () = check_storage_field ~__LOC__ buf_storage "multisig_signer2" "mv1T61BkX9NfyT7ncefeoPhgxVyrttgb2z8b" in
-  let () = check_storage_field ~__LOC__ buf_storage "multisig_signer3" "mv1HoMk44QjjAauiLbWkDfAbSPFzcP7rc182" in
+  let () =
+    check_storage_field
+      ~__LOC__
+      buf_storage
+      "multisig_signer1"
+      "mv1S7tc6ktkym4X5TVaoE9MXTDPNKu3u7rHG"
+  in
+  let () =
+    check_storage_field
+      ~__LOC__
+      buf_storage
+      "multisig_signer2"
+      "mv1T61BkX9NfyT7ncefeoPhgxVyrttgb2z8b"
+  in
+  let () =
+    check_storage_field
+      ~__LOC__
+      buf_storage
+      "multisig_signer3"
+      "mv1HoMk44QjjAauiLbWkDfAbSPFzcP7rc182"
+  in
   let () = check_storage_field ~__LOC__ buf_storage "timelock_delay" "128" in
   let () = check_storage_field ~__LOC__ buf_storage "proposal_count" "0" in
   (* Check initial balances *)
