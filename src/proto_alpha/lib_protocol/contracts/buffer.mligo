@@ -1,30 +1,96 @@
-type storage = address
+type storage = {
+  multisig_threshold : nat;
+  multisig_signers : address set;
+  timelock_delay : nat;
+  proposals : (nat, (address * nat)) map;
+  proposals_votes : (nat, address set) map;
+  proposal_count : nat;
+}
 
 type parameter =
   | Default of unit
-  | TransferFunds of address
+  | ProposeTransfer of address
+  | VoteProposal of nat
+  | ExecuteProposal of nat
 
 type result = operation list * storage
 
-let transferFunds (destinationAddr : address) (storage : storage) : result =
+let is_signer (signer : address) (signers : address set) : bool =
+  Set.mem signer signers
+
+let proposeTransfer (destinationAddr : address) (storage : storage) : result =
   begin
-    if Mavryk.get_sender () <> storage
-    then failwith "OnlyAdmin"
+    if not (is_signer (Mavryk.get_sender ()) storage.multisig_signers)
+    then failwith "OnlySigner"
     else ();
-    let total_balance = Mavryk.get_balance () in
-    let destination_contract_opt = Mavryk.get_contract_opt destinationAddr in
-    let destination_contract = 
-      match destination_contract_opt with
-        Some contract -> contract
-      | None -> failwith "ContractsDoesNotExist" 
-    in
-    let transfer_operation = Mavryk.transaction () (total_balance) destination_contract in
-    (([transfer_operation] : operation list), storage)
+    let proposal = (destinationAddr, Mavryk.get_level ()) in
+    let old_proposal_count = storage.proposal_count in
+    let new_proposal_count = old_proposal_count + 1n in
+    let new_proposals = Map.add old_proposal_count proposal storage.proposals in
+    let new_storage = { storage with proposals = new_proposals; proposal_count = new_proposal_count } in
+    (([], new_storage) : result)
+  end
+
+let voteProposal (proposal_id : nat) (storage : storage) : result =
+  begin
+    if not (is_signer (Mavryk.get_sender ()) storage.multisig_signers)
+    then failwith "OnlySigner"
+    else ();
+    match Map.find_opt proposal_id storage.proposals with
+    | None -> failwith "ProposalDoesNotExist"
+    | Some (_destinationAddr, _proposal_level) ->
+        let sender = Mavryk.get_sender () in
+        let proposal_votes = match Map.find_opt proposal_id storage.proposals_votes with
+        | None -> Set.empty
+        | Some votes -> votes
+        in
+        if Set.mem sender proposal_votes
+        then failwith "AlreadyVoted"
+        else ();
+        let new_proposal_votes = Set.add sender proposal_votes in
+        let new_storage = { storage with proposals_votes = Map.add proposal_id new_proposal_votes storage.proposals_votes } in
+        (([], new_storage) : result)
+  end
+
+let executeProposal (proposal_id : nat) (storage : storage) : result =
+  begin
+    if not (is_signer (Mavryk.get_sender ()) storage.multisig_signers)
+    then failwith "OnlySigner"
+    else ();
+    match Map.find_opt proposal_id storage.proposals with
+    | None -> failwith "ProposalDoesNotExist"
+    | Some (destinationAddr, proposal_level) ->
+        let now = Mavryk.get_level () in
+        if now < proposal_level + storage.timelock_delay
+        then failwith "TimelockNotExpired"
+        else ();
+        let proposal_votes = match Map.find_opt proposal_id storage.proposals_votes with
+        | None -> Set.empty
+        | Some votes -> votes
+        in
+        let vote_count = Set.cardinal proposal_votes in
+        if vote_count < storage.multisig_threshold
+        then failwith "InsufficientVotes"
+        else ();
+        let total_balance = Mavryk.get_balance () in
+        let destination_contract_opt = Mavryk.get_contract_opt destinationAddr in
+        let destination_contract = 
+          match destination_contract_opt with
+            Some contract -> contract
+          | None -> failwith "ContractsDoesNotExist" 
+        in
+        let transfer_operation = Mavryk.transaction () (total_balance) destination_contract in
+        let new_proposals = Map.remove proposal_id storage.proposals in
+        let new_proposals_votes = Map.remove proposal_id storage.proposals_votes in
+        let new_storage = { storage with proposals = new_proposals; proposals_votes = new_proposals_votes } in
+        (([transfer_operation] : operation list), new_storage)
   end
 
 let main (param, storage : parameter * storage) : result =
   begin
     match param with
     | Default _param -> (([] : operation list), storage)
-    | TransferFunds param -> transferFunds param storage
+    | ProposeTransfer param -> proposeTransfer param storage
+    | VoteProposal param -> voteProposal param storage
+    | ExecuteProposal param -> executeProposal param storage
   end

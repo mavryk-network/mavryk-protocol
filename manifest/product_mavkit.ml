@@ -5167,6 +5167,7 @@ end = struct
       let _unit =
         let modules =
           [
+            ("test_alpha_context", true);
             ("test_bond_id_repr", true);
             ("test_consensus_key", true);
             ("test_contract_repr", true);

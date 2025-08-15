@@ -53,8 +53,8 @@ val pp : Format.formatter -> t -> unit
 
 val pkh : pk -> t
 
-(** [check_not_tz4 pk] checks that [pk] is not a BLS address. *)
-val check_not_tz4 : Signature.public_key -> unit tzresult
+(** [check_not_mv4 pk] checks that [pk] is not a BLS address. *)
+val check_not_mv4 : Signature.public_key -> unit tzresult
 
 (** Initialize the consensus key when registering a delegate. *)
 val init :

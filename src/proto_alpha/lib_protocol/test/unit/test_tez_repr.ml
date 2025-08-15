@@ -87,7 +87,7 @@ module Test_tez_repr = struct
 
   let test_div () =
     let open Lwt_result_wrap_syntax in
-    let*?@ res = Tez_repr.(one *? 1L) in
+    let*?@ res = Tez_repr.(one /? 1L) in
     Assert.equal_int64 ~loc:__LOC__ (Tez_repr.to_mumav res) 1000000L
 
   let test_div_by_zero () =

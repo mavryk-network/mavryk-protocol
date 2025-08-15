@@ -755,7 +755,7 @@ module Protocol_treasury : sig
       with type t := Raw_context.t
        and type value = Contract_hash.t
 
-  (** Buffer contract that receives liquidity baking subsidy. **)
+  (** Protocol Treasury contract that receives liquidity baking subsidy. **)
   val address : Contract_hash.t
 
   (** Burn address. **)

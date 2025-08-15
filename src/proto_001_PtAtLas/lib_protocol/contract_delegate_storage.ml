@@ -41,7 +41,7 @@ let () =
     (function Forbidden_mv4_delegate d -> Some d | _ -> None)
     (fun d -> Forbidden_mv4_delegate d)
 
-let check_not_tz4 : Signature.Public_key_hash.t -> unit tzresult =
+let check_not_mv4 : Signature.Public_key_hash.t -> unit tzresult =
   let open Result_syntax in
   function
   | Bls mv4 -> tzfail (Forbidden_mv4_delegate mv4)
@@ -69,7 +69,7 @@ let is_delegate ctxt pkh =
 
 let init ctxt contract delegate =
   let open Lwt_result_syntax in
-  let*? () = check_not_tz4 delegate in
+  let*? () = check_not_mv4 delegate in
   let* ctxt = Storage.Contract.Delegate.init ctxt contract delegate in
   let delegate_contract = Contract_repr.Implicit delegate in
   let*! ctxt =
@@ -97,7 +97,7 @@ let delete ctxt contract =
 
 let set ctxt contract delegate =
   let open Lwt_result_syntax in
-  let*? () = check_not_tz4 delegate in
+  let*? () = check_not_mv4 delegate in
   let* ctxt = unlink ctxt contract in
   let*! ctxt = Storage.Contract.Delegate.add ctxt contract delegate in
   let delegate_contract = Contract_repr.Implicit delegate in
