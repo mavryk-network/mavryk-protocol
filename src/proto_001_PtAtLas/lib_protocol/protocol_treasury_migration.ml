@@ -11,7 +11,7 @@ let buffer_init_storage =
               String (1, "mv1S7tc6ktkym4X5TVaoE9MXTDPNKu3u7rHG");
               String (2, "mv1T61BkX9NfyT7ncefeoPhgxVyrttgb2z8b");
               String (3, "mv1HoMk44QjjAauiLbWkDfAbSPFzcP7rc182");
-              Int (4, Z.of_int 128); (* timelock_delay *)
+              Int (4, Z.of_int 17280); (* timelock_delay *)
               Seq (5, []); (* proposals *)
               Seq (6, []); (* proposals_votes *)
               Int (7, Z.zero); (* proposal_count *)

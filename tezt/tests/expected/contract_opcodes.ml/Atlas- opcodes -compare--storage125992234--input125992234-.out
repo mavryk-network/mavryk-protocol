@@ -1,5 +1,5 @@
 
-./mavkit-client --protocol Pt99p83W5DNukYt8s7p124SdiBY52Qxq2tekyEz5UgVAxDfn38P --mode mockup --no-base-dir-warnings run script michelson_test_scripts/opcodes/compare.mv on storage Unit and input Unit --level 1 --trace-stack
+./mavkit-client --protocol PspN8tY5GdDqBfSJ2YBtMid6a7xyeqsZij2sFvJtvRZUUjR6mNn --mode mockup --no-base-dir-warnings run script michelson_test_scripts/opcodes/compare.mv on storage Unit and input Unit --level 1 --trace-stack
 storage
   Unit
 emitted operations

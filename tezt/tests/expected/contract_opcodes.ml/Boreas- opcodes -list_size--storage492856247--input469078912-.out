@@ -1,5 +1,5 @@
 
-./mavkit-client --protocol Pt3xk61AnW6KLDcYoEuCv1cWzGUYm52s9euGtrQ6RSTW1AufDbC --mode mockup --no-base-dir-warnings run script michelson_test_scripts/opcodes/list_size.mv on storage 111 and input '{ 1 ; 2 ; 3 }' --level 1 --trace-stack
+./mavkit-client --protocol PtBMbSh6EbvSEcEEpzEQAUmWoKb8bqb8qKC5wUz9iFyXxWfQpt7 --mode mockup --no-base-dir-warnings run script michelson_test_scripts/opcodes/list_size.mv on storage 111 and input '{ 1 ; 2 ; 3 }' --level 1 --trace-stack
 storage
   3
 emitted operations
