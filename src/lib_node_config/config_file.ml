@@ -118,7 +118,7 @@ let blockchain_network_mainnet =
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK_MAINNET"
     ~user_activated_upgrades:mainnet_user_activated_upgrades
     ~user_activated_protocol_overrides:[]
-    ~default_bootstrap_peers:["mainnet.boot.mavryk.network"]
+    ~default_bootstrap_peers:["mainnet.boot.mavryk.network:9732"]
     ~dal_config:
       {
         activated = true;
