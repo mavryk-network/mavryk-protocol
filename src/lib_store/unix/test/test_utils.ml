@@ -66,7 +66,7 @@ let equal_metadata ?msg m1 m2 =
 
 let genesis_hash =
   Block_hash.of_b58check_exn
-    "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2"
+    "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F"
 
 let genesis =
   {

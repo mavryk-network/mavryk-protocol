@@ -113,7 +113,7 @@ Here is an example configuration file for Mainnet::
     "network": {
       "genesis": {
         "timestamp": "2018-06-30T16:07:32Z",
-        "block": "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2",
+        "block": "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F",
         "protocol": "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
       },
       "chain_name": "MAVRYK_MAINNET",

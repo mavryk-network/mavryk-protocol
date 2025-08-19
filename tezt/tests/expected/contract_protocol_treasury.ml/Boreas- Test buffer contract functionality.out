@@ -6,14 +6,14 @@
 Pair "mv1S7tc6ktkym4X5TVaoE9MXTDPNKu3u7rHG"
      "mv1T61BkX9NfyT7ncefeoPhgxVyrttgb2z8b"
      "mv1HoMk44QjjAauiLbWkDfAbSPFzcP7rc182"
-     128
+     17280
      {}
      {}
      0
 
 ./mavkit-client --mode mockup --wait none transfer 100 from bootstrap1 to KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH --burn-cap 10 --entrypoint default --arg Unit
 Node is bootstrapped.
-Estimated gas: 1539.279 units (will add 100 for safety)
+Estimated gas: 1539.375 units (will add 100 for safety)
 Estimated storage: no bytes added
 Operation successfully injected in the node.
 Operation hash is 'ooc65jB2oWBFmXcoppDcGbciVUnu8JspwVGqnHynShzVZtieGVM'
@@ -40,12 +40,12 @@ This sequence of operations was run:
         { 0x0000c6a7a24689c09b282704db2a530b2df0626af4f2 ;
           0x0000d1446bad7cdb0599630c9bdf14a3c8b8ddec56d4 ;
           0x00006b6560955d452b127c3de5eedf592c1e880d4c12 ;
-          128 ;
+          17280 ;
           {} ;
           {} ;
           0 }
-      Storage size: 1293 bytes
-      Consumed gas: 377.098
+      Storage size: 1294 bytes
+      Consumed gas: 377.152
       Balance updates:
         mv18Cw7psUrAAPBpXYd9CtCpHg9EgjHP9KTe ... -ṁ100
         KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH ... +ṁ100

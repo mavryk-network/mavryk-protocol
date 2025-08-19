@@ -388,7 +388,7 @@ module Config_file = struct
             [
               ("timestamp", `String "2018-06-30T16:07:32Z");
               ( "block",
-                `String "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2" );
+                `String "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F" );
               ("protocol", `String Protocol.genesis_hash);
             ] );
         ( "genesis_parameters",
@@ -410,7 +410,7 @@ module Config_file = struct
             [
               ("timestamp", `String "2022-01-25T15:00:00Z");
               ( "block",
-                `String "BLockGenesisGenesisGenesisGenesisGenesis1db77eJNeJ9" );
+                `String "BLockGenesisGenesisGenesisGenesisGenesis8a5a3c7Wpaw" );
               ("protocol", `String Protocol.genesis_hash);
             ] );
         ( "genesis_parameters",

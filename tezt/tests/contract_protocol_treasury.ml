@@ -129,7 +129,7 @@ let setup_basic_test ~__LOC__ client =
       "multisig_signer3"
       "mv1HoMk44QjjAauiLbWkDfAbSPFzcP7rc182"
   in
-  let () = check_storage_field ~__LOC__ buf_storage "timelock_delay" "128" in
+  let () = check_storage_field ~__LOC__ buf_storage "timelock_delay" "17280" in
   let () = check_storage_field ~__LOC__ buf_storage "proposal_count" "0" in
   (* Check initial balances *)
   let* () = check_balance ~__LOC__ client ~contract:buf (Tez.of_int 0) in

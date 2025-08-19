@@ -304,7 +304,13 @@ let test_export_import_snapshots =
   Cluster.clique cluster ;
   let* () = Cluster.start ~public:true cluster in
   let* client = Client.init ~endpoint:(Node archive_node) () in
-  let* () = Client.activate_protocol_and_wait ~protocol ~timestamp:(Client.At (Client.Time.of_notation_exn "2025-08-14T11:19:00Z")) client in
+  let* () =
+    Client.activate_protocol_and_wait
+      ~protocol
+      ~timestamp:
+        (Client.At (Client.Time.of_notation_exn "2025-08-14T11:19:00Z"))
+      client
+  in
   let* blocks_preservation_cycles, blocks_per_cycle, max_op_ttl =
     get_constants ~protocol client
   in
@@ -378,7 +384,13 @@ let test_drag_after_rolling_import =
   Cluster.clique cluster ;
   let* () = Cluster.start ~public:true cluster in
   let* client = Client.init ~endpoint:(Node archive_node) () in
-  let* () = Client.activate_protocol_and_wait ~protocol ~timestamp:(Client.At (Client.Time.of_notation_exn "2025-08-14T11:19:00Z")) client in
+  let* () =
+    Client.activate_protocol_and_wait
+      ~protocol
+      ~timestamp:
+        (Client.At (Client.Time.of_notation_exn "2025-08-14T11:19:00Z"))
+      client
+  in
   let* blocks_preservation_cycles, blocks_per_cycle, max_op_ttl =
     get_constants ~protocol client
   in
@@ -531,7 +543,14 @@ let test_info_command =
   @@ fun protocol ->
   let* node = Node.init ~name:"node" node_arguments in
   let* client = Client.init ~endpoint:(Node node) () in
-  let* () = Client.activate_protocol_and_wait ~protocol ~node ~timestamp:(Client.At (Client.Time.of_notation_exn "2025-08-14T11:19:00Z")) client in
+  let* () =
+    Client.activate_protocol_and_wait
+      ~protocol
+      ~node
+      ~timestamp:
+        (Client.At (Client.Time.of_notation_exn "2025-08-14T11:19:00Z"))
+      client
+  in
   let blocks_to_bake = 8 in
   let* () = bake_blocks node client ~blocks_to_bake in
   let* head = Node.RPC.call node @@ RPC.get_chain_block () in

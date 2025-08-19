@@ -41,7 +41,7 @@ let _mainnet_genesis =
       time = Time.Protocol.of_notation_exn "2018-06-30T16:07:32Z";
       block =
         Block_hash.of_b58check_exn
-          "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2";
+          "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F";
       protocol =
         Protocol_hash.of_b58check_exn
           "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";

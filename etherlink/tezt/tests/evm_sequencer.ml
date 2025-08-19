@@ -13,6 +13,9 @@
    Requirement:  make -f etherlink.mk build
                  npm install eth-cli
    Invocation:   dune exec etherlink/tezt/tests/main.exe -- --file evm_sequencer.ml
+
+   Note: This test works with the default delay fix in tezt/lib_tezos/client.ml that reduces
+   the default delay from 1 year to 60 seconds to work with the new 2025 genesis timestamps.
 *)
 
 open Sc_rollup_helpers
@@ -138,7 +141,14 @@ let setup_sequencer ?(devmode = true) ?config ?genesis_timestamp
     ?(sequencer = Constant.bootstrap1) ?sequencer_pool_address
     ?(kernel = Constant.WASM.evm_kernel) ?da_fee ?minimum_base_fee_per_gas
     ?preimages_dir protocol =
-  let* node, client = setup_l1 ?timestamp:genesis_timestamp protocol in
+  let* node, client =
+    setup_l1
+      ?timestamp:
+        (match genesis_timestamp with
+        | None -> Some Client.Now
+        | Some ts -> Some ts)
+      protocol
+  in
   let* l1_contracts = setup_l1_contracts client in
   let sc_rollup_node =
     Sc_rollup_node.create

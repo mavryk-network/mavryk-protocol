@@ -35,7 +35,7 @@ let make_data s =
   {|
   {
     "operation": {
-        "branch": "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2",
+        "branch": "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F",
         "contents": [
             {
                 "kind": "register_global_constant",
