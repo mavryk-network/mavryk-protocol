@@ -6077,7 +6077,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH""#,
+            r#""mv2bnrFkR35DRFJSd6j47RQjD4ZDEMm871LQ""#,
             "0x00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe",
             hex(
                 ContractMv2Hash,
@@ -6086,7 +6086,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r""#,
+            r#""mv3K1aqp6dd8E74tusAXuBCToLzcBXKSpLhJ""#,
             "0x00025cfa532f50de3e12befc0ad21603835dd7698d35",
             hex(
                 ContractMv3Hash,
@@ -6095,7 +6095,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN""#,
+            r#""mv4PDBsCMvHnU732MgAaq9VrCGKsqvgnE5Ua""#,
             "0x00036342f30484dd46b6074373aa6ddca9dfb70083d6",
             hex(
                 ContractMv4Hash,
@@ -6132,7 +6132,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%foo""#,
+            r#""mv2bnrFkR35DRFJSd6j47RQjD4ZDEMm871LQ%foo""#,
             "0x00010a053e3d8b622a993d3182e3f6cc5638ff5f12fe666f6f",
             hex(
                 ContractMv2Hash,
@@ -6141,7 +6141,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%foo""#,
+            r#""mv3K1aqp6dd8E74tusAXuBCToLzcBXKSpLhJ%foo""#,
             "0x00025cfa532f50de3e12befc0ad21603835dd7698d35666f6f",
             hex(
                 ContractMv3Hash,
@@ -6150,7 +6150,7 @@ mod typecheck_tests {
             ),
         );
         test_ok(
-            r#""tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%foo""#,
+            r#""mv4PDBsCMvHnU732MgAaq9VrCGKsqvgnE5Ua%foo""#,
             "0x00036342f30484dd46b6074373aa6ddca9dfb70083d6666f6f",
             hex(
                 ContractMv4Hash,
@@ -6654,11 +6654,11 @@ mod typecheck_tests {
     #[test]
     fn push_key_hash() {
         assert_eq!(
-            parse("PUSH key_hash \"tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw\"")
+            parse("PUSH key_hash \"mv19sorg3bw3PcVhh2exfi9wXWj3GZ9nCZvf\"")
                 .unwrap()
                 .typecheck_instruction(&mut Ctx::default(), None, &[]),
             Ok(Push(TypedValue::KeyHash(
-                "tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw".try_into().unwrap()
+                "mv19sorg3bw3PcVhh2exfi9wXWj3GZ9nCZvf".try_into().unwrap()
             )))
         );
         assert_eq!(
@@ -6666,7 +6666,7 @@ mod typecheck_tests {
                 .unwrap()
                 .typecheck_instruction(&mut Ctx::default(), None, &[]),
             Ok(Push(TypedValue::KeyHash(
-                "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN".try_into().unwrap()
+                "mv4PDBsCMvHnU732MgAaq9VrCGKsqvgnE5Ua".try_into().unwrap()
             )))
         );
     }

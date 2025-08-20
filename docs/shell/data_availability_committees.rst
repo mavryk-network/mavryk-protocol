@@ -179,14 +179,14 @@ Then a Committee Member node can be configured with the following command:
 
    mavkit-dac-node configure as committee member \
       with coordinator $COORDINATOR_RPC_ADDR \
-      and signer $TZ4_ADDRESS \
+      and signer $MV4_ADDRESS \
       --data-dir $DATA_DIR \
       --reveal-data-dir $REVEAL_DATA_DIR
 
 where:
 
    * ``$COORDINATOR_RPC_ADDR`` - RPC address of the coordinator node, in the format ``{host}:{port}``. eg. ``127.0.0.1:10832``
-   * ``$TZ4_ADDRESS`` - ``mv4`` address of the account of the committee member. eg. ``mv4PgpgNECnDyR8PZ2HsJZwCssL2WSSYHEtt``
+   * ``$MV4_ADDRESS`` - ``mv4`` address of the account of the committee member. eg. ``mv4PgpgNECnDyR8PZ2HsJZwCssL2WSSYHEtt``
    * ``$DATA_DIR`` - Optional directory containing the persisted store of the DAC node instance. It is advised to give different values in case multiple DAC nodes run on the same host. Defaults to ``~/.mavkit-dac-node``.
    * ``$REVEAL_DATA_DIR`` - Directory where pages are stored. It is advised to provide different values in case multiple DAC nodes run on the same host.
 

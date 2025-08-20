@@ -789,10 +789,10 @@ pub mod test_strategies {
             }
             T::Address => prop_oneof![
                 Just(V::Address(
-                    Address::from_base58_check("tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw").unwrap()
+                    Address::from_base58_check("mv19sorg3bw3PcVhh2exfi9wXWj3GZ9nCZvf").unwrap()
                 )),
                 Just(V::Address(
-                    Address::from_base58_check("tz1SNL5w4RFRbCWRMB4yDWvoRQrPQxZmNzeQ").unwrap()
+                    Address::from_base58_check("mv1DwvPQgB8qbxJ4UtRsFkszxeGwXYJ5oKFz").unwrap()
                 )),
                 Just(V::Address(
                     Address::from_base58_check("KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye").unwrap()
@@ -848,7 +848,7 @@ pub mod test_strategies {
                 Just(V::Signature( Signature::from_base58_check("BLsigAmLKnuw12tethjMmotFPaQ6u4XCKrVk6c15dkRXKkjDDjHywbhS3nd4rBT31yrCvvQrS2HntWhDRu7sX8Vvek53zBUwQHqfcHRiVKVj1ehq8CBYs1Z7XW2rkL2XkVNHua4cnvxY7F").unwrap())).boxed(),
             T::KeyHash =>
                 Just(V::KeyHash(
-                    KeyHash::from_base58_check("tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw").unwrap()
+                    KeyHash::from_base58_check("mv19sorg3bw3PcVhh2exfi9wXWj3GZ9nCZvf").unwrap()
                 )).boxed(),
             T::Bls12381Fr =>
                 Just(V::Bls12381Fr(bls::fr::Fr::from_big_int(&0.into()))).boxed(),

@@ -4504,7 +4504,7 @@ mod interpreter_tests {
     fn transfer_tokens() {
         let tt = super::TransferTokens {
             param: TypedValue::nat(42),
-            destination_address: addr::Address::try_from("tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw")
+            destination_address: addr::Address::try_from("mv19sorg3bw3PcVhh2exfi9wXWj3GZ9nCZvf")
                 .unwrap(),
             amount: 0,
         };
@@ -4839,7 +4839,7 @@ mod interpreter_tests {
         assert_eq!(
             stack,
             stk![V::KeyHash(
-                "tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw".try_into().unwrap()
+                "mv19sorg3bw3PcVhh2exfi9wXWj3GZ9nCZvf".try_into().unwrap()
             )]
         );
         assert_eq!(
@@ -5480,14 +5480,14 @@ mod interpreter_tests {
     #[test]
     fn implicit_account() {
         let mut ctx = Ctx::default();
-        let key_hash = KeyHash::try_from("tz3d9na7gPpt5jxdjGBFzoGQigcStHB8w1uq").unwrap();
+        let key_hash = KeyHash::try_from("mv3GzBqSxJwFaj4BDc2tu5k2xpA1NgcH3X3d").unwrap();
         let mut stack = stk![V::KeyHash(key_hash)];
         let start_milligas = ctx.gas.milligas();
         assert_eq!(interpret(&[ImplicitAccount], &mut ctx, &mut stack), Ok(()));
         assert_eq!(
             stack,
             stk![V::Contract(
-                super::Address::try_from("tz3d9na7gPpt5jxdjGBFzoGQigcStHB8w1uq").unwrap()
+                super::Address::try_from("mv3GzBqSxJwFaj4BDc2tu5k2xpA1NgcH3X3d").unwrap()
             ),]
         );
         assert_eq!(
@@ -5498,9 +5498,9 @@ mod interpreter_tests {
 
     #[test]
     fn voting_power() {
-        let key_hash_1 = KeyHash::try_from("tz3d9na7gPpt5jxdjGBFzoGQigcStHB8w1uq").unwrap();
-        let key_hash_2 = KeyHash::try_from("tz4T8ydHwYeoLHmLNcECYVq3WkMaeVhZ81h7").unwrap();
-        let key_hash_3 = KeyHash::try_from("tz3hpojUX9dYL5KLusv42SCBiggB77a2QLGx").unwrap();
+        let key_hash_1 = KeyHash::try_from("mv3GzBqSxJwFaj4BDc2tu5k2xpA1NgcH3X3d").unwrap();
+        let key_hash_2 = KeyHash::try_from("mv4XTg5LVRDbdQYhdkd7PEM3R9tWsiYc7ZJR").unwrap();
+        let key_hash_3 = KeyHash::try_from("mv3BgzBWNzhHWqw4ZsXj2rCFxTXiqV8b7dJK").unwrap();
 
         let mut ctx = Ctx::default();
         ctx.set_voting_powers([
@@ -5531,8 +5531,8 @@ mod interpreter_tests {
 
     #[test]
     fn total_voting_power() {
-        let key_hash_1 = KeyHash::try_from("tz3d9na7gPpt5jxdjGBFzoGQigcStHB8w1uq").unwrap();
-        let key_hash_2 = KeyHash::try_from("tz4T8ydHwYeoLHmLNcECYVq3WkMaeVhZ81h7").unwrap();
+        let key_hash_1 = KeyHash::try_from("mv3GzBqSxJwFaj4BDc2tu5k2xpA1NgcH3X3d").unwrap();
+        let key_hash_2 = KeyHash::try_from("mv4XTg5LVRDbdQYhdkd7PEM3R9tWsiYc7ZJR").unwrap();
         let mut ctx = Ctx::default();
         ctx.set_voting_powers([(key_hash_1, 30u32.into()), (key_hash_2, 50u32.into())]);
         let mut stack = stk![];

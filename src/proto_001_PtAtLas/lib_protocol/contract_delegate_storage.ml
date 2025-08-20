@@ -28,7 +28,7 @@ type error += (* `Permanent *) Forbidden_mv4_delegate of Bls.Public_key_hash.t
 let () =
   register_error_kind
     `Branch
-    ~id:"delegate.forbidden_tz4"
+    ~id:"delegate.forbidden_mv4"
     ~title:"Forbidden delegate"
     ~description:"Delegates are forbidden to be mv4 (BLS) accounts."
     ~pp:(fun ppf implicit ->

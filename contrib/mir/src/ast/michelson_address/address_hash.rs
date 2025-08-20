@@ -21,7 +21,7 @@ use mavryk_crypto_rs::hash::{
 macro_rules! address_hash_type_and_impls {
     ($($(#[$meta:meta])* $con:ident($ty:ident)),* $(,)*) => {
         /// A enum representing address hashes, like
-        /// `tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw` or
+        /// `mv19sorg3bw3PcVhh2exfi9wXWj3GZ9nCZvf` or
         /// `KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye`.
         #[derive(Debug, Clone, Eq, PartialOrd, Ord, PartialEq, Hash)]
         pub enum AddressHash {
