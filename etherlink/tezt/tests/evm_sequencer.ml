@@ -300,11 +300,9 @@ let test_remove_sequencer =
   @@ fun protocol ->
   (* TODO: Remove this temporary fix once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
      This was changed to use a timestamp that's a few seconds in the future to work with the new 2025 genesis timestamps.
-     
+
      Using a future timestamp ensures protocol activation happens without timestamp conflicts. *)
-  let genesis_timestamp =
-    Client.(Ago (Ptime.Span.of_int_s 60))
-  in
+  let genesis_timestamp = Client.(Ago (Ptime.Span.of_int_s 60)) in
   let* {
          sequencer;
          proxy;
@@ -481,11 +479,9 @@ let test_resilient_to_rollup_node_disconnect =
 
   (* TODO: Remove this temporary fix once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
      This was changed to use a timestamp that's a few seconds in the future to work with the new 2025 genesis timestamps.
-     
+
      Using a future timestamp ensures protocol activation happens without timestamp conflicts. *)
-  let genesis_timestamp =
-    Client.(Ago (Ptime.Span.of_int_s 60))
-  in
+  let genesis_timestamp = Client.(Ago (Ptime.Span.of_int_s 60)) in
   let* {
          sequencer;
          proxy;
@@ -1361,11 +1357,9 @@ let test_self_upgrade_kernel =
   @@ fun protocol ->
   (* TODO: Remove this temporary fix once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
      This was changed to use a timestamp that's a few seconds in the future to work with the new 2025 genesis timestamps.
-     
+
      Using a future timestamp ensures protocol activation happens without timestamp conflicts. *)
-  let genesis_timestamp =
-    Client.(Ago (Ptime.Span.of_int_s 60))
-  in
+  let genesis_timestamp = Client.(Ago (Ptime.Span.of_int_s 60)) in
   let activation_timestamp = "2025-08-20T13:18:37Z" in
 
   let* {
@@ -1447,11 +1441,9 @@ let test_upgrade_kernel_auto_sync =
   @@ fun protocol ->
   (* TODO: Remove this temporary fix once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
      This was changed to use a timestamp that's a few seconds in the future to work with the new 2025 genesis timestamps.
-     
+
      Using a future timestamp ensures protocol activation happens without timestamp conflicts. *)
-  let genesis_timestamp =
-    Client.(Ago (Ptime.Span.of_int_s 60))
-  in
+  let genesis_timestamp = Client.(Ago (Ptime.Span.of_int_s 60)) in
   let activation_timestamp = "2025-08-20T13:18:37Z" in
 
   let* {
@@ -1676,11 +1668,9 @@ let test_force_kernel_upgrade_too_early =
   @@ fun protocol ->
   (* TODO: Remove this temporary fix once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
      This was changed to use a timestamp that's a few seconds in the future to work with the new 2025 genesis timestamps.
-     
+
      Using a future timestamp ensures protocol activation happens without timestamp conflicts. *)
-  let genesis_timestamp =
-    Client.(Ago (Ptime.Span.of_int_s 60))
-  in
+  let genesis_timestamp = Client.(Ago (Ptime.Span.of_int_s 60)) in
   let* {
          sc_rollup_node;
          l1_contracts;
@@ -1742,11 +1732,9 @@ let test_force_kernel_upgrade =
   @@ fun protocol ->
   (* TODO: Remove this temporary fix once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
      This was changed to use a timestamp that's a few seconds in the future to work with the new 2025 genesis timestamps.
-     
+
      Using a future timestamp ensures protocol activation happens without timestamp conflicts. *)
-  let genesis_timestamp =
-    Client.(Ago (Ptime.Span.of_int_s 60))
-  in
+  let genesis_timestamp = Client.(Ago (Ptime.Span.of_int_s 60)) in
   let* {
          sc_rollup_node;
          l1_contracts;

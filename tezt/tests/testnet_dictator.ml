@@ -164,7 +164,8 @@ let register_test chain_id period =
           ~expect_failure:(chain_id = Chain_id_mainnet)
           ~key:dictator.public_key_hash
           ~proto_hash:Protocol.demo_counter_hash
-          ~force:(chain_id <> Chain_id_mainnet) (* Only use force on testnets, not mainnet *)
+          ~force:(chain_id <> Chain_id_mainnet)
+            (* Only use force on testnets, not mainnet *)
           client
       in
       Log.info "Baking until the migration block..." ;
