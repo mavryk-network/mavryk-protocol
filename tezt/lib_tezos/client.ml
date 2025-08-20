@@ -658,7 +658,7 @@ module Time = Mavryk_base.Time.System
    This was changed from 1 year (365 days) to 1 day to work with the new 2025 genesis timestamps.
    The original value was: Time.Span.of_seconds_exn (3600. *. 24. *. 365.)
    Using 1 daay ensures protocol activation happens close to the genesis timestamp (2025-08-14). *)
-let default_delay = Time.Span.of_seconds_exn (3600. *. 24.)
+let default_delay = Time.Span.of_seconds_exn (3600. *. 24. *. 1.)
 
 type timestamp = Now | Ago of Time.Span.t | At of Time.t
 

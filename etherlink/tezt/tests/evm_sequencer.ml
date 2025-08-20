@@ -298,6 +298,13 @@ let test_remove_sequencer =
     ~title:"Remove sequencer via sequencer admin contract"
     ~uses
   @@ fun protocol ->
+  (* TODO: Remove this temporary fix once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
+     This was changed to use a timestamp that's a few seconds in the future to work with the new 2025 genesis timestamps.
+     
+     Using a future timestamp ensures protocol activation happens without timestamp conflicts. *)
+  let genesis_timestamp =
+    Client.(Ago (Ptime.Span.of_int_s 60))
+  in
   let* {
          sequencer;
          proxy;
@@ -308,7 +315,7 @@ let test_remove_sequencer =
          observer;
          _;
        } =
-    setup_sequencer ~time_between_blocks:Nothing protocol
+    setup_sequencer ~genesis_timestamp ~time_between_blocks:Nothing protocol
   in
   (* Produce blocks to show that both the sequencer and proxy are not
      progressing. *)
@@ -472,6 +479,13 @@ let test_resilient_to_rollup_node_disconnect =
   let first_batch_blueprints_count = 5 in
   let ensure_rollup_node_publish = 5 in
 
+  (* TODO: Remove this temporary fix once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
+     This was changed to use a timestamp that's a few seconds in the future to work with the new 2025 genesis timestamps.
+     
+     Using a future timestamp ensures protocol activation happens without timestamp conflicts. *)
+  let genesis_timestamp =
+    Client.(Ago (Ptime.Span.of_int_s 60))
+  in
   let* {
          sequencer;
          proxy;
@@ -482,6 +496,7 @@ let test_resilient_to_rollup_node_disconnect =
          _;
        } =
     setup_sequencer
+      ~genesis_timestamp
       ~max_blueprints_lag
       ~max_blueprints_catchup
       ~catchup_cooldown
@@ -1344,11 +1359,14 @@ let test_self_upgrade_kernel =
     ~title:"EVM Kernel can upgrade to itself"
     ~uses:(fun protocol -> uses protocol)
   @@ fun protocol ->
-  (* Add a delay between first block and activation timestamp. *)
+  (* TODO: Remove this temporary fix once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
+     This was changed to use a timestamp that's a few seconds in the future to work with the new 2025 genesis timestamps.
+     
+     Using a future timestamp ensures protocol activation happens without timestamp conflicts. *)
   let genesis_timestamp =
-    Client.(At (Time.of_notation_exn "2020-01-01T00:00:00Z"))
+    Client.(Ago (Ptime.Span.of_int_s 60))
   in
-  let activation_timestamp = "2020-01-01T00:00:10Z" in
+  let activation_timestamp = "2025-08-20T13:18:37Z" in
 
   let* {
          sc_rollup_node;
@@ -1379,7 +1397,7 @@ let test_self_upgrade_kernel =
   let* _ =
     repeat 2 (fun () ->
         let* _ =
-          Rpc.produce_block ~timestamp:"2020-01-01T00:00:05Z" sequencer
+          Rpc.produce_block ~timestamp:"2025-08-20T13:18:42Z" sequencer
         in
         unit)
   in
@@ -1401,7 +1419,7 @@ let test_self_upgrade_kernel =
   let* _ =
     repeat 2 (fun () ->
         let* _ =
-          Rpc.produce_block ~timestamp:"2020-01-01T00:00:15Z" sequencer
+          Rpc.produce_block ~timestamp:"2025-08-20T13:18:52Z" sequencer
         in
         unit)
   and* _ = Evm_node.wait_for_successful_upgrade sequencer
@@ -1427,11 +1445,14 @@ let test_upgrade_kernel_auto_sync =
     ~title:"Rollup-node kernel upgrade is applied to the sequencer state."
     ~uses
   @@ fun protocol ->
-  (* Add a delay between first block and activation timestamp. *)
+  (* TODO: Remove this temporary fix once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
+     This was changed to use a timestamp that's a few seconds in the future to work with the new 2025 genesis timestamps.
+     
+     Using a future timestamp ensures protocol activation happens without timestamp conflicts. *)
   let genesis_timestamp =
-    Client.(At (Time.of_notation_exn "2020-01-01T00:00:00Z"))
+    Client.(Ago (Ptime.Span.of_int_s 60))
   in
-  let activation_timestamp = "2020-01-01T00:00:10Z" in
+  let activation_timestamp = "2025-08-20T13:18:37Z" in
 
   let* {
          sc_rollup_node;
@@ -1461,7 +1482,7 @@ let test_upgrade_kernel_auto_sync =
   let* _ =
     repeat 2 (fun () ->
         let*@ _ =
-          Rpc.produce_block ~timestamp:"2020-01-01T00:00:05Z" sequencer
+          Rpc.produce_block ~timestamp:"2025-08-20T13:18:42Z" sequencer
         in
         unit)
   in
@@ -1481,7 +1502,7 @@ let test_upgrade_kernel_auto_sync =
   let* _ =
     repeat 2 (fun () ->
         let*@ _ =
-          Rpc.produce_block ~timestamp:"2020-01-01T00:00:15Z" sequencer
+          Rpc.produce_block ~timestamp:"2025-08-20T13:18:52Z" sequencer
         in
         unit)
   in
@@ -1653,9 +1674,12 @@ let test_force_kernel_upgrade_too_early =
     ~title:"Force kernel upgrade fail too early"
     ~uses:(fun protocol -> Constant.WASM.basenet_evm_kernel :: uses protocol)
   @@ fun protocol ->
-  (* Add a delay between first block and activation timestamp. *)
+  (* TODO: Remove this temporary fix once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
+     This was changed to use a timestamp that's a few seconds in the future to work with the new 2025 genesis timestamps.
+     
+     Using a future timestamp ensures protocol activation happens without timestamp conflicts. *)
   let genesis_timestamp =
-    Client.(At (Time.of_notation_exn "2020-01-10T00:00:00Z"))
+    Client.(Ago (Ptime.Span.of_int_s 60))
   in
   let* {
          sc_rollup_node;
@@ -1684,7 +1708,7 @@ let test_force_kernel_upgrade_too_early =
 
   (* Activation timestamp is 1 day after the genesis. Therefore, it cannot
      be forced now. *)
-  let activation_timestamp = "2020-01-11T00:00:00Z" in
+  let activation_timestamp = "2025-08-21T13:23:31Z" in
   (* Sends the upgrade to L1 and sequencer. *)
   let* () =
     upgrade
@@ -1716,9 +1740,12 @@ let test_force_kernel_upgrade =
     ~title:"Force kernel upgrade"
     ~uses:(fun protocol -> Constant.WASM.basenet_evm_kernel :: uses protocol)
   @@ fun protocol ->
-  (* Add a delay between first block and activation timestamp. *)
+  (* TODO: Remove this temporary fix once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
+     This was changed to use a timestamp that's a few seconds in the future to work with the new 2025 genesis timestamps.
+     
+     Using a future timestamp ensures protocol activation happens without timestamp conflicts. *)
   let genesis_timestamp =
-    Client.(At (Time.of_notation_exn "2020-01-10T00:00:00Z"))
+    Client.(Ago (Ptime.Span.of_int_s 60))
   in
   let* {
          sc_rollup_node;
@@ -1747,7 +1774,7 @@ let test_force_kernel_upgrade =
 
   (* Activation timestamp is 1 day before the genesis. Therefore, it can
      be forced immediatly. *)
-  let activation_timestamp = "2020-01-09T00:00:00Z" in
+  let activation_timestamp = "2025-08-19T13:23:31Z" in
   (* Sends the upgrade to L1 and sequencer. *)
   let* () =
     upgrade

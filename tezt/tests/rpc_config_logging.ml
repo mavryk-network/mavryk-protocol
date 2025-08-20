@@ -33,10 +33,14 @@ let change_logging_configuration =
   @@ fun protocol ->
   let* main_node = Node.init ~name:"main_node" [] in
   let* client = Client.init ~endpoint:(Node main_node) () in
+  (* TODO: Remove this temporary fix once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
+     This was changed from 1,000,000 seconds (~11.6 days) to 86,400 seconds (1 day) to work with the new 2025 genesis timestamps.
+     
+     Using 1 day ensures protocol activation happens close to the genesis timestamp (2025-08-14). *)
   let* () =
     Client.activate_protocol
       ~protocol
-      ~timestamp:(Ago (Ptime.Span.of_int_s 1_000_000))
+      ~timestamp:(Ago (Ptime.Span.of_int_s 86400))
       client
   in
   let* () = repeat 2 (fun () -> Client.bake_for_and_wait client) in

@@ -272,7 +272,7 @@ let constants_mainnet =
                 Q.(5 // 100);
             (* 0.01% per 1% per day *)
             growth_rate = Q.(1 // 100);
-            center_dz = Q.(1 // 2);
+            center_dz = Q.(33 // 100);
             radius_dz = Q.(1 // 50);
           };
         activation_vote_enable = false;

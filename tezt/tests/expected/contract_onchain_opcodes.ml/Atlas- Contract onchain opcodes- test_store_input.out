@@ -76,7 +76,7 @@ This sequence of operations was run:
       Updated storage: "abcdefg"
       Storage size: 48 bytes
       Paid storage size diff: 7 bytes
-      Consumed gas: 1277.646
+      Consumed gas: 1277.990
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.00175
         storage fees ........................... +ṁ0.00175
@@ -115,7 +115,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: "xyz"
       Storage size: 44 bytes
-      Consumed gas: 1277.662
+      Consumed gas: 1278.006
 
 
 ./mavkit-client --mode mockup get contract storage for '[CONTRACT_HASH]'

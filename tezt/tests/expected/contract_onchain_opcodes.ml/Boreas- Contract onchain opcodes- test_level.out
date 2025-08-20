@@ -70,7 +70,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: 1
       Storage size: 40 bytes
-      Consumed gas: 1277.302
+      Consumed gas: 1277.646
 
 
 ./mavkit-client --mode mockup get contract storage for '[CONTRACT_HASH]'
@@ -81,7 +81,7 @@ This sequence of operations was run:
 
 ./mavkit-client --mode mockup --wait none transfer 0 from bootstrap1 to '[CONTRACT_HASH]' --burn-cap 10 --arg Unit
 Node is bootstrapped.
-Estimated gas: 1277.242 units (will add 100 for safety)
+Estimated gas: 1277.586 units (will add 100 for safety)
 Estimated storage: no bytes added
 Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
@@ -106,7 +106,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: 4
       Storage size: 40 bytes
-      Consumed gas: 1277.176
+      Consumed gas: 1277.520
 
 
 ./mavkit-client --mode mockup get contract storage for '[CONTRACT_HASH]'

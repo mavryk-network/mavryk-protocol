@@ -38,7 +38,7 @@ let fatal = true
 let _mainnet_genesis =
   Genesis.
     {
-      time = Time.Protocol.of_notation_exn "2018-06-30T16:07:32Z";
+      time = Time.Protocol.of_notation_exn "2025-08-14T11:18:23Z";
       block =
         Block_hash.of_b58check_exn
           "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F";
@@ -47,25 +47,13 @@ let _mainnet_genesis =
           "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
     }
 
-let _jakartanet_genesis =
-  Genesis.
-    {
-      time = Time.Protocol.of_notation_exn "2022-04-27T15:00:00Z";
-      block =
-        Block_hash.of_b58check_exn
-          "BLockGenesisGenesisGenesisGenesisGenesisbd16dciJxo9";
-      protocol =
-        Protocol_hash.of_b58check_exn
-          "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
-    }
-
 let basenet_genesis =
   Genesis.
     {
-      time = Time.Protocol.of_notation_exn "2024-02-23T09:40:24Z";
+      time = Time.Protocol.of_notation_exn "2025-08-14T11:46:32Z";
       block =
         Block_hash.of_b58check_exn
-          "BLockGenesisGenesisGenesisGenesisGenesisad134b8W1qK";
+          "BLockGenesisGenesisGenesisGenesisGenesis8a5a3c7Wpaw";
       protocol =
         Protocol_hash.of_b58check_exn
           "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";

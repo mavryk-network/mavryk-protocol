@@ -92,7 +92,7 @@ let make_blockchain_network ~alias ~chain_name ?old_chain_name
 let mainnet_user_activated_upgrades =
   [ (* (28082l, "PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt");
        (204761l, "PsddFKi32cMJ2qPjf43Qv5GDWLDPZb3T3bF6fLKiF5HtvHNU7aP");
-       (5898241l, "PtBMbSh6EbvSEcEEpzEQAUmWoKb8bqb8qKC5wUz9iFyXxWfQpt7"); *) ]
+       (5898241l, "PtFAdDvs4mJWkWQjnzwDMiV2yxjWxAk9dRqF26P52q8y1oEXrH4"); *) ]
 
 (* END_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
 (* it patches the following lines when it needs to set the user activated
@@ -170,7 +170,7 @@ let blockchain_network_sandbox =
           "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F";
       protocol =
         Protocol_hash.of_b58check_exn
-          "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
+          "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im";
     }
     ~genesis_parameters:
       (* Genesis public key corresponds to the following private key:

@@ -91,7 +91,7 @@ This sequence of operations was run:
       Updated storage: Unit
       Storage size: 158 bytes
       Paid storage size diff: 66 bytes
-      Consumed gas: 1758.314
+      Consumed gas: 1758.615
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.0165
         storage fees ........................... +ṁ0.0165
