@@ -2,54 +2,54 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name mavryk_protocol_environment_000_Ps9mPmXa)
- (public_name mavryk-protocol-000-Ps9mPmXa.protocol.environment)
+ (name mavryk_protocol_environment_000_PsUCFkqU)
+ (public_name mavryk-protocol-000-PsUCFkqU.protocol.environment)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
- (modules Mavryk_protocol_environment_000_Ps9mPmXa))
+ (modules Mavryk_protocol_environment_000_PsUCFkqU))
 
 (rule
- (targets mavryk_protocol_environment_000_Ps9mPmXa.ml)
+ (targets mavryk_protocol_environment_000_PsUCFkqU.ml)
  (action
   (write-file
    %{targets}
-   "module Name = struct let name = \"000-Ps9mPmXa\" end\ninclude Mavryk_protocol_environment.V0.Make(Name)()\n")))
+   "module Name = struct let name = \"000-PsUCFkqU\" end\ninclude Mavryk_protocol_environment.V0.Make(Name)()\n")))
 
 (library
- (name mavryk_raw_protocol_000_Ps9mPmXa)
- (public_name mavryk-protocol-000-Ps9mPmXa.protocol.raw)
+ (name mavryk_raw_protocol_000_PsUCFkqU)
+ (public_name mavryk-protocol-000-PsUCFkqU.protocol.raw)
  (instrumentation (backend bisect_ppx))
  (libraries
-  mavryk-protocol-000-Ps9mPmXa.protocol.environment)
+  mavryk-protocol-000-PsUCFkqU.protocol.environment)
  (library_flags (:standard -linkall))
  (flags
   (:standard)
   -w -6-7-9-16-29-32-51-68
   -nostdlib
   -nopervasives
-  -open Mavryk_protocol_environment_000_Ps9mPmXa
-  -open Mavryk_protocol_environment_000_Ps9mPmXa.Pervasives
-  -open Mavryk_protocol_environment_000_Ps9mPmXa.Error_monad)
+  -open Mavryk_protocol_environment_000_PsUCFkqU
+  -open Mavryk_protocol_environment_000_PsUCFkqU.Pervasives
+  -open Mavryk_protocol_environment_000_PsUCFkqU.Error_monad)
  (modules Data Services Main))
 
 (library
- (name mavryk_protocol_000_Ps9mPmXa)
- (public_name mavryk-protocol-000-Ps9mPmXa.protocol)
+ (name mavryk_protocol_000_PsUCFkqU)
+ (public_name mavryk-protocol-000-PsUCFkqU.protocol)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-proto-libs.protocol-environment
   mavkit-proto-libs.protocol-environment.sigs
-  mavryk-protocol-000-Ps9mPmXa.protocol.raw)
+  mavryk-protocol-000-PsUCFkqU.protocol.raw)
  (flags
   (:standard)
   -w -6-7-9-16-29-32-51-68
   -nopervasives)
- (modules Protocol Mavryk_protocol_000_Ps9mPmXa))
+ (modules Protocol Mavryk_protocol_000_PsUCFkqU))
 
 (install
- (package mavryk-protocol-000-Ps9mPmXa)
+ (package mavryk-protocol-000-PsUCFkqU)
  (section lib)
  (files (MAVRYK_PROTOCOL as protocol/raw/MAVRYK_PROTOCOL)))
 
@@ -58,14 +58,14 @@
  (action
   (write-file
    %{targets}
-   "\nlet hash = Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn \"PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP\"\nlet name = Mavryk_protocol_environment_000_Ps9mPmXa.Name.name\ninclude Mavryk_raw_protocol_000_Ps9mPmXa\ninclude Mavryk_raw_protocol_000_Ps9mPmXa.Main\n")))
+   "\nlet hash = Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn \"PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP\"\nlet name = Mavryk_protocol_environment_000_PsUCFkqU.Name.name\ninclude Mavryk_raw_protocol_000_PsUCFkqU\ninclude Mavryk_raw_protocol_000_PsUCFkqU.Main\n")))
 
 (rule
- (targets mavryk_protocol_000_Ps9mPmXa.ml)
+ (targets mavryk_protocol_000_PsUCFkqU.ml)
  (action
   (write-file
    %{targets}
-   "\nmodule Environment = Mavryk_protocol_environment_000_Ps9mPmXa\nmodule Protocol = Protocol\n")))
+   "\nmodule Environment = Mavryk_protocol_environment_000_PsUCFkqU\nmodule Protocol = Protocol\n")))
 
 (rule
  (alias runtest_compile_protocol)
@@ -80,18 +80,18 @@
    .)))
 
 (library
- (name mavryk_protocol_000_Ps9mPmXa_lifted)
- (public_name mavryk-protocol-000-Ps9mPmXa.protocol.lifted)
+ (name mavryk_protocol_000_PsUCFkqU_lifted)
+ (public_name mavryk-protocol-000-PsUCFkqU.protocol.lifted)
  (instrumentation (backend bisect_ppx))
  (libraries
   mavkit-proto-libs.protocol-environment
   mavkit-proto-libs.protocol-environment.sigs
-  mavryk-protocol-000-Ps9mPmXa.protocol)
+  mavryk-protocol-000-PsUCFkqU.protocol)
  (flags
   (:standard)
   -w -6-7-9-16-29-32-51-68
   -nopervasives
-  -open Mavryk_protocol_000_Ps9mPmXa)
+  -open Mavryk_protocol_000_PsUCFkqU)
  (modules Lifted_protocol))
 
 (rule
@@ -102,7 +102,7 @@
    "\ninclude Environment.Lift (Protocol)\nlet hash = Protocol.hash\n")))
 
 (library
- (name mavryk_protocol_000_Ps9mPmXa_functor)
+ (name mavryk_protocol_000_PsUCFkqU_functor)
  (libraries
   mavkit-proto-libs.protocol-environment
   mavkit-proto-libs.protocol-environment.sigs)
@@ -125,11 +125,11 @@
     (run %{bin:mavkit-protocol-compiler.mavkit-protocol-packer} %{src_dir})))))
 
 (library
- (name mavryk_embedded_protocol_000_Ps9mPmXa)
- (public_name mavryk-protocol-000-Ps9mPmXa.embedded-protocol)
+ (name mavryk_embedded_protocol_000_PsUCFkqU)
+ (public_name mavryk-protocol-000-PsUCFkqU.embedded-protocol)
  (instrumentation (backend bisect_ppx))
  (libraries
-  mavryk-protocol-000-Ps9mPmXa.protocol
+  mavryk-protocol-000-PsUCFkqU.protocol
   mavkit-shell-libs.protocol-updater
   mavkit-proto-libs.protocol-environment)
  (library_flags (:standard -linkall))
@@ -148,4 +148,4 @@
    %{targets}
    (chdir
     %{workspace_root}
-    (run %{bin:mavkit-embedded-protocol-packer} %{src_dir} 000_Ps9mPmXa)))))
+    (run %{bin:mavkit-embedded-protocol-packer} %{src_dir} 000_PsUCFkqU)))))

@@ -90,9 +90,7 @@ let make_blockchain_network ~alias ~chain_name ?old_chain_name
    when it needs to set the user activated upgrade levels for Mainnet. *)
 (* BEGIN_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
 let mainnet_user_activated_upgrades =
-  [ (* (28082l, "PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt");
-       (204761l, "PsddFKi32cMJ2qPjf43Qv5GDWLDPZb3T3bF6fLKiF5HtvHNU7aP");
-       (5898241l, "PtdFvDc2T3qpaRkwXkZfvFkiHq6dJLtojeSR64kH6CzM3CVRbo9"); *) ]
+  [(300l, "PtdFvDc2T3qpaRkwXkZfvFkiHq6dJLtojeSR64kH6CzM3CVRbo9")]
 
 (* END_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
 (* it patches the following lines when it needs to set the user activated
@@ -117,8 +115,7 @@ let blockchain_network_mainnet =
     ~incompatible_chain_name:"INCOMPATIBLE"
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK_MAINNET"
     ~user_activated_upgrades:mainnet_user_activated_upgrades
-    ~user_activated_protocol_overrides:
-      [(300l, "PtdFvDc2T3qpaRkwXkZfvFkiHq6dJLtojeSR64kH6CzM3CVRbo9")]
+    ~user_activated_protocol_overrides:[]
     ~default_bootstrap_peers:["mainnet.boot.mavryk.network:9732"]
     ~dal_config:
       {

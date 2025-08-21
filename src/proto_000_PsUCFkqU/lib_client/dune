@@ -2,15 +2,15 @@
 ; Edit file manifest/main.ml instead.
 
 (library
- (name mavryk_client_000_Ps9mPmXa)
- (public_name mavkit-protocol-000-Ps9mPmXa-libs.client)
+ (name mavryk_client_000_PsUCFkqU)
+ (public_name mavkit-protocol-000-PsUCFkqU-libs.client)
  (libraries
   mavkit-libs.base
   mavkit-libs.clic
   mavkit-shell-libs.shell-services
   mavkit-shell-libs.client-base
-  mavryk-protocol-000-Ps9mPmXa.protocol
-  mavryk-protocol-000-Ps9mPmXa.protocol.lifted
+  mavryk-protocol-000-PsUCFkqU.protocol
+  mavryk-protocol-000-PsUCFkqU.protocol.lifted
   mavkit-libs.rpc
   mavkit-shell-libs.client-commands
   mavkit-libs.stdlib-unix)
@@ -21,5 +21,5 @@
   -open Mavryk_base.TzPervasives.Error_monad_legacy
   -open Mavryk_shell_services
   -open Mavryk_client_base
-  -open Mavryk_protocol_000_Ps9mPmXa
+  -open Mavryk_protocol_000_PsUCFkqU
   -open Mavryk_client_commands))

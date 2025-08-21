@@ -12,7 +12,7 @@ depends: [
   "ocaml" { >= "4.14" }
   "mavkit-libs" { = version }
   "mavkit-shell-libs" { = version }
-  "mavryk-protocol-000-Ps9mPmXa" { = version }
+  "mavryk-protocol-000-PsUCFkqU" { = version }
 ]
 conflicts: [
   "stdcompat" { < "19" }
@@ -23,4 +23,4 @@ build: [
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
 available: os != "win32"
-synopsis: "Mavkit protocol 000-Ps9mPmXa libraries"
+synopsis: "Mavkit protocol 000-PsUCFkqU libraries"

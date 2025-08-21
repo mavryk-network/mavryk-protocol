@@ -21,7 +21,7 @@ depends: [
   "prometheus-app" { >= "1.2" }
   "lwt-exit"
   "uri" { >= "3.1.0" }
-  "mavryk-protocol-000-Ps9mPmXa" { = version }
+  "mavryk-protocol-000-PsUCFkqU" { = version }
   "mavryk-protocol-001-PtAtLas" { = version }
   "mavkit-protocol-001-PtAtLas-libs" { = version }
   "mavryk-protocol-002-PtBoreas" { = version }

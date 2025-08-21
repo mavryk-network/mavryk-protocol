@@ -18,7 +18,7 @@ mavkit-libs	all	6
 mavkit-node	exec	2
 mavkit-node-config	all	4
 mavkit-proto-libs	all	5
-mavkit-protocol-000-Ps9mPmXa-libs	all	3
+mavkit-protocol-000-PsUCFkqU-libs	all	3
 mavkit-protocol-001-PtAtLas-libs	all	2
 mavkit-protocol-002-PtBoreas-libs	all	3
 mavkit-protocol-alpha-libs	all	3
@@ -46,7 +46,7 @@ mavryk-dac-node-lib	all	3
 mavryk-dal-node-lib	all	4
 mavryk-dal-node-services	all	6
 mavryk-openapi	all	7
-mavryk-protocol-000-Ps9mPmXa	all	4
+mavryk-protocol-000-PsUCFkqU	all	4
 mavryk-protocol-001-PtAtLas	all	4
 mavryk-protocol-002-PtBoreas	all	4
 mavryk-protocol-alpha	all	5
