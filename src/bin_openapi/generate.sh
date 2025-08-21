@@ -18,7 +18,7 @@ smart_rollup_node=./mavkit-smart-rollup-node
 dal_node=./mavkit-dal-node
 
 # Protocol configuration.
-protocol_hash=PtFAdDvs4mJWkWQjnzwDMiV2yxjWxAk9dRqF26P52q8y1oEXrH4
+protocol_hash=PtdFvDc2T3qpaRkwXkZfvFkiHq6dJLtojeSR64kH6CzM3CVRbo9
 protocol_parameters=src/proto_002_PtBoreas/parameters/sandbox-parameters.json
 protocol_name=boreas
 

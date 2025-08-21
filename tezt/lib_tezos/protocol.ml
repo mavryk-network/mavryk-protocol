@@ -60,7 +60,7 @@ let tag protocol = String.lowercase_ascii (name protocol)
 let hash = function
   | Alpha -> "ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK"
   | Atlas -> "Ps8YM3CzL9FkjUhtegQS3GHkEFLFTvReFpqRkA4knDTPpmDxe3q"
-  | Boreas -> "PtFAdDvs4mJWkWQjnzwDMiV2yxjWxAk9dRqF26P52q8y1oEXrH4"
+  | Boreas -> "PtdFvDc2T3qpaRkwXkZfvFkiHq6dJLtojeSR64kH6CzM3CVRbo9"
 
 let genesis_hash = "ProtoGenesisGenesisGenesisGenesisGenesisGenesk612im"
 

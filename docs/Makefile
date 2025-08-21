@@ -20,7 +20,7 @@ PROTOCOLS     = $(NAMED_PROTOS) alpha
 
 # The following variables names are lowercase, so their names can be computed
 # from the names of the corresponding protocol directories
-boreas_long   = PtFAdDvs4mJWkWQjnzwDMiV2yxjWxAk9dRqF26P52q8y1oEXrH4
+boreas_long   = PtdFvDc2T3qpaRkwXkZfvFkiHq6dJLtojeSR64kH6CzM3CVRbo9
 atlas_long    = Ps8YM3CzL9FkjUhtegQS3GHkEFLFTvReFpqRkA4knDTPpmDxe3q
 alpha_long    = ProtoALphaALphaALphaALphaALphaALphaALphaALphaDdp3zK
 
