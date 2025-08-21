@@ -117,7 +117,8 @@ let blockchain_network_mainnet =
     ~incompatible_chain_name:"INCOMPATIBLE"
     ~sandboxed_chain_name:"SANDBOXED_MAVRYK_MAINNET"
     ~user_activated_upgrades:mainnet_user_activated_upgrades
-    ~user_activated_protocol_overrides:[]
+    ~user_activated_protocol_overrides:
+      [(300l, "PtdFvDc2T3qpaRkwXkZfvFkiHq6dJLtojeSR64kH6CzM3CVRbo9")]
     ~default_bootstrap_peers:["mainnet.boot.mavryk.network:9732"]
     ~dal_config:
       {
