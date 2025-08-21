@@ -63,11 +63,11 @@ For instance:
 ::
 
     $ mavkit-client rpc get /chains/main/blocks/head/metadata
-      "next_protocol": "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
+      "next_protocol": "PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP"
     $ mavkit-activate-alpha
       Injected BMV9KnSPE1yw
     $ mavkit-client rpc get /chains/main/blocks/head/metadata
-      "protocol": "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
+      "protocol": "PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP"
 
 We now have the possibility to send transactions to the sandboxed network.
 As the genesis block used to initialize the sandboxed network differs from the

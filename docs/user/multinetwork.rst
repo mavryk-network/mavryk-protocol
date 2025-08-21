@@ -114,7 +114,7 @@ Here is an example configuration file for Mainnet::
       "genesis": {
         "timestamp": "2018-06-30T16:07:32Z",
         "block": "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F",
-        "protocol": "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
+        "protocol": "PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP"
       },
       "chain_name": "MAVRYK_MAINNET",
       "incompatible_chain_name": "INCOMPATIBLE",

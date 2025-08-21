@@ -5,7 +5,7 @@ let () =
     Printf.printf
       "Usage: %s <network_name> <genesis_protocol_hash> [bootstrap_peer..]\n\
        Example: %s atlasnet \
-       Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P \
+       PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP \
        'atlasnet.rpc.mavryk.network:9732'\n\
        %!"
       Sys.argv.(0)

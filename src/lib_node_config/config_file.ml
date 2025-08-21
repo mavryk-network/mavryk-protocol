@@ -111,7 +111,7 @@ let blockchain_network_mainnet =
           "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F";
       protocol =
         Protocol_hash.of_b58check_exn
-          "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
+          "PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP";
     }
     ~chain_name:"MAVRYK_MAINNET"
     ~incompatible_chain_name:"INCOMPATIBLE"
@@ -136,7 +136,7 @@ let blockchain_network_basenet =
           "BLockGenesisGenesisGenesisGenesisGenesis8a5a3c7Wpaw";
       protocol =
         Protocol_hash.of_b58check_exn
-          "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
+          "PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP";
     }
     ~genesis_parameters:
       {

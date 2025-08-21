@@ -44,7 +44,7 @@ let _mainnet_genesis =
           "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F";
       protocol =
         Protocol_hash.of_b58check_exn
-          "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
+          "PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP";
     }
 
 let basenet_genesis =
@@ -56,7 +56,7 @@ let basenet_genesis =
           "BLockGenesisGenesisGenesisGenesisGenesis8a5a3c7Wpaw";
       protocol =
         Protocol_hash.of_b58check_exn
-          "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P";
+          "PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP";
     }
 
 let known_networks =
