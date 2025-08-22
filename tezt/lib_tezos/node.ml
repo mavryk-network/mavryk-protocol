@@ -386,7 +386,7 @@ module Config_file = struct
         ( "genesis",
           `O
             [
-              ("timestamp", `String "2018-06-30T16:07:32Z");
+              ("timestamp", `String "2025-08-14T11:18:23Z");
               ( "block",
                 `String "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F" );
               ("protocol", `String Protocol.genesis_hash);
@@ -408,7 +408,7 @@ module Config_file = struct
         ( "genesis",
           `O
             [
-              ("timestamp", `String "2022-01-25T15:00:00Z");
+              ("timestamp", `String "2025-08-14T11:46:32Z");
               ( "block",
                 `String "BLockGenesisGenesisGenesisGenesisGenesis8a5a3c7Wpaw" );
               ("protocol", `String Protocol.genesis_hash);

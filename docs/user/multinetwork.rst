@@ -112,7 +112,7 @@ Here is an example configuration file for Mainnet::
     "p2p": {},
     "network": {
       "genesis": {
-        "timestamp": "2018-06-30T16:07:32Z",
+        "timestamp": "2025-08-14T11:18:23Z",
         "block": "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F",
         "protocol": "PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP"
       },
@@ -120,22 +120,12 @@ Here is an example configuration file for Mainnet::
       "incompatible_chain_name": "INCOMPATIBLE",
       "sandboxed_chain_name": "SANDBOXED_MAVRYK_MAINNET",
       "user_activated_upgrades": [
-        {
-          "level": 28082,
-          "replacement_protocol": "PsYLVpVvgbLhAhoqAkMFUo6gudkJ9weNXhUYCiLDzcUpFpkk8Wt"
-        },
-        {
-          "level": 204761,
-          "replacement_protocol": "PsddFKi32cMJ2qPjf43Qv5GDWLDPZb3T3bF6fLKiF5HtvHNU7aP"
-        }
       ],
       "user_activated_protocol_overrides": [
       ],
       "default_bootstrap_peers":
         [
-         "boot.tzinit.org";
-         "boot.tzboot.net";
-         "boot.tzbeta.net";
+         "mainnet.dalboot.mavryk.network";
        ]
     }
   }

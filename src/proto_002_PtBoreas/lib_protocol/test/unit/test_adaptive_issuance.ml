@@ -159,23 +159,23 @@ let test_compute_bonus () =
   let small_bonus = Q.(1 // 200) (* 0.5% *) in
   (* Test deadzone *)
   let* () =
-    assert_eq ~loc:__LOC__ (compute_bonus Q.(48 // 100) small_bonus) small_bonus
+    assert_eq ~loc:__LOC__ (compute_bonus Q.(31 // 100) small_bonus) small_bonus
   in
   let* () =
-    assert_eq ~loc:__LOC__ (compute_bonus Q.(52 // 100) small_bonus) small_bonus
+    assert_eq ~loc:__LOC__ (compute_bonus Q.(35 // 100) small_bonus) small_bonus
   in
   let* () =
     assert_fun
       ~loc:__LOC__
       ~f:Q.gt
-      (compute_bonus Q.(47_9999 // 100_0000) small_bonus)
+      (compute_bonus Q.(30_9999 // 100_0000) small_bonus)
       small_bonus
   in
   let* () =
     assert_fun
       ~loc:__LOC__
       ~f:Q.lt
-      (compute_bonus Q.(52_0001 // 100_0000) small_bonus)
+      (compute_bonus Q.(35_0001 // 100_0000) small_bonus)
       small_bonus
   in
   (* Test variation amplitude *)
@@ -183,25 +183,25 @@ let test_compute_bonus () =
   let* () =
     assert_eq
       ~loc:__LOC__
-      (compute_bonus Q.(47 // 100) small_bonus)
+      (compute_bonus Q.(30 // 100) small_bonus)
       (Q.add small_bonus variation)
   in
   let* () =
     assert_eq
       ~loc:__LOC__
-      (compute_bonus Q.(40 // 100) small_bonus)
+      (compute_bonus Q.(23 // 100) small_bonus)
       (Q.add small_bonus (Q.mul variation (Q.of_int 8)))
   in
   let* () =
     assert_eq
       ~loc:__LOC__
-      (compute_bonus Q.(53 // 100) small_bonus)
+      (compute_bonus Q.(36 // 100) small_bonus)
       (Q.sub small_bonus variation)
   in
   let* () =
     assert_eq
       ~loc:__LOC__
-      (compute_bonus Q.(60 // 100) small_bonus)
+      (compute_bonus Q.(43 // 100) small_bonus)
       (Q.sub small_bonus (Q.mul variation (Q.of_int 8)))
   in
   (* Test bounds *)
@@ -219,7 +219,7 @@ let test_compute_bonus () =
   (* Test linearity wrt seconds_per_cycle *)
   let compute_growth seconds_per_cycle =
     let* computed_bonus =
-      compute_bonus ~seconds_per_cycle Q.(47 // 100) small_bonus
+      compute_bonus ~seconds_per_cycle Q.(30 // 100) small_bonus
     in
     return Q.(sub computed_bonus small_bonus)
   in

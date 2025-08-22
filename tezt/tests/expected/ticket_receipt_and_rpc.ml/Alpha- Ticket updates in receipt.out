@@ -33,7 +33,7 @@ This sequence of operations was run:
           Ticket 0x01c97ff8e547ecb335bdf832511361d68e928c6ec300 string "green" 1 }
       Storage size: 549 bytes
       Paid storage size diff: 349 bytes
-      Consumed gas: 3191.490
+      Consumed gas: 3191.748
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.08725
         storage fees ........................... +ṁ0.08725
@@ -61,7 +61,7 @@ This sequence of operations was run:
             (Some (Ticket 0x01c97ff8e547ecb335bdf832511361d68e928c6ec300 string "blue" 1))
           Storage size: 177 bytes
           Paid storage size diff: 116 bytes
-          Consumed gas: 2817.227
+          Consumed gas: 2817.399
           Balance updates:
             [PUBLIC_KEY_HASH] ... -ṁ0.029
             storage fees ........................... +ṁ0.029
@@ -81,7 +81,7 @@ This sequence of operations was run:
             (Some (Ticket 0x01c97ff8e547ecb335bdf832511361d68e928c6ec300 string "blue" 1))
           Storage size: 96 bytes
           Paid storage size diff: 50 bytes
-          Consumed gas: 1889.145
+          Consumed gas: 1889.317
           Balance updates:
             [PUBLIC_KEY_HASH] ... -ṁ0.0125
             storage fees ........................... +ṁ0.0125
