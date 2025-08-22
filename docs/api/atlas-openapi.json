@@ -8317,7 +8317,7 @@
                       "protocol": {
                         "type": "string",
                         "enum": [
-                          "Ps8YM3CzL9FkjUhtegQS3GHkEFLFTvReFpqRkA4knDTPpmDxe3q"
+                          "PtAtLasVEKaifqTNpsx9GtJ8DT27rVzZR4RhKsvNShPjeijEDwu"
                         ]
                       },
                       "payload_hash": {
@@ -26550,7 +26550,7 @@
           "next_protocol": {
             "type": "string",
             "enum": [
-              "Ps8YM3CzL9FkjUhtegQS3GHkEFLFTvReFpqRkA4knDTPpmDxe3q"
+              "PtAtLasVEKaifqTNpsx9GtJ8DT27rVzZR4RhKsvNShPjeijEDwu"
             ]
           },
           "test_chain_status": {
@@ -26616,7 +26616,7 @@
           "next_protocol": {
             "type": "string",
             "enum": [
-              "Ps8YM3CzL9FkjUhtegQS3GHkEFLFTvReFpqRkA4knDTPpmDxe3q"
+              "PtAtLasVEKaifqTNpsx9GtJ8DT27rVzZR4RhKsvNShPjeijEDwu"
             ]
           },
           "test_chain_status": {
@@ -27011,7 +27011,7 @@
           "protocol": {
             "type": "string",
             "enum": [
-              "Ps8YM3CzL9FkjUhtegQS3GHkEFLFTvReFpqRkA4knDTPpmDxe3q"
+              "PtAtLasVEKaifqTNpsx9GtJ8DT27rVzZR4RhKsvNShPjeijEDwu"
             ]
           },
           "branch": {
@@ -27040,7 +27040,7 @@
           "protocol": {
             "type": "string",
             "enum": [
-              "Ps8YM3CzL9FkjUhtegQS3GHkEFLFTvReFpqRkA4knDTPpmDxe3q"
+              "PtAtLasVEKaifqTNpsx9GtJ8DT27rVzZR4RhKsvNShPjeijEDwu"
             ]
           },
           "branch": {

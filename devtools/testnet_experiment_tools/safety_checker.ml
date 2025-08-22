@@ -185,7 +185,7 @@ let protocol_hash_parameter =
       | "atlas" ->
           return
           @@ Protocol_hash.of_b58check_exn
-               "Ps8YM3CzL9FkjUhtegQS3GHkEFLFTvReFpqRkA4knDTPpmDxe3q"
+               "PtAtLasVEKaifqTNpsx9GtJ8DT27rVzZR4RhKsvNShPjeijEDwu"
       | "alpha" ->
           return
           @@ Protocol_hash.of_b58check_exn
