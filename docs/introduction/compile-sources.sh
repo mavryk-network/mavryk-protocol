@@ -49,6 +49,7 @@ cd mavryk
 git checkout $BRANCH
 # [install Mavkit dependencies]
 opam init --bare
+opam install tezos-rust-libs.1.6 --no-checksums
 make build-deps
 # [compile sources]
 eval $(opam env)
