@@ -32,11 +32,6 @@ fi
 opamswitch="$OPAMSWITCH"
 unset OPAMSWITCH
 
-# Install deprecated packages
-echo "Install deprecated packages (hotfix)"
-opam install tezos-rust-libs.1.6 --no-checksums
-opam install http://download2.camlcity.org/download/findlib-1.9.6.tar.gz
-
 echo "Use opam repository commit: $full_opam_repository_tag"
 opam_repository="https://github.com/ocaml/opam-repository.git#$full_opam_repository_tag"
 opam repository set-url mavryk --dont-select "$opam_repository" ||
@@ -100,6 +95,11 @@ case $(opam --version) in
 esac
 
 export OPAMYES="${OPAMYES:=true}"
+
+# Install deprecated packages
+echo "Install deprecated packages (hotfix)"
+opam install tezos-rust-libs.1.6 --no-checksums
+opam install http://download2.camlcity.org/download/findlib-1.9.6.tar.gz
 
 # install_build_deps.sh calls install_build_deps.rust.sh which checks whether
 # Rust is installed with the right version and explains how to install it if
