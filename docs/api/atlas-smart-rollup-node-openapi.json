@@ -2,7 +2,7 @@
   "info":
     { "title": "Smart Rollup Node RPCs",
       "description":
-        "Smart Rollup Node RPC API for protocol PtAtLasVEKaifqTNpsx9GtJ8DT27rVzZR4RhKsvNShPjeijEDwu",
+        "Smart Rollup Node RPC API for protocol PtAtLasdzXg4XxeVNtWheo13nG4wHXP22qYMqFcT3fyBpWkFero",
       "version": "19.1 (dd3a30f891)" },
   "paths":
     { "/describe":

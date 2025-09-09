@@ -1,7 +1,7 @@
 
 ./mavkit-client rpc get /chains/main/blocks/head/metadata
-{ "protocol": "PtdFvDc2T3qpaRkwXkZfvFkiHq6dJLtojeSR64kH6CzM3CVRbo9",
-  "next_protocol": "PtdFvDc2T3qpaRkwXkZfvFkiHq6dJLtojeSR64kH6CzM3CVRbo9",
+{ "protocol": "PrqKfwvkCu5wmBbHJVR78KXYoq4M49DaW9NpG7ULSy82c8oUyzS",
+  "next_protocol": "PrqKfwvkCu5wmBbHJVR78KXYoq4M49DaW9NpG7ULSy82c8oUyzS",
   "test_chain_status": { "status": "not_running" }, "max_operations_ttl": 2,
   "max_operation_data_length": 32768, "max_block_header_length": 289,
   "max_operation_list_length":

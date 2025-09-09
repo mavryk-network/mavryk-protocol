@@ -179,7 +179,7 @@ mod tztrunner_tests {
                 parse_tzt_test(
                     r#"code { CHAIN_ID };
                     input {};
-                    chain_id "NetXdQprcVkpaWU";
+                    chain_id "NetXXAAR1wWQhhe";
                     output { Stack_elt chain_id 0x7a06a770 }"#,
                 )
                 .unwrap()

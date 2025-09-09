@@ -56,7 +56,7 @@ let make_data s =
         ],
         "signature": "sigQFenAPMsrMxVvgH1K33sJgj5VqD3gajK1sBJyEugCzZ9EgTvHGiXii9opAgkei7tY1qpJKyB37YGdGGMAWdgodPyDcQvg"
     },
-    "chain_id": "NetXdQprcVkpaWU"
+    "chain_id": "NetXXAAR1wWQhhe"
 }
   |}
 
