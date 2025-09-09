@@ -96,11 +96,6 @@ esac
 
 export OPAMYES="${OPAMYES:=true}"
 
-# Install deprecated packages
-echo "Install deprecated packages (hotfix)"
-opam install tezos-rust-libs.1.6 --no-checksums
-opam install http://download2.camlcity.org/download/findlib-1.9.6.tar.gz
-
 # install_build_deps.sh calls install_build_deps.rust.sh which checks whether
 # Rust is installed with the right version and explains how to install it if
 # needed, so here we only make opam acknowledge that we have a Rust compiler
