@@ -40,5 +40,5 @@ RUN . /tmp/version.sh && \
 RUN eval $(opam env) ; \
     . $HOME/.cargo/env ; \
     opam install tezos-rust-libs.1.6 --no-checksums ; \
-    opam install http://download2.camlcity.org/download/findlib-1.9.6.tar.gz ; \
+    opam install ocamlfind.1.9.6 ; \
     make build-deps
