@@ -39,6 +39,4 @@ RUN . /tmp/version.sh && \
     echo $opam_repository_tag > opam_repository_tag
 RUN eval $(opam env) ; \
     . $HOME/.cargo/env ; \
-    opam install tezos-rust-libs.1.6 --no-checksums ; \
-    opam install ocamlfind.1.9.6 ; \
     make build-deps

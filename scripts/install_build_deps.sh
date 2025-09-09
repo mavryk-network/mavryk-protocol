@@ -65,6 +65,10 @@ fi
 
 eval "$(opam env --shell=sh)"
 
+opam install --yes --no-checksums tezos-rust-libs.1.6
+opam pin add -n ocamlfind.1.9.6 http://download2.camlcity.org/download/findlib-1.9.6.tar.gz
+opam install --yes ocamlfind.1.9.6
+
 # Check if the default opam repo was set in this switch
 default_switch=
 if opam remote -s | grep -q default; then
