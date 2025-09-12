@@ -1,7 +1,7 @@
 
 ./mavkit-client rpc get /chains/main/blocks/head/metadata
-{ "protocol": "PtBzwViMCC1gfm98y5TDKqz2e3vjBXPAUoWu7jfEcN6yj2ZhCyT",
-  "next_protocol": "PtBzwViMCC1gfm98y5TDKqz2e3vjBXPAUoWu7jfEcN6yj2ZhCyT",
+{ "protocol": "PtBoreasK2KPuKbeYtXeEdudEHS7YcMFHE9amwheUc4kejTxgRi",
+  "next_protocol": "PtBoreasK2KPuKbeYtXeEdudEHS7YcMFHE9amwheUc4kejTxgRi",
   "test_chain_status": { "status": "not_running" }, "max_operations_ttl": 2,
   "max_operation_data_length": 32768, "max_block_header_length": 289,
   "max_operation_list_length":
@@ -121,22 +121,25 @@
               "origin": "migration" },
             { "kind": "burned", "category": "storage fees",
               "change": "64250", "origin": "migration" },
-            { "kind": "minted", "category": "subsidy", "change": "-55750",
+            { "kind": "minted", "category": "subsidy", "change": "-323500",
               "origin": "migration" },
             { "kind": "burned", "category": "storage fees",
-              "change": "55750", "origin": "migration" } ],
+              "change": "323500", "origin": "migration" } ],
         "originated_contracts": [ "[CONTRACT_HASH]" ],
-        "storage_size": "223", "paid_storage_size_diff": "223" },
+        "storage_size": "1294", "paid_storage_size_diff": "1294" },
       { "kind": "transaction",
         "storage":
-          { "bytes": "000055b89499feb92ad172435bb8ec189ae0fd241079" },
+          [ { "bytes": "0000c6a7a24689c09b282704db2a530b2df0626af4f2" },
+            { "bytes": "0000d1446bad7cdb0599630c9bdf14a3c8b8ddec56d4" },
+            { "bytes": "00006b6560955d452b127c3de5eedf592c1e880d4c12" },
+            { "int": "17280" }, [], [], { "int": "0" } ],
         "balance_updates":
           [ { "kind": "minted", "category": "subsidy", "change": "-833333",
               "origin": "subsidy" },
             { "kind": "contract",
               "contract": "[CONTRACT_HASH]",
               "change": "833333", "origin": "subsidy" } ],
-        "consumed_milligas": "1131991", "storage_size": "223" } ],
+        "consumed_milligas": "1369600", "storage_size": "1294" } ],
   "proposer_consensus_key": "[PUBLIC_KEY_HASH]",
   "baker_consensus_key": "[PUBLIC_KEY_HASH]",
   "consumed_milligas": "0", "dal_attestation": "0" }

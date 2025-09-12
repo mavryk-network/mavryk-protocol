@@ -142,13 +142,12 @@ module Test_raw_level_repr = struct
     let overflown_next_raw_level =
       Raw_level_repr.succ (Raw_level_repr.of_int32_exn int32_limit)
     in
-    if Int32.compare (Raw_level_repr.to_int32 overflown_next_raw_level) 0l >= 0
-    then return_unit
-    else
-      failwith
-        "succ of 0x7FFFFFFFl %a was expected to be non-negative"
-        Assert.Int32.pp
-        (overflown_next_raw_level |> Raw_level_repr.to_int32)
+    (* When we increment the maximum int32 (0x7FFFFFFFl), it wraps around to the minimum int32 (-2147483648) *)
+    let expected_wrapped_value = -2147483648l in
+    Assert.equal_int32
+      ~loc:__LOC__
+      (overflown_next_raw_level |> Raw_level_repr.to_int32)
+      expected_wrapped_value
 end
 
 let tests =
@@ -173,10 +172,6 @@ let tests =
       "Raw_level_repr: int32 interop"
       `Quick
       Test_raw_level_repr.test_int32_interop;
-  ]
-
-let skipped_tests =
-  [
     tztest
       "Raw_level_repr.succ: overflow"
       `Quick

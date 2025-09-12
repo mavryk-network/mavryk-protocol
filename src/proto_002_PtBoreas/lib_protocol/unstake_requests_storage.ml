@@ -149,7 +149,7 @@ let prepare_finalize_unstake ctxt ~for_next_cycle_use_only_after_slashing
           in
           let slashing_history_o =
             Option.value slashing_history_opt_o ~default:[]
-            |> List.map (fun (a, b) -> (a, Percentage.convert_from_o_to_p b))
+            |> List.map (fun (a, b) -> (a, Percentage.convert_from_a_to_b b))
           in
 
           let slashing_history =
@@ -227,7 +227,7 @@ module For_RPC = struct
     in
     let slashing_history_o =
       Option.value slashing_history_opt ~default:[]
-      |> List.map (fun (a, b) -> (a, Percentage.convert_from_o_to_p b))
+      |> List.map (fun (a, b) -> (a, Percentage.convert_from_a_to_b b))
     in
 
     let slashing_history =

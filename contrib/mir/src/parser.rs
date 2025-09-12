@@ -373,8 +373,8 @@ mod tests {
     #[test]
     fn address_ty_push() {
         assert_eq!(
-            parse("PUSH address \"tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw\"").unwrap(),
-            app!(PUSH[app!(address), "tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw"])
+            parse("PUSH address \"mv19sorg3bw3PcVhh2exfi9wXWj3GZ9nCZvf\"").unwrap(),
+            app!(PUSH[app!(address), "mv19sorg3bw3PcVhh2exfi9wXWj3GZ9nCZvf"])
         );
     }
 }

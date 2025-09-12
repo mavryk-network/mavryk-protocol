@@ -43,6 +43,8 @@
   -open Mavryk_crypto_dal
   -open Mavryk_webassembly_interpreter_extra)
  (modules
+  test_alpha_context
+  test_raw_level_repr
   test_bond_id_repr
   test_consensus_key
   test_contract_repr

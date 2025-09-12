@@ -2172,7 +2172,7 @@ end
    {!Delegate_slashed_deposits_storage}, {!Delegate_cycles},
    {!Delegate_rewards}, and {!Forbidden_delegates_storage}. *)
 module Delegate : sig
-  val check_not_tz4 : Signature.public_key_hash -> unit tzresult
+  val check_not_mv4 : Signature.public_key_hash -> unit tzresult
 
   val frozen_deposits_limit :
     context -> public_key_hash -> Tez.t option tzresult Lwt.t
@@ -2272,7 +2272,7 @@ module Delegate : sig
     context -> public_key_hash -> Cycle.t tzresult Lwt.t
 
   module Consensus_key : sig
-    val check_not_tz4 : Signature.public_key -> unit tzresult
+    val check_not_mv4 : Signature.public_key -> unit tzresult
 
     val active_pubkey :
       context -> public_key_hash -> Consensus_key.pk tzresult Lwt.t

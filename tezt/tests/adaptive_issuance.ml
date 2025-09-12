@@ -867,10 +867,10 @@ let test_staking =
         let* bu = Operation_receipt.get_block_metadata client_1 in
         let* bu = Operation_receipt.Balance_updates.from_result [bu] in
 
-        let amount_baker_share = 834 in
-        let amount_delegation = 7877 in
-        let amount_edge = 4 in
-        let amount_stakers = 4 in
+        let amount_baker_share = 531 in
+        let amount_delegation = 5012 in
+        let amount_edge = 3 in
+        let amount_stakers = 2 in
         (* check rewards *)
         check_balance_updates
           bu
@@ -1121,20 +1121,20 @@ let test_staking =
 
   (* check slashed and rewarded amounts *)
   (* total amounts *)
-  let total_amount_rewarded = 1450001868 in
-  let total_amount_slashed = 8700011216 in
+  let total_amount_rewarded = 1450001818 in
+  let total_amount_slashed = 8700010916 in
 
   (* slashed stakers (including baker) unstake deposit *)
   let amount_rewarded_from_unstake_stakers_deposits = 7142857 in
-  let amount_slashed_from_unstake_stakers_deposits = 42857145 in
+  let amount_slashed_from_unstake_stakers_deposits = 42857144 in
 
   (* slashed  stake *)
   let amount_rewarded_from_stakers_deposits = 7178393 in
   let amount_slashed_from_stakers_deposits = 43070362 in
 
   (* slashing baker (bootstrap2) stake*)
-  let amount_rewarded_from_baker_deposits = 1435680618 in
-  let amount_slashed_from_baker_deposits = 8614083709 in
+  let amount_rewarded_from_baker_deposits = 1435680568 in
+  let amount_slashed_from_baker_deposits = 8614083410 in
 
   assert_with_roundings
     ~__LOC__

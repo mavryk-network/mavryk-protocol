@@ -4,9 +4,9 @@ let () =
   if Array.length Sys.argv <= 3 then (
     Printf.printf
       "Usage: %s <network_name> <genesis_protocol_hash> [bootstrap_peer..]\n\
-       Example: %s dalphanet \
-       Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P \
-       'paris.bootzero.tzalpha.net:19732'\n\
+       Example: %s atlasnet \
+       PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP \
+       'atlasnet.rpc.mavryk.network:9732'\n\
        %!"
       Sys.argv.(0)
       Sys.argv.(0) ;

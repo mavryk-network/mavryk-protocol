@@ -91,7 +91,7 @@ This sequence of operations was run:
         { Ticket 0x01435e1f410af86271d7c8c3c98a8708157a45269200 string "A" 1 }
       Storage size: 188 bytes
       Paid storage size diff: 113 bytes
-      Consumed gas: 1751.539
+      Consumed gas: 1751.840
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.02825
         storage fees ........................... +ṁ0.02825
@@ -133,7 +133,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: {}
       Storage size: 141 bytes
-      Consumed gas: 1941.639
+      Consumed gas: 1941.940
       Ticket updates:
         Ticketer: [CONTRACT_HASH]
         Content type: string
@@ -174,7 +174,7 @@ This sequence of operations was run:
       Updated storage:
         { Ticket 0x01435e1f410af86271d7c8c3c98a8708157a45269200 string "B" 1 }
       Storage size: 188 bytes
-      Consumed gas: 1751.505
+      Consumed gas: 1751.806
       Ticket updates:
         Ticketer: [CONTRACT_HASH]
         Content type: string
@@ -217,7 +217,7 @@ This sequence of operations was run:
           Ticket 0x01435e1f410af86271d7c8c3c98a8708157a45269200 string "B" 1 }
       Storage size: 235 bytes
       Paid storage size diff: 113 bytes
-      Consumed gas: 2433.594
+      Consumed gas: 2433.895
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.02825
         storage fees ........................... +ṁ0.02825

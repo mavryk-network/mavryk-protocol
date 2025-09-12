@@ -33,7 +33,7 @@ This sequence of operations was run:
           Pair 0x01c97ff8e547ecb335bdf832511361d68e928c6ec300 (Pair "green" 1) }
       Storage size: 525 bytes
       Paid storage size diff: 325 bytes
-      Consumed gas: 3192.594
+      Consumed gas: 3192.852
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.08125
         storage fees ........................... +ṁ0.08125
@@ -61,7 +61,7 @@ This sequence of operations was run:
             (Some (Pair 0x01c97ff8e547ecb335bdf832511361d68e928c6ec300 (Pair "blue" 1)))
           Storage size: 169 bytes
           Paid storage size diff: 108 bytes
-          Consumed gas: 2817.675
+          Consumed gas: 2817.847
           Balance updates:
             [PUBLIC_KEY_HASH] ... -ṁ0.027
             storage fees ........................... +ṁ0.027
@@ -81,7 +81,7 @@ This sequence of operations was run:
             (Some (Pair 0x01c97ff8e547ecb335bdf832511361d68e928c6ec300 (Pair "blue" 1)))
           Storage size: 88 bytes
           Paid storage size diff: 42 bytes
-          Consumed gas: 1889.353
+          Consumed gas: 1889.525
           Balance updates:
             [PUBLIC_KEY_HASH] ... -ṁ0.0105
             storage fees ........................... +ṁ0.0105

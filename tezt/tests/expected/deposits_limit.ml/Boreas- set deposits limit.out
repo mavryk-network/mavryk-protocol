@@ -2,10 +2,10 @@ Node is bootstrapped.
 Estimated gas: 168.052 units (will add 0 for safety)
 Estimated storage: no bytes added
 Operation successfully injected in the node.
-Operation hash is 'oogPg9fm3Wo8Fub69ehKvyhmefv442MSvvKME7awo3zvZVAsuTo'
+Operation hash is 'ooM8vCxa1MtdRCVww6ci1pnriRhPRVSWDxCLAEAB2tA51ccjFF9'
 NOT waiting for the operation to be included.
 Use command
-  mavkit-client wait for oogPg9fm3Wo8Fub69ehKvyhmefv442MSvvKME7awo3zvZVAsuTo to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2
+  mavkit-client wait for ooM8vCxa1MtdRCVww6ci1pnriRhPRVSWDxCLAEAB2tA51ccjFF9 to be included --confirmations 1 --branch BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F
 and/or an external block explorer to make sure that it has been included.
 This sequence of operations was run:
   Manager signed operations:

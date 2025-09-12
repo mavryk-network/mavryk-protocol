@@ -1,7 +1,7 @@
 
 ./mavkit-client --wait none transfer 0 from bootstrap1 to '[CONTRACT_HASH]' --burn-cap 1 --arg '"[SMART_ROLLUP_HASH]"'
 Node is bootstrapped.
-Estimated gas: 2783.783 units (will add 100 for safety)
+Estimated gas: 2784.084 units (will add 100 for safety)
 Estimated storage: 132 bytes added (will add 20 for safety)
 Operation successfully injected in the node.
 Operation hash is '[OPERATION_HASH]'
@@ -16,7 +16,7 @@ This sequence of operations was run:
     Fee to the protocol treasury: ṁ0.000146
     Fee to the burn address: ṁ0.000292
     Expected counter: 3
-    Gas limit: 2884
+    Gas limit: 2885
     Storage limit: 152 bytes
     Balance updates:
       [PUBLIC_KEY_HASH] ... -ṁ0.000584
@@ -30,7 +30,7 @@ This sequence of operations was run:
       Updated storage: Unit
       Storage size: 197 bytes
       Paid storage size diff: 132 bytes
-      Consumed gas: 2673.818
+      Consumed gas: 2674.119
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.033
         storage fees ........................... +ṁ0.033
@@ -39,8 +39,8 @@ This sequence of operations was run:
           Amount: ṁ0
           From: [CONTRACT_HASH]
           To: [SMART_ROLLUP_HASH]
-          Parameter: { Pair 0x01f6719dc3bd86b5c531d6551553c467a31a54717800 (Pair "Ticket2" 1) ;
-                       Pair 0x01f6719dc3bd86b5c531d6551553c467a31a54717800 (Pair "Ticket" 1) }
+          Parameter: { Pair 0x018d33f06ab6208f37ba62e67aa4dff8f43771691200 (Pair "Ticket2" 1) ;
+                       Pair 0x018d33f06ab6208f37ba62e67aa4dff8f43771691200 (Pair "Ticket" 1) }
           This transaction was successfully applied
           Consumed gas: 109.932
           Ticket updates:

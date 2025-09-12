@@ -290,16 +290,16 @@ let constants_mainnet : Constants.Parametric.t =
           {
             issuance_ratio_final_min = Q.(0_25 // 100_00);
             issuance_ratio_final_max = Q.(10 // 100);
-            issuance_ratio_initial_min = Q.(45 // 1000);
-            issuance_ratio_initial_max = Q.(55 // 1000);
-            initial_period = 10;
-            transition_period = 50;
+            issuance_ratio_initial_min = Q.(25 // 1000);
+            issuance_ratio_initial_max = Q.(35 // 1000);
+            initial_period = 130;
+            transition_period = 70;
             max_bonus =
               Protocol.Issuance_bonus_repr.max_bonus_parameter_of_Q_exn
                 Q.(5 // 100);
             (* 0.01% per 1% per day *)
             growth_rate = Q.(1 // 100);
-            center_dz = Q.(1 // 2);
+            center_dz = Q.(33 // 100);
             radius_dz = Q.(1 // 50);
           };
         activation_vote_enable = true;

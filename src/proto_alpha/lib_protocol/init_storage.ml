@@ -227,7 +227,7 @@ let reset_adaptive_issuance_ema_for_b ctxt =
 
 (** Updates the total supply with refined estimation at the activation
     of B using measures from
-    https://gitlab.com/tezos/tezos/-/merge_requests/11978.
+    dune exec ./devtools/yes_wallet/yes_wallet.exe -- --level 16385 compute total supply from <mainnet base directory>.
 
     Remove me in C. *)
 let update_total_supply_for_b chain_id ctxt =
@@ -236,7 +236,7 @@ let update_total_supply_for_b chain_id ctxt =
   if Chain_id.equal Constants_repr.mainnet_id chain_id then
     let* current_total_supply = Storage.Contract.Total_supply.get ctxt in
     let*? updated_total_supply =
-      Tez_repr.(current_total_supply +? of_mumav_exn 16458634911983L)
+      Tez_repr.(current_total_supply +? of_mumav_exn 0L)
     in
     let*! ctxt = Storage.Contract.Total_supply.add ctxt updated_total_supply in
     return ctxt

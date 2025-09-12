@@ -654,7 +654,11 @@ let import_keys_from_mnemonic ?endpoint ?force ?passphrase ?encryption_password
 
 module Time = Mavryk_base.Time.System
 
-let default_delay = Time.Span.of_seconds_exn (3600. *. 24. *. 365.)
+(* TODO: Remove this temporary fix once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
+   This was changed from 1 year (365 days) to 1 day to work with the new 2025 genesis timestamps.
+   The original value was: Time.Span.of_seconds_exn (3600. *. 24. *. 365.)
+   Using 1 daay ensures protocol activation happens close to the genesis timestamp (2025-08-14). *)
+let default_delay = Time.Span.of_seconds_exn (3600. *. 24. *. 1.)
 
 type timestamp = Now | Ago of Time.Span.t | At of Time.t
 

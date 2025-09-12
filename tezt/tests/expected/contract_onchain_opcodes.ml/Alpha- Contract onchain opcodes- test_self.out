@@ -74,7 +74,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: 0x019ad266f0f932e4ea940c123a688e5f6565e2688a00
       Storage size: 67 bytes
-      Consumed gas: 1279.626
+      Consumed gas: 1279.927
 
 
 ./mavkit-client --mode mockup get contract storage for '[CONTRACT_HASH]'

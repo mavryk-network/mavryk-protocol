@@ -316,7 +316,7 @@
  (action
   (write-file
    %{targets}
-   "\nlet hash = Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn \"PtAtLasomUEW99aVhVTrqjCHjJSpFUa8uHNEAEamx9v2SNeTaNp\"\nlet name = Mavryk_protocol_environment_001_PtAtLas.Name.name\ninclude Mavryk_raw_protocol_001_PtAtLas\ninclude Mavryk_raw_protocol_001_PtAtLas.Main\n")))
+   "\nlet hash = Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn \"PtAtLasdzXg4XxeVNtWheo13nG4wHXP22qYMqFcT3fyBpWkFero\"\nlet name = Mavryk_protocol_environment_001_PtAtLas.Name.name\ninclude Mavryk_raw_protocol_001_PtAtLas\ninclude Mavryk_raw_protocol_001_PtAtLas.Main\n")))
 
 (rule
  (targets mavryk_protocol_001_PtAtLas.ml)

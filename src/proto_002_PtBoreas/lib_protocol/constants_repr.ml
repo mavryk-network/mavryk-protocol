@@ -28,9 +28,9 @@ let version_value = "boreas_002"
 
 let version = "v1"
 
-let mainnet_id = Chain_id.of_b58check_exn "NetXdQprcVkpaWU"
+let mainnet_id = Chain_id.of_b58check_exn "NetXXAAR1wWQhhe"
 
-let basenet_id = Chain_id.of_b58check_exn "NetXnHfVqm9iesp"
+let basenet_id = Chain_id.of_b58check_exn "NetXmtMsNf69w1w"
 
 let fitness_version_number = "\002"
 

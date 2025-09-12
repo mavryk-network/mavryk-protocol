@@ -815,19 +815,19 @@ module Signatures = struct
     [
       ( "bootstrap1",
         "msg1",
-        "edsigtz68o4FdbpvycnAMDLaa7hpmmhjDxhx4Zu3QWHLYJtcY1mVhW9m6CCvsciFXwf1zLmah8fJP51cqaeaciBPGy5osH11AnR"
+        "edsigu3W1EQfhcNJnHY1rP4SKBWgLfhBj4uJbpqzofJVfNpfubhKEwd6L16X1neFzwazqA5bTjTJ79RdPRLLmTKynSezFYwb5tb"
       );
       ( "bootstrap2",
         "msg2",
-        "edsigtZqhR5SW6vbRSmqwzfS1KiJZLYLeFhLcCEw7WxjBDxotVx83M2rLe4Baq52SUTjxfXhQ5J3TabCwqt78kNpoU8j42GDEk4"
+        "edsigtxU1RNQHxtCAuHTi1pJYbgNLhh7uRTtHoKu9ddtHHHM6Vu2RH2tmKjAaiMGAstyC9zwXzcW8Mvze16q1tLpeyB6HpSxqLT"
       );
       ( "bootstrap3",
         "msg3",
-        "edsigu2PvAWxVYY3jQFVfBRW2Dg61xZMNesHiNbwCTmpJSyfcJMW8Ch9WABHqsgHQRBaSs6zZNHVGXfHSBnGCxT9x2b49L2zpMW"
+        "edsigu1UFLytgDm37RJDv84UWJppQqYXwhkJURvXgSB5nqLGvfQDAgWmz2DdVDQpzZaqn1359XCZdCR6QF3PZwcbtKSXfPLksPN"
       );
       ( "bootstrap4",
         "msg4",
-        "edsigu5jieost8eeD3JwVrpPuSnKzLLvR3aqezLPDTvxC3p41qwBEpxuViKriipxig52NQmJ7AFXTzhM3xgKM2ZaADcSMYWztuJ"
+        "edsigtZafhzPtkX4P5xsdMoDPzdJst9jhdH1PukYUzAb4NYx3Y27nEJNqCMQRB9GQVtPqjkkHvbuorD4ky42pdq6yZLqr7kEggc"
       );
     ]
     |> Lwt_list.iter_s @@ fun (src, message, expected_signature) ->

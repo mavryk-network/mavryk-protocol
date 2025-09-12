@@ -10,7 +10,7 @@
 type t
 
 (* TODO #6918: Remove after P *)
-val encoding_legacy_in_o : t Data_encoding.t
+val encoding_legacy_in_a : t Data_encoding.t
 
 val encoding : t Data_encoding.t
 
@@ -53,4 +53,4 @@ module Compare : sig
   val ( >= ) : t -> t -> bool
 end
 
-val convert_from_o_to_p : t -> t
+val convert_from_a_to_b : t -> t

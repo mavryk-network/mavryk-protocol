@@ -159,23 +159,23 @@ let test_compute_bonus () =
   let small_bonus = Q.(1 // 200) (* 0.5% *) in
   (* Test deadzone *)
   let* () =
-    assert_eq ~loc:__LOC__ (compute_bonus 48L 100L small_bonus) small_bonus
+    assert_eq ~loc:__LOC__ (compute_bonus 31L 100L small_bonus) small_bonus
   in
   let* () =
-    assert_eq ~loc:__LOC__ (compute_bonus 52L 100L small_bonus) small_bonus
+    assert_eq ~loc:__LOC__ (compute_bonus 35L 100L small_bonus) small_bonus
   in
   let* () =
     assert_fun
       ~loc:__LOC__
       ~f:Q.gt
-      (compute_bonus 47_9999L 100_0000L small_bonus)
+      (compute_bonus 30_9999L 100_0000L small_bonus)
       small_bonus
   in
   let* () =
     assert_fun
       ~loc:__LOC__
       ~f:Q.lt
-      (compute_bonus 52_0001L 100_0000L small_bonus)
+      (compute_bonus 35_0001L 100_0000L small_bonus)
       small_bonus
   in
   (* Test variation amplitude *)
@@ -183,25 +183,25 @@ let test_compute_bonus () =
   let* () =
     assert_eq
       ~loc:__LOC__
-      (compute_bonus 47L 100L small_bonus)
+      (compute_bonus 30L 100L small_bonus)
       (Q.add small_bonus variation)
   in
   let* () =
     assert_eq
       ~loc:__LOC__
-      (compute_bonus 40L 100L small_bonus)
+      (compute_bonus 23L 100L small_bonus)
       (Q.add small_bonus (Q.mul variation (Q.of_int 8)))
   in
   let* () =
     assert_eq
       ~loc:__LOC__
-      (compute_bonus 53L 100L small_bonus)
+      (compute_bonus 36L 100L small_bonus)
       (Q.sub small_bonus variation)
   in
   let* () =
     assert_eq
       ~loc:__LOC__
-      (compute_bonus 60L 100L small_bonus)
+      (compute_bonus 43L 100L small_bonus)
       (Q.sub small_bonus (Q.mul variation (Q.of_int 8)))
   in
   (* Test bounds *)

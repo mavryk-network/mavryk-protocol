@@ -197,7 +197,7 @@ module Slashed_deposits_history__Atlas = struct
     list
       (obj2
          (req "cycle" Cycle_repr.encoding)
-         (req "slashed_percentage" Percentage.encoding_legacy_in_o))
+         (req "slashed_percentage" Percentage.encoding_legacy_in_a))
 end
 
 module Unstake_request = struct
@@ -1721,7 +1721,7 @@ module Protocol_treasury = struct
         let encoding = Contract_repr.originated_encoding
       end)
   
-  let address = Contract_hash.of_b58check_exn "KT1J1w34sDTh1dwjn9B7urJse9Dm53qKd9AM"
+  let address = Contract_hash.of_b58check_exn "KT18vR1HXic9ajAwpDjBWipBqzs4djUe6Lx2"
   let burn_address = Signature.Public_key_hash.of_b58check_exn "mv2burnburnburnburnburnburnbur7hzNeg"
 end
 

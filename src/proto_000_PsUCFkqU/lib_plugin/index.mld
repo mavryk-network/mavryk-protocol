@@ -1,0 +1,7 @@
+{0 Mavkit-protocol-000-PsUCFkqU-libs: mavkit protocol 000-PsUCFkqU libraries}
+
+This is a package containing some libraries related to the Mavryk 000-PsUCFkqU protocol.
+
+It contains the following libraries:
+
+- {{!module-Mavryk_client_000_PsUCFkqU}Mavryk_client_000_PsUCFkqU}: Protocol specific library for `mavryk-client`

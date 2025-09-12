@@ -18,12 +18,12 @@ smart_rollup_node=./mavkit-smart-rollup-node
 dal_node=./mavkit-dal-node
 
 # Protocol configuration.
-protocol_hash=PtBzwViMCC1gfm98y5TDKqz2e3vjBXPAUoWu7jfEcN6yj2ZhCyT
+protocol_hash=PtBoreasK2KPuKbeYtXeEdudEHS7YcMFHE9amwheUc4kejTxgRi
 protocol_parameters=src/proto_002_PtBoreas/parameters/sandbox-parameters.json
 protocol_name=boreas
 
 # Secret key to activate the protocol.
-activator_secret_key="unencrypted:edsk31vznjHSSpGExDMHYASz45VZqXN4DPxvsa4hAyY8dHM28cZzp6"
+activator_secret_key="unencrypted:edsk4YZKqjTvHuAHmYZfMCHwWcL4zMt9X87tbzwYLb1LBba7hK1tom"
 
 # RPC port.
 rpc_port=8732

@@ -1281,7 +1281,7 @@ opam:mavkit-proto-libs:
     when: always
   retry: 2
 
-opam:mavkit-protocol-000-Ps9mPmXa-libs:
+opam:mavkit-protocol-000-PsUCFkqU-libs:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -1332,7 +1332,7 @@ opam:mavkit-protocol-000-Ps9mPmXa-libs:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: mavkit-protocol-000-Ps9mPmXa-libs
+    package: mavkit-protocol-000-PsUCFkqU-libs
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log
@@ -3073,7 +3073,7 @@ opam:mavryk-openapi:
     when: always
   retry: 2
 
-opam:mavryk-protocol-000-Ps9mPmXa:
+opam:mavryk-protocol-000-PsUCFkqU:
   image: ${build_deps_image_name}:runtime-prebuild-dependencies--${build_deps_image_version}
   stage: packaging
   tags:
@@ -3124,7 +3124,7 @@ opam:mavryk-protocol-000-Ps9mPmXa:
   - OPAM_LOGS=opam_logs ./scripts/ci/opam_handle_output.sh
   variables:
     RUNTEZTALIAS: "true"
-    package: mavryk-protocol-000-Ps9mPmXa
+    package: mavryk-protocol-000-PsUCFkqU
     SCCACHE_DIR: $CI_PROJECT_DIR/_build/_sccache
     RUSTC_WRAPPER: sccache
     SCCACHE_ERROR_LOG: $CI_PROJECT_DIR/opam_logs/sccache.log

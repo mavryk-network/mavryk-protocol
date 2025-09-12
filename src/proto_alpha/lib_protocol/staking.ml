@@ -141,7 +141,7 @@ let can_stake_from_unstake ctxt ~for_next_cycle_use_only_after_slashing
   in
   let slashing_history_o =
     Option.value slashing_history_opt_o ~default:[]
-    |> List.map (fun (a, b) -> (a, Percentage.convert_from_o_to_p b))
+    |> List.map (fun (a, b) -> (a, Percentage.convert_from_a_to_b b))
   in
 
   let slashing_history = slashing_history @ slashing_history_o in

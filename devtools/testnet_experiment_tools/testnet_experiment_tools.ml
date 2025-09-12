@@ -236,7 +236,7 @@ module Local = struct
   let generate_network_configuration network_name data_dir () =
     let protocol =
       Mavryk_crypto.Hashed.Protocol_hash.of_b58check_exn
-        "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
+        "PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP"
     in
     let* block, time = genesis () in
     let genesis = Mavryk_base.Genesis.{block; time; protocol} in
