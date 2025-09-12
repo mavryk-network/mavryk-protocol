@@ -89,9 +89,8 @@ let make_blockchain_network ~alias ~chain_name ?old_chain_name
 (* The script in scripts/user_activated_upgrade.sh patches the following lines
    when it needs to set the user activated upgrade levels for Mainnet. *)
 (* BEGIN_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
-(* let mainnet_user_activated_upgrades =
-   [(300l, "PrqKfwvkCu5wmBbHJVR78KXYoq4M49DaW9NpG7ULSy82c8oUyzS")] *)
-let mainnet_user_activated_upgrades = []
+let mainnet_user_activated_upgrades =
+  [(32768l, "PtBoreasK2KPuKbeYtXeEdudEHS7YcMFHE9amwheUc4kejTxgRi")]
 
 (* END_PATCHING_ZONE_FOR_MAINNET_USER_ACTIVATED_UPGRADES *)
 (* it patches the following lines when it needs to set the user activated

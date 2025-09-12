@@ -1,5 +1,5 @@
 
-./mavkit-client --protocol PrqKfwvkCu5wmBbHJVR78KXYoq4M49DaW9NpG7ULSy82c8oUyzS --mode mockup --no-base-dir-warnings run script michelson_test_scripts/opcodes/map_size.mv on storage 111 and input '{ Elt "a" 1 }' --level 1 --trace-stack
+./mavkit-client --protocol PtBoreasK2KPuKbeYtXeEdudEHS7YcMFHE9amwheUc4kejTxgRi --mode mockup --no-base-dir-warnings run script michelson_test_scripts/opcodes/map_size.mv on storage 111 and input '{ Elt "a" 1 }' --level 1 --trace-stack
 storage
   1
 emitted operations
