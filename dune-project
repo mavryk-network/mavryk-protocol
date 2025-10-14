@@ -41,7 +41,7 @@
 (package (name mavkit-protocol-alpha-libs))
 (package (name mavkit-protocol-compiler))
 (package (name mavkit-proxy-server))
-(package (name mavkit-risc-v-pvm))
+(package (name mavkit-risc-v-pvm)(allow_empty))
 (package (name mavkit-risc-v-pvm-test)(allow_empty))
 (package (name mavkit-rpc-process))
 (package (name mavkit-shell-libs))
