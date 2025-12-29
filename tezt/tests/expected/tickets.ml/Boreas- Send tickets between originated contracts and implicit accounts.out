@@ -190,7 +190,7 @@ This sequence of operations was run:
       Updated storage: Unit
       Storage size: 158 bytes
       Paid storage size diff: 66 bytes
-      Consumed gas: 1758.314
+      Consumed gas: 1758.615
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.0165
         storage fees ........................... +ṁ0.0165
@@ -313,7 +313,7 @@ This sequence of operations was run:
             { Pair 0x01fca241ad513615858a813a6019c5a5b3977c27dc00 (Pair "Ticket" 1) }
           Storage size: 238 bytes
           Paid storage size diff: 44 bytes
-          Consumed gas: 1910.386
+          Consumed gas: 1910.687
           Balance updates:
             [PUBLIC_KEY_HASH] ... -ṁ0.011
             storage fees ........................... +ṁ0.011
@@ -360,7 +360,7 @@ This sequence of operations was run:
       This transaction was successfully applied
       Updated storage: {}
       Storage size: 194 bytes
-      Consumed gas: 2863.830
+      Consumed gas: 2864.131
       Ticket updates:
         Ticketer: [CONTRACT_HASH]
         Content type: string
@@ -377,7 +377,7 @@ This sequence of operations was run:
           This transaction was successfully applied
           Updated storage: Unit
           Storage size: 51 bytes
-          Consumed gas: 1853.208
+          Consumed gas: 1853.466
 
 
 ./mavkit-client --mode mockup get ticket balance for '[CONTRACT_HASH]' with ticketer '[CONTRACT_HASH]' and type string and content '"Ticket"'

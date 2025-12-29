@@ -31,8 +31,6 @@ let default_block_cache_limit = 1_000
 
 type merge_status = Not_running | Running | Merge_failed of tztrace
 
-type status = Naming.block_store_status = Idle | Merging
-
 type block_store = {
   chain_dir : [`Chain_dir] Naming.directory;
   readonly : bool;
@@ -42,7 +40,7 @@ type block_store = {
   mutable rw_floating_block_store : Floating_block_store.t;
   caboose : block_descriptor Stored_data.t;
   savepoint : block_descriptor Stored_data.t;
-  status_data : status Stored_data.t;
+  status_data : Block_store_status.t Stored_data.t;
   block_cache : Block_repr.t Block_lru_cache.t;
   mutable gc_callback : (Block_hash.t -> unit tzresult Lwt.t) option;
   mutable split_callback : (unit -> unit tzresult Lwt.t) option;
@@ -55,15 +53,6 @@ type block_store = {
 type t = block_store
 
 type key = Block of (Block_hash.t * int)
-
-let status_encoding =
-  let open Data_encoding in
-  conv
-    (function Idle -> false | Merging -> true)
-    (function false -> Idle | true -> Merging)
-    Data_encoding.bool
-
-let status_to_string = function Idle -> "idle" | Merging -> "merging"
 
 let cemented_block_store {cemented_store; _} = cemented_store
 
@@ -96,8 +85,6 @@ let write_caboose {caboose; _} v =
   return_unit
 
 let genesis_block {genesis_block; _} = genesis_block
-
-let write_status {status_data; _} status = Stored_data.write status_data status
 
 (** [global_predecessor_lookup chain_block_store hash pow_nth] retrieves
     the 2^[pow_nth] predecessor's hash from the block with corresponding
@@ -1358,19 +1345,22 @@ let create_merging_thread block_store ~history_mode ~old_ro_store ~old_rw_store
   in
   return (new_ro_store, new_savepoint, new_caboose)
 
-let may_trigger_gc block_store history_mode ~previous_savepoint ~new_savepoint =
+let may_trigger_gc ~disable_context_pruning block_store history_mode
+    ~previous_savepoint ~new_savepoint =
   let open Lwt_result_syntax in
-  let savepoint_hash = fst new_savepoint in
-  if
-    History_mode.(equal history_mode Archive)
-    || Block_hash.(savepoint_hash = fst previous_savepoint)
-  then (* No GC required *) return_unit
-  else
-    match block_store.gc_callback with
-    | None -> return_unit
-    | Some gc ->
-        let*! () = Store_events.(emit start_context_gc new_savepoint) in
-        gc savepoint_hash
+  if not disable_context_pruning then
+    let savepoint_hash = fst new_savepoint in
+    if
+      History_mode.(equal history_mode Archive)
+      || Block_hash.(savepoint_hash = fst previous_savepoint)
+    then (* No GC required *) return_unit
+    else
+      match block_store.gc_callback with
+      | None -> return_unit
+      | Some gc ->
+          let*! () = Store_events.(emit start_context_gc new_savepoint) in
+          gc savepoint_hash
+  else return_unit
 
 let split_context block_store new_head_lpbl =
   let open Lwt_result_syntax in
@@ -1382,7 +1372,8 @@ let split_context block_store new_head_lpbl =
 
 let merge_stores ?(cycle_size_limit = default_cycle_size_limit) block_store
     ~(on_error : tztrace -> unit tzresult Lwt.t) ~finalizer ~history_mode
-    ~new_head ~new_head_metadata ~cementing_highwatermark =
+    ~new_head ~new_head_metadata ~cementing_highwatermark
+    ~disable_context_pruning =
   let open Lwt_result_syntax in
   let* () = fail_when block_store.readonly Cannot_write_in_readonly in
   (* Do not allow multiple merges: force waiting for a potential
@@ -1396,11 +1387,12 @@ let merge_stores ?(cycle_size_limit = default_cycle_size_limit) block_store
       let*! store_status = status block_store in
       let* () =
         fail_unless
-          (store_status = Idle)
-          (Cannot_merge_store {status = status_to_string store_status})
+          (Block_store_status.is_idle store_status)
+          (Cannot_merge_store
+             {status = Format.asprintf "%a" Block_store_status.pp store_status})
       in
       (* Mark the store's status as Merging *)
-      let* () = write_status block_store Merging in
+      let* () = Block_store_status.set_merge_status block_store.status_data in
       let new_head_lpbl =
         Block_repr.last_preserved_block_level new_head_metadata
       in
@@ -1472,6 +1464,7 @@ let merge_stores ?(cycle_size_limit = default_cycle_size_limit) block_store
                            its end. *)
                         let* () =
                           may_trigger_gc
+                            ~disable_context_pruning
                             block_store
                             history_mode
                             ~previous_savepoint
@@ -1483,7 +1476,10 @@ let merge_stores ?(cycle_size_limit = default_cycle_size_limit) block_store
                         let* () = finalizer new_head_lpbl in
                         (* The merge operation succeeded, the store is now idle. *)
                         block_store.merging_thread <- None ;
-                        let* () = write_status block_store Idle in
+                        let* () =
+                          Block_store_status.set_idle_status
+                            block_store.status_data
+                        in
                         return_unit))
                   (fun () ->
                     Lwt_mutex.unlock block_store.merge_mutex ;
@@ -1559,7 +1555,7 @@ let merge_temporary_floating block_store =
   let*! rw = Floating_block_store.init chain_dir ~readonly:false RW in
   block_store.ro_floating_block_stores <- [ro] ;
   block_store.rw_floating_block_store <- rw ;
-  write_status block_store Idle
+  Block_store_status.set_idle_status block_store.status_data
 
 (* Removes the potentially leftover temporary files from the cementing
    of cycles. *)
@@ -1591,12 +1587,11 @@ let may_recover_merge block_store =
   let* () =
     Lwt_idle_waiter.force_idle block_store.merge_scheduler (fun () ->
         Lwt_mutex.with_lock block_store.merge_mutex (fun () ->
-            let*! d = Stored_data.get block_store.status_data in
-            match d with
-            | Idle -> return_unit
-            | Merging ->
-                let*! () = Store_events.(emit recover_merge ()) in
-                merge_temporary_floating block_store))
+            let*! status = Stored_data.get block_store.status_data in
+            if Block_store_status.is_idle status then return_unit
+            else
+              let*! () = Store_events.(emit recover_merge ()) in
+              merge_temporary_floating block_store))
   in
   (* Try to clean temporary file anyway. *)
   let*! () = may_clean_cementing_artifacts block_store in
@@ -1632,7 +1627,7 @@ let load ?block_cache_limit chain_dir ~genesis_block ~readonly =
   let* status_data =
     Stored_data.init
       (Naming.block_store_status_file chain_dir)
-      ~initial_data:Idle
+      ~initial_data:Block_store_status.create_idle_status
   in
   let block_cache =
     Block_lru_cache.create
@@ -1663,7 +1658,9 @@ let load ?block_cache_limit chain_dir ~genesis_block ~readonly =
     if not readonly then may_recover_merge block_store else return_unit
   in
   let*! status = Stored_data.get status_data in
-  let* () = fail_unless (status = Idle) Cannot_load_degraded_store in
+  let* () =
+    fail_unless (Block_store_status.is_idle status) Cannot_load_degraded_store
+  in
   return block_store
 
 let create ?block_cache_limit chain_dir ~genesis_block =
@@ -1720,123 +1717,22 @@ let close block_store =
     Floating_block_store.close
     (block_store.rw_floating_block_store :: block_store.ro_floating_block_stores)
 
-(***************** Upgrade to V3 *****************)
+(***************** Upgrade to V3.1 *****************)
 
-let v_3_0_upgrade chain_dir ~cleanups ~finalizers =
+let v_3_1_upgrade chain_dir =
   let open Lwt_result_syntax in
-  let get_floating_paths kind =
-    let legacy_floating_blocks_dir =
-      Naming.floating_blocks_dir chain_dir kind
-    in
-    let legacy_floating_index_dir =
-      Naming.dir_path
-        (Naming.floating_blocks_index_dir legacy_floating_blocks_dir)
-    in
-    let legacy_floating_blocks_file =
-      Naming.floating_blocks_file legacy_floating_blocks_dir
-    in
-    let new_floating_index_dir =
-      Naming.dir_path
-        (Naming.floating_blocks_index_dir legacy_floating_blocks_dir)
-      ^ ".new"
-    in
-    ( Naming.dir_path legacy_floating_blocks_dir,
-      legacy_floating_index_dir,
-      legacy_floating_blocks_file,
-      new_floating_index_dir )
+  (* Load using the legacy block_store_status encoding *)
+  let*! () = Store_events.(emit load_block_store_status ()) in
+  let* legacy_status_data =
+    Stored_data.init
+      (Naming.legacy_block_store_status_file chain_dir)
+      ~initial_data:Block_store_status.Legacy.create_idle_status
   in
-  let all_kinds = Naming.[RO; RW; RW_TMP; RO_TMP] in
-  let upgrade_floating_index kind =
-    let ( legacy_floating_blocks_dir,
-          legacy_floating_index_dir,
-          legacy_floating_blocks_file,
-          new_floating_index_dir ) =
-      get_floating_paths kind
-    in
-    let*! should_upgrade = Lwt_unix.file_exists legacy_floating_blocks_dir in
-    if not should_upgrade then return_unit
-    else
-      let clean_failed_upgrade () =
-        let*! exists = Lwt_unix.file_exists new_floating_index_dir in
-        if exists then Lwt_utils_unix.remove_dir new_floating_index_dir
-        else Lwt.return_unit
-      in
-      let finalize () =
-        let*! exists = Lwt_unix.file_exists new_floating_index_dir in
-        if exists then
-          let*! () = Lwt_utils_unix.remove_dir legacy_floating_index_dir in
-          Lwt_unix.rename new_floating_index_dir legacy_floating_index_dir
-        else Lwt.return_unit
-      in
-      finalizers := finalize :: !finalizers ;
-      cleanups := clean_failed_upgrade :: !cleanups ;
-      let legacy_index =
-        Floating_block_index.Legacy.v
-          ~log_size:Floating_block_store.default_floating_blocks_log_size
-          ~readonly:true
-          legacy_floating_index_dir
-      in
-      let new_index =
-        Floating_block_index.v
-          ~log_size:Floating_block_store.default_floating_blocks_log_size
-          ~readonly:false
-          new_floating_index_dir
-      in
-      let*! fd =
-        Lwt_unix.openfile
-          (Naming.file_path legacy_floating_blocks_file)
-          [Unix.O_CLOEXEC; Unix.O_RDONLY]
-          0o444
-      in
-      Lwt.finalize
-        (fun () ->
-          (* Iterate over the existing stores and retrieve their context hash. *)
-          let* () =
-            Floating_block_store.raw_iterate_fd
-              (fun (block_b, _len) ->
-                let block_hash = Block_repr_unix.raw_get_block_hash block_b in
-                let block_context = Block_repr_unix.raw_get_context block_b in
-                let* {
-                       Floating_block_index.Legacy.Legacy_block_info.offset;
-                       predecessors;
-                     } =
-                  try
-                    return
-                    @@ Floating_block_index.Legacy.find legacy_index block_hash
-                  with
-                  | Not_found ->
-                      let block_level =
-                        Block_repr_unix.raw_get_block_level block_b
-                      in
-                      let floating_kind =
-                        (function
-                          | Naming.RO -> "RO"
-                          | RW -> "RW"
-                          | RO_TMP -> "RO_TMP"
-                          | RW_TMP -> "RW_TMP"
-                          | Restore _ -> "Restored")
-                          kind
-                      in
-                      tzfail
-                        (V_3_0_upgrade_missing_floating_block
-                           {block_hash; block_level; floating_kind})
-                  | e -> raise e
-                in
-                let resulting_context_hash = block_context in
-                let new_value =
-                  Floating_block_index.Block_info.
-                    {offset; predecessors; resulting_context_hash}
-                in
-                Floating_block_index.replace new_index block_hash new_value ;
-                return_unit)
-              fd
-          in
-          return_unit)
-        (fun () ->
-          Floating_block_index.flush new_index ;
-          Floating_block_index.close new_index ;
-          Floating_block_index.Legacy.close legacy_index ;
-          let*! () = Lwt_unix.close fd in
-          Lwt.return_unit)
+  (* Convert to the new encoding *)
+  let* status = Block_store_status.of_legacy legacy_status_data in
+  (* Overwrite the status file *)
+  let* () =
+    Stored_data.write_file (Naming.block_store_status_file chain_dir) status
   in
-  protect (fun () -> List.iter_es upgrade_floating_index all_kinds)
+  let*! () = Store_events.(emit fixed_block_store_status ()) in
+  return_unit

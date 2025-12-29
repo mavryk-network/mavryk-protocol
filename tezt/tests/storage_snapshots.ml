@@ -30,7 +30,12 @@
    Subject: Tests both the snapshot mechanism and the store's behaviour
 *)
 
-let node_arguments = Node.[Synchronisation_threshold 0]
+let team = Tag.layer1
+
+let node_arguments =
+  (* Disable the storage maintenance delay to have a deterministic
+     behavior. *)
+  Node.[Synchronisation_threshold 0; Storage_maintenance_delay "disabled"]
 
 let pp_snapshot_export_format fmt v =
   Format.fprintf fmt "%s" (match v with Node.Tar -> "tar" | Raw -> "raw")
@@ -272,6 +277,8 @@ let wait_for_complete_merge node target =
    - import those snapshots and start the fresh nodes accordingly,
    - check the consistency and data availability of those fresh nodes,
    - re-export from the fresh nodes to re-import and re-check the imported data. *)
+(* TODO: Remove timestamp fixes in this test once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
+   These fixes use specific timestamps close to genesis instead of default delay to work with new 2025 genesis timestamps *)
 let test_export_import_snapshots =
   Protocol.register_test
     ~__FILE__
@@ -297,7 +304,13 @@ let test_export_import_snapshots =
   Cluster.clique cluster ;
   let* () = Cluster.start ~public:true cluster in
   let* client = Client.init ~endpoint:(Node archive_node) () in
-  let* () = Client.activate_protocol_and_wait ~protocol client in
+  let* () =
+    Client.activate_protocol_and_wait
+      ~protocol
+      ~timestamp:
+        (Client.At (Client.Time.of_notation_exn "2025-08-14T11:19:00Z"))
+      client
+  in
   let* blocks_preservation_cycles, blocks_per_cycle, max_op_ttl =
     get_constants ~protocol client
   in
@@ -345,6 +358,8 @@ let test_export_import_snapshots =
 (* This test aims to export and import a rolling snapshot, bake some
    blocks and make sure that the checkpoint, savepoint and caboose are
    well dragged. *)
+(* TODO: Remove timestamp fixes in this test once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
+   These fixes use specific timestamps close to genesis instead of default delay to work with new 2025 genesis timestamps *)
 let test_drag_after_rolling_import =
   Protocol.register_test
     ~__FILE__
@@ -369,7 +384,13 @@ let test_drag_after_rolling_import =
   Cluster.clique cluster ;
   let* () = Cluster.start ~public:true cluster in
   let* client = Client.init ~endpoint:(Node archive_node) () in
-  let* () = Client.activate_protocol_and_wait ~protocol client in
+  let* () =
+    Client.activate_protocol_and_wait
+      ~protocol
+      ~timestamp:
+        (Client.At (Client.Time.of_notation_exn "2025-08-14T11:19:00Z"))
+      client
+  in
   let* blocks_preservation_cycles, blocks_per_cycle, max_op_ttl =
     get_constants ~protocol client
   in
@@ -512,6 +533,8 @@ let test_drag_after_rolling_import =
 
 (* Checks that the hash, level and version contained in the snapshot
    is consistent with regard to the exported data. *)
+(* TODO: Remove timestamp fixes in this test once we pass 2026-08-14 (one year from genesis timestamp 2025-08-14)
+   These fixes use specific timestamps close to genesis instead of default delay to work with new 2025 genesis timestamps *)
 let test_info_command =
   Protocol.register_test
     ~__FILE__
@@ -520,7 +543,14 @@ let test_info_command =
   @@ fun protocol ->
   let* node = Node.init ~name:"node" node_arguments in
   let* client = Client.init ~endpoint:(Node node) () in
-  let* () = Client.activate_protocol_and_wait ~protocol ~node client in
+  let* () =
+    Client.activate_protocol_and_wait
+      ~protocol
+      ~node
+      ~timestamp:
+        (Client.At (Client.Time.of_notation_exn "2025-08-14T11:19:00Z"))
+      client
+  in
   let blocks_to_bake = 8 in
   let* () = bake_blocks node client ~blocks_to_bake in
   let* head = Node.RPC.call node @@ RPC.get_chain_block () in
@@ -539,7 +569,7 @@ let test_info_command =
   (* This is expected to be updated as soon as a new snapshot version
      is released (referring to the Snapshot.Version.current_version
      from `lib_store/unix/snapshots`)*)
-  let expected_version = 7 in
+  let expected_version = 8 in
   Log.info "Checks the human formatted output" ;
   (* Get the info line, which is the second line. *)
   let* () =

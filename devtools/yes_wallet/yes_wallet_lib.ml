@@ -516,7 +516,7 @@ let load_bakers_public_keys ?(staking_share_opt = None)
         if
           protocol_hash
           = Protocol_hash.of_b58check_exn
-              "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
+              "PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP"
         then
           Error_monad.failwith
             "Context was probably ill loaded, found Genesis protocol.@;\
@@ -585,7 +585,7 @@ let load_contracts ?dump_contracts ?(network_opt = "mainnet") ?level base_dir =
         if
           protocol_hash
           = Protocol_hash.of_b58check_exn
-              "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
+              "PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP"
         then
           Error_monad.failwith
             "Context was probably ill loaded, found Genesis protocol.@;\

@@ -46,7 +46,7 @@ let err x = Exn (Script_cache_test_error x)
    model. It has been computed by a manual run of the test.
 
 *)
-let protocol_treasury_contract_size = 3912
+let protocol_treasury_contract_size = 44744
 
 let protocol_treasury_contract =
   Contract_hash.of_b58check_exn "KT1RfKYjLYpGBQ1YGSKoSoYEYwpJPFZrvmwH"

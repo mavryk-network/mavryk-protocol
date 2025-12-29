@@ -1138,14 +1138,14 @@ let prepare_first_block ~level ~timestamp _chain_id ctxt =
               issuance_ratio_final_min = Q.(0_25 // 100_00);
               (* 0.25% *)
               issuance_ratio_final_max = Q.(10 // 100) (* 10% *);
-              issuance_ratio_initial_min = Q.(45 // 1000);
+              issuance_ratio_initial_min = Q.(25 // 1000);
               (* 4.5% *)
-              issuance_ratio_initial_max = Q.(55 // 1000);
+              issuance_ratio_initial_max = Q.(35 // 1000);
               (* 5.5% *)
-              initial_period = 10;
-              (* 1 month *)
-              transition_period = 50;
-              (* 5 months *)
+              initial_period = 130;
+              (* 1 year *)
+              transition_period = 70;
+              (* 6 months *)
               max_bonus = c.adaptive_issuance.adaptive_rewards_params.max_bonus;
               growth_rate =
                 c.adaptive_issuance.adaptive_rewards_params.growth_rate;
@@ -1243,10 +1243,10 @@ let prepare_first_block ~level ~timestamp _chain_id ctxt =
               limit_of_delegation_over_baking =
                 c.limit_of_delegation_over_baking;
               percentage_of_frozen_deposits_slashed_per_double_baking =
-                Percentage.convert_from_o_to_p
+                Percentage.convert_from_a_to_b
                   c.percentage_of_frozen_deposits_slashed_per_double_baking;
               percentage_of_frozen_deposits_slashed_per_double_attestation =
-                Percentage.convert_from_o_to_p
+                Percentage.convert_from_a_to_b
                   c.percentage_of_frozen_deposits_slashed_per_double_attestation;
               max_slashing_per_block = Percentage.p100;
               max_slashing_threshold;

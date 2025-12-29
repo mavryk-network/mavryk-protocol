@@ -226,7 +226,7 @@ let test_mv4_consensus_key () =
   let expect_failure = function
     | [
         Environment.Ecoproto_error
-          (Delegate_consensus_key.Invalid_consensus_key_update_tz4 pk);
+          (Delegate_consensus_key.Invalid_consensus_key_update_mv4 pk);
       ]
       when Signature.Bls.Public_key.(pk = mv4_pk) ->
         return_unit
@@ -234,7 +234,7 @@ let test_mv4_consensus_key () =
         failwith
           "Error trace:@,\
           \ %a does not match the \
-           [Delegate_consensus_key.Invalid_consensus_key_update_tz4] error"
+           [Delegate_consensus_key.Invalid_consensus_key_update_mv4] error"
           Error_monad.pp_print_trace
           err
   in

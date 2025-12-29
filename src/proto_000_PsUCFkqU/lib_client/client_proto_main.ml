@@ -28,7 +28,7 @@ open Protocol_client_context
 
 let protocol =
   Protocol_hash.of_b58check_exn
-    "Ps9mPmXaRzmzk35gbAYNCAw6UXdE2qoABTHbN2oEEc1qM7CwT9P"
+    "PsUCFkqUrQ614xKsFEAf4AamoUXTAG4ygjMpFzsgEdKr3PGYreP"
 
 let bake cctxt ?timestamp block command sk =
   let timestamp =

@@ -35,7 +35,7 @@ let make_data s =
   {|
   {
     "operation": {
-        "branch": "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2",
+        "branch": "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F",
         "contents": [
             {
                 "kind": "register_global_constant",
@@ -56,7 +56,7 @@ let make_data s =
         ],
         "signature": "sigQFenAPMsrMxVvgH1K33sJgj5VqD3gajK1sBJyEugCzZ9EgTvHGiXii9opAgkei7tY1qpJKyB37YGdGGMAWdgodPyDcQvg"
     },
-    "chain_id": "NetXdQprcVkpaWU"
+    "chain_id": "NetXXAAR1wWQhhe"
 }
   |}
 

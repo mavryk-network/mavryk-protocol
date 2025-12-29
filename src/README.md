@@ -1,5 +1,5 @@
-# The Tezos blockchain
-This directory contains the sources of Tezos, a distributed consensus platform with meta-consensus capability.
+# The Mavryk blockchain
+This directory contains the sources of Mavryk, a distributed consensus platform with meta-consensus capability.
 
 ## Overview
 <!--
@@ -11,9 +11,9 @@ This directory contains the sources of Tezos, a distributed consensus platform w
   directory.
 -->
 
-Information about the Tezos project, and the documentation of the Tezos software repository, can be found in the parent directory or online at https://protocol.mavryk.org/
+Information about the Mavryk project, and the documentation of the Tezos software repository, can be found in the parent directory or online at https://protocol.mavryk.org/
 
-An overview of the software architecture of Tezos is presented in the [octopus drawing](https://protocol.mavryk.org/shell/the_big_picture.html#the-big-picture).
+An overview of the software architecture of Mavryk is presented in the [octopus drawing](https://protocol.mavryk.org/shell/the_big_picture.html#the-big-picture).
 That diagram describes at a high level (and a coarse grain) how the code in this directory is structured and how it works.
 
 Dependencies on external components are mainly managed through the OPAM package manager. The parent directory (qv) also contains a few vendored external OCaml libraries.
@@ -26,9 +26,9 @@ Dependencies on external components are mainly managed through the OPAM package 
 - Testing specifics, if needed.
 -->
 
-Tezos is mainly implemented in the [OCaml language](https://ocaml.org).
+Mavryk is mainly implemented in the [OCaml language](https://ocaml.org).
 
-The software architecture of Tezos at a finer grain is presented as a [more detailed diagram](https://protocol.mavryk.org/shell/the_big_picture.html#packages).
+The software architecture of Mavryk at a finer grain is presented as a [more detailed diagram](https://protocol.mavryk.org/shell/the_big_picture.html#packages).
 That diagram describes the sources at the level of OPAM packages ([OPAM](https://opam.ocaml.org) is the OCaml package manager).
 
 To develop protocol enhancement proposals with a REPL, see [`tztop`](./tooling/tztop/README.md).

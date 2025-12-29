@@ -149,7 +149,7 @@ let signer_bls_test =
   let* () = Client.bake_for_and_wait client in
   let* balance_1 = get_balance_mv4 client in
   Check.((Tez.mumav_int64 balance_0 > Tez.mumav_int64 balance_1) int64)
-    ~error_msg:"Tz4 sender %s has decreased balance after transfer" ;
+    ~error_msg:"Mv4 sender %s has decreased balance after transfer" ;
   unit
 
 let register ~protocols =

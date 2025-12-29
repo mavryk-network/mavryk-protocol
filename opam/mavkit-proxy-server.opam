@@ -22,7 +22,7 @@ depends: [
 depopts: [
   "mavryk-client-genesis"
   "mavryk-client-demo-counter"
-  "mavkit-protocol-000-Ps9mPmXa-libs"
+  "mavkit-protocol-000-PsUCFkqU-libs"
   "mavkit-protocol-001-PtAtLas-libs"
   "mavkit-protocol-002-PtBoreas-libs"
   "mavkit-protocol-alpha-libs"
@@ -31,7 +31,7 @@ conflicts: [
   "stdcompat" { < "19" }
   "mavryk-client-genesis" { != version }
   "mavryk-client-demo-counter" { != version }
-  "mavkit-protocol-000-Ps9mPmXa-libs" { != version }
+  "mavkit-protocol-000-PsUCFkqU-libs" { != version }
   "mavkit-protocol-001-PtAtLas-libs" { != version }
   "mavkit-protocol-002-PtBoreas-libs" { != version }
   "mavkit-protocol-alpha-libs" { != version }

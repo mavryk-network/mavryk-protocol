@@ -150,25 +150,25 @@ mod tests {
     fn compare_addrs() {
         // ordering was verified against mavkit-client, see script below
         let ordered_addrs = [
-            "tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw",
-            "tz1SNL5w4RFRbCWRMB4yDWvoRQrPQxZmNzeQ",
-            "tz1V8fDHpHzN8RrZqiYCHaJM9EocsYZch5Cy",
-            "tz1WPGZjP9eHGqD9DkiRJ1xGRU1wEMY19AAF",
+            "mv19sorg3bw3PcVhh2exfi9wXWj3GZ9nCZvf",
+            "mv1DwvPQgB8qbxJ4UtRsFkszxeGwXYJ5oKFz",
+            "mv1MV4CZQJpgH3beVnBc4suBaPiMCpwQRRgv",
+            "mv1F7WyfJufWD6Swo4NsZkUr2EaA8jAqTXvb",
             "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%bar",
             "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%defauls",
             "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe",
             "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%defaulu",
             "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%foo",
-            "tz1hHGTh6Yk4k7d2PiTcBUeMvw6fJCFikedv",
-            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%bar",
-            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH",
-            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%foo",
-            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%bar",
-            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r",
-            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%foo",
-            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%bar",
-            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN",
-            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%foo",
+            "mv1RgnrHuheS17rX5Nh9UKzPzAwmYx6pHsdz",
+            "mv2bnrFkR35DRFJSd6j47RQjD4ZDEMm871LQ%bar",
+            "mv2bnrFkR35DRFJSd6j47RQjD4ZDEMm871LQ",
+            "mv2bnrFkR35DRFJSd6j47RQjD4ZDEMm871LQ%foo",
+            "mv3K1aqp6dd8E74tusAXuBCToLzcBXKSpLhJ%bar",
+            "mv3K1aqp6dd8E74tusAXuBCToLzcBXKSpLhJ",
+            "mv3K1aqp6dd8E74tusAXuBCToLzcBXKSpLhJ%foo",
+            "mv4PDBsCMvHnU732MgAaq9VrCGKsqvgnE5Ua%bar",
+            "mv4PDBsCMvHnU732MgAaq9VrCGKsqvgnE5Ua",
+            "mv4PDBsCMvHnU732MgAaq9VrCGKsqvgnE5Ua%foo",
             "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye%bar",
             "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye",
             "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye%foo",
@@ -226,25 +226,25 @@ Script to verify address ordering. Should print "with -1" for all checked addres
 #!/bin/bash
 
 addrs=(
-  "tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw"
-  "tz1SNL5w4RFRbCWRMB4yDWvoRQrPQxZmNzeQ"
-  "tz1V8fDHpHzN8RrZqiYCHaJM9EocsYZch5Cy"
-  "tz1WPGZjP9eHGqD9DkiRJ1xGRU1wEMY19AAF"
+  "mv19sorg3bw3PcVhh2exfi9wXWj3GZ9nCZvf"
+  "mv1DwvPQgB8qbxJ4UtRsFkszxeGwXYJ5oKFz"
+  "mv1MV4CZQJpgH3beVnBc4suBaPiMCpwQRRgv"
+  "mv1F7WyfJufWD6Swo4NsZkUr2EaA8jAqTXvb"
   "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%bar"
   "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%defauls"
   "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe"
   "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%defaulu"
   "mv1JjfGFs3EfxZtJJzBKNQLpLiiLUxjhKADe%foo"
-  "tz1hHGTh6Yk4k7d2PiTcBUeMvw6fJCFikedv"
-  "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%bar"
-  "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH"
-  "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH%foo"
-  "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%bar"
-  "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r"
-  "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r%foo"
-  "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%bar"
-  "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN"
-  "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN%foo"
+  "mv1RgnrHuheS17rX5Nh9UKzPzAwmYx6pHsdz"
+  "mv2bnrFkR35DRFJSd6j47RQjD4ZDEMm871LQ%bar"
+  "mv2bnrFkR35DRFJSd6j47RQjD4ZDEMm871LQ"
+  "mv2bnrFkR35DRFJSd6j47RQjD4ZDEMm871LQ%foo"
+  "mv3K1aqp6dd8E74tusAXuBCToLzcBXKSpLhJ%bar"
+  "mv3K1aqp6dd8E74tusAXuBCToLzcBXKSpLhJ"
+  "mv3K1aqp6dd8E74tusAXuBCToLzcBXKSpLhJ%foo"
+  "mv4PDBsCMvHnU732MgAaq9VrCGKsqvgnE5Ua%bar"
+  "mv4PDBsCMvHnU732MgAaq9VrCGKsqvgnE5Ua"
+  "mv4PDBsCMvHnU732MgAaq9VrCGKsqvgnE5Ua%foo"
   "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye%bar"
   "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye"
   "KT1BRd2ka5q2cPRdXALtXD1QZ38CPam2j1ye%foo"

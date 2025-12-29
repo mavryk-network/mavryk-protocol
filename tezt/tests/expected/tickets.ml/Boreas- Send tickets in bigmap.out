@@ -266,7 +266,7 @@ This sequence of operations was run:
         Set temp(1)[40] to (Pair 0x010d30dc625f57274f300abc4af284934bc05fc46c00 (Pair "BLUE" 1))
       Storage size: 320 bytes
       Paid storage size diff: 67 bytes
-      Consumed gas: 49909.743
+      Consumed gas: 49910.001
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.01675
         storage fees ........................... +ṁ0.01675
@@ -283,7 +283,7 @@ This sequence of operations was run:
             Copy temp(1) to map(5)
           Storage size: 10783 bytes
           Paid storage size diff: 10700 bytes
-          Consumed gas: 48926.785
+          Consumed gas: 48926.957
           Balance updates:
             [PUBLIC_KEY_HASH] ... -ṁ2.675
             storage fees ........................... +ṁ2.675

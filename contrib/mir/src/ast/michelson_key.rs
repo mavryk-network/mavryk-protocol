@@ -105,7 +105,7 @@ impl Key {
             Ed25519(hash) => KeyHash::Tz1(hash.pk_hash().unwrap()),
             Secp256k1(hash) => KeyHash::Tz2(hash.pk_hash().unwrap()),
             P256(hash) => KeyHash::Tz3(hash.pk_hash().unwrap()),
-            Bls(hash) => KeyHash::Tz4(hash.pk_hash().unwrap()),
+            Bls(hash) => KeyHash::Mv4(hash.pk_hash().unwrap()),
         }
     }
 }
@@ -262,7 +262,7 @@ mod tests {
         (
             "BLpk1yoPpFtFF3jGUSn2GrGzgHVcj1cm5o6HTMwiqSjiTNFSJskXFady9nrdhoZzrG6ybXiTSK5G",
             "03b6cf94b6a59d102044d1ff16ebe3eccc5cd554965bb66ac80fb2728c18715817e185fb5ac9437908c9e609a742610177",
-            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN",
+            "mv4PDBsCMvHnU732MgAaq9VrCGKsqvgnE5Ua",
         ),
     ];
 }

@@ -2078,7 +2078,7 @@ particular order.
    <https://mavryk-network.gitlab.io/michelson-reference/#instr-SOURCE>`__
    instruction
 
- - ``chain_id`` (optional, defaults to ``"NetXdQprcVkpaWU"``): the
+ - ``chain_id`` (optional, defaults to ``"NetXXAAR1wWQhhe"``): the
    chain identifier that should be pushed by the `CHAIN_ID
    <https://mavryk-network.gitlab.io/michelson-reference/#instr-CHAIN_ID>`__
    instruction

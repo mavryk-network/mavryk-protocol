@@ -205,6 +205,13 @@ type chain_store
     @param block_cache_limit allows to override the size of the block
     cache to use. The minimal value is 1.
 
+    @param disable_context_pruning specifies whether or not the
+    context pruning is expected to be run (if set to true) or not (if
+    set to false -- default) during a storage maintenance.
+
+    @param maintenace_delay allows to introduce a delay prior to the
+    trigger of the storage maintenance
+
     @param readonly a flag that, if set to true, prevent writing
     throughout the store {b and} context.
       Default: false
@@ -217,6 +224,8 @@ val init :
   ?history_mode:History_mode.t ->
   ?readonly:bool ->
   ?block_cache_limit:int ->
+  ?disable_context_pruning:bool ->
+  ?maintenance_delay:Storage_maintenance.delay ->
   store_dir:string ->
   context_dir:string ->
   allow_testchains:bool ->
@@ -1017,11 +1026,11 @@ module Chain_traversal : sig
     (Block.t * Block.t list) Lwt.t
 end
 
-(** Upgrade a v_2 to v_3 store by rewriting the block store and the
-    protocol level's table.
+(** Upgrade the block_store_status in v_3_1. *)
+val v_3_1_upgrade : store_dir:string -> Genesis.t -> unit tzresult Lwt.t
 
-    {b Warning} Not backward-compatible. *)
-val v_3_0_upgrade : store_dir:string -> Genesis.t -> unit tzresult Lwt.t
+(** Upgrade the offset format for cemented files in v_3_2. *)
+val v_3_2_upgrade : store_dir:string -> Genesis.t -> unit tzresult Lwt.t
 
 (**/**)
 
@@ -1036,7 +1045,10 @@ module Unsafe : sig
   val get_block_store : chain_store -> Block_store.block_store
 
   val load_testchain :
-    chain_store -> chain_id:Chain_id.t -> Chain.testchain option tzresult Lwt.t
+    chain_store ->
+    chain_id:Chain_id.t ->
+    maintenance_delay:Storage_maintenance.delay ->
+    Chain.testchain option tzresult Lwt.t
 
   (** [set_head chain_store block] sets the block as the current head
       of [chain_store] without checks. *)

@@ -54,7 +54,7 @@ key_hash_type_and_impls! {
     /// A hash of a P256 public key, `tz3...` in base58-check encoding.
     Tz3(ContractMv3Hash),
     /// A hash of a BLS public key, `mv4...` in base58-check encoding.
-    Tz4(ContractMv4Hash),
+    Mv4(ContractMv4Hash),
 }
 
 impl TryFrom<&[u8]> for KeyHash {
@@ -85,7 +85,7 @@ fn check_size(data: &[u8], expected_size: usize, name: &str) -> Result<(), ByteR
 const TAG_TZ1: u8 = 0;
 const TAG_TZ2: u8 = 1;
 const TAG_TZ3: u8 = 2;
-const TAG_TZ4: u8 = 3;
+const TAG_MV4: u8 = 3;
 
 impl KeyHash {
     /// Size of the hash in bytes.
@@ -108,7 +108,7 @@ impl ByteReprTrait for KeyHash {
             "tz1" => Tz1(HashTrait::from_b58check(data)?),
             "tz2" => Tz2(HashTrait::from_b58check(data)?),
             "tz3" => Tz3(HashTrait::from_b58check(data)?),
-            "mv4" => Tz4(HashTrait::from_b58check(data)?),
+            "mv4" => Mv4(HashTrait::from_b58check(data)?),
             s => return Err(ByteReprError::UnknownPrefix(s.to_owned())),
         })
     }
@@ -121,7 +121,7 @@ impl ByteReprTrait for KeyHash {
             TAG_TZ1 => Tz1(HashTrait::try_from_bytes(&bytes[1..])?),
             TAG_TZ2 => Tz2(HashTrait::try_from_bytes(&bytes[1..])?),
             TAG_TZ3 => Tz3(HashTrait::try_from_bytes(&bytes[1..])?),
-            TAG_TZ4 => Tz4(HashTrait::try_from_bytes(&bytes[1..])?),
+            TAG_MV4 => Mv4(HashTrait::try_from_bytes(&bytes[1..])?),
             _ => {
                 return Err(ByteReprError::UnknownPrefix(format!(
                     "0x{}",
@@ -137,7 +137,7 @@ impl ByteReprTrait for KeyHash {
             Tz1(hash) => hash.to_base58_check(),
             Tz2(hash) => hash.to_base58_check(),
             Tz3(hash) => hash.to_base58_check(),
-            Tz4(hash) => hash.to_base58_check(),
+            Mv4(hash) => hash.to_base58_check(),
         }
     }
 
@@ -151,7 +151,7 @@ impl ByteReprTrait for KeyHash {
             Tz1(hash) => go(out, TAG_TZ1, hash),
             Tz2(hash) => go(out, TAG_TZ2, hash),
             Tz3(hash) => go(out, TAG_TZ3, hash),
-            Tz4(hash) => go(out, TAG_TZ4, hash),
+            Mv4(hash) => go(out, TAG_MV4, hash),
         }
     }
 }
@@ -195,19 +195,19 @@ mod tests {
     // `mavkit-client --mode mockup normalize data ... of type key_hash --unparsing-mode Optimized`
     const FIXTURES: &[(&str, &str)] = &[
         (
-            "tz1Nw5nr152qddEjKT2dKBH8XcBMDAg72iLw",
+            "mv19sorg3bw3PcVhh2exfi9wXWj3GZ9nCZvf",
             "002422090f872dfd3a39471bb23f180e6dfed030f3",
         ),
         (
-            "tz1SNL5w4RFRbCWRMB4yDWvoRQrPQxZmNzeQ",
+            "mv1DwvPQgB8qbxJ4UtRsFkszxeGwXYJ5oKFz",
             "0049d0be8c2987e04e080f4d73cbe24d8bf83997e2",
         ),
         (
-            "tz1V8fDHpHzN8RrZqiYCHaJM9EocsYZch5Cy",
+            "mv1MV4CZQJpgH3beVnBc4suBaPiMCpwQRRgv",
             "00682343b6fe7589573e11db2b87fd206b936e2a79",
         ),
         (
-            "tz1WPGZjP9eHGqD9DkiRJ1xGRU1wEMY19AAF",
+            "mv1F7WyfJufWD6Swo4NsZkUr2EaA8jAqTXvb",
             "0075deb97789e2429f2b9bb5dba1b1e4a061e832a3",
         ),
         (
@@ -215,19 +215,19 @@ mod tests {
             "007b09f782e0bcd67739510afa819d85976119d5ef",
         ),
         (
-            "tz1hHGTh6Yk4k7d2PiTcBUeMvw6fJCFikedv",
+            "mv1RgnrHuheS17rX5Nh9UKzPzAwmYx6pHsdz",
             "00ed6586813c9085c8b6252ec3a654ee0e36a0f0e2",
         ),
         (
-            "tz29EDhZ4D3XueHxm5RGZsJLHRtj3qSA2MzH",
+            "mv2bnrFkR35DRFJSd6j47RQjD4ZDEMm871LQ",
             "010a053e3d8b622a993d3182e3f6cc5638ff5f12fe",
         ),
         (
-            "tz3UoffC7FG7zfpmvmjUmUeAaHvzdcUvAj6r",
+            "mv3K1aqp6dd8E74tusAXuBCToLzcBXKSpLhJ",
             "025cfa532f50de3e12befc0ad21603835dd7698d35",
         ),
         (
-            "tz4J46gb6DxDFYxkex8k9sKiYZwjuiaoNSqN",
+            "mv4PDBsCMvHnU732MgAaq9VrCGKsqvgnE5Ua",
             "036342f30484dd46b6074373aa6ddca9dfb70083d6",
         ),
     ];

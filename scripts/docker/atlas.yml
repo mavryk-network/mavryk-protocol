@@ -1,0 +1,60 @@
+services:
+  mavkit-node:
+    container_name: mavkit-node-ptatlas
+    image: mavrykdynamics/mavryk:mavkit-v20.3-rc2
+    entrypoint: /bin/sh
+    command: -c "mavkit-node run --rpc-addr 0.0.0.0:8732 --allow-all-rpc 0.0.0.0:8732 --history-mode full -d /var/run/mavryk/node/data --config-file /var/run/mavryk/node/config.json"
+    ports:
+      - 9732:9732
+      - 8732:8732
+    environment:
+      NODE_HOST: mavkit-node
+      PROTOCOL: PtAtLas
+      MAVRYK_CLIENT_DIR: /var/run/mavryk/client
+    volumes:
+      - node_data:/var/run/mavryk/node
+      - client_data:/var/run/mavryk/client
+    restart: on-failure
+
+  mavkit-snapshot-import:
+    container_name: mavkit-snapshot-import
+    image: mavrykdynamics/mavryk:mavkit-v20.3-rc2
+    entrypoint: /bin/sh
+    command: -c "mavkit-node config init --network https://testnets.mavryk.network/atlasnet -d /var/run/mavryk/node/data --config-file /var/run/mavryk/node/config.json && mavkit-node snapshot import /snapshot -d /var/run/mavryk/node/data --config-file /var/run/mavryk/node/config.json"
+    volumes:
+      - ./snapshot:/snapshot
+      - node_data:/var/run/mavryk/node
+      - client_data:/var/run/mavryk/client
+    environment:
+      PROTOCOL: PtAtLas
+
+  mavkit-baker:
+    container_name: mavkit-baker-ptatlas
+    image: mavrykdynamics/mavryk:mavkit-v20.3-rc2
+    hostname: mavkit-baker
+    command: mavkit-baker --liquidity-baking-toggle-vote pass --adaptive-issuance-vote on [ACCOUNT]
+    environment:
+      NODE_HOST: mavkit-node
+      PROTOCOL: PtAtLas
+      MAVRYK_CLIENT_DIR: /var/run/mavryk/client
+    volumes:
+      - client_data:/var/run/mavryk/client
+      - node_data:/var/run/mavryk/node
+    restart: on-failure
+
+  mavkit-accuser:
+    container_name: mavkit-accuser-ptatlas
+    image: mavrykdynamics/mavryk:mavkit-v20.3-rc2
+    hostname: mavkit-accuser
+    command: mavkit-accuser
+    environment:
+      NODE_HOST: mavkit-node
+      PROTOCOL: PtAtLas
+    volumes:
+      - client_data:/var/run/mavryk/client
+      - node_data:/var/run/mavryk/node
+    restart: on-failure
+
+volumes:
+  node_data: {}
+  client_data: {}

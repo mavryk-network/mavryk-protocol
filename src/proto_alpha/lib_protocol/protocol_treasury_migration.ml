@@ -1,9 +1,26 @@
+open Michelson_v1_primitives
 open Micheline
 
-let admin_address = "mv1FpkYtjBvppr7rrrrBVKbmiDtcALjb4T21"
-
 let buffer_init_storage =
-  Script_repr.lazy_expr (Micheline.strip_locations (String (0, admin_address)))
+  Script_repr.lazy_expr
+    (Micheline.strip_locations
+       (Prim
+          ( 0,
+            D_Pair,
+            [
+              String (1, "mv1S7tc6ktkym4X5TVaoE9MXTDPNKu3u7rHG");
+              String (2, "mv1T61BkX9NfyT7ncefeoPhgxVyrttgb2z8b");
+              String (3, "mv1HoMk44QjjAauiLbWkDfAbSPFzcP7rc182");
+              Int (4, Z.of_int 17280);
+              (* timelock_delay *)
+              Seq (5, []);
+              (* proposals *)
+              Seq (6, []);
+              (* proposals_votes *)
+              Int (7, Z.zero);
+              (* proposal_count *)
+            ],
+            [] )))
 
 let originate ctxt address_hash ~balance script =
   let open Lwt_result_syntax in

@@ -216,8 +216,9 @@ let check_context_consistency store =
       let*! () = Node_event.(emit storage_corrupted_context_detected ()) in
       tzfail Non_recoverable_context
 
-let create ?(sandboxed = false) ?sandbox_parameters ~singleprocess ~version
-    ~commit_info
+let create ?(sandboxed = false) ?sandbox_parameters
+    ?(disable_context_pruning = false) ?history_mode ?maintenance_delay
+    ~singleprocess ~version ~commit_info
     {
       genesis;
       chain_name;
@@ -237,7 +238,7 @@ let create ?(sandboxed = false) ?sandbox_parameters ~singleprocess ~version
       enable_testchain;
       dal_config;
     } peer_validator_limits block_validator_limits prevalidator_limits
-    chain_validator_limits history_mode =
+    chain_validator_limits =
   let open Lwt_result_syntax in
   let start_prevalidator, start_testchain =
     match p2p_params with
@@ -269,6 +270,8 @@ let create ?(sandboxed = false) ?sandbox_parameters ~singleprocess ~version
           ~context_dir:context_root
           ~allow_testchains:start_testchain
           ~readonly:false
+          ~disable_context_pruning
+          ?maintenance_delay
           genesis
       in
       let main_chain_store = Store.main_chain_store store in
@@ -310,6 +313,8 @@ let create ?(sandboxed = false) ?sandbox_parameters ~singleprocess ~version
           ~context_dir:context_root
           ~allow_testchains:start_testchain
           ~readonly:false
+          ~disable_context_pruning
+          ?maintenance_delay
           genesis
       in
       return (validator_process, store)

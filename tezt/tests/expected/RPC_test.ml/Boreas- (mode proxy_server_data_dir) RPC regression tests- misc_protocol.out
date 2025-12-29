@@ -66,13 +66,12 @@
   "adaptive_rewards_params":
     { "issuance_ratio_final_min": { "numerator": "1", "denominator": "400" },
       "issuance_ratio_final_max": { "numerator": "1", "denominator": "10" },
-      "issuance_ratio_initial_min":
-        { "numerator": "9", "denominator": "200" },
+      "issuance_ratio_initial_min": { "numerator": "1", "denominator": "40" },
       "issuance_ratio_initial_max":
-        { "numerator": "11", "denominator": "200" }, "initial_period": 10,
-      "transition_period": 50, "max_bonus": "50000000000000",
+        { "numerator": "7", "denominator": "200" }, "initial_period": 130,
+      "transition_period": 70, "max_bonus": "50000000000000",
       "growth_rate": { "numerator": "1", "denominator": "100" },
-      "center_dz": { "numerator": "1", "denominator": "2" },
+      "center_dz": { "numerator": "33", "denominator": "100" },
       "radius_dz": { "numerator": "1", "denominator": "50" } },
   "adaptive_issuance_activation_vote_enable": true,
   "autostaking_enable": true, "adaptive_issuance_force_activation": false,

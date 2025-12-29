@@ -89,7 +89,7 @@ BOOTSTRAP5_IDENTITY="mv1S14SxfuavHMGDXxZJoBERZafLTyX3Z6Dx"
 BOOTSTRAP5_PUBLIC="edpkv8EUUH68jmo3f7Um5PezmfGrRF24gnfLpH3sVNwJnV5bVCxL2n"
 BOOTSTRAP5_SECRET="unencrypted:edsk4QLrcijEffxV31gGdN2HU7UpyJjA8drFoNcmnB28n89YjPNRFm"
 
-ACTIVATOR_SECRET="unencrypted:edsk31vznjHSSpGExDMHYASz45VZqXN4DPxvsa4hAyY8dHM28cZzp6"
+ACTIVATOR_SECRET="unencrypted:edsk4YZKqjTvHuAHmYZfMCHwWcL4zMt9X87tbzwYLb1LBba7hK1tom"
 
 add_sandboxed_bootstrap_identities() {
 

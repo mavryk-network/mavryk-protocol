@@ -850,7 +850,7 @@ mod tests {
 
     #[test]
     fn implicit_account() {
-        let key_hash = KeyHash::try_from("tz3d9na7gPpt5jxdjGBFzoGQigcStHB8w1uq").unwrap();
+        let key_hash = KeyHash::try_from("mv3GzBqSxJwFaj4BDc2tu5k2xpA1NgcH3X3d").unwrap();
         run_e2e_test(
             &Arena::new(),
             "IMPLICIT_ACCOUNT",
@@ -858,7 +858,7 @@ mod tests {
             stk![Type::new_contract(Type::Unit)],
             stk![TypedValue::KeyHash(key_hash)],
             stk![TypedValue::Contract(
-                Address::try_from("tz3d9na7gPpt5jxdjGBFzoGQigcStHB8w1uq").unwrap()
+                Address::try_from("mv3GzBqSxJwFaj4BDc2tu5k2xpA1NgcH3X3d").unwrap()
             )],
             Ctx::default(),
         );
@@ -866,9 +866,9 @@ mod tests {
 
     #[test]
     fn voting_power() {
-        let key_hash_1 = KeyHash::try_from("tz3d9na7gPpt5jxdjGBFzoGQigcStHB8w1uq").unwrap();
-        let key_hash_2 = KeyHash::try_from("tz4T8ydHwYeoLHmLNcECYVq3WkMaeVhZ81h7").unwrap();
-        let key_hash_3 = KeyHash::try_from("tz3hpojUX9dYL5KLusv42SCBiggB77a2QLGx").unwrap();
+        let key_hash_1 = KeyHash::try_from("mv3GzBqSxJwFaj4BDc2tu5k2xpA1NgcH3X3d").unwrap();
+        let key_hash_2 = KeyHash::try_from("mv4XTg5LVRDbdQYhdkd7PEM3R9tWsiYc7ZJR").unwrap();
+        let key_hash_3 = KeyHash::try_from("mv3BgzBWNzhHWqw4ZsXj2rCFxTXiqV8b7dJK").unwrap();
         run_e2e_test(
             &Arena::new(),
             "VOTING_POWER",
@@ -903,8 +903,8 @@ mod tests {
 
     #[test]
     fn total_voting_power() {
-        let key_hash_1 = KeyHash::try_from("tz3d9na7gPpt5jxdjGBFzoGQigcStHB8w1uq").unwrap();
-        let key_hash_2 = KeyHash::try_from("tz4T8ydHwYeoLHmLNcECYVq3WkMaeVhZ81h7").unwrap();
+        let key_hash_1 = KeyHash::try_from("mv3GzBqSxJwFaj4BDc2tu5k2xpA1NgcH3X3d").unwrap();
+        let key_hash_2 = KeyHash::try_from("mv4XTg5LVRDbdQYhdkd7PEM3R9tWsiYc7ZJR").unwrap();
         run_e2e_test(
             &Arena::new(),
             "TOTAL_VOTING_POWER",
@@ -1304,14 +1304,14 @@ mod multisig_tests {
                 Pair
                     (Pair $CHAIN_ID \"$SELF_ADDRESS\")
                     $ANTI_REPLAY_COUNTER
-                    (Right (Left (Some \"tz1V8fDHpHzN8RrZqiYCHaJM9EocsYZch5Cy\")))
+                    (Right (Left (Some \"mv1MV4CZQJpgH3beVnBc4suBaPiMCpwQRRgv\")))
                 " of type $PARAM_TYPE | sed -n 's/^Raw packed data: //p')
 
             # Sign the packed parameter.
             $ mavkit-client --mode mockup sign bytes $BYTES for bob
             Signature: edsigtXyZmxgR3MDhDRdtAtopHNNE8rPsPRHgPXurkMacmRLvbLyBCTjtBFNFYHEcLTjx94jdvUf81Wd7uybJNGn5phJYaPAJST
         */
-        let new_delegate = "tz1V8fDHpHzN8RrZqiYCHaJM9EocsYZch5Cy";
+        let new_delegate = "mv1MV4CZQJpgH3beVnBc4suBaPiMCpwQRRgv";
         let signature = "edsigtXyZmxgR3MDhDRdtAtopHNNE8rPsPRHgPXurkMacmRLvbLyBCTjtBFNFYHEcLTjx94jdvUf81Wd7uybJNGn5phJYaPAJST";
 
         let interp_res = parse_contract_script(MULTISIG_SRC)
@@ -1366,7 +1366,7 @@ mod multisig_tests {
         let temp = Arena::new();
         let mut ctx = make_ctx();
         let threshold = 1;
-        let new_delegate = "tz1V8fDHpHzN8RrZqiYCHaJM9EocsYZch5Cy";
+        let new_delegate = "mv1MV4CZQJpgH3beVnBc4suBaPiMCpwQRRgv";
         let invalid_signature = "edsigtt6SusfFFqwKqJNDuZMbhP6Q8f6zu3c3q7W6vPbjYKpv84H3hfXhRyRvAXHzNYSwBNNqjmf5taXKd2ZW3Rbix78bhWjxg5";
 
         let interp_res = parse_contract_script(MULTISIG_SRC)

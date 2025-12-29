@@ -144,10 +144,10 @@ let default_host =
 let activator : Account.key =
   {
     alias = "activator";
-    public_key_hash = "mv1FeNQ3gSZoEFp1mr6VTLnMqV5tuNwHTgw5";
-    public_key = "edpkuSLWfVU1Vq7Jg9FucPyKmma6otcMHac9zG4oU1KMHSTBpJuGQ2";
+    public_key_hash = "mv1XLiKa1vywAuPWuLF9WEYB3BPvRRQ8oCsp";
+    public_key = "edpkv4NbnxPuHtCwszff3vB7vtwYXmPUsaaM1DBcxuJhvTfGUFsej4";
     secret_key =
-      Unencrypted "edsk31vznjHSSpGExDMHYASz45VZqXN4DPxvsa4hAyY8dHM28cZzp6";
+      Unencrypted "edsk4YZKqjTvHuAHmYZfMCHwWcL4zMt9X87tbzwYLb1LBba7hK1tom";
   }
 
 (* The names below are simply placeholders to ease the writing of

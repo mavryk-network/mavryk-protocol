@@ -98,7 +98,7 @@ This sequence of operations was run:
       Updated storage: { "a" ; "b" ; "c" }
       Storage size: 272 bytes
       Paid storage size diff: 18 bytes
-      Consumed gas: 1319.911
+      Consumed gas: 1320.212
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.0045
         storage fees ........................... +ṁ0.0045
@@ -138,7 +138,7 @@ This sequence of operations was run:
       Updated storage: { "a" ; "b" ; "c" ; "d" ; "e" ; "f" }
       Storage size: 290 bytes
       Paid storage size diff: 18 bytes
-      Consumed gas: 1322.602
+      Consumed gas: 1322.903
       Balance updates:
         [PUBLIC_KEY_HASH] ... -ṁ0.0045
         storage fees ........................... +ṁ0.0045

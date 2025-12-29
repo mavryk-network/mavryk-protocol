@@ -28,7 +28,7 @@ let version_value = "alpha_current"
 
 let version = "v1"
 
-let mainnet_id = Chain_id.of_b58check_exn "NetXdQprcVkpaWU"
+let mainnet_id = Chain_id.of_b58check_exn "NetXXAAR1wWQhhe"
 
 (* The fitness version number was:
    - "\000" until and including proto 004

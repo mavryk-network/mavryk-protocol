@@ -1525,7 +1525,7 @@ let test_whitelist address () =
   let* success_resp = Client.RPC.call client @@ RPC.get_chain_blocks () in
   let block_hash = JSON.geti 0 success_resp |> JSON.geti 0 |> JSON.as_string in
   let* () =
-    if block_hash = "BLockGenesisGenesisGenesisGenesisGenesisf79b5d1CoW2" then
+    if block_hash = "BLockGenesisGenesisGenesisGenesisGenesis23a82evMK9F" then
       unit
     else
       Test.fail "Received an unexpected block hash from node: '%s'." block_hash

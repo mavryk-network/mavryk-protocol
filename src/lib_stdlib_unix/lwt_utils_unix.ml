@@ -205,20 +205,42 @@ let create_file ?(close_on_exec = true) ?(perm = 0o644) name content =
 
 let read_file fn = Lwt_io.with_file fn ~mode:Input (fun ch -> Lwt_io.read ch)
 
-let copy_file ~src ~dst =
+let copy_file ?(buffer_size = 4096) ~src ~dst () =
   let open Lwt_syntax in
   Lwt_io.with_file ~mode:Output dst (fun dst_ch ->
       Lwt_io.with_file src ~mode:Input (fun src_ch ->
-          let buff = Bytes.create 4096 in
+          let buffer = Bytes.create buffer_size in
           let rec loop () =
-            let* n = Lwt_io.read_into src_ch buff 0 4096 in
+            let* n = Lwt_io.read_into src_ch buffer 0 buffer_size in
             match n with
             | 0 -> Lwt.return_unit
             | n ->
-                let* () = Lwt_io.write_from_exactly dst_ch buff 0 n in
+                let* () = Lwt_io.write_from_exactly dst_ch buffer 0 n in
                 loop ()
           in
           loop ()))
+
+let copy_file_raw ?(buffer_size = 4096 * 1024) ?(dst_perm = 0o666) ~src ~dst ()
+    =
+  let open Lwt_syntax in
+  let buffer = Bytes.create buffer_size in
+  let* src_fd = Lwt_unix.openfile src [Unix.O_RDONLY; O_CLOEXEC] 0o444 in
+  let* dst_fd =
+    Lwt_unix.openfile dst [Unix.O_WRONLY; O_CREAT; O_TRUNC; O_CLOEXEC] dst_perm
+  in
+  let raw_copy src_fd dst_fd =
+    let rec loop () =
+      let* read = Lwt_unix.read src_fd buffer 0 buffer_size in
+      if read = 0 then Lwt.return_unit
+      else
+        let* (_ : int) = Lwt_unix.write dst_fd buffer 0 read in
+        loop ()
+    in
+    loop ()
+  in
+  let* () = raw_copy src_fd dst_fd in
+  let* () = Lwt_unix.close src_fd in
+  Lwt_unix.close dst_fd
 
 let copy_dir ?(perm = 0o755) src dst =
   let open Lwt_syntax in
@@ -236,7 +258,7 @@ let copy_dir ?(perm = 0o755) src dst =
             let new_dir = Filename.concat dst_dir basename in
             let* () = create_dir ~perm new_dir in
             copy_dir file new_dir
-          else copy_file ~src:file ~dst:(Filename.concat dst_dir basename))
+          else copy_file ~src:file ~dst:(Filename.concat dst_dir basename) ())
       files
   in
   let* src_dir_exists = dir_exists src in
