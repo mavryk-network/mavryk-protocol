@@ -1,6 +1,17 @@
 Release System
 ==============
 
+.. note::
+
+   **Mavryk/Tezos Version Mapping**
+
+   Mavryk is forked from Tezos and uses its own versioning system. The internal codebase
+   retains Tezos version numbers for easier upstream integration. Git tags follow Tezos
+   versioning for compatibility:
+
+   - **Mavryk V1 (Atlas)** corresponds to Tezos Oxford (v19) — git tag: ``v19.3-mavryk``
+   - **Mavryk V2 (Boreas)** corresponds to Tezos ParisB/ParisC (v20/v21) — git tag: ``20.3``
+
 Mavkit releases include all the software needed to run the distributed
 consensus platform with its meta-consensus capability. This
 meta-consensus capability is supported by a protocol that is used to
@@ -20,9 +31,9 @@ Consequently, Mavkit releases are created not only when new features are
 added or bugs are fixed, but also when new protocols are proposed or
 adopted.
 
-Starting with version 7.0, releases are named using a
-``<major>.<minor>`` numbering scheme. There are also release candidates
-suffixed by ``~rc<N>``, and beta versions suffixed by ``~beta<N>``.
+Mavryk releases are named using a ``<major>.<minor>`` numbering scheme,
+starting from version 1.0. There are also release candidates suffixed by
+``~rc<N>``, and beta versions suffixed by ``~beta<N>``.
 
 - **The major version number is incremented when a new release branch is
   created from master.** Such branches thus include many new

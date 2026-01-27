@@ -33,16 +33,16 @@ Hash: tz1V7TgBR52wAjjqsh24w8y9CymFGdegt9qs
 Public Key: edpkvGAz71r8SZomcvF7LGajXT3AnhYX9CrmK3JWgA2xk8rf8CudY8
 
 # Tell the baker about this signer
-$ sudo su tezos -c "mavkit-client -R tcp://localhost:7732 config update"
+$ sudo su mavryk -c "mavkit-client -R tcp://localhost:7732 config update"
 
 # add the remote key to the baker
-$ sudo su tezos -c "mavkit-client -R tcp://localhost:7732 import secret key alice remote:tz1V7TgBR52wAjjqsh24w8y9CymFGdegt9qs"
+$ sudo su mavryk -c "mavkit-client -R tcp://localhost:7732 import secret key alice remote:tz1V7TgBR52wAjjqsh24w8y9CymFGdegt9qs"
 
 # Check that everything is ok
 # you should see the the operation in the logs of the signer
 # journalctl --user-unit mavkit-signer
-$ sudo su tezos -c "mavkit-client sign bytes 0x03 for alice"
+$ sudo su mavryk -c "mavkit-client sign bytes 0x03 for alice"
 
 # Register your baking account
-$ sudo su tezos -c "mavkit-client register key alice as delegate"
+$ sudo su mavryk -c "mavkit-client register key alice as delegate"
 ```

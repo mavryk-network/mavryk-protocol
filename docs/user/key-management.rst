@@ -345,8 +345,8 @@ Getting keys for fundraiser accounts
 If you took part in the fundraiser but didn't yet activate your account,
 it is still possible to activate your Mainnet account on https://check.tezos.com/.
 This feature is also included in some wallets.
-If you have any questions or issues, refer to that page or to the `Mavryk
-Foundation <https://tezos.foundation/>`_ for support.
+If you have any questions or issues, refer to that page or to `Mavryk
+Dynamics <https://mavrykdynamics.com/>`_ for support.
 
 You may also use ``mavkit-client`` to activate your account, but **be
 warned that you should have
@@ -368,8 +368,8 @@ your secret key and it asks you to create a new password in order to store your
 secret key on disk encrypted.
 
 If you haven't already activated your account on the website, you can
-use this command with the activation code obtained from the Mavryk
-foundation.
+use this command with the activation code obtained from Mavryk
+Dynamics.
 
 ::
 

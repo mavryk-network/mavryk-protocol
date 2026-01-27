@@ -1,7 +1,7 @@
 Optimizing Mavkit Node Setup:
 
 By default, the Mavkit node installation from this package connects
-to the Tezos mainnet chain. It commences a bootstrap from scratch in archive
+to the Mavryk mainnet chain. It commences a bootstrap from scratch in archive
 mode, offering full functionality but potentially demanding a substantial amount of
 time and resources (currently < 100GB).
 
@@ -16,7 +16,7 @@ Execute the following command to obtain a new data directory:
 
     curl -L -o snapshot.file <SNAPSHOT_URL>
 
-    mavkit-node snapshot import snapshot.file --block <BLOCK_HASH> --data-dir /var/tezos/.mavryk-node
+    mavkit-node snapshot import snapshot.file --block <BLOCK_HASH> --data-dir /var/mavryk/.mavryk-node
 
 Check here the full documentation on how to import a snapshot: https://protocol.mavryk.org/user/snapshots.html#importing-a-snapshot
 

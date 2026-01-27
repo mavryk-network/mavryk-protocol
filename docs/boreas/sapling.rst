@@ -168,8 +168,8 @@ contract if another one has the same functionalities, it will split
 the anonymity set.
 
 Second, remember that shielding and unshielding are public operations.
-A typical anti-pattern is to shield from tz1-alice 15.3 tez, and then
-unshield 15.3 tez to tz1-bob. It's fairly clear from timing and
+A typical anti-pattern is to shield from mv1-alice 15.3 tez, and then
+unshield 15.3 tez to mv1-bob. It's fairly clear from timing and
 amounts that Alice transferred 15.3 tez to Bob.
 To decorrelate the two transfers it is important to change the
 amounts, let some time pass between the two and perform the

@@ -329,8 +329,7 @@ Further External Resources
 
 Further details and explanations on the voting procedure can be found at:
 
-- `Governance on-chain <https://documentation.mavryk.org/mavryk-basics/governance-on-chain>`_ on Open Mavryk
-- `Mavryk Governance <https://www.tezosagora.org/learn#an-introduction-to-mavryk-governance>`_ on Mavryk Agora.
+- `Governance on-chain <https://documentation.mavryk.org/mavryk-basics/governance-on-chain>`_ on Mavryk Documentation
 
 For more details on the client commands refer to the manual at
 :ref:`client_manual_alpha`.

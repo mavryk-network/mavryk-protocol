@@ -1,7 +1,7 @@
 Sapling support
 ===============
 
-This page first give some details on Sapling and its underlying concepts, and then describes the support for Sapling in Octez and in the Michelson language (part of the Tezos protocol).
+This page first give some details on Sapling and its underlying concepts, and then describes the support for Sapling in Octez and in the Michelson language (part of the Mavryk protocol).
 For support in high-level smart contract languages, see the `Sapling documentation in OpenTezos <https://opentezos.com/smart-contracts/smart-contracts-concepts/#sapling>`__.
 
 Sapling
@@ -80,7 +80,7 @@ Diffie-Hellman key exchange using the recipient address and an
 ephemeral key.
 In principle this *ciphertext* can be transmitted off-chain as it's
 not needed to verify the integrity of the pool. For convenience, in
-Tezos, it is stored together with the commitment and the nullifier on
+Mavryk, it is stored together with the commitment and the nullifier on
 chain.
 
 For reasons of efficiency the commitments are stored in an incremental
@@ -109,13 +109,13 @@ bytes that gets signed by the user's Sapling key.
 This field can be used to bind the transaction to another
 application's logic.
 For example during an unshield operation it is important to include in
-the ``bound_data`` the Tezos account that will receive the unshielded
+the ``bound_data`` the Mavryk account that will receive the unshielded
 tokens.
 Without any ``bound_data``, a Sapling unshield operation authorizes any
 party that submits it to claim the unshielded tokens. An adversary can
-intercept the Tezos operation containing the unshield and resubmit it
-using its own Tezos account.
-This malleability attack is prevented by including the recipient Tezos
+intercept the Mavryk operation containing the unshield and resubmit it
+using its own Mavryk account.
+This malleability attack is prevented by including the recipient Mavryk
 account in the ``bound_data``, which is signed by the owner of the
 Sapling keys, and that can be used by the Smart Contract to transfer
 the tokens.
@@ -168,8 +168,8 @@ contract if another one has the same functionalities, it will split
 the anonymity set.
 
 Second, remember that shielding and unshielding are public operations.
-A typical anti-pattern is to shield from tz1-alice 15.3 tez, and then
-unshield 15.3 tez to tz1-bob. It's fairly clear from timing and
+A typical anti-pattern is to shield from mv1-alice 15.3 tez, and then
+unshield 15.3 tez to mv1-bob. It's fairly clear from timing and
 amounts that Alice transferred 15.3 tez to Bob.
 To decorrelate the two transfers it is important to change the
 amounts, let some time pass between the two and perform the
@@ -262,7 +262,7 @@ is zero.
 Additionally in case of an unshield, it must use the bound data to
 authorize the transfer of unshielded tokens.
 For example it could convert the bound data to a public-key hash and
-use it as recipient address of a Tezos transfer.
+use it as recipient address of a Mavryk transfer.
 
 Example contracts
 ~~~~~~~~~~~~~~~~~
@@ -307,7 +307,7 @@ can use the Fiat-Shamir heuristic.
 Fees issue
 ~~~~~~~~~~
 
-The Sapling integration in Tezos exhibits a privacy issue that Z-cash doesn't have. When
+The Sapling integration in Mavryk exhibits a privacy issue that Z-cash doesn't have. When
 interacting with a shielded pool one interacts with a smart contract
 via a normal transaction and therefore have to pay fees from an
 implicit account.

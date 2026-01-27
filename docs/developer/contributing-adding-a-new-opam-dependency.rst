@@ -26,7 +26,7 @@ To this end:
 - the CI uses Docker images that come with those dependencies pre-compiled.
 
 The Docker images for the CI are built by the CI of another repository,
-the so-called `Tezos opam repository <https://gitlab.com/mavryk-network/opam-repository>`__.
+the so-called `Mavryk opam repository <https://gitlab.com/mavryk-network/opam-repository>`__.
 The set of dependencies that is used to build those images is also defined
 by a lock file and a commit hash from the public opam repository.
 Both must be kept synchronized with their counterpart in the ``tezos/tezos`` repository.
@@ -38,7 +38,7 @@ Both must be kept synchronized with their counterpart in the ``tezos/tezos`` rep
 
 Adding, removing or updating dependencies thus requires to work both
 on the `main codebase <https://gitlab.com/tezos/tezos>`__ and on
-the `Tezos opam repository <https://gitlab.com/mavryk-network/opam-repository>`__.
+the `Mavryk opam repository <https://gitlab.com/mavryk-network/opam-repository>`__.
 Moreover, work between those two components must happen in a specific order.
 
 The rest of this document explains the process from the point-of-view of
@@ -55,7 +55,7 @@ locally (i.e., on your own machine) is to install it using ``opam``.
 
 Because you have used ``make build-dev-deps`` in order to install the
 Mavkit dependencies, you have access to the default opam repository in
-addition to the Tezos opam repository.
+addition to the Mavryk opam repository.
 
 **Install your dependency:** ``opam install foo``
 
@@ -113,21 +113,21 @@ not an issue in general but it might explain some changes unrelated to your work
     as it does not guarantee that the set of dependencies is actually
     a valid solution that the opam solver could have chosen.
 
-Third, **create an MR on the Tezos opam repository.**
+Third, **create an MR on the Mavryk opam repository.**
 This is the *opam repository MR*, its role is to prepare
 the environment for the *Mavkit MR* that we will create below.
 
 In order to create the opam repository MR:
 
 - If you haven’t already done so, clone
-  `the Tezos opam repository <https://gitlab.com/mavryk-network/opam-repository>`__.
+  `the Mavryk opam repository <https://gitlab.com/mavryk-network/opam-repository>`__.
 - Create a branch from the repository's ``master`` and switch to it.
-- Update file ``scripts/version.sh`` (in the Tezos opam repository)
+- Update file ``scripts/version.sh`` (in the Mavryk opam repository)
   to set the value of ``opam_repository_commit_hash``
   to match the value of ``full_opam_repository_tag`` that you have set in
   :src:`scripts/version.sh` (in the Mavkit repository).
 - Copy file :src:`opam/virtual/mavkit-deps.opam.locked` (from the Mavkit repository)
-  to the root of the Tezos opam repository.
+  to the root of the Mavryk opam repository.
 - Commit the result. Take note of the commit hash, it will be useful later.
 - Push your branch.
 - Create the opam repository MR from this branch.

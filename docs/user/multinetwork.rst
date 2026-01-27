@@ -31,7 +31,7 @@ regarding what happens when you update your node, in each case.
 Test Networks
 -------------
 
-Mainnet is the main Tezos network, but is not appropriate for testing.
+Mainnet is the main Mavryk network, but is not appropriate for testing.
 A number of `test networks <https://teztnets.com>`__ are available to this end. Test networks usually run
 with different :ref:`constants <protocol_constants>` to speed up the chain.
 

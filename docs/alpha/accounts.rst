@@ -1,14 +1,14 @@
 Accounts and addresses
 ======================
 
-The Tezos ledger currently supports two types of accounts that can hold
+The Mavryk ledger currently supports two types of accounts that can hold
 tokens (and be the destinations of transactions), identified by distinct
 addresses:
 
   - An implicit account is a non-programmable account, whose tokens
     are spendable and delegatable by the owner of a private key. Its address is
-    the hash of the public key, prefixed by ``tz1``, ``tz2``,
-    ``tz3`` or ``mv4``.
+    the hash of the public key, prefixed by ``mv1``, ``mv2``,
+    ``mv3`` or ``mv4``.
   - A smart contract is a programmable account, associated with some Michelson code.
     A transaction to such
     an address can provide data, and can fail, according to the :ref:`transaction semantics <transaction_semantics_atlas>`. Its address is a unique hash that depends on
@@ -32,32 +32,32 @@ briefly described below from a user point of view.
 The sizes of public keys, secret keys and signatures may differ between the
 different schemes but addresses are always 20 bytes long.
 
-``tz1``: Ed25519
+``mv1``: Ed25519
 ''''''''''''''''
 
-Addresses that start with the ``tz1`` prefix are hashes of Ed25519 public keys
+Addresses that start with the ``mv1`` prefix are hashes of Ed25519 public keys
 and signatures must be produced by using the `EdDSA signature scheme
 <https://datatracker.ietf.org/doc/html/rfc8032>`_ with the `Curve25519 curve
 <https://ed25519.cr.yp.to>`_. This is the default scheme of Mavkit when, *e.g.*,
 generating key pairs. It is also the recommended cryptographic scheme to use
 because it offers better security guarantees than EcDSA and has good performance
 on most hardware. It may not be available in all wallets or on all dedicated
-chips which is why Tezos supports multiple schemes.
+chips which is why Mavryk supports multiple schemes.
 
-``tz2``: Secp256k1
+``mv2``: Secp256k1
 ''''''''''''''''''
 
-Addresses that start with the ``tz2`` prefix are hashes of Secp256k1 public keys
+Addresses that start with the ``mv2`` prefix are hashes of Secp256k1 public keys
 and signatures must be produced by using the `EcDSA signature scheme
 <https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm>`_
 with the `Secp256k1 curve <https://www.secg.org/sec2-v2.pdf>`_. Secp256k1 is
 notably the cryptographic scheme used by Bitcoin and Ethereum. This means that
-private keys and addresses used on Bitcoin can also be used on Tezos.
+private keys and addresses used on Bitcoin can also be used on Mavryk.
 
-``tz3``: P-256
+``mv3``: P-256
 ''''''''''''''
 
-Addresses that start with the ``tz3`` prefix are hashes of P-256 public keys and
+Addresses that start with the ``mv3`` prefix are hashes of P-256 public keys and
 signatures must be produced by using the `EcDSA signature scheme
 <https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm>`_
 with the `P-256 curve

@@ -166,4 +166,4 @@ The adaptive issuance feature :ref:`documentation <adaptive_issuance_alpha>`.
 
 Other presentations of the Mavryk' proof-of-stake mechanism can be
 found in the
-`Open Mavryk entry <https://documentation.mavryk.org/mavryk-basics/liquid-proof-of-stake/>`_.
+`Mavryk Documentation entry <https://documentation.mavryk.org/mavryk-basics/liquid-proof-of-stake/>`_.

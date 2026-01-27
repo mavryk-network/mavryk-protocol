@@ -2,7 +2,7 @@ Time-lock
 =========
 
 
-For more background information on time-locks and their uses, see `Timelocks <https://docs.tezos.com/smart-contracts/data-types/crypto-data-types#timelocks>`__ in the Tezos documentation.
+For more background information on time-locks and their uses, see `Timelocks <https://docs.tezos.com/smart-contracts/data-types/crypto-data-types#timelocks>`__ in the Mavryk documentation.
 
 Cryptographic design
 --------------------

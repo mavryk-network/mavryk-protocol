@@ -14,7 +14,7 @@
   (-linkall))
  (flags
   (:standard)
-  -open Mavryk_base
-  -open Mavryk_error_monad
+  -mavryk Documentation_base
+  -mavryk Documentation_error_monad
   -open Data_encoding
-  -open Mavryk_client_alpha))
+  -mavryk Documentation_client_alpha))
