@@ -42,7 +42,7 @@
                                 { "type": "object",
                                   "properties":
                                     { "block_hash":
-                                        { "description": "Tezos block hash.",
+                                        { "description": "Mavryk block hash.",
                                           "oneOf":
                                             [ { "$ref":
                                                   "#/components/schemas/block_hash" } ] },
@@ -54,7 +54,7 @@
                                           "maximum": 2147483647 },
                                       "predecessor":
                                         { "description":
-                                            "Predecessor hash of the Tezos block.",
+                                            "Predecessor hash of the Mavryk block.",
                                           "oneOf":
                                             [ { "$ref":
                                                   "#/components/schemas/block_hash" } ] },
@@ -351,7 +351,7 @@
       "/global/block/{block_id}/hash":
         { "get":
             { "description":
-                "Tezos block hash of block known to the smart rollup node",
+                "Mavryk block hash of block known to the smart rollup node",
               "parameters":
                 [ { "name": "block_id", "in": "path",
                     "description": "An L1 block identifier.",
@@ -505,7 +505,7 @@
       "/global/block/{block_id}/level":
         { "get":
             { "description":
-                "Level of Tezos block known to the smart rollup node",
+                "Level of Mavryk block known to the smart rollup node",
               "parameters":
                 [ { "name": "block_id", "in": "path",
                     "description": "An L1 block identifier.",
@@ -1219,7 +1219,7 @@
                                 { "type": "object",
                                   "properties":
                                     { "block_hash":
-                                        { "description": "Tezos block hash.",
+                                        { "description": "Mavryk block hash.",
                                           "oneOf":
                                             [ { "$ref":
                                                   "#/components/schemas/block_hash" } ] },
@@ -1231,7 +1231,7 @@
                                           "maximum": 2147483647 },
                                       "predecessor":
                                         { "description":
-                                            "Predecessor hash of the Tezos block.",
+                                            "Predecessor hash of the Mavryk block.",
                                           "oneOf":
                                             [ { "$ref":
                                                   "#/components/schemas/block_hash" } ] },
@@ -1317,7 +1317,7 @@
                                     "The full list of errors is available with the global RPC `GET errors`" } } } } } } },
       "/global/tezos_head":
         { "get":
-            { "description": "Tezos head known to the smart rollup node",
+            { "description": "Mavryk head known to the smart rollup node",
               "responses":
                 { "200":
                     { "description": "",
@@ -1339,7 +1339,7 @@
                                     "The full list of errors is available with the global RPC `GET errors`" } } } } } } },
       "/global/tezos_level":
         { "get":
-            { "description": "Tezos level known to the smart rollup node",
+            { "description": "Mavryk level known to the smart rollup node",
               "responses":
                 { "200":
                     { "description": "",
@@ -1896,7 +1896,7 @@
                 "Commitment representation for the DAL (Base58Check-encoded)",
               "oneOf": [ { "$ref": "#/components/schemas/unistring" } ] },
           "Operation_hash":
-            { "title": "A Tezos operation ID (Base58Check-encoded)",
+            { "title": "A Mavryk operation ID (Base58Check-encoded)",
               "oneOf": [ { "$ref": "#/components/schemas/unistring" } ] },
           "Signature.Public_key_hash":
             { "title":

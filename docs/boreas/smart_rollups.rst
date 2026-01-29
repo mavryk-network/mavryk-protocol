@@ -229,7 +229,7 @@ commitments are published for the same commitment period, one of them
 must be wrong.
 
 Notice that, to publish a commitment, an operator must provide a
-deposit of 10,000 tez. For this reason, the operator is said to be a
+deposit of 10,000 mav. For this reason, the operator is said to be a
 **staker**. Several users can stake on the same commitment. When a
 staker *S* publishes a new commitment based on a commitment that *S* is staking
 on, *S* does not have to provide a new deposit: the deposit also

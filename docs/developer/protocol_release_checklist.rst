@@ -161,7 +161,7 @@ the point of no return.**
 -  **Reminder For Bakers**: post in the baking slack and in the baker newsletter
    a reminder for them to upgrade.
 
--  **PR Team Work**: The Mavryk Foundation's (TF) PR team prepares news releases
+-  **PR Team Work**: Mavryk Dynamics PR team prepares news releases
    for the press to go out after protocol activation is known to have been fully
    successful.
 

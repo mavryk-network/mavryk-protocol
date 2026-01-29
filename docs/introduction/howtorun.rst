@@ -179,7 +179,7 @@ where ``PROTO_HASH`` is the short hash of the current protocol of the network yo
 
 Note that the baker needs direct access to
 the node data directory for performance reasons (to reduce the number of RPC calls to the node).
-Note also that since version 13.0, option ``--liquidity-baking-toggle-vote`` is mandatory, see :ref:`the changelog <changes_13_0_rc1_baker>`.
+Note also that option ``--liquidity-baking-toggle-vote`` is mandatory (introduced in upstream Tezos Octez v13), see :ref:`the changelog <changes_13_0_rc1_baker>`.
 Note that ``--liquidity-baking-toggle-vote`` must be placed
 **after** ``run`` on the command-line.
 

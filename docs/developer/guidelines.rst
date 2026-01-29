@@ -77,10 +77,10 @@ Note that the reference to an existing issue or MR on the first line is mandator
 These tags might be checked automatically by the :ref:`Merge-Request Bot <merge_bot>`, e.g. to signal tags that refer to non-existent issues or MRs, to closed issues, or to already merged MRs.
 The reference to an issue may be one of:
 
-- a URL such as ``https://gitlab.com/tezos/tezos/-/issues/1377``
+- a URL such as ``https://gitlab.com/mavryk-network/mavryk-protocol/-/issues/123``
 - a GitLab notation for an issue such as ``#123`` (implicitly under ``mavryk-network/mavryk-protocol``), ``michelson-reference#123`` (implicitly under ``mavryk-protocol/michelson-reference``),
   or ``oxheadalpha/merbocop#123`` (fully qualified).
-- a GitLab notation for a merge request such as ``!10990``.
+- a GitLab notation for a merge request such as ``!123``.
 
 License
 -------
@@ -612,7 +612,7 @@ variant to the corresponding type ``t_with_version`` (see
 :ref:`RPC-versioning-dev-adding-an-rpc`). Otherwise, the ``version``
 query parameter should be added (a natural number starting from
 ``0``). See example `here
-<https://gitlab.com/tezos/tezos/-/merge_requests/3480>`_.
+<https://gitlab.com/tezos/tezos/-/merge_requests/3480>`_ (upstream Tezos).
 
 For versioning an RPC which returns a type ``t``, you have to write in
 the service module of the RPC a type ``t_with_version`` which has one

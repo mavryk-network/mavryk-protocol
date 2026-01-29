@@ -1,28 +1,34 @@
-Version 19.1
-============
+Version 1.1
+===========
 
-Version 19 contains a new version (V11) of the protocol environment,
+.. note::
+
+   **Mavryk/Tezos Version Mapping:** Mavryk is forked from Tezos and uses its own versioning system.
+   Mavryk Version 1 (Atlas) corresponds to Tezos Oxford (v19). Git tags follow Tezos versioning
+   for compatibility (e.g., ``v19.3-mavryk`` for this release).
+
+Version 1 contains a new version (V11) of the protocol environment,
 which is the set of functions that a protocol can call.
-This new version is used by the new version of :doc:`Atlas <../protocols/001_atlas>`,
-protocol proposal for the successor of Nairobi.
-This release contains the Atlas protocol proposal itself, as well as its associated protocol-specific executable binaries (baker, accuser, etc).
+This new version is used by the :doc:`Atlas <../protocols/001_atlas>` protocol,
+the first protocol of the Mavryk blockchain.
+This release contains the Atlas protocol itself, as well as its associated protocol-specific executable binaries (baker, accuser, etc).
 
 .. _acl_fix:
 
-Following the recent `security alert <https://forum.tezosagora.org/t/security-alert-recommendations-for-operators-of-public-rpc-nodes/6003>`_ for RPC nodes (and other public-facing infrastructure) operators, version 19.1 hardens the default RPC ACL whitelist when starting an RPC server. The same document provides further recommendations on operating securely public facing infra.
+Following security best practices for RPC nodes (and other public-facing infrastructure) operators, version 1.1 hardens the default RPC ACL whitelist when starting an RPC server.
 
-In addition, Mavkit v19.1 introduces a ``--max-active-rpc-connections <NUM>`` option, that limits the number
+In addition, Mavkit v1.1 introduces a ``--max-active-rpc-connections <NUM>`` option, that limits the number
 of active RPC connections *per server* to the provided argument. The
 default limit is set to 100.
 
-Finally, version 19.1 now shuts down the node gracefully when hitting an "unknown key" error raised by Irmin.
+Finally, version 1.1 now shuts down the node gracefully when hitting an "unknown key" error raised by Irmin.
 This prevents the node to run indefinitely in a failing state.
 
 Rollup node
 ~~~~~~~~~~~
 
-Starting from version 19, the rollup node is *protocol-agnostic* -- This change was also backported to v18.1.
-This means that a single executable, ``mavkit-smart-rollup-node`` can be used with any Tezos protocols.
+Starting from version 1, the rollup node is *protocol-agnostic*.
+This means that a single executable, ``mavkit-smart-rollup-node`` can be used with any Mavryk protocols.
 The old executable names have been kept as symbolic links, but will be removed in a future version.
 
 The rollup client is not released anymore. Equivalent RPCs to the rollup node must be used instead of its commands.
@@ -56,12 +62,12 @@ The Smart Rollup node now allows multiple :ref:`batcher keys <rollup_batcher>`. 
 keys for the batching purpose allows to inject multiple operations
 of the same kind per block by the rollup node.
 
-Version 19 introduces a :ref:`history-mode option <rollup_history_mode>` for the rollup node.
+Version 1 introduces a :ref:`history-mode option <rollup_history_mode>` for the rollup node.
 It can be either ``archive`` or ``full``.
 The ``full`` mode integrates garbage collection that reduces the disk usage.
 By default, the rollup node runs in ``archive`` mode, without the GC.
 
-Version 19.1 fixes a critical bug that could happen on a ``full`` rollup node.
+Version 1.1 fixes a critical bug that could happen on a ``full`` rollup node.
 This bug leads to data loss when chain reorganizations happen while a GC is running.
 
 In addition, it fixes the protocol migration on the rollup node. The constants are now fetched from a correct context, preventing failure in case the rollup node is stopped before processing the protocol migration.
@@ -76,22 +82,22 @@ Update Instructions
 To update from sources::
 
   git fetch
-  git checkout v19.1
+  git checkout v19.3-mavryk
   make clean
   opam switch remove . # To be used if the next step fails
   make build-deps
   eval $(opam env)
   make
 
-If you are using Docker instead, use the ``v19.1`` Docker images of Mavkit.
+If you are using Docker instead, use the ``v19.3-mavryk`` Docker images of Mavkit.
 
 You can also install Mavkit using Opam by running ``opam install mavkit``.
 
-It is now also possible to download experimental Debian and Redhat packages on the `release page <https://gitlab.com/tezos/tezos/-/releases/v19.1>`_  and in the `package registry <https://gitlab.com/tezos/tezos/-/packages>`_.
+It is now also possible to download experimental Debian and Redhat packages on the `release page <https://gitlab.com/mavryk-network/mavryk-protocol/-/releases>`_ and in the `package registry <https://gitlab.com/mavryk-network/mavryk-protocol/-/packages>`_.
 
 Changelog
 ---------
 
-- `Version 19.1 <../CHANGES.html#version-1-1>`_
-- `Version 19.0 <../CHANGES.html#version-1-0>`_
-- `Version 19.0~rc1 <../CHANGES.html#version-1-0-rc1>`_
+- `Version 1.1 <../CHANGES.html#version-1-1>`_
+- `Version 1.0 <../CHANGES.html#version-1-0>`_
+- `Version 1.0~rc1 <../CHANGES.html#version-1-0-rc1>`_

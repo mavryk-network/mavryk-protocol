@@ -24,7 +24,7 @@ Public Key: edpkvQZjxdikAtuWtT1BREEERQ64z26AMQkaMWgsDyCBnSJ5Muk1YG
 Secret Key: unencrypted:edsk3Q9asoarfKtFzrcZyxPwE62DJVuRkSr6HkSCJ7T5zXeM7kKcuQ
 
 # add auth key to the baker
-$ sudo su tezos -c "mavkit-client import secret key auth unencrypted:edsk3Q9asoarfKtFzrcZyxPwE62DJVuRkSr6HkSCJ7T5zXeM7kKcuQ"
+$ sudo su mavryk -c "mavkit-client import secret key auth unencrypted:edsk3Q9asoarfKtFzrcZyxPwE62DJVuRkSr6HkSCJ7T5zXeM7kKcuQ"
 
 # install the signer service
 $ mkdir -p ~/.config/systemd/user/
@@ -37,13 +37,13 @@ $ examine the logs
 journalctl --user-unit mavkit-signer
 
 # Tell the baker about this signer
-$ sudo su tezos -c "mavkit-client -R tcp://localhost:7732 config update"
+$ sudo su mavryk -c "mavkit-client -R tcp://localhost:7732 config update"
 
 # add the remote key to the baker
-$ sudo su tezos -c "mavkit-client -R tcp://localhost:7732 import secret key alice remote:tz1V7TgBR52wAjjqsh24w8y9CymFGdegt9qs"
+$ sudo su mavryk -c "mavkit-client -R tcp://localhost:7732 import secret key alice remote:tz1V7TgBR52wAjjqsh24w8y9CymFGdegt9qs"
 
 # Test is everything is ok
-$ sudo su tezos -c "mavkit-client sign bytes 0x03 for alice"
+$ sudo su mavryk -c "mavkit-client sign bytes 0x03 for alice"
 ```
 
 If you are experimenting on basenet you can request tokens here:

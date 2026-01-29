@@ -38,16 +38,16 @@ This document describes Adaptive Issuance and Staking, two new features (referre
 Adaptive Issuance
 =================
 
-Adaptive Issuance is a novel mechanism regulating tez issuance in Mavryk.
+Adaptive Issuance is a novel mechanism regulating mav issuance in Mavryk.
 
 The :doc:`Mavryk economic protocol <./protocol>` issues new
-tez via:
+mav via:
 
 -  Participation rewards: incentives given to delegates for
    :doc:`participation in consensus <consensus>`
    and random seed generation.
 -  The :doc:`Liquidity Baking (LB) subsidy <liquidity_baking>`.
--  Protocol "invoices": lump sums of tez issued and allocated during
+-  Protocol "invoices": lump sums of mav issued and allocated during
    protocol migration.
 
 Participation rewards and the LB subsidy are regularly issued by the
@@ -60,7 +60,7 @@ constants.
 The Adaptive-Issuance/Staking proposal
 introduces the possibility to activate Adaptive Issuance: a mechanism where the amount of
 participation rewards depends on the global **staked funds ratio** – that is, the
-ratio of staked tez to the total supply. This lets issuance roughly
+ratio of staked mav to the total supply. This lets issuance roughly
 match the *actual* security budget the chain requires, the amount needed
 to encourage participants to stake and produce blocks, but *no more*.
 
@@ -314,7 +314,7 @@ withdrawal delays – colloquially, they are "frozen".
 Stakers are slashed proportionally to their contribution to the
 delegate’s staking balance. To simplify slashing, double-baking
 penalties are now proportional to staked funds: instead of the previous
-fixed sum of 640 tez they are now set to 5% of the delegate’s stake.
+fixed sum of 640 mav they are now set to 5% of the delegate’s stake.
 Moreover, denunciation rewards (both for double-baking and
 double-attestations) are reduced from one half to one seventh of the
 slashed funds. The chosen value prevents adversarial delegates from
@@ -375,7 +375,7 @@ parameters:
 
 Delegates can modify these staking parameters at all times, using the
 ``set_delegate_parameters`` pseudo-operation: that is, by transferring 0
-tez to their own ``set_delegate_parameters`` entry-point. The chosen values for both
+mav to their own ``set_delegate_parameters`` entry-point. The chosen values for both
 parameters need to be supplied. The new parameters are then applied
 ``DELEGATE_PARAMETERS_ACTIVATION_DELAY`` (currently 5) cycles later.
 
@@ -413,8 +413,8 @@ they remain otherwise within the staker’s account at all times.
   Figure 2: staked funds management using pseudo-operations.
 
 To *stake* funds, a delegator uses the ``stake`` pseudo-operation,
-transferring the chosen amount of **spendable** tez to their own
-``stake`` entry-point. The **staked** tez will then be frozen and
+transferring the chosen amount of **spendable** mav to their own
+``stake`` entry-point. The **staked** mav will then be frozen and
 contribute to their chosen delegate’s staking balance. Note that the
 ``stake`` pseudo-operation will fail if the sender account is not
 *delegated*.
@@ -429,7 +429,7 @@ or more conveniently::
 
 To *unstake* funds, a staker first submits an unstake request with the
 ``unstake`` pseudo-operation. This is implemented by transferring the
-chosen amount in tez to their ``unstake`` entry-point::
+chosen amount in mav to their ``unstake`` entry-point::
 
    mavkit-client transfer <amount> from <staker> to <staker> --entrypoint unstake
 
@@ -444,7 +444,7 @@ nor slashable. They are said then to be both **unstaked** and
 
 A staker can retrieve all unstaked and finalizable tokens at any time,
 making them spendable again. This is done using the ``finalize_unstake``
-entrypoint -– that is, by transferring 0 tez to their
+entrypoint -– that is, by transferring 0 mav to their
 ``finalize_unstake`` entry-point::
 
    mavkit-client transfer 0 from <staker> to <staker> --entrypoint finalize_unstake

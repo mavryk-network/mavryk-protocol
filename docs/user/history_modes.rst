@@ -158,7 +158,7 @@ and then, it is updated to the last known block of the rolling
 window. The savepoint is moved in accordance to the number of
 configured additional cycles.
 
-``$ tezos rpc get /chains/main/checkpoint``
+``$ mavryk-client rpc get /chains/main/checkpoint``
 
 
 .. _Set_up_an_archive_node:

@@ -162,12 +162,12 @@ device the node is running on.
 
 To store rotated logs, there is the ``daily-logs`` option to create logs files on
 a daily basis. However, it is also possible to use ``logrotate`` by putting the
-log file in ``/var/log/tezos/sink.log``, for exemple. The following
+log file in ``/var/log/mavryk/sink.log``, for exemple. The following
 configuration can then be put in ``/etc/logrotate.d/tezos/sink.log``:
 
 .. code::
 
-  /var/log/tezos/sink.log {
+  /var/log/mavryk/sink.log {
           daily
           copytruncate
           rotate 4

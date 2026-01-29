@@ -13,6 +13,4 @@ See Also
 
 More details on the history of Mavryk protocols, including their activation dates or the salient features they brought, can be found in the following places:
 
-- https://tzstats.com/protocols (or on other :ref:`Tezos block explorers <block_explorers>`
-- https://docs.tezos.com/architecture/governance/amendment-history
-- https://opentezos.com/tezos-basics/history-of-amendments/
+- https://documentation.mavryk.org/mavryk-basics/history-of-amendments/

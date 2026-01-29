@@ -2,7 +2,7 @@ Mavkit Software Architecture
 ============================
 
 This page presents the software architecture of the Mavkit suite, focusing on the most important tool in a Mavryk network: the Mavryk node, implemented in our case as the Mavkit node executable (``mavkit-node``).
-The Mavkit node software architecture faithfully implements the `Tezos software architecture <https://docs.tezos.com/architecture>`__ principles:
+The Mavkit node software architecture faithfully implements the Mavryk software architecture principles:
 
 - It is separated into a shell and a protocol, to support protocol evolution.
 - It implements a client/server architecture, to allow composition with many other tools in a safe way.

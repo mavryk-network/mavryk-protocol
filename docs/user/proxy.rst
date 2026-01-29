@@ -190,7 +190,8 @@ Regarding clients, either:
   proxy clients on the fly, in front of the setup described in the previous
   list.
 
-We refer to the proxy mode's
+We refer to the proxy mode's original
 `merge request <https://gitlab.com/tezos/tezos/-/merge_requests/1943>`_
+(in the upstream Tezos repository, from which Mavryk is forked)
 for details regarding how we did the benchmarks that led us to the conclusions
 of this section.

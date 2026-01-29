@@ -168,9 +168,9 @@ contract if another one has the same functionalities, it will split
 the anonymity set.
 
 Second, remember that shielding and unshielding are public operations.
-A typical anti-pattern is to shield from tz1-alice 15.3 tez, and then
-unshield 15.3 tez to tz1-bob. It's fairly clear from timing and
-amounts that Alice transferred 15.3 tez to Bob.
+A typical anti-pattern is to shield from mv1-alice 15.3 mav, and then
+unshield 15.3 mav to mv1-bob. It's fairly clear from timing and
+amounts that Alice transferred 15.3 mav to Bob.
 To decorrelate the two transfers it is important to change the
 amounts, let some time pass between the two and perform the
 transactions when there is traffic in the pool.
@@ -267,7 +267,7 @@ use it as recipient address of a Mavryk transfer.
 Example contracts
 ~~~~~~~~~~~~~~~~~
 
-Shielded tez
+Shielded mav
 ^^^^^^^^^^^^
 
 An example contract implementing a shielded pool of tokens with a 1 to 1 conversion rate to mumav is available in the tests of the protocol at
@@ -383,10 +383,10 @@ Operations
 The client also facilitates the creation of shielded transactions and
 their transfer as arguments of smart contracts.
 For now there is seamless integration to send transactions to the
-reference shielded-tez contract and there are plans to support a
+reference shielded-mav contract and there are plans to support a
 larger class of contracts.
 
-For the shielded-tez smart contract, the client supports shielding,
+For the shielded-mav smart contract, the client supports shielding,
 unshielding and shielded transactions.
 In the case of shielded transactions there are two commands, one to
 forge a transaction and save it to file and one to submit it to the
@@ -489,7 +489,7 @@ unshielding.
    # originate the contract with its initial empty sapling storage,
    # bake a block to include it.
    # { } represents an empty Sapling state.
-   mavkit-client originate contract shielded-tez transferring 0 from bootstrap1 \
+   mavkit-client originate contract shielded-mav transferring 0 from bootstrap1 \
    running src/proto_002_PtBoreas/lib_protocol/test/integration/michelson/contracts/sapling_contract.mv \
    --init '{ }' --burn-cap 3 &
    mavkit-client bake for bootstrap1
@@ -497,37 +497,37 @@ unshielding.
    # if necessary, you can get information from the mavkit-client manual
    mavkit-client sapling man
 
-   # generate two shielded keys for Alice and Bob and use them for the shielded-tez contract
+   # generate two shielded keys for Alice and Bob and use them for the shielded-mav contract
    # the memo size has to be indicated
    mavkit-client sapling gen key alice
-   mavkit-client sapling use key alice for contract shielded-tez --memo-size 8
+   mavkit-client sapling use key alice for contract shielded-mav --memo-size 8
    mavkit-client sapling gen key bob
-   mavkit-client sapling use key bob for contract shielded-tez --memo-size 8
+   mavkit-client sapling use key bob for contract shielded-mav --memo-size 8
 
    # generate an address for Alice to receive shielded tokens.
    mavkit-client sapling gen address alice
    zet1AliceXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX # Alice's address
 
 
-   # shield 10 tez from bootstrap1 to alice
-   mavkit-client sapling shield 10 from bootstrap1 to zet1AliceXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX using shielded-tez --burn-cap 2 &
+   # shield 10 mav from bootstrap1 to alice
+   mavkit-client sapling shield 10 from bootstrap1 to zet1AliceXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX using shielded-mav --burn-cap 2 &
    mavkit-client bake for bootstrap1
-   mavkit-client sapling get balance for alice in contract shielded-tez
+   mavkit-client sapling get balance for alice in contract shielded-mav
 
    # generate an address for Bob to receive shielded tokens.
    mavkit-client sapling gen address bob
    zet1BobXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX # Bob's address
 
    # forge a shielded transaction from alice to bob that is saved to a file
-   mavkit-client sapling forge transaction 10 from alice to zet1BobXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX using shielded-tez
+   mavkit-client sapling forge transaction 10 from alice to zet1BobXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX using shielded-mav
 
    # submit the shielded transaction from any transparent account
-   mavkit-client sapling submit sapling_transaction from bootstrap2 using shielded-tez --burn-cap 1 &
+   mavkit-client sapling submit sapling_transaction from bootstrap2 using shielded-mav --burn-cap 1 &
    mavkit-client bake for bootstrap1
-   mavkit-client sapling get balance for bob in contract shielded-tez
+   mavkit-client sapling get balance for bob in contract shielded-mav
 
    # unshield from bob to any transparent account
-   mavkit-client sapling unshield 10 from bob to bootstrap1 using shielded-tez --burn-cap 1
+   mavkit-client sapling unshield 10 from bob to bootstrap1 using shielded-mav --burn-cap 1
    ctrl+z # to put the process in background
    mavkit-client bake for bootstrap1
    fg # to put resume the transfer

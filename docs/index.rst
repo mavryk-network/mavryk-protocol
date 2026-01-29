@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root ``toctree`` directive.
 
-.. TODO https://gitlab.com/tezos/tezos/-/issues/2170:
+.. TODO: (upstream tezos/tezos#2170)
    search shifted protocol name/number & adapt
 
 Welcome to the Mavkit and Protocol Documentation!
@@ -202,6 +202,7 @@ Platform developers are also provided reference materials for internal APIs of M
    :hidden:
 
    releases/releases
+   releases/version-2
    releases/version-1
    releases/history
 

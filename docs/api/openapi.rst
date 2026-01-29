@@ -48,9 +48,9 @@ Shell RPCs
 The node provides some RPCs which are independent of the protocol.
 Their OpenAPI specification can be found at:
 
-- `rpc-openapi.json (version 19.1) <https://gitlab.com/tezos/tezos/-/blob/master/docs/api/rpc-openapi.json>`_
+- `rpc-openapi.json <https://gitlab.com/mavryk-network/mavryk-protocol/-/blob/master/docs/api/rpc-openapi.json>`_
 
-.. TODO tezos/tezos#2170: add/remove section(s)
+.. TODO: (upstream tezos/tezos#2170) add/remove section(s)
 
 Atlas RPCs
 ------------
@@ -73,7 +73,7 @@ protocol in use. Their specification is given in the sections below.
 (The exact versions of the rollup node for which these files are produced can be
 seen in the field ``.info.version`` within each file.)
 
-.. TODO tezos/tezos#2170: add/remove section(s)
+.. TODO: (upstream tezos/tezos#2170) add/remove section(s)
 
 Atlas RPCs
 -----------

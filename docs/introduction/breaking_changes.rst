@@ -147,6 +147,6 @@ For instance, if your software depends on ``mavryk-rpc`` which is now a sub-libr
 
   - Update the opam file content to rename the ``mavryk-rpc`` dependency to ``mavkit-libs``. If ``mavkit-libs`` is already present, only remove the dependency on ``mavryk-rpc``.
   - Update the dune file to rename occurences of ``mavryk-rpc``, e.g. in ``libraries`` clauses of ``executable`` stanzas to ``mavkit-libs.rpc``.
-  - In your code, update all references to the ``Mavryk_rpc`` module (e.g. ``open Mavryk_rpc``) to ``Mavkit-libs.Rpc`` (e.g. ``open Mavkit-libs.Rpc``).
+  - In your code, update all references to the ``Mavryk_rpc`` module (e.g. ``open Mavryk_rpc``) to ``Mavkit-libs.Rpc`` (e.g. ``open Mavkit_libs.Rpc``).
 
 The same method applies to each dependency that is now a sub-library of a new package. Check the :doc:`API <../api/api-inline>` to see the new packages.

@@ -106,7 +106,7 @@ Adaptive Issuance
 
 - Added a feature flag which would force enabling Adaptive Issuance upon protocol activation. (MR :gl:`!11559`)
 
-- Updated the estimation for Mainnet's total tez supply which would be used while eventually migrating from Atlas to protocol P. (MR :gl:`!11996`)
+- Updated the estimation for Mainnet's total mav supply which would be used while eventually migrating from Atlas to protocol P. (MR :gl:`!11996`)
 
 - Added a ``min_delegated_in_current_cycle`` field to the delegates' information reported via
   ``GET /chains/<chain_id>/blocks/<block_id>/context/delegates/<delegate_id>``. (MR :gl:`!12018`)
@@ -124,8 +124,8 @@ Breaking Changes
 
 -  The protocol no longer relies on stake snapshots to compute rights. Instead:
 
-   * Rights originating from staked tez are computed from the value at the end of the cycle;
-   * Rights originating from delegated tez are computing using the minimum value over the cycle. (MR :gl:`!10455`)
+   * Rights originating from staked mav are computed from the value at the end of the cycle;
+   * Rights originating from delegated mav are computing using the minimum value over the cycle. (MR :gl:`!10455`)
 
 - ``Attestation`` is now the default for operations encoding. (MR :gl:`!11861`)
 
@@ -171,7 +171,7 @@ Protocol parameters
 
 - Set the number of blocks preservation cycles to 1. (MR :gl:`!11325`)
 
-- Set ``liquidity_baking_subsidy`` to 5 tez issued per minute (MR :gl:`!11971`)
+- Set ``liquidity_baking_subsidy`` to 5 mav issued per minute (MR :gl:`!11971`)
 
 - Removed ``blocks_per_stake_snapshot``. (MR :gl:`!11393`)
 
@@ -191,7 +191,7 @@ the following quantities are kept the same:
 - the minimal time period of a cycle (namely, 2 days, 20 hours, and 16 minutes),
 - the length of the nonce revelation period (namely, around 2 hours and 8 minutes)
 - the number of nonce commitments per cycle (namely, 128),
-- the maximum rewards per minute (namely 80 tez), and therefore roughly the same inflation,
+- the maximum rewards per minute (namely 80 mav), and therefore roughly the same inflation,
 - the minimal "time to live" of an operation (namely, 1 hour),
 - the block gas limit per minute (namely 10400000 gas),
 - the ratio between the liquidity baking subsidy and the maximum rewards per block (namely, 1/16).
@@ -280,4 +280,4 @@ Internal
 
 - Pending denunciations are cleaned at protocol stitching. (MR :gl:`!11833`)
 
-- Add tooling to devtools to compute total tez supply offline. (MR :gl:`!11978`)
+- Add tooling to devtools to compute total mav supply offline. (MR :gl:`!11978`)

@@ -4793,7 +4793,7 @@
     },
     "/context/issuance/expected_issuance": {
       "get": {
-        "description": "Returns the expected issued tez for the provided block and the next five cycles",
+        "description": "Returns the expected issued mav for the provided block and the next five cycles",
         "responses": {
           "200": {
             "description": "",
@@ -10857,7 +10857,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "A Tezos block metadata ID (Base58Check-encoded)",
+                  "title": "A Mavryk block metadata ID (Base58Check-encoded)",
                   "oneOf": [
                     {
                       "$ref": "#/components/schemas/unistring"
@@ -10983,7 +10983,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "A Tezos operation ID (Base58Check-encoded)",
+                  "title": "A Mavryk operation ID (Base58Check-encoded)",
                   "oneOf": [
                     {
                       "$ref": "#/components/schemas/unistring"
@@ -11109,7 +11109,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "A Tezos operation metadata ID (Base58Check-encoded)",
+                  "title": "A Mavryk operation metadata ID (Base58Check-encoded)",
                   "oneOf": [
                     {
                       "$ref": "#/components/schemas/unistring"
@@ -26407,7 +26407,7 @@
         ]
       },
       "Operation_hash": {
-        "title": "A Tezos operation ID (Base58Check-encoded)",
+        "title": "A Mavryk operation ID (Base58Check-encoded)",
         "oneOf": [
           {
             "$ref": "#/components/schemas/unistring"
@@ -26423,7 +26423,7 @@
         ]
       },
       "Operation_metadata_hash": {
-        "title": "A Tezos operation metadata ID (Base58Check-encoded)",
+        "title": "A Mavryk operation metadata ID (Base58Check-encoded)",
         "oneOf": [
           {
             "$ref": "#/components/schemas/unistring"
@@ -26431,7 +26431,7 @@
         ]
       },
       "Protocol_hash": {
-        "title": "A Tezos protocol ID (Base58Check-encoded)",
+        "title": "A Mavryk protocol ID (Base58Check-encoded)",
         "oneOf": [
           {
             "$ref": "#/components/schemas/unistring"
@@ -26691,7 +26691,7 @@
       },
       "fitness": {
         "title": "Block fitness",
-        "description": "The fitness, or score, of a block, that allow the Tezos to decide which chain is the best. A fitness value is a list of byte sequences. They are compared as follows: shortest lists are smaller; lists of the same length are compared according to the lexicographical order.",
+        "description": "The fitness, or score, of a block, that allow the Mavryk to decide which chain is the best. A fitness value is a list of byte sequences. They are compared as follows: shortest lists are smaller; lists of the same length are compared according to the lexicographical order.",
         "type": "array",
         "items": {
           "type": "string",

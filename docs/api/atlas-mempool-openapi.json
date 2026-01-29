@@ -663,7 +663,7 @@
   "components": {
     "schemas": {
       "Operation_hash": {
-        "title": "A Tezos operation ID (Base58Check-encoded)",
+        "title": "A Mavryk operation ID (Base58Check-encoded)",
         "oneOf": [
           {
             "$ref": "#/components/schemas/unistring"

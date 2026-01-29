@@ -3255,9 +3255,7 @@ Multinetwork
 -  Added ``network`` configuration field to select which network to
    connect to, similar to ``--network``. This field also lets you
    specify an entirely custom, non-built-in network and is especially
-   useful to run private networks. For instance, LabNet
-   (https://forum.tezosagora.org/t/introducing-labnet-a-rapid-iteration-testnet-for-tezos/1522)
-   uses such a custom configuration.
+   useful to run private networks.
 
 -  The ``network`` configuration field also allows to specify
    user-activated upgrades and user-activated protocol overrides. In the

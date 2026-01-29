@@ -88,11 +88,11 @@ In case you do not already have an implicit account, you can generate one with:
    mavkit-client gen keys "${ACCOUNT_NAME}"
    mavkit-client show address "${ACCOUNT_NAME}"
 
-Then, the ``${OPERATOR_ADDR}`` can be set to the hash value (``tz1...``) returned.
+Then, the ``${OPERATOR_ADDR}`` can be set to the hash value (``mv1...``) returned.
 
 Finally, you need to check that your balance is greater than 10,000
-tez to make sure that staking is possible. In case your balance is not
-sufficient, you can get test tokens for the ``tz1`` address from :ref:`a faucet <faucet>`,
+mav to make sure that staking is possible. In case your balance is not
+sufficient, you can get test tokens for the ``mv1`` address from :ref:`a faucet <faucet>`,
 after your node gets synchronized with Weeklynet.
 
 
@@ -266,7 +266,7 @@ The table below summarises the modes and their associated purposes:
 .. [^2] A rollup node in bailout mode won't publish any new commitments but only
        defends the one published by the operator if they are refuted.
 .. [^3] An accuser node will publish commitments only when it detects
-       conflicts; for such cases it must make a deposit of 10,000 tez.
+       conflicts; for such cases it must make a deposit of 10,000 mav.
 
 
 Then to run the rollup node, use the following command:
@@ -1499,7 +1499,7 @@ two messages:
       {
         "payload" : "0",
         "sender" : "KT1ThEdxfUcWUwqsdergy3QnbCWGHSUHeHJq",
-        "source" : "tz1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w",
+        "source" : "mv1RjtZUVeLhADFHDL8UwDZA6vjWWhojpu5w",
         "destination" : "sr1RYurGZtN8KNSpkMcCt9CgWeUaNkzsAfXf"
       },
       { "payload" : "Pair Unit False" }
@@ -1509,7 +1509,7 @@ two messages:
 Note that the ``sender``, ``source`` and ``destination`` fields are optional
 and will be given default values by the debugger, respectively
 ``KT18amZmM5W7qDWVt2pH6uj7sCEd3kbzLrHT``,
-``tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU`` and
+``mv1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU`` and
 ``sr163Lv22CdE8QagCwf48PWDTquk6isQwv57``. If no input file is given, the
 inbox will be assumed empty. If the option ``--rollup`` is given, it
 replaces the default value for the rollup address.
