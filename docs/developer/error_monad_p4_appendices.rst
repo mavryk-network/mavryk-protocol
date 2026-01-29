@@ -105,7 +105,7 @@ available in all the packages that depend on ``mavryk-base``. This covers
 everything except the protocols and a handful of low-level libraries.
 
 In those part of Mavkit, the build files include
-``-mavryk Documentation_base__TzPervasives``.
+``-open Mavryk_base__TzPervasives``.
 
 The module ``Mavryk_base__TzPervasives`` is defined by the compilation
 unit ``src/lib_base/TzPervasives.ml``.

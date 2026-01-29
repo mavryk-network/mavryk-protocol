@@ -21,11 +21,11 @@ _`Block`
 _`Context`
     The state of the blockchain. The context is defined by the
     `economic protocol`_ and typically includes information such as
-    “this account_ is credited with this many tez” and “this is the
+    “this account_ is credited with this many mav” and “this is the
     code for that `smart contract`_.”
 
     The context is modified by operation_\ s. For example, an
-    operation_ can transfer tez from one account_ to another, which modifies the
+    operation_ can transfer mav from one account_ to another, which modifies the
     part of the context that tracks account_ credit.
 
 _`Economic protocol`
@@ -107,7 +107,7 @@ _`Accuser`
 _`Account`
     An account is an address managed by the protocol.
     In the context_, each account is associated with a balance (an amount of
-    tez available).
+    mav available).
 
     An account can be either an `originated account`_ or an `implicit account`_.
 
@@ -136,7 +136,7 @@ _`Baking rights`
 _`Burn`
     To ensure responsible use of the storage space on the public blockchain,
     there are some costs charged to users for consuming storage. These
-    costs are burnt (i.e., the amount of tez is destroyed). For example,
+    costs are burnt (i.e., the amount of mav is destroyed). For example,
     a per-byte storage cost is burnt for increasing the storage space of a
     smart contract; a fixed amount is burnt for allocating a new contract
     (which consumes space by storing its address on the blockchain).
@@ -262,7 +262,7 @@ _`Michelson`
 .. _def_minimal_stake_boreas:
 
 _`Minimal stake`
-    An amount of tez (e.g., 6000ṁ) serving as a minimal amount for a
+    An amount of mav (e.g., 6000ṁ) serving as a minimal amount for a
     delegate to have `baking rights`_ and voting rights in a cycle_.
 
 _`Operation kinds`
@@ -314,7 +314,7 @@ _`Stake`
     :ref:`here<active_stake_boreas>` for details.
 
 _`Transaction`
-    An operation_ to transfer tez between two accounts, or to run the code of a
+    An operation_ to transfer mav between two accounts, or to run the code of a
     `smart contract`_.
 
 _`Validation pass`

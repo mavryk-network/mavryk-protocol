@@ -55,8 +55,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Mavryk'
-copyright = '2018-2023, Nomadic Labs <contact@nomadic-labs.com>'
-author = 'Nomadic Labs <contact@nomadic-labs.com>'
+copyright = '2021-2026, Mavryk Dynamics <info@mavryk.io>'
+author = 'Mavryk Dynamics <info@mavryk.io>'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -183,7 +183,7 @@ latex_documents = [
         master_doc,
         'Mavryk.tex',
         'Mavryk Documentation',
-        'Nomadic Labs \\textless{}contact@nomadic-labs.com\\textgreater{}',
+        'Mavryk Dynamics \\textless{}info@mavryk.io\\textgreater{}',
         'manual',
     ),
 ]

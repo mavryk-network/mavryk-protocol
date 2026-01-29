@@ -110,13 +110,14 @@ Some ad-hoc reference kinds are supported.
   reference]>``` expands and links `GitLab special references
   <https://docs.gitlab.com/ee/user/markdown.html#gitlab-specific-references>`_,
   like for
-  merge requests :gl:`tezos/tezos!123` (``:gl:`tezos/tezos!123```),
-  issues :gl:`tezos/tezos#999` (``:gl:`tezos/tezos#999```)
+  merge requests :gl:`!123` (``:gl:`!123```),
+  issues :gl:`#999` (``:gl:`#999```)
   and
   commits :gl:`28309c81` (``:gl:`28309c81```).
   The default project and namespace is
-  ``tezos/tezos``. In other words, ``tezos/tezos#999``, ``tezos#999`` and
-  ``#999`` all refer to the same thing. Currently supports usernames,
+  ``mavryk-network/mavryk-protocol``. In other words, ``mavryk-network/mavryk-protocol#999`` and
+  ``#999`` refer to the same thing. For upstream Tezos references, use the fully qualified form
+  like ``tezos/tezos#999``. Currently supports usernames,
   projects, issues, merge requests, snippets, milestone ids, commits
   and commit ranges. The implementation of this role is in
   :src:`docs/_extensions/gitlab_custom_role.py`.

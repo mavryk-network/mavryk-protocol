@@ -1,6 +1,11 @@
 Adding a new protocol environment
 =================================
 
+.. note::
+
+   Some links in this document reference the upstream Tezos repository (``tezos/tezos``),
+   from which Mavryk is forked. These serve as historical examples of environment upgrades.
+
 The economic protocols of Mavryk are compiled against a restricted set of libraries.
 This is for security reasons (so that, e.g., the protocol can never be leveraged for accessing files
 of the host machine) and safety reasons (so that, e.g., the protocol is immune to some categories of errors).

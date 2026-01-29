@@ -29,7 +29,7 @@ The Docker images for the CI are built by the CI of another repository,
 the so-called `Mavryk opam repository <https://gitlab.com/mavryk-network/opam-repository>`__.
 The set of dependencies that is used to build those images is also defined
 by a lock file and a commit hash from the public opam repository.
-Both must be kept synchronized with their counterpart in the ``tezos/tezos`` repository.
+Both must be kept synchronized with their counterpart in the ``mavryk-network/mavryk-protocol`` repository.
 
 .. note::
 
@@ -37,7 +37,7 @@ Both must be kept synchronized with their counterpart in the ``tezos/tezos`` rep
     such as ``odoc`` which are needed by the CI but not to build Mavkit.
 
 Adding, removing or updating dependencies thus requires to work both
-on the `main codebase <https://gitlab.com/tezos/tezos>`__ and on
+on the `main codebase <https://gitlab.com/mavryk-network/mavryk-protocol>`__ and on
 the `Mavryk opam repository <https://gitlab.com/mavryk-network/opam-repository>`__.
 Moreover, work between those two components must happen in a specific order.
 
@@ -150,7 +150,7 @@ branch of Mavkit will only be able to run after the CI on your branch of
 opam-repository has completed.
 
 Finally, still in your local copy of Mavkit, **push these changes and open
-an MR on the tezos/tezos project**. Make sure you add links referencing the opam-repository MR from
+an MR on the mavryk-network/mavryk-protocol project**. Make sure you add links referencing the opam-repository MR from
 the Mavkit MR and vice-versa. This gives the reviewers the necessary context to
 review.
 
@@ -159,8 +159,8 @@ That’s it. You now have two MRs:
 - The *opam-repository MR* from ``mavryk-network/opam-repository:<your-branch>``
   onto ``mavryk-network/opam-repository:master`` updates the environment in which
   the Mavkit libraries and binaries are built.
-- The *Mavkit MR* from ``<your-organisation>/tezos:<your-branch>``
-  onto ``tezos/tezos:master`` uses this new environment.
+- The *Mavkit MR* from ``<your-fork>/mavryk-protocol:<your-branch>``
+  onto ``mavryk-network/mavryk-protocol:master`` uses this new environment.
 
 Merging the MR
 --------------

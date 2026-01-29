@@ -81,15 +81,6 @@ to run though, you can use the ``time`` function instead, which does
 everything for you: measure time, send data points, compare them with
 previous runs, and send an alert if the difference is too large.
 
-The ``Long_test`` module also provides function
-``update_grafana_dashboard`` called in
-:src:`tezt/long_tests/main.ml` with a specification to create/overwrite a dashboard
-in `Nomadic Labs' Grafana <https://grafana.nomadic-labs.cloud/login>`_.
-Default is named ``Long Tezts`` but you can add additional dashboards using the
-``Long_test.update_grafana_dashboard`` function. To add a dashboard for your tests, define
-it next to your test (in the same file), and declare it in the call to
-``update_grafana_dashboard`` in :src:`tezt/long_tests/main.ml`.
-
 As always in Tezt, the above functions try to provide flexibility.
 The ``time`` function in particular is parameterized by settings like
 the number of times the test should be repeated, how many previous
@@ -98,11 +89,6 @@ measurements, how much of a difference to tolerate before alerting,
 etc. ``time`` itself being a combination of other lower-level
 functions that are also provided and which you can combine to fit your
 needs. And of course you can contribute to improve them.
-
-Automated long tezts logs are available in `Nomadic Labs' public S3 bucket browser
-<https://logs.nomadic-labs.cloud/#PRT/master/>`_. In case of InfluxDB issues, you can inspect
-metrics in the `InfluxDB dashboard <https://grafana.nomadic-labs.cloud/login>`_.
-InfluxDB itself is private and direct access via CLI is restricted to administrators.
 
 Example
 -------

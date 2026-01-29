@@ -52,7 +52,7 @@ of the merge coordinator include:
 * Improve and augment the documentation about the MR process.
 
 To make it easy to find out who the current merge coordinator is,
-:gl:`meta-issue 1062 <tezos/tezos#1062>` is assigned to the merge coordinator.
+the relevant meta-issue is assigned to the merge coordinator.
 Don't hesitate to contact the merge coordinator if you think you can
 benefit of their help to move your merge request forward.
 

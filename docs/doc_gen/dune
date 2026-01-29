@@ -23,9 +23,9 @@
   (:include %{workspace_root}/macos-link-flags.sexp))
  (flags
   (:standard)
-  -mavryk Documentation_base.TzPervasives
-  -mavryk Documentation_stdlib_unix
-  -mavryk Documentation_shell
-  -mavryk Documentation_store
-  -mavryk Documentation_protocol_updater
+  -open Mavryk_base.TzPervasives
+  -open Mavryk_stdlib_unix
+  -open Mavryk_shell
+  -open Mavryk_store
+  -open Mavryk_protocol_updater
   -open Mavkit_node_config))

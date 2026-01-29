@@ -817,7 +817,7 @@ and the functions ``of_b58check`` and ``to_b58check`` of module
   # let's borrow some code from the protocol tests
   $ dune exec -- tztop src/proto_alpha/lib_protocol/test/
 
-  # mavryk Documentation_protocol_alpha.Protocol ;;
+  # open Mavryk_protocol_alpha.Protocol ;;
 
   # let b58check_to_path c =
   Contract_repr.of_b58check c |> fun (Ok c) ->

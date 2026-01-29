@@ -3,8 +3,6 @@ Time-lock
 
 Time-lock is a cryptographic primitive that can be used as part of a commit & reveal scheme, to provide a guarantee that the information associated to the commit phase is eventually revealed.
 
-For more background information on time-locks and their uses, see `Timelocks <https://docs.tezos.com/smart-contracts/data-types/crypto-data-types#timelocks>`__ in the Mavryk documentation.
-
 Cryptographic design
 --------------------
 

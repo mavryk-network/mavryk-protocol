@@ -91,7 +91,7 @@ In case you do not already have an implicit account, you can generate one with:
 Then, the ``${OPERATOR_ADDR}`` can be set to the hash value (``mv1...``) returned.
 
 Finally, you need to check that your balance is greater than 10,000
-tez to make sure that staking is possible. In case your balance is not
+mav to make sure that staking is possible. In case your balance is not
 sufficient, you can get test tokens for the ``mv1`` address from :ref:`a faucet <faucet>`,
 after your node gets synchronized with Weeklynet.
 
@@ -266,7 +266,7 @@ The table below summarises the modes and their associated purposes:
 .. [^2] A rollup node in bailout mode won't publish any new commitments but only
        defends the one published by the operator if they are refuted.
 .. [^3] An accuser node will publish commitments only when it detects
-       conflicts; for such cases it must make a deposit of 10,000 tez.
+       conflicts; for such cases it must make a deposit of 10,000 mav.
 
 
 Then to run the rollup node, use the following command:

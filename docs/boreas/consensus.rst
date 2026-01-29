@@ -149,15 +149,15 @@ balance*. Let us first (re)define these and related concepts.
 
 - The *(maximal) staking balance* of a delegate is its full balance (i.e. all the tokens owned by the delegate) plus the
   balances of all accounts that have delegated to it.
-  It must be at least ``MINIMAL_STAKE`` tez, otherwise the delegate cannot be selected as a validator.
-- The *active stake* of a delegate is the amount of tez with which
+  It must be at least ``MINIMAL_STAKE`` mav, otherwise the delegate cannot be selected as a validator.
+- The *active stake* of a delegate is the amount of mav with which
   it participates in consensus. It is at most its
   staking balance. We explain below how it is computed.
 - The *frozen deposit* represents the delegate's skin in the game: in the case that the
   delegate behaves badly, its frozen deposit is partly slashed (see
   :ref:`slashing_boreas`).
   The frozen deposits are updated at the end of each cycle.  It must be at least
-  ``MINIMAL_FROZEN_STAKE`` tez, otherwise the delegate cannot be selected as a
+  ``MINIMAL_FROZEN_STAKE`` mav, otherwise the delegate cannot be selected as a
   validator.
 - The *spendable balance* of a delegate is its full balance
   minus the frozen deposits.
@@ -211,9 +211,9 @@ More precisely, the active stake is the minimum between:
 - the delegate's staking balance, and
 - 10 times the delegate's *deposit cap*, i.e. ``deposit_cap * 100 / deposit_percentage``. If the delegate has not set a frozen deposit limit, ``deposit_cap`` is its full balance. Otherwise ``deposit_cap`` is the minimum between its full balance and the frozen deposit limit set by the delegate.
 
-Let's take some examples. Say that the full balance of a delegate is ``1000`` tez.
+Let's take some examples. Say that the full balance of a delegate is ``1000`` mav.
 Then its theoretical maximum staking balance is
-``10000`` tez. The following table lists some scenarios (assuming for
+``10000`` mav. The following table lists some scenarios (assuming for
 simplicity no changes in the delegate's full and staking balances
 during the last 8 cycles).
 
@@ -327,8 +327,8 @@ validator slots for the current cycle (which is ``BLOCKS_PER_CYCLE *
 CONSENSUS_COMMITTEE_SIZE * active_stake / total_active_stake``).
 
 Regarding the concrete values for rewards, we first fix the total reward per
-level, call it ``total_rewards``, to ``80 / blocks_per_minute`` tez.
-Assuming ``blocks_per_minute = 6``, ``total_rewards`` is 13.33 tez.
+level, call it ``total_rewards``, to ``80 / blocks_per_minute`` mav.
+Assuming ``blocks_per_minute = 6``, ``total_rewards`` is 13.33 mav.
 We define:
 
 - ``BAKING_REWARD_FIXED_PORTION := baking_reward_ratio * total_rewards``
@@ -340,24 +340,24 @@ where:
 - ``baking_reward_ratio`` to ``1 / 4``,
 - ``bonus_ratio`` to ``1 / 3``.
 
-Thus, we obtain ``BAKING_REWARD_FIXED_PORTION = 3.33`` tez,
-(maximum) ``bonus = 3.33`` tez, and ``attesting_rewards = 6.67`` tez.
+Thus, we obtain ``BAKING_REWARD_FIXED_PORTION = 3.33`` mav,
+(maximum) ``bonus = 3.33`` mav, and ``attesting_rewards = 6.67`` mav.
 The bonus per additional attestation slot is in turn ``bonus /
 (CONSENSUS_COMMITTEE_SIZE / 3)`` (because there are at most
 ``CONSENSUS_COMMITTEE_SIZE / 3`` validator slots corresponding to the
 additional attestations included in a block). The rewards per
 attestation slot are ``attesting_rewards / CONSENSUS_COMMITTEE_SIZE``.
 Assuming ``CONSENSUS_COMMITTEE_SIZE = 7000``, we obtain a bonus per slot of
-``3.33 / (7000 / 3) = 0.001427`` tez and an attesting
-rewards per slot of ``6.67 / 7000 = 0.000952`` tez.
+``3.33 / (7000 / 3) = 0.001427`` mav and an attesting
+rewards per slot of ``6.67 / 7000 = 0.000952`` mav.
 
 Let's take an example. Say a block has round 1, is proposed by
 delegate B, and contains the payload from round 0 produced by delegate
 A. Also, B includes attestations with attesting power ``5251``. Then A receives
-the fees and 10 tez (the ``BAKING_REWARD_FIXED_PORTION``) as a reward for
+the fees and 10 mav (the ``BAKING_REWARD_FIXED_PORTION``) as a reward for
 producing the block's payload. Concerning the bonus, given that
 ``CONSENSUS_COMMITTEE_SIZE = 7000``, the minimum required validator slots is ``4667``, and there are ``2333 = 7000 - 4667`` additional validator slots.
-Therefore B receives the bonus ``(5251 - 4667) * 0.001428 = 0.833952`` tez. (Note
+Therefore B receives the bonus ``(5251 - 4667) * 0.001428 = 0.833952`` mav. (Note
 that B only included attestations corresponding to 584 = 5251 - 4667 additional validator slots, about a quarter of the
 maximum 2333 extra attestations it could have theoretically included.) Finally, consider some
 delegate C, whose active stake at some cycle is 5% of the total stake. Note that
@@ -365,7 +365,7 @@ his expected number of validator slots for that cycle is ``5/100 * 8192 * 7000 =
 2,867,200`` slots. Assume also that the attesting power of C's attestations
 included during that cycle has been ``2,123,456`` slots. Given that this number is
 bigger than the minimum required (``2,867,200 * 2 / 3``), it receives an attesting
-reward of ``2,867,200 * 0.000952 = 2729.5744`` tez for that cycle.
+reward of ``2,867,200 * 0.000952 = 2729.5744`` mav for that cycle.
 
 .. _slashing_boreas:
 
@@ -441,11 +441,11 @@ Consensus related protocol parameters
    * - ``PERCENTAGE_OF_FROZEN_DEPOSITS_SLASHED_PER_DOUBLE_ATTESTATION``
      - 50%
    * - ``BAKING_REWARD_FIXED_PORTION``
-     - 3.33 tez
+     - 3.33 mav
    * - ``BAKING_REWARD_BONUS_PER_SLOT``
-     - ``bonus / (CONSENSUS_COMMITTEE_SIZE / 3)`` = 0.001429 tez
+     - ``bonus / (CONSENSUS_COMMITTEE_SIZE / 3)`` = 0.001429 mav
    * - ``ATTESTING_REWARD_PER_SLOT``
-     - ``attesting_reward / CONSENSUS_COMMITTEE_SIZE`` = 0.000952 tez
+     - ``attesting_reward / CONSENSUS_COMMITTEE_SIZE`` = 0.000952 mav
    * - ``GLOBAL_LIMIT_OF_STAKING_OVER_BAKING``
      - 5
 

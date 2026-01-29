@@ -102,11 +102,11 @@ end
 module Description = struct
   module Query = struct
     let pp_arg fmt =
-      let mavryk Documentation_rpc.Arg in
+      let open Mavryk_rpc.Arg in
       function {name; _} -> Format.fprintf fmt "<%s>" name
 
     let pp_title_item ppf =
-      let mavryk Documentation_rpc.Description in
+      let open Mavryk_rpc.Description in
       function
       | {name; kind; _} -> (
           match kind with
@@ -126,11 +126,11 @@ module Description = struct
         query
 
     let pp_html_arg fmt =
-      let mavryk Documentation_rpc.Arg in
+      let open Mavryk_rpc.Arg in
       function {name; _} -> Format.fprintf fmt "&lt;%s&gt;" name
 
     let pp_item ppf =
-      let mavryk Documentation_rpc.Description in
+      let open Mavryk_rpc.Description in
       function
       | {name; description; kind} -> (
           (match kind with
@@ -195,7 +195,7 @@ module Description = struct
           Format.fprintf ppf "<%s>@ %a</%s>" tag pp_content content tag)
 
     let pp_description ppf (service : _ Mavryk_rpc.Description.service) =
-      let mavryk Documentation_rpc.Description in
+      let open Mavryk_rpc.Description in
       (* TODO collect and display arg description (in path and in query) *)
       Format.fprintf
         ppf
@@ -206,7 +206,7 @@ module Description = struct
         service.query
 
     let pp ppf prefix service =
-      let mavryk Documentation_rpc.Description in
+      let open Mavryk_rpc.Description in
       let target_ref = ref_of_service (prefix, service.meth) in
       Rst.pp_html ppf (fun ppf ->
           pp_tab_div ppf (fun ppf ->
@@ -403,7 +403,7 @@ let make_index ?introduction_path ~required_version ~hash () =
 let make_default_acl _node =
   let addr_of_string addr = P2p_point.Id.{addr; port = None; peer_id = None} in
   let policy =
-    let mavryk Documentation_rpc_http_server.RPC_server.Acl in
+    let open Mavryk_rpc_http_server.RPC_server.Acl in
     put_policy (addr_of_string "127.0.0.1", allow_all) empty_policy
     |> put_policy (addr_of_string "any.public.address", secure)
     |> Data_encoding.Json.construct policy_encoding

@@ -314,7 +314,7 @@ withdrawal delays – colloquially, they are "frozen".
 Stakers are slashed proportionally to their contribution to the
 delegate’s staking balance. To simplify slashing, double-baking
 penalties are now proportional to staked funds: instead of the previous
-fixed sum of 640 tez they are now set to 5% of the delegate’s stake.
+fixed sum of 640 mav they are now set to 5% of the delegate’s stake.
 Moreover, denunciation rewards (both for double-baking and
 double-attestations) are reduced from one half to one seventh of the
 slashed funds. The chosen value prevents adversarial delegates from

@@ -11,7 +11,7 @@ We refer hereafter to FA1.2 assets by their common name: tokens.
 
 This page does not present FA1.2 tokens in general, but their Michelson interface and their support in the Mavkit client.
 
-For a more general presentation of token standards such as FA1.2 from a Mavryk developer perspective, using higher-level smart contract languages, see `Token standards in Mavryk <https://docs.tezos.com/architecture/tokens#token-standards>`__.
+For a more general presentation of token standards such as FA1.2 from a Mavryk developer perspective, using higher-level smart contract languages, see Token standards in Mavryk.
 
 Michelson interface
 -------------------

@@ -284,7 +284,7 @@ in the following samples::
   Current proposal: PsNa6jTtsRfbGaNSoYXNTNM5A7c3Lji22Yf2ZhpFUjQFC17iZVp
 
 It should be noted that the ballot number 2,400,000 ṁ above is the stake counted in
-mumav (displayed in tez).
+mumav (displayed in mav).
 The proposal has a total stake of 2,400,000 ṁ, which may come from a single ballot
 from a delegate having a staking balance of 2,400,000 ṁ or it may come from multiple ballots from
 delegates with a combined stake of 2,400,000 ṁ.

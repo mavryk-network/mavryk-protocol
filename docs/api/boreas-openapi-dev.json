@@ -4592,7 +4592,7 @@
     },
     "/context/delegates/{pkh}/min_delegated_in_current_cycle": {
       "get": {
-        "description": "Returns the minimum of delegated tez (in mumav) over the current cycle and the block level where this value was last updated (* Level is `None` when decoding values from protocol O).",
+        "description": "Returns the minimum of delegated mav (in mumav) over the current cycle and the block level where this value was last updated (* Level is `None` when decoding values from protocol O).",
         "parameters": [
           {
             "name": "pkh",
@@ -5375,7 +5375,7 @@
     },
     "/context/issuance/expected_issuance": {
       "get": {
-        "description": "Returns the expected issued tez for the provided block and the next 'consensus_rights_delay' cycles",
+        "description": "Returns the expected issued mav for the provided block and the next 'consensus_rights_delay' cycles",
         "responses": {
           "200": {
             "description": "",

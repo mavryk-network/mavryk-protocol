@@ -85,17 +85,9 @@ The packaged forms are updated from the source form as follows:
 
    -  master images: at each merge commit (i.e. after each merge request is merged)
 
--  OPAM packages:
-
-   -  at each stable release
-   -  This is currently a manual process performed by
-      `Nomadic Labs <https://www.nomadic-labs.com/>`_.
-
 -  APT and DNF binary packages:
 
    -  at each release, including release candidates
-   -  The process is currently performed manually by
-      `Serokell <https://serokell.io>`_.
 
 For installing Mavkit from these different forms of releases, see
 :doc:`../introduction/howtoget`.

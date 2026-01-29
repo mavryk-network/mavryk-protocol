@@ -4793,7 +4793,7 @@
     },
     "/context/issuance/expected_issuance": {
       "get": {
-        "description": "Returns the expected issued tez for the provided block and the next five cycles",
+        "description": "Returns the expected issued mav for the provided block and the next five cycles",
         "responses": {
           "200": {
             "description": "",

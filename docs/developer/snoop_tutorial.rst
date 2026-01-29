@@ -28,7 +28,7 @@ to help organize them.
 
 .. code-block:: ocaml
 
-   mavryk Documentation_benchmark
+   open Mavryk_benchmark
 
    let ns = Namespace.(make root "example")
 
