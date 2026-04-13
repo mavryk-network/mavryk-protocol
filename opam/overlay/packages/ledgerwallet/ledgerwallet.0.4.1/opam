@@ -1,0 +1,28 @@
+opam-version: "2.0"
+name: "ledgerwallet"
+authors: ["Vincent Bernardoff <vb@luminar.eu.org>" "Mavryk Dynamics <info@mavryk.io>"]
+maintainer: "Mavryk Dynamics <info@mavryk.io>"
+license: "ISC"
+homepage: "https://github.com/mavryk-network/ocaml-ledger-wallet"
+bug-reports: "https://github.com/mavryk-network/ocaml-ledger-wallet/issues"
+dev-repo: "git+https://github.com/mavryk-network/ocaml-ledger-wallet"
+build:    [ "dune" "build"   "-p" name "-j" jobs ]
+# run-test: [ "dune" "runtest" "-p" name "-j" jobs ]
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.4.0"}
+  "rresult" {>= "0.6.0"}
+  "cstruct" {>= "6.0.0"}
+  "hidapi-lwt" {>= "1.1.3"}
+  "lwt" {>= "5.7.0"}
+]
+synopsis: "Ledger wallet library for OCaml"
+description: """Library to communicate with Ledger hardware wallets
+"""
+url {
+  src: "https://github.com/mavryk-network/ocaml-ledger-wallet/archive/0.4.1.tar.gz"
+  checksum: [
+    "sha256=713e3bb6aba7d0c5af64745c8c1c792aba1d44f5f6d31ab0e2406259354256a1"
+    "sha512=f0c33fe45bb2d439b69302cf94dfe45806a88b7174ea75a024b56335deb1cc124009f4dd825117bec2b090f119f35b4fa949e6b4f8f3acdbd048cb5f83bdae4a"
+  ]
+}

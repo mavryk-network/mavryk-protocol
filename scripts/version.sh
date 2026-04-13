@@ -32,7 +32,7 @@ export full_opam_repository_tag=1c62dbefdab36851f868daa1b8c75af4f8703e8f
 ## This value MUST be reflected in the `build_deps_image_version` variable
 ## of `.gitlab-ci.yml`, which is ensured by running `make -C ci` from the root.
 export opam_repository_url=https://gitlab.com/mavryk-network/opam-repository
-export opam_repository_tag="${OPAM_REPOSITORY_TAG:-f4ead8084d5f494f51d1e38e1c74972c46586cff}"
+export opam_repository_tag="${OPAM_REPOSITORY_TAG:-9ad2c5c8acc28792f0ffd95a900bbde47f7fa0c2}"
 export opam_repository_git="$opam_repository_url.git"
 export opam_repository="$opam_repository_git"\#"$opam_repository_tag"
 

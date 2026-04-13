@@ -33,7 +33,7 @@ module Bip32_path = struct
 
   let is_hard n = Int32.logand 0x8000_0000l n <> 0l
 
-  let mavryk_root = [hard 44l; hard 1729l]
+  let mavryk_root = [hard 44l; hard 1969l]
 
   let pp_node ppf node =
     match is_hard node with
@@ -145,7 +145,7 @@ module Ledger_commands = struct
     let open Lwt_result_syntax in
     let buf = Buffer.create 100 in
     let pp = Format.formatter_of_buffer buf in
-    let*! version = Ledgerwallet_tezos.get_version ~pp h in
+    let*! version = Ledgerwallet_mavryk.get_version ~pp h in
     let*! () = Events.(emit Ledger.communication) (Buffer.contents buf) in
     match version with
     | Error e ->
@@ -161,16 +161,16 @@ module Ledger_commands = struct
           if (version.major, version.minor) < (1, 4) then
             failwith
               "Version %a of the ledger apps is not supported by this client"
-              Ledgerwallet_tezos.Version.pp
+              Ledgerwallet_mavryk.Version.pp
               version
           else return_unit
         in
         let* git_commit =
-          wrap_ledger_cmd (fun pp -> Ledgerwallet_tezos.get_git_commit ~pp h)
+          wrap_ledger_cmd (fun pp -> Ledgerwallet_mavryk.get_git_commit ~pp h)
         in
         let*! () =
           Events.(emit Ledger.found_application)
-            ( Format.asprintf "%a" Ledgerwallet_tezos.Version.pp version,
+            ( Format.asprintf "%a" Ledgerwallet_mavryk.Version.pp version,
               device_name,
               git_commit )
         in
@@ -193,13 +193,13 @@ module Ledger_commands = struct
       match which with
       | `Get_public_key ->
           wrap_ledger_cmd (fun pp ->
-              Ledgerwallet_tezos.get_public_key ~prompt ~pp hidapi curve path)
+              Ledgerwallet_mavryk.get_public_key ~prompt ~pp hidapi curve path)
       | `Authorize_baking ->
           wrap_ledger_cmd (fun pp ->
-              Ledgerwallet_tezos.authorize_baking ~pp hidapi curve path)
+              Ledgerwallet_mavryk.authorize_baking ~pp hidapi curve path)
       | `Setup (main_chain_id, main_hwm, test_hwm) ->
           wrap_ledger_cmd (fun pp ->
-              Ledgerwallet_tezos.setup_baking
+              Ledgerwallet_mavryk.setup_baking
                 ~pp
                 hidapi
                 curve
@@ -262,17 +262,17 @@ module Ledger_commands = struct
 
   let get_authorized_path hid version =
     let open Lwt_result_syntax in
-    let open Ledgerwallet_tezos.Version in
+    let open Ledgerwallet_mavryk.Version in
     if version.major < 2 then
       let+ path =
         wrap_ledger_cmd (fun pp ->
-            Ledgerwallet_tezos.get_authorized_key ~pp hid)
+            Ledgerwallet_mavryk.get_authorized_key ~pp hid)
       in
       `Legacy_path path
     else
       let*! r =
         wrap_ledger_cmd (fun pp ->
-            Ledgerwallet_tezos.get_authorized_path_and_curve ~pp hid)
+            Ledgerwallet_mavryk.get_authorized_path_and_curve ~pp hid)
       in
       match r with
       | Error
@@ -293,15 +293,15 @@ module Ledger_commands = struct
     let path = Bip32_path.mavryk_root @ path in
     let* hash_opt, signature =
       wrap_ledger_cmd (fun pp ->
-          let {Ledgerwallet_tezos.Version.major; minor; patch; _} = version in
+          let {Ledgerwallet_mavryk.Version.major; minor; patch; _} = version in
           if (major, minor, patch) <= (2, 0, 0) then
             let+ s =
-              Ledgerwallet_tezos.sign ~pp hid curve path (Cstruct.of_bytes msg)
+              Ledgerwallet_mavryk.sign ~pp hid curve path (Cstruct.of_bytes msg)
             in
             (None, s)
           else
             let+ h, s =
-              Ledgerwallet_tezos.sign_and_hash
+              Ledgerwallet_mavryk.sign_and_hash
                 ~pp
                 hid
                 curve
@@ -358,7 +358,7 @@ module Ledger_commands = struct
     let path = Bip32_path.mavryk_root @ path in
     let* nonce =
       wrap_ledger_cmd (fun pp ->
-          Ledgerwallet_tezos.get_deterministic_nonce
+          Ledgerwallet_mavryk.get_deterministic_nonce
             ~pp
             hid
             curve
@@ -380,7 +380,7 @@ module Ledger_id = struct
   let animals_of_pkh pkh =
     pkh |> Signature.Public_key_hash.to_string |> Ledger_names.crouching_tiger
 
-  let curve = Ledgerwallet_tezos.Ed25519
+  let curve = Ledgerwallet_mavryk.Ed25519
 
   let get hidapi =
     let open Lwt_result_syntax in
@@ -405,7 +405,7 @@ end
 module Ledger_account = struct
   type t = {
     ledger : Ledger_id.t;
-    curve : Ledgerwallet_tezos.curve;
+    curve : Ledgerwallet_mavryk.curve;
     path : int32 list;
   }
 end
@@ -441,10 +441,10 @@ module Ledger_uri = struct
     | _ -> None
 
   let derivation_supports_weak_paths = function
-    | Ledgerwallet_tezos.Ed25519 -> false
-    | Ledgerwallet_tezos.Secp256k1 -> true
-    | Ledgerwallet_tezos.Secp256r1 -> true
-    | Ledgerwallet_tezos.Bip32_ed25519 -> true
+    | Ledgerwallet_mavryk.Ed25519 -> false
+    | Ledgerwallet_mavryk.Secp256k1 -> true
+    | Ledgerwallet_mavryk.Secp256r1 -> true
+    | Ledgerwallet_mavryk.Bip32_ed25519 -> true
 
   let parse ?allow_weak uri : t tzresult Lwt.t =
     let open Lwt_result_syntax in
@@ -461,7 +461,7 @@ module Ledger_uri = struct
     match components with
     | s :: tl ->
         let curve, more_path =
-          match Ledgerwallet_tezos.curve_of_string s with
+          match Ledgerwallet_mavryk.curve_of_string s with
           | Some curve -> (curve, tl)
           | None -> (Ledger_id.curve, s :: tl)
         in
@@ -522,7 +522,7 @@ module Ledger_uri = struct
             "ledger://%a/%a/%a"
             Ledger_id.pp
             ledger
-            Ledgerwallet_tezos.pp_curve
+            Ledgerwallet_mavryk.pp_curve
             curve
             Bip32_path.pp_path
             path)
@@ -549,7 +549,7 @@ end
 (** Filters allow early dismissal of HID devices/ledgers which
     searching for a ledger. *)
 module Filter = struct
-  type version_filter = Ledgerwallet_tezos.Version.t * string -> bool
+  type version_filter = Ledgerwallet_mavryk.Version.t * string -> bool
 
   type t = [`None | `Hid_path of string | `Version of string * version_filter]
 
@@ -560,9 +560,9 @@ module Filter = struct
    fun msg app ->
     `Version
       ( msg,
-        fun ({Ledgerwallet_tezos.Version.app_class; _}, _) -> app = app_class )
+        fun ({Ledgerwallet_mavryk.Version.app_class; _}, _) -> app = app_class )
 
-  let is_baking = is_app "App = Baking" Ledgerwallet_tezos.Version.TezBake
+  let is_baking = is_app "App = Baking" Ledgerwallet_mavryk.Version.MavBake
 
   let pp ppf (f : t) =
     let open Format in
@@ -576,7 +576,7 @@ module Request_cache =
   Aches.Vache.Map (Aches.Vache.LRU_Precise) (Aches.Vache.Strong) (Ledger_id)
 
 type request_info = {
-  version : Ledgerwallet_tezos.Version.t;
+  version : Ledgerwallet_mavryk.Version.t;
   git_commit : string;
   ledger_id : Ledger_id.t;
   path : Ledgerwallet.Transport.path;
@@ -591,7 +591,7 @@ let path_name (path : Ledgerwallet.Transport.path) =
 
 type 'a ledger_function =
   Ledgerwallet.Transport.t ->
-  Ledgerwallet_tezos.Version.t * string ->
+  Ledgerwallet_mavryk.Version.t * string ->
   device_path:Ledgerwallet.Transport.path ->
   Ledger_id.t ->
   ('a option, tztrace) result Lwt.t
@@ -668,13 +668,13 @@ let use_ledger ?(filter : Filter.t = `None) (f : 'a ledger_function) =
   go ledgers
 
 let min_version_of_derivation_scheme = function
-  | Ledgerwallet_tezos.Ed25519 -> (1, 3, 0)
-  | Ledgerwallet_tezos.Secp256k1 -> (1, 3, 0)
-  | Ledgerwallet_tezos.Secp256r1 -> (1, 3, 0)
-  | Ledgerwallet_tezos.Bip32_ed25519 -> (2, 1, 0)
+  | Ledgerwallet_mavryk.Ed25519 -> (1, 3, 0)
+  | Ledgerwallet_mavryk.Secp256k1 -> (1, 3, 0)
+  | Ledgerwallet_mavryk.Secp256r1 -> (1, 3, 0)
+  | Ledgerwallet_mavryk.Bip32_ed25519 -> (2, 1, 0)
 
 let is_derivation_scheme_supported version curve =
-  Ledgerwallet_tezos.Version.(
+  Ledgerwallet_mavryk.Version.(
     let {major; minor; patch; _} = version in
     (major, minor, patch) >= min_version_of_derivation_scheme curve)
 
@@ -687,7 +687,7 @@ let use_ledger_or_fail ~ledger_uri ?(filter = `None) ?msg
     | `Ledger_account {Ledger_account.curve; _} ->
         if is_derivation_scheme_supported version curve then go ()
         else
-          Ledgerwallet_tezos.(
+          Ledgerwallet_mavryk.(
             failwith
               "To use derivation scheme %a you need %a or later but you're \
                using %a."
@@ -900,14 +900,14 @@ let generic_commands group =
                               asprintf
                                 "Found a %a (git-description: %S) application \
                                  running on proxy server."
-                                Ledgerwallet_tezos.Version.pp
+                                Ledgerwallet_mavryk.Version.pp
                                 version
                                 git_commit
                           | Hidapi_path device_info ->
                               asprintf
                                 "Found a %a (git-description: %S) application \
                                  running on %s %s at [%s]."
-                                Ledgerwallet_tezos.Version.pp
+                                Ledgerwallet_mavryk.Version.pp
                                 version
                                 git_commit
                                 (device_info.manufacturer_string
@@ -940,7 +940,7 @@ let generic_commands group =
                               |> Option.value ~default:"user")
                               Ledger_id.pp
                               ledger_id
-                              Ledgerwallet_tezos.pp_curve
+                              Ledgerwallet_mavryk.pp_curve
                               curve ;
                             pp_print_cut ppf ())
                           (List.filter
@@ -989,7 +989,7 @@ let generic_commands group =
                     let*! () =
                       cctxt#message
                         "* Application: %a (git-description: %S)"
-                        Ledgerwallet_tezos.Version.pp
+                        Ledgerwallet_mavryk.Version.pp
                         version
                         git_commit
                     in
@@ -1001,7 +1001,7 @@ let generic_commands group =
                     let*! () =
                       cctxt#message
                         "* Curve: `%a`"
-                        Ledgerwallet_tezos.pp_curve
+                        Ledgerwallet_mavryk.pp_curve
                         curve
                     in
                     let full_path = Bip32_path.mavryk_root @ path in
@@ -1029,7 +1029,7 @@ let generic_commands group =
                         pkh
                     in
                     match (test_sign, version.app_class) with
-                    | true, Tezos -> (
+                    | true, Mavryk -> (
                         let pkh_bytes =
                           Signature.Public_key_hash.to_bytes pkh
                         in
@@ -1070,7 +1070,7 @@ let generic_commands group =
                                 signature
                             in
                             return_unit)
-                    | true, TezBake ->
+                    | true, MavBake ->
                         failwith
                           "Option --test-sign only works for the Mavryk Wallet \
                            app."
@@ -1128,7 +1128,7 @@ let baking_commands group =
                   let*! () =
                     cctxt#message
                       "@[<v 0>Authorized baking curve: %a@]"
-                      Ledgerwallet_tezos.pp_curve
+                      Ledgerwallet_mavryk.pp_curve
                       ledger_curve
                   in
                   match ledger_uri with
@@ -1147,7 +1147,7 @@ let baking_commands group =
                       failwith
                         "Path and curve do not match the ones specified in the \
                          command line: %a & %a"
-                        Ledgerwallet_tezos.pp_curve
+                        Ledgerwallet_mavryk.pp_curve
                         curve
                         Bip32_path.pp_path
                         (Bip32_path.mavryk_root @ path))));
@@ -1166,25 +1166,25 @@ let baking_commands group =
             (fun hidapi (version, _git_commit) ~device_path:_ _ledger_id ->
               let* () =
                 match version with
-                | {Ledgerwallet_tezos.Version.app_class = Tezos; _} ->
+                | {Ledgerwallet_mavryk.Version.app_class = Mavryk; _} ->
                     failwith
                       "This command (`authorize ledger ...`) only works with \
                        the Mavryk Baking app"
-                | {Ledgerwallet_tezos.Version.app_class = TezBake; major; _}
+                | {Ledgerwallet_mavryk.Version.app_class = MavBake; major; _}
                   when major >= 2 ->
                     failwith
                       "This command (`authorize ledger ...`) is@ not \
                        compatible with@ this version of the Ledger@ Baking app \
                        (%a >= 2.0.0),@ please use the command@ `setup ledger \
                        to bake for ...`@ from now on."
-                      Ledgerwallet_tezos.Version.pp
+                      Ledgerwallet_mavryk.Version.pp
                       version
                 | _ ->
                     let*! () =
                       cctxt#message
                         "This Ledger Baking app is outdated (%a)@ running@ in \
                          backwards@ compatibility mode."
-                        Ledgerwallet_tezos.Version.pp
+                        Ledgerwallet_mavryk.Version.pp
                         version
                     in
                     return_unit
@@ -1262,13 +1262,13 @@ let baking_commands group =
             ~filter:Filter.is_baking
             (fun hidapi (version, _git_commit) ~device_path:_ _ledger_id ->
               let* () =
-                let open Ledgerwallet_tezos.Version in
+                let open Ledgerwallet_mavryk.Version in
                 match version with
-                | {app_class = Tezos; _} ->
+                | {app_class = Mavryk; _} ->
                     failwith
                       "This command (`setup ledger ...`) only works with the \
                        Mavryk Baking app"
-                | {app_class = TezBake; major; _} when major < 2 ->
+                | {app_class = MavBake; major; _} when major < 2 ->
                     failwith
                       "This command (`setup ledger ...`)@ is not@ compatible@ \
                        with this version@ of the Ledger Baking app@ (%a < \
@@ -1300,7 +1300,7 @@ let baking_commands group =
                      `Test_hwm (current_th, current_thr_opt),
                      `Chain_id current_ci ) =
                 Ledger_commands.wrap_ledger_cmd (fun pp ->
-                    Ledgerwallet_tezos.get_all_high_watermarks ~pp hidapi)
+                    Ledgerwallet_mavryk.get_all_high_watermarks ~pp hidapi)
               in
               let main_hwm = Option.value main_hwm_opt ~default:current_mh in
               let test_hwm = Option.value test_hwm_opt ~default:current_th in
@@ -1358,7 +1358,7 @@ let baking_commands group =
             (fun hidapi (_version, _git_commit) ~device_path:_ _ledger_id ->
               let* () =
                 Ledger_commands.wrap_ledger_cmd (fun pp ->
-                    Ledgerwallet_tezos.deauthorize_baking ~pp hidapi)
+                    Ledgerwallet_mavryk.deauthorize_baking ~pp hidapi)
               in
               return_some ()));
     ]
@@ -1395,14 +1395,14 @@ let high_water_mark_commands group watermark_spelling =
             ~filter:Filter.is_baking
             (fun hidapi (version, _git_commit) ~device_path:_ _ledger_id ->
               match version.app_class with
-              | Tezos ->
+              | Mavryk ->
                   failwith
                     "Fatal: this operation is only valid with the Mavryk \
                      Baking application"
-              | TezBake when (not no_legacy_apdu) && version.major < 2 ->
+              | MavBake when (not no_legacy_apdu) && version.major < 2 ->
                   let* hwm, hwm_round_opt =
                     Ledger_commands.wrap_ledger_cmd (fun pp ->
-                        Ledgerwallet_tezos.get_high_watermark ~pp hidapi)
+                        Ledgerwallet_mavryk.get_high_watermark ~pp hidapi)
                   in
                   let*! () =
                     cctxt#message
@@ -1414,16 +1414,16 @@ let high_water_mark_commands group watermark_spelling =
                       hwm_round_opt
                   in
                   return_some ()
-              | TezBake when no_legacy_apdu && version.major < 2 ->
+              | MavBake when no_legacy_apdu && version.major < 2 ->
                   failwith
                     "Cannot get the high water mark with@ \
                      `--no-legacy-instructions` and version %a"
-                    Ledgerwallet_tezos.Version.pp
+                    Ledgerwallet_mavryk.Version.pp
                     version
-              | TezBake ->
+              | MavBake ->
                   let* `Main_hwm (mh, mr), `Test_hwm (th, tr), `Chain_id ci =
                     Ledger_commands.wrap_ledger_cmd (fun pp ->
-                        Ledgerwallet_tezos.get_all_high_watermarks ~pp hidapi)
+                        Ledgerwallet_mavryk.get_all_high_watermarks ~pp hidapi)
                   in
                   let*! () =
                     cctxt#message
@@ -1460,16 +1460,16 @@ let high_water_mark_commands group watermark_spelling =
             ~filter:Filter.is_baking
             (fun hidapi (version, _git_commit) ~device_path:_ _ledger_id ->
               match version.app_class with
-              | Tezos ->
-                  failwith "Fatal: this operation is only valid with TezBake"
-              | TezBake ->
+              | Mavryk ->
+                  failwith "Fatal: this operation is only valid with MavBake"
+              | MavBake ->
                   let* () =
                     Ledger_commands.wrap_ledger_cmd (fun pp ->
-                        Ledgerwallet_tezos.set_high_watermark ~pp hidapi hwm)
+                        Ledgerwallet_mavryk.set_high_watermark ~pp hidapi hwm)
                   in
                   let* new_hwm, new_hwm_round_opt =
                     Ledger_commands.wrap_ledger_cmd (fun pp ->
-                        Ledgerwallet_tezos.get_high_watermark ~pp hidapi)
+                        Ledgerwallet_mavryk.get_high_watermark ~pp hidapi)
                   in
                   let*! () =
                     cctxt#message
