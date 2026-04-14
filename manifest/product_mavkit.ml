@@ -622,7 +622,7 @@ let mavkit_risc_v_pvm =
     let open Dune in
     make_rust_foreign_library_rule (* Make sure armerge is built beforehand *)
       ~extra_dep:(of_atom_list ["file"; "helpers/bin/armerge"])
-      ~enable_if:(of_atom_list ["="; "%{system}"; "macosx"])
+      ~enable_if:(S "false")
       ~transform:(fun input output ->
         (* We use armerge to keep only the essential symbols. This resolves
            issues on Mac where the linker can't resolve duplicate symbols
@@ -642,7 +642,7 @@ let mavkit_risc_v_pvm =
   let rust_foreign_library =
     let open Dune in
     make_rust_foreign_library_rule
-      ~enable_if:(of_atom_list ["<>"; "%{system}"; "macosx"])
+      ~enable_if:(S "false")
       ~transform:(fun input output -> of_atom_list ["copy"; input; output])
       ()
   in
@@ -650,6 +650,7 @@ let mavkit_risc_v_pvm =
     "mavkit-risc-v-pvm"
     ~path:"src/risc_v/pvm"
     ~synopsis:"Bindings for RISC-V interpreter"
+    ~available:Never
     ~deps:[ctypes; ctypes_foreign]
     ~flags:(Flags.standard ~disable_warnings:[9; 27] ())
     ~ctypes:

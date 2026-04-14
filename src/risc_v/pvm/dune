@@ -4,8 +4,8 @@
 (library
  (name mavkit_risc_v_pvm)
  (public_name mavkit-risc-v-pvm)
- (enabled_if false)
  (instrumentation (backend bisect_ppx))
+ (enabled_if false)
  (libraries
   ctypes
   ctypes.foreign)
