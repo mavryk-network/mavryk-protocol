@@ -264,18 +264,18 @@ module Ledger_commands = struct
     let open Lwt_result_syntax in
     let _ = version in
     let*! r =
-        wrap_ledger_cmd (fun pp ->
-            Ledgerwallet_mavryk.get_authorized_path_and_curve ~pp hid)
-      in
-      match r with
-      | Error
-          (LedgerError
-             (AppError
-               {status = Ledgerwallet.Status.Referenced_data_not_found; _})
-          :: _) ->
-          return `No_baking_authorized
-      | Error _ as e -> Lwt.return e
-      | Ok (path, curve) -> return (`Path_curve (path, curve))
+      wrap_ledger_cmd (fun pp ->
+          Ledgerwallet_mavryk.get_authorized_path_and_curve ~pp hid)
+    in
+    match r with
+    | Error
+        (LedgerError
+           (AppError
+             {status = Ledgerwallet.Status.Referenced_data_not_found; _})
+        :: _) ->
+        return `No_baking_authorized
+    | Error _ as e -> Lwt.return e
+    | Ok (path, curve) -> return (`Path_curve (path, curve))
 
   let sign ?watermark ~version hid curve path (base_msg : Bytes.t) =
     let open Lwt_result_syntax in
@@ -288,14 +288,14 @@ module Ledger_commands = struct
       wrap_ledger_cmd (fun pp ->
           let _ = version in
           let+ h, s =
-              Ledgerwallet_mavryk.sign_and_hash
-                ~pp
-                hid
-                curve
-                path
-                (Cstruct.of_bytes msg)
-            in
-            (Some h, s))
+            Ledgerwallet_mavryk.sign_and_hash
+              ~pp
+              hid
+              curve
+              path
+              (Cstruct.of_bytes msg)
+          in
+          (Some h, s))
     in
     let* () =
       match hash_opt with
@@ -547,7 +547,8 @@ module Filter = struct
    fun msg app ->
     `Version
       ( msg,
-        fun ({Ledgerwallet_mavryk.Version.app_class; _}, _) -> app = app_class )
+        fun ({Ledgerwallet_mavryk.Version.app_class; _}, _) -> app = app_class
+      )
 
   let is_baking = is_app "App = Baking" Ledgerwallet_mavryk.Version.MavBake
 
@@ -1355,7 +1356,7 @@ let high_water_mark_commands group watermark_spelling =
               ()))
         (prefixes (["get"; "ledger"; "high"] @ watermark_spelling @ ["for"])
         @@ Ledger_uri.ledger_uri_or_alias_param @@ stop)
-        (fun no_legacy_apdu ledger_uri (cctxt : Client_context.full) ->
+        (fun _no_legacy_apdu ledger_uri (cctxt : Client_context.full) ->
           use_ledger_or_fail
             ~ledger_uri
             ~filter:Filter.is_baking

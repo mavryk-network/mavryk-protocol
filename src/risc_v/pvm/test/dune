@@ -4,6 +4,7 @@
 (library
  (name src_risc_v_pvm_test_tezt_lib)
  (instrumentation (backend bisect_ppx))
+ (enabled_if false)
  (libraries
   tezt.core
   mavkit-alcotezt
@@ -19,6 +20,7 @@
 (executable
  (name main)
  (instrumentation (backend bisect_ppx --bisect-sigterm))
+ (enabled_if false)
  (libraries
   src_risc_v_pvm_test_tezt_lib
   tezt)

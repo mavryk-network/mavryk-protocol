@@ -231,8 +231,7 @@ module Dune = struct
       ?modules_without_implementation ?modes
       ?(foreign_archives = Stdlib.List.[]) ?foreign_stubs ?c_library_flags
       ?(ctypes = E) ?(private_modules = Stdlib.List.[]) ?js_of_ocaml ?wrapped
-      ?enabled_if
-      (names : string list) =
+      ?enabled_if (names : string list) =
     [
       V
         [
@@ -263,7 +262,7 @@ module Dune = struct
             :: of_list (List.map (function mode -> S (string_of_mode mode)) x)
           );
           (if optional then [S "optional"] else E);
-          (opt enabled_if (fun x -> [S "enabled_if"; x]));
+          opt enabled_if (fun x -> [S "enabled_if"; x]);
           (match libraries with
           | [] -> E
           | _ -> [V (S "libraries" :: libraries)]);
@@ -2186,6 +2185,7 @@ type tezt_target = {
   preprocess : Target.preprocessor list;
   preprocessor_deps : Target.preprocessor_dep list;
   product : string;
+  available : available;
 }
 
 let tezt_targets_by_path : tezt_target String_map.t ref = ref String_map.empty
@@ -2194,7 +2194,7 @@ let tezt ~opam ~path ?js_compatible ?modes ?(lib_deps = []) ?(exe_deps = [])
     ?(js_deps = []) ?(dep_globs = []) ?(dep_globs_rec = []) ?(dep_files = [])
     ?synopsis ?opam_with_test ?dune_with_test
     ?(with_macos_security_framework = false) ?flags ?(dune = Dune.[])
-    ?(preprocess = []) ?(preprocessor_deps = []) ~product modules =
+    ?(preprocess = []) ?(preprocessor_deps = []) ?(available : available = Always) ~product modules =
   if String_map.mem path !tezt_targets_by_path then
     invalid_arg
       ("cannot call Manifest.tezt twice for the same directory: " ^ path) ;
@@ -2214,6 +2214,7 @@ let tezt ~opam ~path ?js_compatible ?modes ?(lib_deps = []) ?(exe_deps = [])
         ~linkall:true
         ?flags
         ~dune
+        ~available
         ~product
         tezt_local_test_lib_name)
   in
@@ -2239,6 +2240,7 @@ let tezt ~opam ~path ?js_compatible ?modes ?(lib_deps = []) ?(exe_deps = [])
       preprocess;
       preprocessor_deps;
       product;
+      available;
     }
   in
   tezt_targets_by_path := String_map.add path tezt_target !tezt_targets_by_path ;
@@ -2264,9 +2266,12 @@ let register_tezt_targets ~make_tezt_exe =
         preprocess;
         preprocessor_deps;
         lib_deps;
+        available;
         _;
       } =
-    tezt_test_libs := tezt_local_test_lib :: !tezt_test_libs ;
+    (match available with
+    | Never -> ()
+    | _ -> tezt_test_libs := tezt_local_test_lib :: !tezt_test_libs) ;
     let declare_exe ?js_compatible exe_name modes deps main =
       let (_ : Target.t option) =
         Target.test
@@ -3570,8 +3575,7 @@ let generate_dune_project_files () =
       List.exists
         (fun (i : Target.internal) ->
           match i.kind with
-          | Public_library _ | Public_executable _ ->
-              i.available <> Never
+          | Public_library _ | Public_executable _ -> i.available <> Never
           | Private_library _ -> false
           | Private_executable _ -> false
           | Test_executable _ -> false)

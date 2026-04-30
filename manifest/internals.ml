@@ -19,7 +19,7 @@ open Externals
 let tezt ~product ~opam ~path ?js_compatible ?modes ?(deps = []) ?dep_globs
     ?dep_globs_rec ?dep_files ?opam_with_test ?dune_with_test ?synopsis
     ?(with_macos_security_framework = false) ?flags ?dune ?preprocess
-    ?preprocessor_deps l =
+    ?preprocessor_deps ?available l =
   Manifest.tezt
     ~product
     ~with_macos_security_framework
@@ -41,6 +41,7 @@ let tezt ~product ~opam ~path ?js_compatible ?modes ?(deps = []) ?dep_globs
     ?dune
     ?preprocess
     ?preprocessor_deps
+    ?available
     l
 
 module Product (M : sig

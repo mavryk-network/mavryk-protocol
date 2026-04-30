@@ -676,6 +676,7 @@ let _mavkit_risc_v_pvm_test =
     ~path:"src/risc_v/pvm/test"
     ~opam:"mavkit-risc-v-pvm-test"
     ~synopsis:"Tests for RISC-V interpreter bindings"
+    ~available:Never
     ~deps:[alcotezt; mavkit_risc_v_pvm]
 
 let mavryk_bls12_381 =

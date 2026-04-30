@@ -330,7 +330,8 @@ let zarith =
 let zarith_stubs_js =
   external_lib ~js_compatible:true "zarith_stubs_js" V.(at_least "0.16.1")
 
-let ledgerwallet_mavryk = external_lib "ledgerwallet-mavryk" V.(at_least "0.4.1")
+let ledgerwallet_mavryk =
+  external_lib "ledgerwallet-mavryk" V.(at_least "0.4.1")
 
 let tezt_lib =
   external_lib
