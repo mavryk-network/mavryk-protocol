@@ -33,7 +33,7 @@ let prefix = "BLockGenesisGenesisGenesisGenesisGenesis"
 let rec genesis () =
   let date =
     Lwt_main.run
-      (Lwt_process.pread_line (Lwt_process.shell "date --utc +%FT%TZ"))
+      (Lwt_process.pread_line (Lwt_process.shell "date -u +%FT%TZ"))
   in
   let suffix = String.sub Digest.(to_hex (string date)) 0 5 in
   match Base58.raw_decode (prefix ^ suffix ^ "crcCRC") with

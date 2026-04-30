@@ -158,7 +158,7 @@ module Ledger_commands = struct
         return_none
     | Ok version ->
         let* () =
-          if (version.major, version.minor) < (1, 4) then
+          if (version.major, version.minor) < (1, 0) then
             failwith
               "Version %a of the ledger apps is not supported by this client"
               Ledgerwallet_mavryk.Version.pp
@@ -262,15 +262,8 @@ module Ledger_commands = struct
 
   let get_authorized_path hid version =
     let open Lwt_result_syntax in
-    let open Ledgerwallet_mavryk.Version in
-    if version.major < 2 then
-      let+ path =
-        wrap_ledger_cmd (fun pp ->
-            Ledgerwallet_mavryk.get_authorized_key ~pp hid)
-      in
-      `Legacy_path path
-    else
-      let*! r =
+    let _ = version in
+    let*! r =
         wrap_ledger_cmd (fun pp ->
             Ledgerwallet_mavryk.get_authorized_path_and_curve ~pp hid)
       in
@@ -293,14 +286,8 @@ module Ledger_commands = struct
     let path = Bip32_path.mavryk_root @ path in
     let* hash_opt, signature =
       wrap_ledger_cmd (fun pp ->
-          let {Ledgerwallet_mavryk.Version.major; minor; patch; _} = version in
-          if (major, minor, patch) <= (2, 0, 0) then
-            let+ s =
-              Ledgerwallet_mavryk.sign ~pp hid curve path (Cstruct.of_bytes msg)
-            in
-            (None, s)
-          else
-            let+ h, s =
+          let _ = version in
+          let+ h, s =
               Ledgerwallet_mavryk.sign_and_hash
                 ~pp
                 hid
@@ -668,10 +655,10 @@ let use_ledger ?(filter : Filter.t = `None) (f : 'a ledger_function) =
   go ledgers
 
 let min_version_of_derivation_scheme = function
-  | Ledgerwallet_mavryk.Ed25519 -> (1, 3, 0)
-  | Ledgerwallet_mavryk.Secp256k1 -> (1, 3, 0)
-  | Ledgerwallet_mavryk.Secp256r1 -> (1, 3, 0)
-  | Ledgerwallet_mavryk.Bip32_ed25519 -> (2, 1, 0)
+  | Ledgerwallet_mavryk.Ed25519 -> (1, 0, 0)
+  | Ledgerwallet_mavryk.Secp256k1 -> (1, 0, 0)
+  | Ledgerwallet_mavryk.Secp256r1 -> (1, 0, 0)
+  | Ledgerwallet_mavryk.Bip32_ed25519 -> (1, 0, 0)
 
 let is_derivation_scheme_supported version curve =
   Ledgerwallet_mavryk.Version.(
@@ -1170,24 +1157,11 @@ let baking_commands group =
                     failwith
                       "This command (`authorize ledger ...`) only works with \
                        the Mavryk Baking app"
-                | {Ledgerwallet_mavryk.Version.app_class = MavBake; major; _}
-                  when major >= 2 ->
+                | {Ledgerwallet_mavryk.Version.app_class = MavBake; _} ->
                     failwith
-                      "This command (`authorize ledger ...`) is@ not \
-                       compatible with@ this version of the Ledger@ Baking app \
-                       (%a >= 2.0.0),@ please use the command@ `setup ledger \
-                       to bake for ...`@ from now on."
-                      Ledgerwallet_mavryk.Version.pp
-                      version
-                | _ ->
-                    let*! () =
-                      cctxt#message
-                        "This Ledger Baking app is outdated (%a)@ running@ in \
-                         backwards@ compatibility mode."
-                        Ledgerwallet_mavryk.Version.pp
-                        version
-                    in
-                    return_unit
+                      "This command (`authorize ledger ...`) is deprecated,@ \
+                       please use the command@ `setup ledger to bake for ...`@ \
+                       instead."
               in
               let* {Ledger_account.curve; path; _} =
                 Ledger_uri.full_account ledger_uri
@@ -1268,14 +1242,6 @@ let baking_commands group =
                     failwith
                       "This command (`setup ledger ...`) only works with the \
                        Mavryk Baking app"
-                | {app_class = MavBake; major; _} when major < 2 ->
-                    failwith
-                      "This command (`setup ledger ...`)@ is not@ compatible@ \
-                       with this version@ of the Ledger Baking app@ (%a < \
-                       2.0.0),@ please upgrade@ your ledger@ or use the \
-                       command@ `authorize ledger to bake for ...`"
-                      pp
-                      version
                 | _ -> return_unit
               in
               let* {Ledger_account.curve; path; _} =
@@ -1399,27 +1365,6 @@ let high_water_mark_commands group watermark_spelling =
                   failwith
                     "Fatal: this operation is only valid with the Mavryk \
                      Baking application"
-              | MavBake when (not no_legacy_apdu) && version.major < 2 ->
-                  let* hwm, hwm_round_opt =
-                    Ledger_commands.wrap_ledger_cmd (fun pp ->
-                        Ledgerwallet_mavryk.get_high_watermark ~pp hidapi)
-                  in
-                  let*! () =
-                    cctxt#message
-                      "The high water mark for@ %a@ is %ld%a."
-                      Ledger_uri.pp
-                      ledger_uri
-                      hwm
-                      pp_round_opt
-                      hwm_round_opt
-                  in
-                  return_some ()
-              | MavBake when no_legacy_apdu && version.major < 2 ->
-                  failwith
-                    "Cannot get the high water mark with@ \
-                     `--no-legacy-instructions` and version %a"
-                    Ledgerwallet_mavryk.Version.pp
-                    version
               | MavBake ->
                   let* `Main_hwm (mh, mr), `Test_hwm (th, tr), `Chain_id ci =
                     Ledger_commands.wrap_ledger_cmd (fun pp ->
