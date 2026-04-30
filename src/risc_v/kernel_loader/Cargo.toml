@@ -9,6 +9,3 @@ edition = "2021"
 goblin = "0.7.1"
 derive_more = "0.99.17"
 
-[dependencies.rvemu]
-git = "https://github.com/vapourismo/rvemu.git"
-branch = "pub-translate"

@@ -5,7 +5,6 @@
  (name mavkit_risc_v_pvm)
  (public_name mavkit-risc-v-pvm)
  (instrumentation (backend bisect_ppx))
- (enabled_if false)
  (libraries
   ctypes
   ctypes.foreign)
@@ -70,7 +69,7 @@
   (file ../../kernel_sdk/core/Cargo.toml)
   (file ../../kernel_sdk/host/Cargo.toml)
   (file ../../kernel_sdk/encoding/Cargo.toml))
- (enabled_if false)
+ (enabled_if (<> %{system} macosx))
  (action
   (no-infer
    (progn
@@ -95,7 +94,7 @@
   (file ../../kernel_sdk/host/Cargo.toml)
   (file ../../kernel_sdk/encoding/Cargo.toml)
   (file helpers/bin/armerge))
- (enabled_if false)
+ (enabled_if (= %{system} macosx))
  (action
   (no-infer
    (progn
