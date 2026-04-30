@@ -38,4 +38,4 @@ RUN . /tmp/version.sh && \
     echo $opam_repository_tag > opam_repository_tag
 RUN eval $(opam env) ; \
     . $HOME/.cargo/env ; \
-    make build-deps
+    CFLAGS="-std=gnu11" make build-deps
