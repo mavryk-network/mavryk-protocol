@@ -59,10 +59,17 @@ else
 
   # we create a new manifest ( override the old one ) with both the
   # local image and the image that was in the old manifest
-  docker buildx imagetools create \
-    -t "${DEP_IMAGE}:$LATEST_TAG" \
-    "$LOCAL_IMAGE_NAME" \
-    "$DEP_IMAGE@$OTHER_SHA"
+  if [ -z "$OTHER_SHA" ]; then
+    # No other architecture in the existing manifest, just update with our image
+    docker buildx imagetools create \
+      -t "${DEP_IMAGE}:$LATEST_TAG" \
+      "$LOCAL_IMAGE_NAME"
+  else
+    docker buildx imagetools create \
+      -t "${DEP_IMAGE}:$LATEST_TAG" \
+      "$LOCAL_IMAGE_NAME" \
+      "$DEP_IMAGE@$OTHER_SHA"
+  fi
 fi
 
 docker buildx imagetools inspect "${DEP_IMAGE}:${LATEST_TAG}"

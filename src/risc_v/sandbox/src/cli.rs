@@ -33,6 +33,10 @@ pub struct Options {
     #[arg(short, long)]
     pub input: String,
 
+    /// Path to an optional initial ramdisk
+    #[arg(long)]
+    pub initrd: Option<String>,
+
     #[arg(short = 'm', long, value_enum, default_value_t = ExitMode::User)]
     pub posix_exit_mode: ExitMode,
 }

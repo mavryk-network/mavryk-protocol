@@ -1696,9 +1696,9 @@ let test_force_kernel_upgrade_too_early =
   Check.((sequencer_kernelVersion = proxy_kernelVersion) string)
     ~error_msg:"Kernel versions should be the same at start up" ;
 
-  (* Activation timestamp is 1 day after the genesis. Therefore, it cannot
+  (* Activation timestamp is far in the future. Therefore, it cannot
      be forced now. *)
-  let activation_timestamp = "2025-08-21T13:23:31Z" in
+  let activation_timestamp = "2030-01-01T00:00:00Z" in
   (* Sends the upgrade to L1 and sequencer. *)
   let* () =
     upgrade

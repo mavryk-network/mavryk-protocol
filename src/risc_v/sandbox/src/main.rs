@@ -19,8 +19,11 @@ pub fn exception_to_error(exc: EnvironException) -> Box<dyn Error> {
 
 fn run(opts: Options) -> Result<(), Box<dyn Error>> {
     let contents = std::fs::read(&opts.input)?;
+    let initrd = opts.initrd.as_ref().map(std::fs::read).transpose()?;
     let mut backend = Interpreter::create_backend();
-    let mut interpreter = Interpreter::new(&mut backend, &contents, None, posix_exit_mode(opts))?;
+    let mode = posix_exit_mode(&opts);
+    let mut interpreter =
+        Interpreter::new(&mut backend, &contents, initrd.as_deref(), mode)?;
 
     const MAX_STEPS: usize = 1000000;
 
@@ -51,7 +54,7 @@ fn debug(opts: Options) -> Result<(), Box<dyn Error>> {
     )?)
 }
 
-fn posix_exit_mode(opts: Options) -> Mode {
+fn posix_exit_mode(opts: &Options) -> Mode {
     match opts.posix_exit_mode {
         cli::ExitMode::User => Mode::User,
         cli::ExitMode::Supervisor => Mode::Supervisor,

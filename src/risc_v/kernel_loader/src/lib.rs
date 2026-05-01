@@ -161,7 +161,6 @@ pub fn get_elf_symbols(contents: &[u8]) -> Result<HashMap<u64, &str>, Error> {
     Ok(symbols)
 }
 
-
 impl<T> Memory for Cursor<T>
 where
     Cursor<T>: Write + Seek,

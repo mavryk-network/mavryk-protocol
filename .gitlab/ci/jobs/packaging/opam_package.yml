@@ -44,6 +44,7 @@ opam:mavkit-accuser-PtAtLas:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -108,6 +109,7 @@ opam:mavkit-accuser-PtBoreas:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -172,6 +174,7 @@ opam:mavkit-alcotezt:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -236,6 +239,7 @@ opam:mavkit-baker-PtAtLas:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -300,6 +304,7 @@ opam:mavkit-baker-PtBoreas:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -364,6 +369,7 @@ opam:mavkit-client:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -428,6 +434,7 @@ opam:mavkit-codec:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -492,6 +499,7 @@ opam:mavkit-crawler:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -556,6 +564,7 @@ opam:mavkit-dac-client:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -620,6 +629,7 @@ opam:mavkit-dac-node:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -684,6 +694,7 @@ opam:mavkit-dal-node:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -748,6 +759,7 @@ opam:mavkit-distributed-internal:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -812,6 +824,7 @@ opam:mavkit-distributed-lwt-internal:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -876,6 +889,7 @@ opam:mavkit-injector:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -940,6 +954,7 @@ opam:mavkit-internal-libs:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1004,6 +1019,7 @@ opam:mavkit-l2-libs:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1068,6 +1084,7 @@ opam:mavkit-libs:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1132,6 +1149,7 @@ opam:mavkit-node:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1196,6 +1214,7 @@ opam:mavkit-node-config:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1260,6 +1279,7 @@ opam:mavkit-proto-libs:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1324,6 +1344,7 @@ opam:mavkit-protocol-000-PsUCFkqU-libs:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1388,6 +1409,7 @@ opam:mavkit-protocol-001-PtAtLas-libs:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1452,6 +1474,7 @@ opam:mavkit-protocol-002-PtBoreas-libs:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1516,6 +1539,7 @@ opam:mavkit-protocol-alpha-libs:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1580,6 +1604,7 @@ opam:mavkit-protocol-compiler:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1644,6 +1669,7 @@ opam:mavkit-proxy-server:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1708,6 +1734,7 @@ opam:mavkit-rpc-process:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1772,6 +1799,7 @@ opam:mavkit-shell-libs:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1836,6 +1864,7 @@ opam:mavkit-signer:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1900,6 +1929,7 @@ opam:mavkit-smart-rollup-node:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -1964,6 +1994,7 @@ opam:mavkit-smart-rollup-node-PtAtLas:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2028,6 +2059,7 @@ opam:mavkit-smart-rollup-node-PtBoreas:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2092,6 +2124,7 @@ opam:mavkit-smart-rollup-node-alpha:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2156,6 +2189,7 @@ opam:mavkit-smart-rollup-node-lib:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2220,6 +2254,7 @@ opam:mavkit-smart-rollup-wasm-debugger:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2284,6 +2319,7 @@ opam:mavkit-smart-rollup-wasm-debugger-lib:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2348,6 +2384,7 @@ opam:mavkit-smart-rollup-wasm-debugger-plugin:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2412,6 +2449,7 @@ opam:mavkit-version:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2476,6 +2514,7 @@ opam:mavryk-benchmark:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2540,6 +2579,7 @@ opam:mavryk-bls12-381:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2604,6 +2644,7 @@ opam:mavryk-client-demo-counter:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2668,6 +2709,7 @@ opam:mavryk-client-genesis:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2732,6 +2774,7 @@ opam:mavryk-dac-client-lib:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2796,6 +2839,7 @@ opam:mavryk-dac-lib:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2860,6 +2904,7 @@ opam:mavryk-dac-node-lib:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2924,6 +2969,7 @@ opam:mavryk-dal-node-lib:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -2988,6 +3034,7 @@ opam:mavryk-dal-node-services:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -3052,6 +3099,7 @@ opam:mavryk-openapi:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -3116,6 +3164,7 @@ opam:mavryk-protocol-000-PsUCFkqU:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -3180,6 +3229,7 @@ opam:mavryk-protocol-001-PtAtLas:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -3244,6 +3294,7 @@ opam:mavryk-protocol-002-PtBoreas:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -3308,6 +3359,7 @@ opam:mavryk-protocol-alpha:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -3372,6 +3424,7 @@ opam:mavryk-protocol-demo-counter:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -3436,6 +3489,7 @@ opam:mavryk-protocol-demo-noops:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -3500,6 +3554,7 @@ opam:mavryk-protocol-genesis:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -3564,6 +3619,7 @@ opam:mavryk-proxy-server-config:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
@@ -3628,6 +3684,7 @@ opam:tezt-mavryk:
   - . ./scripts/ci/sccache-start.sh
   script:
   - opam remote add dev-repo ./_opam-repo-for-release
+  - OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
   - opam install --yes ${package}.dev
   - opam reinstall --yes --with-test ${package}.dev
   after_script:
