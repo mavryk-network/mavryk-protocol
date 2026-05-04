@@ -656,10 +656,13 @@ impl CSRegister {
     const WARL_MASK_MIDELEG: CSRValue = !(
         ones(1) << 0    // reserved
         | ones(1) << 2  // reserved
+        | ones(1) << 3  // machine software interrupt - cannot be delegated (hard-wired 0)
         | ones(1) << 4  // reserved
         | ones(1) << 6  // reserved
+        | ones(1) << 7  // machine timer interrupt - cannot be delegated (hard-wired 0)
         | ones(1) << 8  // reserved
         | ones(1) << 10 // reserved
+        | ones(1) << 11 // machine external interrupt - cannot be delegated (hard-wired 0)
         | ones(4) << 12 // reserved
         | ones(CSRegister::MXLEN - 16) << 16
         // custom use
@@ -1257,8 +1260,10 @@ impl<M: backend::Manager> CSRegisters<M> {
         // bit for the higher-privilege mode."
 
         let mstatus = self.read(CSRegister::mstatus);
+        let mie = self.read(CSRegister::mie);
+        let mideleg = self.read(CSRegister::mideleg);
         let ie_machine = match xstatus::get_MIE(mstatus) {
-            true => self.read(CSRegister::mie),
+            true => mie,
             false => 0,
         };
         let ie_supervisor = match xstatus::get_SIE(mstatus) {
@@ -1267,9 +1272,13 @@ impl<M: backend::Manager> CSRegisters<M> {
         };
 
         match current_mode {
+            // Per spec 3.1.9: an interrupt traps to M-mode only if bit i is NOT set in mideleg.
+            // Delegated interrupts are suppressed in M-mode (they pend until entering S-mode).
+            Mode::Machine => ie_machine & !mideleg,
+            // Machine interrupts always preempt S-mode (not gated by SIE); supervisor interrupts
+            // only fire in S-mode if delegated via mideleg.
+            Mode::Supervisor => (ie_supervisor & mideleg) | (mie & Interrupt::MACHINE_BIT_MASK),
             Mode::User => Interrupt::SUPERVISOR_BIT_MASK | Interrupt::MACHINE_BIT_MASK,
-            Mode::Supervisor => ie_supervisor | Interrupt::MACHINE_BIT_MASK,
-            Mode::Machine => ie_machine,
         }
     }
 

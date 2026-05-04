@@ -156,209 +156,157 @@ rv64ui-p-xor: success
 rv64ui-p-xori: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-add
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-add: fail
+rv64ui-v-add: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-addi
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-addi: fail
+rv64ui-v-addi: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-addiw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-addiw: fail
+rv64ui-v-addiw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-addw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-addw: fail
+rv64ui-v-addw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-and
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-and: fail
+rv64ui-v-and: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-andi
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-andi: fail
+rv64ui-v-andi: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-auipc
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-auipc: fail
+rv64ui-v-auipc: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-beq
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-beq: fail
+rv64ui-v-beq: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-bge
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-bge: fail
+rv64ui-v-bge: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-bgeu
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-bgeu: fail
+rv64ui-v-bgeu: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-blt
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-blt: fail
+rv64ui-v-blt: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-bltu
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-bltu: fail
+rv64ui-v-bltu: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-bne
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-bne: fail
+rv64ui-v-bne: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-fence_i
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-fence_i: fail
+rv64ui-v-fence_i: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-jal
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-jal: fail
+rv64ui-v-jal: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-jalr
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-jalr: fail
+rv64ui-v-jalr: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-lb
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-lb: fail
+rv64ui-v-lb: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-lbu
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-lbu: fail
+rv64ui-v-lbu: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-ld
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-ld: fail
+rv64ui-v-ld: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-lh
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-lh: fail
+rv64ui-v-lh: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-lhu
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-lhu: fail
+rv64ui-v-lhu: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-lui
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-lui: fail
+rv64ui-v-lui: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-lw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-lw: fail
+rv64ui-v-lw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-lwu
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-lwu: fail
+rv64ui-v-lwu: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-ma_data
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-ma_data: fail
+rv64ui-v-ma_data: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-or
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-or: fail
+rv64ui-v-or: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-ori
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-ori: fail
+rv64ui-v-ori: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-sb
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-sb: fail
+rv64ui-v-sb: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-sd
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-sd: fail
+rv64ui-v-sd: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-sh
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-sh: fail
+rv64ui-v-sh: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-simple
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-simple: fail
+rv64ui-v-simple: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-sll
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-sll: fail
+rv64ui-v-sll: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-slli
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-slli: fail
+rv64ui-v-slli: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-slliw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-slliw: fail
+rv64ui-v-slliw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-sllw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-sllw: fail
+rv64ui-v-sllw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-slt
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-slt: fail
+rv64ui-v-slt: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-slti
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-slti: fail
+rv64ui-v-slti: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-sltiu
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-sltiu: fail
+rv64ui-v-sltiu: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-sltu
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-sltu: fail
+rv64ui-v-sltu: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-sra
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-sra: fail
+rv64ui-v-sra: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-srai
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-srai: fail
+rv64ui-v-srai: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-sraiw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-sraiw: fail
+rv64ui-v-sraiw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-sraw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-sraw: fail
+rv64ui-v-sraw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-srl
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-srl: fail
+rv64ui-v-srl: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-srli
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-srli: fail
+rv64ui-v-srli: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-srliw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-srliw: fail
+rv64ui-v-srliw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-srlw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-srlw: fail
+rv64ui-v-srlw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-sub
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-sub: fail
+rv64ui-v-sub: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-subw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-subw: fail
+rv64ui-v-subw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-sw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-sw: fail
+rv64ui-v-sw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-xor
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-xor: fail
+rv64ui-v-xor: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-xori
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ui-v-xori: fail
+rv64ui-v-xori: success

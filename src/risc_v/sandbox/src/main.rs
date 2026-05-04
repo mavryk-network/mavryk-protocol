@@ -22,8 +22,7 @@ fn run(opts: Options) -> Result<(), Box<dyn Error>> {
     let initrd = opts.initrd.as_ref().map(std::fs::read).transpose()?;
     let mut backend = Interpreter::create_backend();
     let mode = posix_exit_mode(&opts);
-    let mut interpreter =
-        Interpreter::new(&mut backend, &contents, initrd.as_deref(), mode)?;
+    let mut interpreter = Interpreter::new(&mut backend, &contents, initrd.as_deref(), mode)?;
 
     const MAX_STEPS: usize = 1000000;
 

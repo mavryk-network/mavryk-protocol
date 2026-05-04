@@ -54,7 +54,9 @@ impl TryFrom<&Exception> for EnvironException {
             Exception::Breakpoint
             | Exception::IllegalInstruction
             | Exception::InstructionAccessFault(_)
+            | Exception::LoadAddressMisaligned(_)
             | Exception::LoadAccessFault(_)
+            | Exception::StoreAMOAddressMisaligned(_)
             | Exception::StoreAccessFault(_)
             | Exception::InstructionPageFault(_)
             | Exception::LoadPageFault(_)
@@ -72,9 +74,13 @@ pub enum Exception {
     InstructionAccessFault(Address),
     IllegalInstruction,
     Breakpoint,
-    /// `InstructionAccessFault(addr)` where `addr` is the faulting load address
+    /// `LoadAddressMisaligned(addr)` where `addr` is the misaligned load address
+    LoadAddressMisaligned(Address),
+    /// `LoadAccessFault(addr)` where `addr` is the faulting load address
     LoadAccessFault(Address),
-    /// `InstructionAccessFault(addr)` where `addr` is the faulting store address
+    /// `StoreAMOAddressMisaligned(addr)` where `addr` is the misaligned store/AMO address
+    StoreAMOAddressMisaligned(Address),
+    /// `StoreAccessFault(addr)` where `addr` is the faulting store address
     StoreAccessFault(Address),
     EnvCallFromUMode,
     EnvCallFromSMode,
@@ -91,6 +97,10 @@ impl core::fmt::Debug for Exception {
             Self::LoadPageFault(adr) => write!(f, "LoadPageFault({adr:#X})"),
             Self::StoreAMOPageFault(adr) => write!(f, "StoreAMOPageFault({adr:#X})"),
             Self::LoadAccessFault(adr) => write!(f, "LoadAccessFault({adr:#X})"),
+            Self::LoadAddressMisaligned(adr) => write!(f, "LoadAddressMisaligned({adr:#X})"),
+            Self::StoreAMOAddressMisaligned(adr) => {
+                write!(f, "StoreAMOAddressMisaligned({adr:#X})")
+            }
             other => write!(f, "{other}"),
         }
     }
@@ -165,7 +175,9 @@ impl TrapContext for Exception {
             Exception::InstructionAccessFault(_) => 1,
             Exception::IllegalInstruction => 2,
             Exception::Breakpoint => 3,
+            Exception::LoadAddressMisaligned(_) => 4,
             Exception::LoadAccessFault(_) => 5,
+            Exception::StoreAMOAddressMisaligned(_) => 6,
             Exception::StoreAccessFault(_) => 7,
             Exception::EnvCallFromUMode => 8,
             Exception::EnvCallFromSMode => 9,
@@ -188,7 +200,9 @@ impl TrapContext for Exception {
             | Exception::EnvCallFromSMode
             | Exception::EnvCallFromMMode => 0,
             Exception::InstructionAccessFault(addr) => *addr,
+            Exception::LoadAddressMisaligned(addr) => *addr,
             Exception::LoadAccessFault(addr) => *addr,
+            Exception::StoreAMOAddressMisaligned(addr) => *addr,
             Exception::StoreAccessFault(addr) => *addr,
             Exception::InstructionPageFault(addr) => *addr,
             Exception::LoadPageFault(addr) => *addr,
@@ -232,12 +246,6 @@ impl TrapContext for Interrupt {
             // Direct or Reserved mode
             _ => 0,
         };
-
-        println!(
-            "Trap address: {:x}, {}",
-            xtvec_base + handler_offset,
-            self.exception_code()
-        );
 
         xtvec_base + handler_offset
     }
