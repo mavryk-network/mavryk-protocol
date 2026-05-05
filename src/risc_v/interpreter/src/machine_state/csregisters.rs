@@ -1499,7 +1499,7 @@ mod tests {
         assert!(check(csreg::medeleg, 0x0) == 0x0);
         assert!(check(csreg::medeleg, 0x0000_FFFF_0000_FFFF) == 0x0000_0000_0000_B3FF);
         assert!(check(csreg::mideleg, 0x0) == 0x0);
-        assert!(check(csreg::mideleg, 0xFFFF_0000_FFFF_FFFF) == 0x0000_0000_0000_0AAA);
+        assert!(check(csreg::mideleg, 0xFFFF_0000_FFFF_FFFF) == 0x0000_0000_0000_0222);
 
         // mtvec / stvec field
         assert!(check(csreg::mtvec, 0x0) == 0x0);

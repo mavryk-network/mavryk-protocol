@@ -1,64 +1,62 @@
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-access
-Exception InstructionAccessFault at 0x80000000800001f0: Fatal
+Error: "Timeout"
 rv64mi-p-access: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-breakpoint
-Exception EnvironmentCallFromMMode at 0x800002d0: Requested
+Error: "Timeout"
 rv64mi-p-breakpoint: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-csr
-Exception EnvironmentCallFromMMode at 0x800003fc: Requested
-rv64mi-p-csr: fail
+rv64mi-p-csr: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-illegal
-Exception IllegalInstruction(0) at 0x800001a4: Invisible
+Error: "Timeout"
 rv64mi-p-illegal: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-ld-misaligned
-Exception EnvironmentCallFromMMode at 0x80000420: Requested
+Error: "Timeout"
 rv64mi-p-ld-misaligned: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-lh-misaligned
-Exception EnvironmentCallFromMMode at 0x80000208: Requested
+Error: "Timeout"
 rv64mi-p-lh-misaligned: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-lw-misaligned
-Exception EnvironmentCallFromMMode at 0x80000260: Requested
+Error: "Timeout"
 rv64mi-p-lw-misaligned: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-ma_addr
-Exception EnvironmentCallFromMMode at 0x800006ac: Requested
+Error: "Timeout"
 rv64mi-p-ma_addr: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-ma_fetch
-Exception EnvironmentCallFromMMode at 0x80000304: Requested
+Error: "Timeout"
 rv64mi-p-ma_fetch: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-mcsr
-Exception EnvironmentCallFromMMode at 0x80000208: Requested
+Error: "Timeout"
 rv64mi-p-mcsr: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-sbreak
-Exception Breakpoint at 0x800001a4: Requested
+Error: "Timeout"
 rv64mi-p-sbreak: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-scall
-Error: "Failed to handle environment call at 800001e4: Unimplemented system call 0"
-rv64mi-p-scall: fail
+rv64mi-p-scall: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-sd-misaligned
-Exception EnvironmentCallFromMMode at 0x80000500: Requested
+Error: "Timeout"
 rv64mi-p-sd-misaligned: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-sh-misaligned
-Exception EnvironmentCallFromMMode at 0x80000240: Requested
+Error: "Timeout"
 rv64mi-p-sh-misaligned: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-sw-misaligned
-Exception EnvironmentCallFromMMode at 0x800002b0: Requested
+Error: "Timeout"
 rv64mi-p-sw-misaligned: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64mi-p-zicntr
-Exception EnvironmentCallFromMMode at 0x80000250: Requested
+Error: "Timeout"
 rv64mi-p-zicntr: fail

@@ -39,53 +39,40 @@ rv64um-p-remuw: success
 rv64um-p-remw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64um-v-div
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64um-v-div: fail
+rv64um-v-div: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64um-v-divu
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64um-v-divu: fail
+rv64um-v-divu: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64um-v-divuw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64um-v-divuw: fail
+rv64um-v-divuw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64um-v-divw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64um-v-divw: fail
+rv64um-v-divw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64um-v-mul
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64um-v-mul: fail
+rv64um-v-mul: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64um-v-mulh
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64um-v-mulh: fail
+rv64um-v-mulh: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64um-v-mulhsu
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64um-v-mulhsu: fail
+rv64um-v-mulhsu: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64um-v-mulhu
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64um-v-mulhu: fail
+rv64um-v-mulhu: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64um-v-mulw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64um-v-mulw: fail
+rv64um-v-mulw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64um-v-rem
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64um-v-rem: fail
+rv64um-v-rem: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64um-v-remu
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64um-v-remu: fail
+rv64um-v-remu: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64um-v-remuw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64um-v-remuw: fail
+rv64um-v-remuw: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64um-v-remw
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64um-v-remw: fail
+rv64um-v-remw: success

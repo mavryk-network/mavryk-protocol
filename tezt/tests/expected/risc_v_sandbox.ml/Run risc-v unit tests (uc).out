@@ -1,7 +1,8 @@
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uc-p-rvc
-rv64uc-p-rvc: success
+Error: "Timeout"
+rv64uc-p-rvc: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uc-v-rvc
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
+Error: "Failed with exit code 5"
 rv64uc-v-rvc: fail

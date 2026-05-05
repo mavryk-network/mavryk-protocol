@@ -1,86 +1,72 @@
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fadd
-Received request to exit with code 5
-rv64uf-p-fadd: fail
+rv64uf-p-fadd: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fclass
-Received request to exit with code 5
-rv64uf-p-fclass: fail
+rv64uf-p-fclass: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fcmp
-Received request to exit with code 21
-rv64uf-p-fcmp: fail
+rv64uf-p-fcmp: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fcvt
-Received request to exit with code 5
+Error: "Timeout"
 rv64uf-p-fcvt: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fcvt_w
-Received request to exit with code 5
+Error: "Timeout"
 rv64uf-p-fcvt_w: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fdiv
-Received request to exit with code 5
-rv64uf-p-fdiv: fail
+rv64uf-p-fdiv: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fmadd
-Received request to exit with code 5
-rv64uf-p-fmadd: fail
+rv64uf-p-fmadd: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fmin
-Received request to exit with code 5
-rv64uf-p-fmin: fail
+rv64uf-p-fmin: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-ldst
 rv64uf-p-ldst: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-move
-Received request to exit with code 7
-rv64uf-p-move: fail
+rv64uf-p-move: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-recoding
-rv64uf-p-recoding: success
+Error: "Timeout"
+rv64uf-p-recoding: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fadd
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64uf-v-fadd: fail
+rv64uf-v-fadd: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fclass
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64uf-v-fclass: fail
+rv64uf-v-fclass: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fcmp
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64uf-v-fcmp: fail
+rv64uf-v-fcmp: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fcvt
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
+Error: "Timeout"
 rv64uf-v-fcvt: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fcvt_w
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
+Error: "Timeout"
 rv64uf-v-fcvt_w: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fdiv
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64uf-v-fdiv: fail
+rv64uf-v-fdiv: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fmadd
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64uf-v-fmadd: fail
+rv64uf-v-fmadd: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fmin
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64uf-v-fmin: fail
+rv64uf-v-fmin: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-ldst
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64uf-v-ldst: fail
+rv64uf-v-ldst: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-move
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64uf-v-move: fail
+rv64uf-v-move: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-recoding
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
+Error: "Timeout"
 rv64uf-v-recoding: fail

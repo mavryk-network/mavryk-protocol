@@ -1,95 +1,78 @@
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-p-fadd
-Received request to exit with code 7
-rv64ud-p-fadd: fail
+rv64ud-p-fadd: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-p-fclass
-Received request to exit with code 5
-rv64ud-p-fclass: fail
+rv64ud-p-fclass: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-p-fcmp
-Received request to exit with code 21
-rv64ud-p-fcmp: fail
+rv64ud-p-fcmp: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-p-fcvt
-Received request to exit with code 15
+Error: "Timeout"
 rv64ud-p-fcvt: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-p-fcvt_w
-Received request to exit with code 5
+Error: "Timeout"
 rv64ud-p-fcvt_w: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-p-fdiv
-Received request to exit with code 5
-rv64ud-p-fdiv: fail
+rv64ud-p-fdiv: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-p-fmadd
-Received request to exit with code 7
-rv64ud-p-fmadd: fail
+rv64ud-p-fmadd: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-p-fmin
-Received request to exit with code 41
-rv64ud-p-fmin: fail
+rv64ud-p-fmin: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-p-ldst
-Received request to exit with code 7
-rv64ud-p-ldst: fail
+rv64ud-p-ldst: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-p-move
-Received request to exit with code 81
-rv64ud-p-move: fail
+rv64ud-p-move: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-p-recoding
-Received request to exit with code 21
+Error: "Timeout"
 rv64ud-p-recoding: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-p-structural
 rv64ud-p-structural: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-v-fadd
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ud-v-fadd: fail
+rv64ud-v-fadd: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-v-fclass
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ud-v-fclass: fail
+rv64ud-v-fclass: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-v-fcmp
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ud-v-fcmp: fail
+rv64ud-v-fcmp: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-v-fcvt
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
+Error: "Timeout"
 rv64ud-v-fcvt: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-v-fcvt_w
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
+Error: "Timeout"
 rv64ud-v-fcvt_w: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-v-fdiv
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ud-v-fdiv: fail
+rv64ud-v-fdiv: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-v-fmadd
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ud-v-fmadd: fail
+rv64ud-v-fmadd: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-v-fmin
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ud-v-fmin: fail
+rv64ud-v-fmin: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-v-ldst
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ud-v-ldst: fail
+rv64ud-v-ldst: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-v-move
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ud-v-move: fail
+rv64ud-v-move: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-v-recoding
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
+Error: "Timeout"
 rv64ud-v-recoding: fail
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ud-v-structural
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-rv64ud-v-structural: fail
+rv64ud-v-structural: success

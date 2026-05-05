@@ -1,0 +1,15 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 72be9261078df3d8781d66274b5e0a0c731b1091f29f774cd946c53460166ab9 # shrinks to r1_addr = 2147483676, r1_val = 0, r2_val = 0
+cc f149ab4792e081f59c77707078daf704f3f7aa68174ccf3b51d56fd6b5633ec1 # shrinks to r1_addr = 2147484148, r1_val = 0, r2_val = 0
+cc 40f8b0a21ec5ebba6cacc62665658d516f061c02ba08ad97696679fe0092e105 # shrinks to r1_addr = 2147484156, r1_val = 0, r2_val = 0
+cc 1f7bcb404eddf6829304b691f2d809bafecb0190cbd30aed7b80623f19c80699 # shrinks to r1_addr = 2147484148, r1_val = 0, r2_val = 0
+cc adb4ba860f000801e9ed7f51e7f83ee83ba04f613bb67f4e28834a296894a244 # shrinks to r1_addr = 2147484004, r1_val = 0, r2_val = 0
+cc bb71a05944b9961651ba265c4ede8901326ebe80647db330bc388f262824a827 # shrinks to r1_addr = 2147483764, r1_val = 0, r2_val = 0
+cc 235567c99a459b0d8e320830cefa879e6c25ca02e845d4ee197c66466dcc91fb # shrinks to r1_addr = 2147484148, r1_val = 0, r2_val = 0
+cc b830cd87f024f64b4493fc6f52dc31354f00557254c09aadc3ab67c4071d9cae # shrinks to r1_addr = 2147483836, r1_val = 0, r2_val = 0
+cc cdb055801f00e7b4e503df2f02f04ce81b1a62e32d300b8756d942633442bff2 # shrinks to r1_addr = 2147483724, r1_val = 0, r2_val = 0

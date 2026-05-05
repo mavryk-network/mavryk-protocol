@@ -34,7 +34,7 @@ where
 
         // Apply the binary operation to the loaded value and the value in rs2
         let value_rs2 = self.hart.xregisters.read(rs2) as i32;
-        let value = f(value_rs1, value_rs2) as u64;
+        let value = f(value_rs1, value_rs2) as u32;
 
         // Write the value read fom the address in rs1 in rd
         self.hart.xregisters.write(rd, value_rs1 as u64);
@@ -240,7 +240,7 @@ mod test {
                     let mut state = create_state!(MachineState, MachineStateLayout<T1K>, F, backend, T1K);
 
                     state.hart.xregisters.write(a0, r1_addr);
-                    state.write_to_bus(0, a0, r1_val)?;
+                    state.write_to_bus(0, a0, r1_val as u32)?;
                     state.hart.xregisters.write(a1, r2_val);
                     state.$instr(a0, a1, a2, false, false)?;
                     let res: i32 = state.read_from_address(r1_addr)?;
