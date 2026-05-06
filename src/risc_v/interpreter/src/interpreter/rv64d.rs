@@ -349,11 +349,9 @@ mod tests {
                 Ok(())
             };
 
-            // fsd/fld use immediate -4, so effective = offset - 4; offsets chosen to keep
-            // effective address 8-byte aligned.
-            let invalid_offset = DEVICES_ADDRESS_SPACE_LENGTH - 1020; // effective: -1024, aligned, device space
-            let aligned_offset = DEVICES_ADDRESS_SPACE_LENGTH + 516; // effective: +512, aligned, in T1K
-            let misaligned_offset = DEVICES_ADDRESS_SPACE_LENGTH + 513; // effective: +509, misaligned
+            let invalid_offset = DEVICES_ADDRESS_SPACE_LENGTH - 1024;
+            let aligned_offset = DEVICES_ADDRESS_SPACE_LENGTH + 512;
+            let misaligned_offset = DEVICES_ADDRESS_SPACE_LENGTH + 513;
 
             // Out of bounds loads / stores
             prop_assert!(perform_test(invalid_offset).is_err_and(|e|
@@ -361,10 +359,8 @@ mod tests {
             ));
             // Aligned loads / stores
             prop_assert!(perform_test(aligned_offset).is_ok());
-            // Unaligned loads / stores — interpreter raises StoreAMOAddressMisaligned
-            prop_assert!(perform_test(misaligned_offset).is_err_and(|e|
-                matches!(e, Exception::StoreAMOAddressMisaligned(_))
-            ));
+            // Unaligned loads / stores
+            prop_assert!(perform_test(misaligned_offset).is_ok());
 
             // Out of bounds loads / stores
             prop_assert!(perform_test(invalid_offset).is_err_and(|e|
@@ -372,10 +368,8 @@ mod tests {
             ));
             // Aligned loads / stores
             prop_assert!(perform_test(aligned_offset).is_ok());
-            // Unaligned loads / stores — interpreter raises StoreAMOAddressMisaligned
-            prop_assert!(perform_test(misaligned_offset).is_err_and(|e|
-                matches!(e, Exception::StoreAMOAddressMisaligned(_))
-            ));
+            // Unaligned loads / stores
+            prop_assert!(perform_test(misaligned_offset).is_ok());
         });
     });
 }

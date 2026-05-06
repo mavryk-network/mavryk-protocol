@@ -12,7 +12,6 @@ use crate::{
     state_backend as backend,
     traps::Exception,
 };
-use std::mem;
 
 impl<ML, M> MachineState<ML, M>
 where
@@ -21,11 +20,6 @@ where
 {
     /// Generic read function for loading `mem::size_of<T>` bytes from `address`
     pub(super) fn read_from_address<T: backend::Elem>(&self, address: u64) -> Result<T, Exception> {
-        let size = mem::size_of::<T>() as u64;
-        if size > 1 && address % size != 0 {
-            return Err(Exception::LoadAddressMisaligned(address));
-        }
-
         let address = self.translate(address, AccessType::Load)?;
 
         self.bus
@@ -49,11 +43,6 @@ where
         address: u64,
         value: T,
     ) -> Result<(), Exception> {
-        let size = mem::size_of::<T>() as u64;
-        if size > 1 && address % size != 0 {
-            return Err(Exception::StoreAMOAddressMisaligned(address));
-        }
-
         let address = self.translate(address, AccessType::Store)?;
 
         self.bus

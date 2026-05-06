@@ -413,10 +413,8 @@ mod tests {
             ));
             // Aligned loads / stores
             prop_assert!(perform_test(aligned_offset).is_ok());
-            // Unaligned loads / stores — interpreter raises StoreAMOAddressMisaligned
-            prop_assert!(perform_test(misaligned_offset).is_err_and(|e|
-                matches!(e, Exception::StoreAMOAddressMisaligned(_))
-            ));
+            // Unaligned loads / stores
+            prop_assert!(perform_test(misaligned_offset).is_ok());
 
             // Out of bounds loads / stores
             prop_assert!(perform_test(invalid_offset).is_err_and(|e|
@@ -424,10 +422,8 @@ mod tests {
             ));
             // Aligned loads / stores
             prop_assert!(perform_test(aligned_offset).is_ok());
-            // Unaligned loads / stores — interpreter raises StoreAMOAddressMisaligned
-            prop_assert!(perform_test(misaligned_offset).is_err_and(|e|
-                matches!(e, Exception::StoreAMOAddressMisaligned(_))
-            ));
+            // Unaligned loads / stores
+            prop_assert!(perform_test(misaligned_offset).is_ok());
         });
     });
 }
