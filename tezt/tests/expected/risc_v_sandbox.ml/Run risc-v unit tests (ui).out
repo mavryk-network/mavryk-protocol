@@ -72,8 +72,7 @@ rv64ui-p-lw: success
 rv64ui-p-lwu: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-p-ma_data
-Error: "Timeout"
-rv64ui-p-ma_data: fail
+rv64ui-p-ma_data: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-p-or
 rv64ui-p-or: success
@@ -229,8 +228,7 @@ rv64ui-v-lw: success
 rv64ui-v-lwu: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-ma_data
-Error: "Timeout"
-rv64ui-v-ma_data: fail
+rv64ui-v-ma_data: success
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ui-v-or
 rv64ui-v-or: success

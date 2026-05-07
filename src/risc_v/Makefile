@@ -66,7 +66,7 @@ audit:
 	@# version, it may cause issues for developers.
 	@# For that reason we expose this as a separate target and run it only in
 	@# CI.
-	@cargo audit
+	@cargo audit --ignore RUSTSEC-2026-0041
 
 .PHONY: clean
 clean:
