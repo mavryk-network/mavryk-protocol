@@ -256,16 +256,10 @@ pub enum CSRegister {
     pmpaddr62 = 0x3EE,
     pmpaddr63 = 0x3EF,
 
-    // Machine Non-Maskable Interrupt Handling
-    // The draft `Smrnmi` extension is not supported in objdump, printing
-    // CSR address directly instead
-    #[strum(to_string = "0x740")]
+    // Machine Non-Maskable Interrupt Handling (Smrnmi extension)
     mnscratch = 0x740,
-    #[strum(to_string = "0x741")]
     mnepc = 0x741,
-    #[strum(to_string = "0x742")]
     mncause = 0x742,
-    #[strum(to_string = "0x744")]
     mnstatus = 0x744,
 
     // Machine Counter/Timers
