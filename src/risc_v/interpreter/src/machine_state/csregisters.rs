@@ -1261,7 +1261,7 @@ impl<M: backend::Manager> CSRegisters<M> {
             false => 0,
         };
         let ie_supervisor = match xstatus::get_SIE(mstatus) {
-            true => self.read(CSRegister::sie),
+            true => mie,
             false => 0,
         };
 
@@ -1269,9 +1269,7 @@ impl<M: backend::Manager> CSRegisters<M> {
             // Per spec 3.1.9: an interrupt traps to M-mode only if bit i is NOT set in mideleg.
             // Delegated interrupts are suppressed in M-mode (they pend until entering S-mode).
             Mode::Machine => ie_machine & !mideleg,
-            // Machine interrupts always preempt S-mode (not gated by SIE); supervisor interrupts
-            // only fire in S-mode if delegated via mideleg.
-            Mode::Supervisor => (ie_supervisor & mideleg) | (mie & Interrupt::MACHINE_BIT_MASK),
+            Mode::Supervisor => ie_supervisor | Interrupt::MACHINE_BIT_MASK,
             Mode::User => Interrupt::SUPERVISOR_BIT_MASK | Interrupt::MACHINE_BIT_MASK,
         }
     }

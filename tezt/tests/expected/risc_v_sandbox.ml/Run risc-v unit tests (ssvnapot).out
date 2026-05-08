@@ -1,4 +1,4 @@
 
 ./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64ssvnapot-p-napot
-Error: "Timeout"
+Exception EnvironmentCallFromMMode at 0x80000370: Requested
 rv64ssvnapot-p-napot: fail

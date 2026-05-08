@@ -1,3 +1,2 @@
 
 ./src/risc_v/risc-v-sandbox run --input src/risc_v/tests/inline_asm/rv64-inline-asm-tests
-Error: "Timeout"
