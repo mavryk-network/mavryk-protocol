@@ -1254,23 +1254,19 @@ impl<M: backend::Manager> CSRegisters<M> {
         // bit for the higher-privilege mode."
 
         let mstatus = self.read(CSRegister::mstatus);
-        let mie = self.read(CSRegister::mie);
-        let mideleg = self.read(CSRegister::mideleg);
         let ie_machine = match xstatus::get_MIE(mstatus) {
-            true => mie,
+            true => self.read(CSRegister::mie),
             false => 0,
         };
         let ie_supervisor = match xstatus::get_SIE(mstatus) {
-            true => mie,
+            true => self.read(CSRegister::mie),
             false => 0,
         };
 
         match current_mode {
-            // Per spec 3.1.9: an interrupt traps to M-mode only if bit i is NOT set in mideleg.
-            // Delegated interrupts are suppressed in M-mode (they pend until entering S-mode).
-            Mode::Machine => ie_machine & !mideleg,
-            Mode::Supervisor => ie_supervisor | Interrupt::MACHINE_BIT_MASK,
             Mode::User => Interrupt::SUPERVISOR_BIT_MASK | Interrupt::MACHINE_BIT_MASK,
+            Mode::Supervisor => ie_supervisor | Interrupt::MACHINE_BIT_MASK,
+            Mode::Machine => ie_machine,
         }
     }
 
