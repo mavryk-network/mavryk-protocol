@@ -45,5 +45,4 @@ let run_kernel ?(posix = false) ~input ?initrd () =
       (["run"; "--input"; input]
       @ Option.fold ~none:[] ~some:(fun initrd -> ["--initrd"; initrd]) initrd)
   in
-  let* _ = Process.wait process in
-  Lwt.return_unit
+  Process.check process
