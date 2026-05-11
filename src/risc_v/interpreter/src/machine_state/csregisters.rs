@@ -650,13 +650,10 @@ impl CSRegister {
     const WARL_MASK_MIDELEG: CSRValue = !(
         ones(1) << 0    // reserved
         | ones(1) << 2  // reserved
-        | ones(1) << 3  // machine software interrupt - cannot be delegated (hard-wired 0)
         | ones(1) << 4  // reserved
         | ones(1) << 6  // reserved
-        | ones(1) << 7  // machine timer interrupt - cannot be delegated (hard-wired 0)
         | ones(1) << 8  // reserved
         | ones(1) << 10 // reserved
-        | ones(1) << 11 // machine external interrupt - cannot be delegated (hard-wired 0)
         | ones(4) << 12 // reserved
         | ones(CSRegister::MXLEN - 16) << 16
         // custom use
@@ -1487,7 +1484,7 @@ mod tests {
         assert!(check(csreg::medeleg, 0x0) == 0x0);
         assert!(check(csreg::medeleg, 0x0000_FFFF_0000_FFFF) == 0x0000_0000_0000_B3FF);
         assert!(check(csreg::mideleg, 0x0) == 0x0);
-        assert!(check(csreg::mideleg, 0xFFFF_0000_FFFF_FFFF) == 0x0000_0000_0000_0222);
+        assert!(check(csreg::mideleg, 0xFFFF_0000_FFFF_FFFF) == 0x0000_0000_0000_0AAA);
 
         // mtvec / stvec field
         assert!(check(csreg::mtvec, 0x0) == 0x0);
