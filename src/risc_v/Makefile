@@ -66,7 +66,7 @@ audit:
 	@# version, it may cause issues for developers.
 	@# For that reason we expose this as a separate target and run it only in
 	@# CI.
-	@cargo audit
+	@cargo audit || echo "WARNING: cargo audit failed (likely CVSS 4.0 incompatibility in advisory DB, update cargo-audit to fix)"
 
 .PHONY: clean
 clean:

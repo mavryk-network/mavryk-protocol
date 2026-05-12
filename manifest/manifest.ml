@@ -231,7 +231,7 @@ module Dune = struct
       ?modules_without_implementation ?modes
       ?(foreign_archives = Stdlib.List.[]) ?foreign_stubs ?c_library_flags
       ?(ctypes = E) ?(private_modules = Stdlib.List.[]) ?js_of_ocaml ?wrapped
-      (names : string list) =
+      ?enabled_if (names : string list) =
     [
       V
         [
@@ -262,6 +262,7 @@ module Dune = struct
             :: of_list (List.map (function mode -> S (string_of_mode mode)) x)
           );
           (if optional then [S "optional"] else E);
+          opt enabled_if (fun x -> [S "enabled_if"; x]);
           (match libraries with
           | [] -> E
           | _ -> [V (S "libraries" :: libraries)]);
@@ -2837,6 +2838,9 @@ let generate_dune (internal : Target.internal) =
     | Some docs -> Dune.(S "documentation" :: docs)
   in
   let ctypes = Option.map Ctypes.to_dune internal.ctypes in
+  let enabled_if =
+    match internal.available with Never -> Some Dune.(S "false") | _ -> None
+  in
   Dune.(
     executable_or_library
       kind
@@ -2868,6 +2872,7 @@ let generate_dune (internal : Target.internal) =
       ~private_modules:internal.private_modules
       ?js_of_ocaml:internal.js_of_ocaml
       ?wrapped:internal.wrapped
+      ?enabled_if
     :: documentation :: create_empty_files :: internal.dune)
 
 (* [Explicitly_unreleased i]: this opam package was explicitly specified not to be released
@@ -3564,7 +3569,7 @@ let generate_dune_project_files () =
       List.exists
         (fun (i : Target.internal) ->
           match i.kind with
-          | Public_library _ | Public_executable _ -> true
+          | Public_library _ | Public_executable _ -> i.available <> Never
           | Private_library _ -> false
           | Private_executable _ -> false
           | Test_executable _ -> false)

@@ -1,0 +1,10 @@
+{
+    "ethDeposits": [
+        {"tezzies": 1000000},
+        {"tezzies": 500000}
+    ],
+    "utxos": [
+        {"satoshis": 100000000, "crowdfund_level": 1500},
+        {"satoshis": 50000000, "crowdfund_level": 2100}
+    ]
+}

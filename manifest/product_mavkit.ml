@@ -3615,7 +3615,7 @@ let mavkit_signer_backends_unix =
         mavkit_shell_services |> open_;
         uri;
         select
-          ~package:ledgerwallet_tezos
+          ~package:ledgerwallet_mavryk
           ~source_if_present:"ledger.available.ml"
           ~source_if_absent:"ledger.none.ml"
           ~target:"ledger.ml";

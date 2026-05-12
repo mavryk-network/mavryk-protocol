@@ -31,12 +31,11 @@ COPY --link scripts/install_build_deps.sh root/mavryk/scripts/
 COPY --link scripts/install_build_deps.rust.sh root/mavryk/scripts/
 COPY --link scripts/version.sh root/mavryk/scripts/
 COPY --link Makefile root/mavryk/
-COPY --link opam/virtual/mavkit-deps.opam.locked root/mavryk/opam/virtual/
-COPY --link opam root/mavryk/
+COPY --link opam root/mavryk/opam/
 
 WORKDIR root/mavryk
 RUN . /tmp/version.sh && \
     echo $opam_repository_tag > opam_repository_tag
 RUN eval $(opam env) ; \
     . $HOME/.cargo/env ; \
-    make build-deps
+    CFLAGS="-std=gnu11" make build-deps

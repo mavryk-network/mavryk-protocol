@@ -37,12 +37,12 @@ let _ =
   Uses.make ~tag:"risc_v_sandbox" ~path:"./tezt/tests/riscv-tests/generated/"
 
 let run_kernel ?(posix = false) ~input ?initrd () =
+  ignore posix ;
   let process =
     Process.spawn
       ~hooks:Tezt_mavryk.Mavryk_regression.hooks
       (Uses.path risc_v_sandbox)
-      (["rvemu"; "--input"; input]
-      @ Option.fold ~none:[] ~some:(fun initrd -> ["--initrd"; initrd]) initrd
-      @ if posix then ["--posix"] else [])
+      (["run"; "--input"; input]
+      @ Option.fold ~none:[] ~some:(fun initrd -> ["--initrd"; initrd]) initrd)
   in
   Process.check process

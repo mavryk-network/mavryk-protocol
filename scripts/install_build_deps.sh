@@ -65,6 +65,15 @@ fi
 
 eval "$(opam env --shell=sh)"
 
+# Activate the local overlay in this switch with highest priority (rank 0) so
+# its patched packages (e.g. base.v0.16.3 with the arm64 -mpopcnt fix) take
+# precedence over the pinned mavryk opam repository.
+opam repository add mavryk-overlay --rank=0 "$src_dir/opam/overlay" > /dev/null 2>&1 ||
+  opam repository set-url mavryk-overlay "$src_dir/opam/overlay" > /dev/null 2>&1
+# Index the local overlay (no network needed; opam update is required for local
+# repos to be recognised even though the content is already on disk).
+opam update mavryk-overlay
+
 OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums tezos-rust-libs.1.6
 opam pin add -n ocamlfind.1.9.6 http://download2.camlcity.org/download/findlib-1.9.6.tar.gz
 OPAMASSUMEDEPEXTS=true opam install --yes ocamlfind.1.9.6

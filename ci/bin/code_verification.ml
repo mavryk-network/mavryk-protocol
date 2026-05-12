@@ -129,6 +129,8 @@ let job_opam_package ?dependencies {name; group; batch_index} : mavryk_job =
          ])
     [
       "opam remote add dev-repo ./_opam-repo-for-release";
+      "OPAMASSUMEDEPEXTS=true opam install --yes --no-checksums \
+       tezos-rust-libs.1.6";
       "opam install --yes ${package}.dev";
       "opam reinstall --yes --with-test ${package}.dev";
     ]
