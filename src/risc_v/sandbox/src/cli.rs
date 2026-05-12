@@ -11,8 +11,6 @@ pub enum Mode {
     Run(Options),
     /// Launch a program in the debugger
     Debug(Options),
-    /// Run a program using rvemu
-    Rvemu(Options),
 }
 
 #[derive(Clone, ValueEnum, Debug)]
@@ -35,25 +33,9 @@ pub struct Options {
     #[arg(short, long)]
     pub input: String,
 
-    /// Path to the initrd
+    /// Path to an optional initial ramdisk
     #[arg(long)]
     pub initrd: Option<String>,
-
-    /// Keep going after the inbox has been drained.
-    #[arg(short, long)]
-    pub keep_going: bool,
-
-    /// Support some POSIX-style system calls
-    #[arg(long)]
-    pub posix: bool,
-
-    /// Rollup address
-    #[arg(short, long, default_value = "sr1UNDWPUYVeomgG15wn5jSw689EJ4RNnVQa")]
-    pub address: String,
-
-    /// Rollup origination level
-    #[arg(short = 'l', long, default_value_t = 0)]
-    pub origination_level: u64,
 
     #[arg(short = 'm', long, value_enum, default_value_t = ExitMode::User)]
     pub posix_exit_mode: ExitMode,

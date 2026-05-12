@@ -22,7 +22,7 @@
   mavkit-shell-libs.shell-services
   uri
   (select ledger.ml from
-   (ledgerwallet-tezos -> ledger.available.ml)
+   (ledgerwallet-mavryk -> ledger.available.ml)
    (-> ledger.none.ml)))
  (flags
   (:standard)

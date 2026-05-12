@@ -331,8 +331,8 @@ mavkit-node`` for example instead of ``opam depext tezos``.
    Note that ``opam install mavkit-client`` and ``opam install
    mavkit-signer`` are "minimal" and do not install the support for
    Ledger Nano devices. To enable it, run ``opam install
-   ledgerwallet-tezos`` in addition to installing the binaries. (The
-   macro meta-package ``tezos`` installs ``ledgerwallet-tezos``.)
+   ledgerwallet-mavryk`` in addition to installing the binaries. (The
+   macro meta-package ``mavryk`` installs ``ledgerwallet-mavryk``.)
 
 .. _updating_with_opam:
 

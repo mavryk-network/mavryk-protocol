@@ -1,110 +1,72 @@
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-p-fadd --posix
-Received request to exit with code 5
-rv64uf-p-fadd: fail
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fadd
+rv64uf-p-fadd: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-p-fclass --posix
-Received request to exit with code 5
-rv64uf-p-fclass: fail
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fclass
+rv64uf-p-fclass: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-p-fcmp --posix
-Received request to exit with code 21
-rv64uf-p-fcmp: fail
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fcmp
+rv64uf-p-fcmp: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-p-fcvt --posix
-Received request to exit with code 5
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fcvt
+Error: "Timeout"
 rv64uf-p-fcvt: fail
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-p-fcvt_w --posix
-Received request to exit with code 5
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fcvt_w
+Error: "Timeout"
 rv64uf-p-fcvt_w: fail
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-p-fdiv --posix
-Received request to exit with code 5
-rv64uf-p-fdiv: fail
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fdiv
+rv64uf-p-fdiv: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-p-fmadd --posix
-Received request to exit with code 5
-rv64uf-p-fmadd: fail
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fmadd
+rv64uf-p-fmadd: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-p-fmin --posix
-Received request to exit with code 5
-rv64uf-p-fmin: fail
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-fmin
+rv64uf-p-fmin: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-p-ldst --posix
-Received request to exit with code 0
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-ldst
 rv64uf-p-ldst: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-p-move --posix
-Received request to exit with code 7
-rv64uf-p-move: fail
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-move
+rv64uf-p-move: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-p-recoding --posix
-Received request to exit with code 0
-rv64uf-p-recoding: success
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-p-recoding
+Error: "Timeout"
+rv64uf-p-recoding: fail
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-v-fadd --posix
-thread 'main' panicked at sandbox/src/main.rs:[LOCATION]:
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-rv64uf-v-fadd: fail
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fadd
+rv64uf-v-fadd: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-v-fclass --posix
-thread 'main' panicked at sandbox/src/main.rs:[LOCATION]:
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-rv64uf-v-fclass: fail
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fclass
+rv64uf-v-fclass: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-v-fcmp --posix
-thread 'main' panicked at sandbox/src/main.rs:[LOCATION]:
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-rv64uf-v-fcmp: fail
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fcmp
+rv64uf-v-fcmp: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-v-fcvt --posix
-thread 'main' panicked at sandbox/src/main.rs:[LOCATION]:
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fcvt
+Error: "Timeout"
 rv64uf-v-fcvt: fail
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-v-fcvt_w --posix
-thread 'main' panicked at sandbox/src/main.rs:[LOCATION]:
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fcvt_w
+Error: "Timeout"
 rv64uf-v-fcvt_w: fail
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-v-fdiv --posix
-thread 'main' panicked at sandbox/src/main.rs:[LOCATION]:
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-rv64uf-v-fdiv: fail
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fdiv
+rv64uf-v-fdiv: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-v-fmadd --posix
-thread 'main' panicked at sandbox/src/main.rs:[LOCATION]:
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-rv64uf-v-fmadd: fail
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fmadd
+rv64uf-v-fmadd: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-v-fmin --posix
-thread 'main' panicked at sandbox/src/main.rs:[LOCATION]:
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-rv64uf-v-fmin: fail
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-fmin
+rv64uf-v-fmin: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-v-ldst --posix
-thread 'main' panicked at sandbox/src/main.rs:[LOCATION]:
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-rv64uf-v-ldst: fail
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-ldst
+rv64uf-v-ldst: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-v-move --posix
-thread 'main' panicked at sandbox/src/main.rs:[LOCATION]:
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-rv64uf-v-move: fail
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-move
+rv64uf-v-move: success
 
-./src/risc_v/risc-v-sandbox rvemu --input tezt/tests/riscv-tests/generated/rv64uf-v-recoding --posix
-thread 'main' panicked at sandbox/src/main.rs:[LOCATION]:
-Exception InstructionPageFault(2147494020) at 0x80002884: Invisible
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+./src/risc_v/risc-v-sandbox run --input tezt/tests/riscv-tests/generated/rv64uf-v-recoding
+Error: "Timeout"
 rv64uf-v-recoding: fail

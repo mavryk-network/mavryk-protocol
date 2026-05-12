@@ -667,7 +667,7 @@ let test_protocol_independent =
       (* Test CHAIN_ID *)
       ("chain_id_store", "None", "Unit", {|(Some "NetXynUjJNZm7wi")|});
       ( "chain_id_store",
-        "(Some 0x7a06a770)",
+        "(Some 0x54a49562)",
         "Unit",
         {|(Some "NetXynUjJNZm7wi")|} );
       ( "chain_id_store",

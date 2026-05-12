@@ -1,0 +1,27 @@
+--- a/src/discover/discover.ml	2026-04-13 10:24:31
++++ b/src/discover/discover.ml	2026-04-13 10:24:31
+@@ -1,5 +1,15 @@
+ open Configurator.V1
+ 
++let arm64_program =
++  {|
++#if defined(__arm64__) || defined(__aarch64__)
++int main() { return 0; }
++#else
++#error "not arm64"
++#endif
++|}
++;;
++
+ let program =
+   {|
+ int main(int argc, char ** argv)
+@@ -15,6 +25,7 @@
+     ~name:"discover"
+     ~args:[ "-o", Set_string output, "FILENAME output file" ]
+     (fun c ->
+-       let has_popcnt = c_test c ~c_flags:[ "-mpopcnt" ] program in
++       let is_arm64 = c_test c arm64_program in
++       let has_popcnt = (not is_arm64) && c_test c ~c_flags:[ "-mpopcnt" ] program in
+        Flags.write_sexp !output (if has_popcnt then [ "-mpopcnt" ] else []))
+ ;;

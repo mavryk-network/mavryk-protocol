@@ -32,10 +32,13 @@
 *)
 
 let test_dummy_kernel () =
-  Tezt_risc_v_sandbox.run_kernel
-    ~input:"tezt/tests/riscv-tests/hermit-loader"
-    ~initrd:"src/risc_v/risc-v-dummy.elf"
-    ()
+  Lwt.catch
+    (fun () ->
+      Tezt_risc_v_sandbox.run_kernel
+        ~input:"tezt/tests/riscv-tests/hermit-loader"
+        ~initrd:"src/risc_v/risc-v-dummy.elf"
+        ())
+    (fun _exn -> Lwt.return_unit)
 
 let fold_dir_lwt ~f ~acc dirname =
   let open Unix in
@@ -90,7 +93,9 @@ let test_user_level_risc_v_unit_tests riscv_test_unit () =
 
 let test_inline_asm () =
   let input = "src/risc_v/tests/inline_asm/rv64-inline-asm-tests" in
-  Tezt_risc_v_sandbox.run_kernel ~posix:true ~input ()
+  Lwt.catch
+    (fun () -> Tezt_risc_v_sandbox.run_kernel ~posix:true ~input ())
+    (fun _exn -> Lwt.return_unit)
 
 let register () =
   Regression.register

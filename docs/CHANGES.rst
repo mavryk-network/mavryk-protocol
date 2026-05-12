@@ -987,7 +987,7 @@ Client
 ------
 
 - Fixed a regression in 15.0~rc1 that caused ``make build-deps`` to not
-  install the ``ledgerwallet-tezos`` opam package by default, which in turn
+  install the ``ledgerwallet-mavryk`` opam package by default, which in turn
   caused the client to be built without Ledger commands. Docker images
   and static executables were not affected.
 
