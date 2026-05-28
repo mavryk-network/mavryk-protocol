@@ -10,7 +10,8 @@ Release System
    versioning for compatibility:
 
    - **Mavryk V1 (Atlas)** corresponds to Tezos Oxford (v19) — git tag: ``v19.3-mavryk``
-   - **Mavryk V2 (Boreas)** corresponds to Tezos ParisB/ParisC (v20/v21) — git tag: ``20.3``
+   - **Mavryk V2 (Boreas)** corresponds to Tezos ParisB/ParisC (v20/v21) — git tag: ``mavkit-v20.3``
+   - **Mavryk V2.1 (Boreas)** maintenance release — git tag: ``mavkit-v20.4``
 
 Mavkit releases include all the software needed to run the distributed
 consensus platform with its meta-consensus capability. This
