@@ -73,6 +73,12 @@ You can also install Mavkit using Opam by running ``opam install mavkit``.
 
 Debian and Redhat packages are available on the `release page <https://gitlab.com/mavryk-network/mavryk-protocol/-/releases>`_ and in the `package registry <https://gitlab.com/mavryk-network/mavryk-protocol/-/packages>`_.
 
+.. note::
+
+   A maintenance release :doc:`version-2.1` (Mavkit v20.4) is available with
+   Ledger hardware wallet support, macOS Apple Silicon compatibility, and updated
+   Linux distribution packages.
+
 Changelog
 ---------
 
